@@ -19,3 +19,8 @@ Thumbs.db
 
 # Log files
 *.log
+
+# Release packages / binaries
+releases/*.apk
+releases/*.aab
+releases/*.ipa

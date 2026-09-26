@@ -1,0 +1,43 @@
+name: Build iOS App
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
+
+jobs:
+  build-ios:
+    name: Build iOS (Flutter)
+    runs-on: macos-14
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Install Dependencies
+        working-directory: bkk_skytrains_flutter
+        run: flutter pub get
+
+      - name: Build iOS (Release without Codesign)
+        working-directory: bkk_skytrains_flutter
+        run: flutter build ios --release --no-codesign
+
+      - name: Package Payload into IPA
+        working-directory: bkk_skytrains_flutter
+        run: |
+          mkdir -p Payload
+          cp -r build/ios/iphoneos/Runner.app Payload/
+          zip -r BKK_SkyTrains_iOS_unsigned.ipa Payload
+          rm -rf Payload
+
+      - name: Upload IPA Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: BKK_SkyTrains_iOS_unsigned
+          path: bkk_skytrains_flutter/BKK_SkyTrains_iOS_unsigned.ipa
+          retention-days: 14

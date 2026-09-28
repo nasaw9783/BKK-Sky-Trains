@@ -2327,6 +2327,200 @@
             background: var(--bg-subtle);
         }
 
+        /* ===== Services Module Styles (from The Skytrains th.btsc.theskytrains) ===== */
+        .services-hero-card {
+            background: linear-gradient(135deg, rgba(16, 33, 58, 0.08), rgba(2, 132, 199, 0.08));
+            border-radius: var(--radius);
+            border: 1px solid rgba(2, 132, 199, 0.2);
+            padding: 16px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+        .services-hero-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .services-hero-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: var(--bg-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: var(--shadow-sm);
+        }
+        .services-hero-icon img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+        }
+        .services-live-alert {
+            border-radius: var(--radius);
+            padding: 12px 14px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            color: #059669;
+        }
+        .services-live-alert.disruption {
+            background: rgba(239, 68, 68, 0.08);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #dc2626;
+        }
+        .services-filter-bar {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 6px;
+            margin-bottom: 14px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .services-filter-bar::-webkit-scrollbar {
+            display: none;
+        }
+        .services-pill {
+            padding: 7px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            background: var(--card);
+            border: 1px solid var(--line);
+            color: var(--muted);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .services-pill.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25);
+        }
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .service-tile {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            padding: 14px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            box-shadow: var(--shadow-sm);
+        }
+        .service-tile:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent);
+            box-shadow: var(--shadow-md);
+        }
+        .service-tile img {
+            width: 36px;
+            height: 36px;
+            object-fit: contain;
+            margin-bottom: 8px;
+        }
+        .service-tile-name {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1.3;
+        }
+        .service-tile-sub {
+            font-size: 10px;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+        .promo-slider {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding: 4px 2px 14px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .promo-slider::-webkit-scrollbar {
+            display: none;
+        }
+        .promo-banner-card {
+            flex: 0 0 260px;
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow-sm);
+            cursor: pointer;
+            transition: transform var(--transition-fast);
+            background: var(--card);
+        }
+        .promo-banner-card:hover {
+            transform: scale(1.02);
+        }
+        .promo-banner-card img {
+            width: 100%;
+            height: 130px;
+            object-fit: cover;
+            display: block;
+        }
+        .park-ride-card {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: var(--radius);
+            padding: 14px 16px;
+            margin-bottom: 10px;
+        }
+        .park-ride-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+        .lost-found-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--line);
+            gap: 12px;
+        }
+        .lost-found-row:last-child {
+            border-bottom: none;
+        }
+        .call-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #10b981;
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
         /* ===== Floating Bottom Navigation Dock ===== */
         .bottom-nav {
             position: fixed;
@@ -3031,9 +3225,10 @@
             <div class="exit-list" id="exitListContainer"></div>
         </div>
 
-        <!-- ===== VIEW 5: FARES & TIMETABLES (โครงสร้างราคา & เวลาเดินรถ) ===== -->
-        <div id="viewFares" class="app-view">
-            <div id="faresViewContent"></div>
+        <!-- ===== VIEW 5: SERVICES & FARES (โมดูลบริการ, ข้อมูลจราจรสด, ตารางเวลา & ค่าโดยสาร) ===== -->
+        <div id="viewServices" class="app-view">
+            <div id="servicesViewContent"></div>
+            <div id="faresViewContent" style="display:none;"></div>
         </div>
 
         <footer id="footerNote">
@@ -3128,16 +3323,19 @@
             </span>
             <span class="nav-lbl" id="navLblExits">ทางออก</span>
         </button>
-        <button class="nav-tab" id="tab-fares" onclick="App.switchView('fares')" aria-label="ค่าโดยสาร">
+        <button class="nav-tab" id="tab-services" onclick="App.switchView('services')" aria-label="บริการ">
             <span class="nav-icon">
                 <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <rect x="2" y="4" width="20" height="16" rx="3"/>
-                    <line x1="2" y1="10" x2="22" y2="10"/>
-                    <circle cx="7" cy="15" r="1.5" fill="currentColor"/>
-                    <line x1="12" y1="15" x2="17" y2="15"/>
+                    <rect x="4" y="3" width="16" height="15" rx="2.5"/>
+                    <line x1="4" y1="10" x2="20" y2="10"/>
+                    <line x1="12" y1="3" x2="12" y2="10"/>
+                    <circle cx="8" cy="14.5" r="1.2" fill="currentColor"/>
+                    <circle cx="16" cy="14.5" r="1.2" fill="currentColor"/>
+                    <path d="M6 18l-2 3"/>
+                    <path d="M18 18l2 3"/>
                 </svg>
             </span>
-            <span class="nav-lbl" id="navLblFares">ค่าโดยสาร</span>
+            <span class="nav-lbl" id="navLblServices">บริการ</span>
         </button>
     </nav>
 

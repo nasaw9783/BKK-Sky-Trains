@@ -608,18 +608,7 @@ gQIDAQAB
                 navMap: 'แผนที่',
                 navPlanner: 'วางแผน',
                 navExits: 'ทางออก',
-                navServices: 'บริการ',
-                navFares: 'บริการ',
-                servicesTitle: 'บริการรถไฟฟ้ามหานคร',
-                servicesSub: 'ข้อมูลบริการ เวลาเดินรถ ค่าโดยสาร จุดจอดแล้วจร และศูนย์รับแจ้งของหาย',
-                serviceAlertNormal: 'สถานะการเดินรถ: ปกติทุกสาย (Normal Service)',
-                serviceAlertCheck: 'อัปเดตสถานะล่าสุดจาก BTS/EBM',
-                serviceFilterAll: '🌟 ทั้งหมด',
-                serviceFilterFreq: '⏱️ เวลาและความถี่',
-                serviceFilterFare: '🎫 อัตราค่าโดยสาร',
-                serviceFilterPark: '🅿️ ที่จอดรถ & จักรยาน',
-                serviceFilterHelp: '📞 ของหาย & ติดต่อ',
-                serviceFilterFaq: '❓ คำถามที่พบบ่อย',
+                navFares: 'ค่าโดยสาร',
                 mapTitle: '🗺️ ผังโครงข่ายรถไฟฟ้า 10 สาย',
                 mapZoomIn: '➕ ขยาย',
                 mapZoomOut: '➖ ย่อ',
@@ -742,18 +731,7 @@ gQIDAQAB
                 navMap: 'Map',
                 navPlanner: 'Plan',
                 navExits: 'Exits',
-                navServices: 'Services',
-                navFares: 'Services',
-                servicesTitle: 'Transit Services',
-                servicesSub: 'Timetables, Fares, Park & Ride, Bicycle Parking and Lost & Found',
-                serviceAlertNormal: 'Operating Status: Normal on All Lines',
-                serviceAlertCheck: 'Real-time status updated from BTS/EBM',
-                serviceFilterAll: '🌟 All',
-                serviceFilterFreq: '⏱️ Timetable & Frequency',
-                serviceFilterFare: '🎫 Fares & Tickets',
-                serviceFilterPark: '🅿️ Parking & Bicycles',
-                serviceFilterHelp: '📞 Lost & Found / Help',
-                serviceFilterFaq: '❓ FAQ',
+                navFares: 'Fares',
                 mapTitle: '🗺️ 10 Transit Lines Network Map',
                 mapZoomIn: '➕ Zoom In',
                 mapZoomOut: '➖ Zoom Out',
@@ -1548,14 +1526,8 @@ gQIDAQAB
             selectedExitKey: 'CEN',
             mapZoom: 1.0,
 
-            servicesCategory: 'all',
-            servicesTrafficAlert: null,
-            servicesBanners: null,
-            servicesTrafficLoading: false,
-
             switchView(viewName) {
-                if (viewName === 'fares') viewName = 'services';
-                const validViews = ['home', 'map', 'planner', 'exits', 'services'];
+                const validViews = ['home', 'map', 'planner', 'exits', 'fares'];
                 if (!validViews.includes(viewName)) viewName = 'home';
                 this.currentView = viewName;
 
@@ -1563,15 +1535,12 @@ gQIDAQAB
                 const nav = document.querySelector('.bottom-nav');
                 if (nav) nav.classList.remove('nav-hidden');
                 document.querySelectorAll('.bottom-nav .nav-tab').forEach(tab => {
-                    const isTab = (tab.id === 'tab-' + viewName) || (viewName === 'services' && tab.id === 'tab-fares');
-                    tab.classList.toggle('active', isTab);
+                    tab.classList.toggle('active', tab.id === 'tab-' + viewName);
                 });
 
                 // Toggle app views
                 document.querySelectorAll('.app-view').forEach(view => {
-                    const isView = (view.id === 'view' + viewName.charAt(0).toUpperCase() + viewName.slice(1)) ||
-                                   (viewName === 'services' && view.id === 'viewFares');
-                    view.classList.toggle('active', isView);
+                    view.classList.toggle('active', view.id === 'view' + viewName.charAt(0).toUpperCase() + viewName.slice(1));
                 });
 
                 // Trigger view specific rendering
@@ -1583,8 +1552,8 @@ gQIDAQAB
                 } else if (viewName === 'planner') {
                     this.journey.open = true;
                     this.renderJourney();
-                } else if (viewName === 'services') {
-                    this.renderServicesView('all');
+                } else if (viewName === 'fares') {
+                    this.renderFaresView();
                 }
 
                 window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -2419,293 +2388,105 @@ gQIDAQAB
                 if (this.journey.from && this.journey.to) this.findRoute();
             },
 
-            /* ---------- THE SKYTRAINs: Services Module (th.btsc.theskytrains) ---------- */
-            setServicesCategory(cat) {
-                this.servicesCategory = cat || 'all';
-                this.renderServicesView(this.servicesCategory);
-            },
-
-            scrollToService(id) {
-                if (this.servicesCategory !== 'all') {
-                    this.setServicesCategory('all');
-                }
-                setTimeout(() => {
-                    const target = document.getElementById(id);
-                    if (target) {
-                        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
-                }, 60);
-            },
-
-            async fetchServicesTraffic() {
-                if (this.servicesTrafficLoading) return;
-                this.servicesTrafficLoading = true;
-                try {
-                    const isFileProto = location.protocol === 'file:' || !location.origin || location.origin === 'null' || !location.origin.startsWith('http');
-                    const url = isFileProto
-                        ? 'https://www.ebm.co.th/mobapi-routemap/api/TrafficNews/TrafficNews_Alert?lang=' + lang
-                        : '/api/ebm-proxy/TrafficNews/TrafficNews_Alert?lang=' + lang;
-                    const res = await fetch(url, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ lang: lang })
-                    }).catch(() => null);
-
-                    if (res && res.ok) {
-                        const json = await res.json();
-                        this.servicesTrafficAlert = json;
-                    } else if (!isFileProto) {
-                        const directRes = await fetch('https://www.ebm.co.th/mobapi-routemap/api/TrafficNews/TrafficNews_Alert?lang=' + lang, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ lang: lang })
-                        }).catch(() => null);
-                        if (directRes && directRes.ok) {
-                            this.servicesTrafficAlert = await directRes.json();
-                        } else {
-                            this.servicesTrafficAlert = { IsSuccess: false, ErrMessage: 'Normal' };
-                        }
-                    } else {
-                        this.servicesTrafficAlert = { IsSuccess: false, ErrMessage: 'Normal' };
-                    }
-                } catch (e) {
-                    this.servicesTrafficAlert = { IsSuccess: false, ErrMessage: 'Normal' };
-                } finally {
-                    this.servicesTrafficLoading = false;
-                    this.updateTrafficAlertUI();
-                }
-            },
-
-            async fetchServicesBanners() {
-                try {
-                    const isFileProto = location.protocol === 'file:' || !location.origin || location.origin === 'null' || !location.origin.startsWith('http');
-                    const url = isFileProto
-                        ? 'https://www.ebm.co.th/mobapi-routemap/api/Banner/GetBannerPromotion_Mobile'
-                        : '/api/ebm-proxy/Banner/GetBannerPromotion_Mobile';
-                    let res = await fetch(url, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ lang: lang })
-                    }).catch(() => null);
-
-                    if ((!res || !res.ok) && !isFileProto) {
-                        res = await fetch('https://www.ebm.co.th/mobapi-routemap/api/Banner/GetBannerPromotion_Mobile', {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ lang: lang })
-                        }).catch(() => null);
-                    }
-
-                    if (res && res.ok) {
-                        const json = await res.json();
-                        if (json && json.data && Array.isArray(json.data)) {
-                            this.servicesBanners = json.data;
-                            this.updateServicesBannersUI();
-                        }
-                    }
-                } catch (e) { }
-            },
-
-            updateTrafficAlertUI() {
-                const el = document.getElementById('servicesLiveAlertBox');
-                if (!el) return;
-                const isEn = lang === 'en';
-                const hasDisruption = this.servicesTrafficAlert &&
-                                      this.servicesTrafficAlert.IsSuccess &&
-                                      this.servicesTrafficAlert.data;
-                const nowStr = new Date().toLocaleTimeString(isEn ? 'en-US' : 'th-TH', { hour: '2-digit', minute: '2-digit' });
-                if (hasDisruption) {
-                    const d = this.servicesTrafficAlert.data;
-                    el.className = 'services-live-alert disruption';
-                    el.innerHTML = `
-                        <div style="display:flex;align-items:center;gap:10px;">
-                            <span style="font-size:20px;">⚠️</span>
-                            <div>
-                                <div style="font-weight:800;">${isEn ? 'Service Alert / Disruption' : 'แจ้งเหตุขัดข้องการเดินรถ'}</div>
-                                <div style="font-size:11.5px;opacity:.9;margin-top:2px;">${esc(d.Message || d.Detail || 'มีรายงานความล่าช้าในบางเส้นทาง')}</div>
-                            </div>
-                        </div>
-                        <span style="font-size:11px;opacity:.8;white-space:nowrap;">${nowStr}</span>
-                    `;
-                } else {
-                    el.className = 'services-live-alert';
-                    el.innerHTML = `
-                        <div style="display:flex;align-items:center;gap:8px;">
-                            <span class="live-dot" style="display:inline-block;width:9px;height:9px;border-radius:50%;background:#10b981;animation:pulse 1.5s infinite;"></span>
-                            <span>${T('serviceAlertNormal')}</span>
-                        </div>
-                        <span style="font-size:11px;color:var(--muted);font-weight:normal;white-space:nowrap;">${nowStr}</span>
-                    `;
-                }
-            },
-
-            updateServicesBannersUI() {
-                const el = document.getElementById('servicesBannerSlider');
-                if (!el || !this.servicesBanners || !this.servicesBanners.length) return;
-                el.innerHTML = this.servicesBanners.map(b => `
-                    <div class="promo-banner-card" onclick="if('${b.URL}') window.open('${b.URL}', '_blank')">
-                        <img src="${b.Image}" alt="Promotion" loading="lazy" onerror="this.src='assets/icons/mock_banner_service.png'">
-                    </div>
-                `).join('');
-            },
-
+            /* ---------- THE SKYTRAINs: Fares & Timetable Guide View ---------- */
             renderFaresView() {
-                this.renderServicesView('all');
-            },
-
-            renderServicesView(category) {
-                const el = document.getElementById('servicesViewContent') || document.getElementById('faresViewContent');
+                const el = document.getElementById('faresViewContent');
                 if (!el) return;
 
-                if (category) this.servicesCategory = category;
-                const activeCat = this.servicesCategory || 'all';
                 const isEn = lang === 'en';
-
-                // Trigger background API updates for Live traffic and Banners if not loaded yet
-                if (!this.servicesTrafficAlert) this.fetchServicesTraffic();
-                if (!this.servicesBanners) this.fetchServicesBanners();
-
-                const parkAndRideLocations = [
-                    { name: isEn ? 'BTS Mo Chit (N8)' : 'BTS หมอชิต (N8)', line: 'Sukhumvit', badge: 'N8', color: '#7AB420', cap: isEn ? '1,500 spaces' : '1,500 คัน', hours: '05:00 - 01:00', fee: isEn ? 'Free for BTS passengers' : 'ฟรีสำหรับผู้โดยสารรถไฟฟ้า (05:00 - 01:00)' },
-                    { name: isEn ? 'BTS Kheha (E23)' : 'BTS เคหะฯ (E23)', line: 'Sukhumvit', badge: 'E23', color: '#7AB420', cap: isEn ? '720 spaces (3-floor building)' : '720 คัน (อาคารจอดรถ 3 ชั้น)', hours: '05:00 - 01:00', fee: isEn ? '฿20 / 2 hrs (General: ฿20/hr)' : 'ผู้ใช้ BTS 2 ชม. 20 บาท (บุคคลทั่วไป 20 บาท/ชม.)' },
-                    { name: isEn ? 'BTS Khu Khot (N24)' : 'BTS คูคต (N24)', line: 'Sukhumvit', badge: 'N24', color: '#7AB420', cap: isEn ? '713 spaces (2 buildings)' : '713 คัน (อาคารจอดรถ 2 อาคาร)', hours: '05:00 - 01:00', fee: isEn ? '฿20 / 2 hrs (General: ฿20/hr)' : 'ผู้ใช้ BTS 2 ชม. 20 บาท (บุคคลทั่วไป 20 บาท/ชม.)' },
-                    { name: isEn ? 'MRT Lat Phrao (BL15 / YL01)' : 'MRT ลาดพร้าว (BL15 / YL01)', line: 'Blue / Yellow', badge: 'BL15', color: '#10509a', cap: isEn ? '2,200 spaces (9 floors)' : '2,200 คัน (อาคารจอดรถ 9 ชั้น)', hours: '05:00 - 01:00', fee: isEn ? '฿15 / 2 hrs (Monthly ฿1,000)' : '2 ชม. 15 บาท (ผู้ใช้บริการ) / รายเดือน 1,000 บาท' },
-                    { name: isEn ? 'MRT Thailand Cultural Centre (BL19)' : 'MRT ศูนย์วัฒนธรรมแห่งประเทศไทย (BL19)', line: 'Blue', badge: 'BL19', color: '#10509a', cap: isEn ? '2,058 spaces' : '2,058 คัน (อาคารและลานจอด)', hours: '05:00 - 01:00', fee: isEn ? '฿15 / 2 hrs' : '2 ชม. 15 บาท (รายเดือน 1,000 บาท)' },
-                    { name: isEn ? 'MRT Si Iam (YL17)' : 'MRT ศรีเอี่ยม สายสีเหลือง (YL17)', line: 'Yellow', badge: 'YL17', color: '#eab308', cap: isEn ? '2,800 spaces (7 floors)' : '2,800 คัน (อาคารจอดแล้วจร 7 ชั้น)', hours: '05:00 - 01:00', fee: isEn ? '฿15 / 2 hrs (General: ฿50/hr)' : '2 ชม. 15 บาท (บุคคลทั่วไป 50 บาท/ชม.)' },
-                    { name: isEn ? 'MRT Min Buri (PK30)' : 'MRT มีนบุรี สายสีชมพู (PK30)', line: 'Pink', badge: 'PK30', color: '#ec4899', cap: isEn ? '3,000 spaces' : '3,000 คัน (อาคารจอดแล้วจร)', hours: '05:00 - 01:00', fee: isEn ? '฿15 / 2 hrs (General: ฿50/hr)' : '2 ชม. 15 บาท (บุคคลทั่วไป 50 บาท/ชม.)' },
-                    { name: isEn ? 'MRT Sam Yan (BL27)' : 'MRT สามย่าน (BL27)', line: 'Blue', badge: 'BL27', color: '#10509a', cap: isEn ? '300 spaces' : '300 คัน (ชั้นใต้ดินจามจุรีสแควร์)', hours: '05:00 - 01:00', fee: isEn ? '฿15 / 2 hrs' : '2 ชม. 15 บาท' },
-                ];
-
-                const lostPropertyContacts = [
-                    { agency: isEn ? 'BTS SkyTrains (Call Center)' : 'รถไฟฟ้าบีทีเอส (BTS SkyTrains)', tel: '026176000', displayTel: '0 2617 6000', hours: '06:00 - 24:00', desc: isEn ? 'Press 0 for customer service officer, or contact Ticket Office at any station' : 'กด 0 ติดต่อเจ้าหน้าที่ หรือติดต่อห้องจำหน่ายตั๋วทุกสถานี' },
-                    { agency: isEn ? 'MRT Blue & Purple Line (BEM)' : 'รถไฟฟ้ามหานคร MRT (สายสีน้ำเงิน & สายสีม่วง)', tel: '026245200', displayTel: '0 2624 5200', hours: '06:00 - 24:00', desc: isEn ? 'Customer Relations Center (MRT Information Desk)' : 'ศูนย์บริการข้อมูลลูกค้าสัมพันธ์ MRT' },
-                    { agency: isEn ? 'SRTET (Airport Rail Link & SRT Red Line)' : 'รถไฟชานเมืองสายสีแดง & แอร์พอร์ตลิงก์', tel: '1690', displayTel: '1690', hours: '24 ชม.', desc: isEn ? 'State Railway of Thailand Call Center' : 'สายด่วนการรถไฟแห่งประเทศไทย' },
-                    { agency: isEn ? 'BTS Official LINE' : 'LINE Official บีทีเอส', tel: '', displayTel: '@btsskytrain', hours: '24 ชม.', desc: isEn ? 'Online inquiry and report lost items via chat' : 'สอบถามข้อมูลและแจ้งสิ่งของสูญหายทางแชท LINE' }
-                ];
-
-                const faqs = [
-                    { q: isEn ? 'Can I bring food or drinks onto the train?' : 'นำอาหารและเครื่องดื่มขึ้นรถไฟฟ้าได้หรือไม่?', a: isEn ? 'Food and drinks must be packed in closed containers. Eating and drinking are strictly prohibited in the paid zone and inside the train carriages.' : 'สามารถพกพาอาหารและเครื่องดื่มที่บรรจุในภาชนะมิดชิดได้ แต่ห้ามรับประทานอาหารและเครื่องดื่มทุกชนิดในเขตชำระเงินและภายในขบวนรถไฟฟ้า' },
-                    { q: isEn ? 'Are pets allowed on the train?' : 'นำสัตว์เลี้ยงขึ้นรถไฟฟ้าได้หรือไม่?', a: isEn ? 'Pets and animals of all kinds are not permitted on the transit network, with the exception of certified guide dogs assisting passengers with visual impairments.' : 'ไม่อนุญาตให้นำสัตว์เลี้ยงทุกชนิดเข้าสู่ระบบรถไฟฟ้า ยกเว้นสุนัขนำทางสำหรับคนตาบอดที่มีใบรับรอง' },
-                    { q: isEn ? 'What are the baggage size limitations?' : 'ข้อกำหนดขนาดสัมภาระและสิ่งของต้องห้าม?', a: isEn ? 'Baggage should not obstruct passages or cause danger to other passengers. Hazardous materials, flammable liquids, weapons, and helium balloons are strictly prohibited.' : 'สัมภาระต้องไม่กีดขวางทางเดินหรือก่อให้เกิดอันตราย ห้ามนำวัตถุไวไฟ สารเคมี อาวุธ และลูกโป่งอัดก๊าซเข้าสู่ระบบโดยเด็ดขาด' },
-                    { q: isEn ? 'What time do ticket offices close?' : 'ห้องจำหน่ายตั๋วปิดทำการเวลาใด?', a: isEn ? 'Ticket offices close 10 minutes prior to the arrival of the last scheduled train at that station.' : 'ห้องจำหน่ายตั๋วโดยสารจะปิดทำการก่อนเวลารถไฟขบวนสุดท้ายของสถานีนั้นๆ 10 นาที' }
-                ];
-
-                const showAll = activeCat === 'all';
-                const showFreq = showAll || activeCat === 'freq';
-                const showFare = showAll || activeCat === 'fares';
-                const showPark = showAll || activeCat === 'parking';
-                const showLost = showAll || activeCat === 'lost';
-                const showFaq = showAll || activeCat === 'faq';
-
-                const bannersHtml = this.servicesBanners && this.servicesBanners.length
-                    ? this.servicesBanners.map(b => `
-                        <div class="promo-banner-card" onclick="if('${b.URL}') window.open('${b.URL}', '_blank')">
-                            <img src="${b.Image}" alt="Promotion" loading="lazy" onerror="this.src='assets/icons/mock_banner_service.png'">
-                        </div>
-                    `).join('')
-                    : `
-                        <div class="promo-banner-card">
-                            <img src="assets/icons/mock_banner_service.png" alt="Service Banner" loading="lazy">
-                        </div>
-                    `;
 
                 el.innerHTML = `
-                    <!-- 1. Hero Header -->
-                    <div class="services-hero-card">
-                        <div class="services-hero-content">
-                            <div class="services-hero-icon">
-                                <img src="assets/icons/ic_service.png" alt="Services">
-                            </div>
-                            <div>
-                                <div style="font-weight:800;font-size:16px;color:var(--ink);">${T('servicesTitle')}</div>
-                                <div style="font-size:12px;color:var(--muted);">${T('servicesSub')}</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 2. Real-time Live Traffic Status Alert -->
-                    <div id="servicesLiveAlertBox" class="services-live-alert">
-                        <div style="display:flex;align-items:center;gap:8px;">
-                            <span class="live-dot" style="display:inline-block;width:9px;height:9px;border-radius:50%;background:#10b981;animation:pulse 1.5s infinite;"></span>
-                            <span>${T('serviceAlertNormal')}</span>
-                        </div>
-                        <span style="font-size:11px;color:var(--muted);font-weight:normal;white-space:nowrap;">${new Date().toLocaleTimeString(isEn ? 'en-US' : 'th-TH', { hour: '2-digit', minute: '2-digit' })}</span>
-                    </div>
-
-                    <!-- 3. Live Promotion Banner Carousel -->
-                    <div class="promo-slider" id="servicesBannerSlider">
-                        ${bannersHtml}
-                    </div>
-
-                    <!-- 4. Category Filter Bar -->
-                    <div class="services-filter-bar">
-                        <button type="button" class="services-pill ${activeCat === 'all' ? 'active' : ''}" onclick="App.setServicesCategory('all')">${T('serviceFilterAll')}</button>
-                        <button type="button" class="services-pill ${activeCat === 'freq' ? 'active' : ''}" onclick="App.setServicesCategory('freq')">${T('serviceFilterFreq')}</button>
-                        <button type="button" class="services-pill ${activeCat === 'fares' ? 'active' : ''}" onclick="App.setServicesCategory('fares')">${T('serviceFilterFare')}</button>
-                        <button type="button" class="services-pill ${activeCat === 'parking' ? 'active' : ''}" onclick="App.setServicesCategory('parking')">${T('serviceFilterPark')}</button>
-                        <button type="button" class="services-pill ${activeCat === 'lost' ? 'active' : ''}" onclick="App.setServicesCategory('lost')">${T('serviceFilterHelp')}</button>
-                        <button type="button" class="services-pill ${activeCat === 'faq' ? 'active' : ''}" onclick="App.setServicesCategory('faq')">${T('serviceFilterFaq')}</button>
-                    </div>
-
-                    <!-- 5. Quick-Access Service Menu Tiles (from The Skytrains) -->
-                    ${showAll ? `
-                    <div class="services-grid">
-                        <div class="service-tile" onclick="App.scrollToService('sec-freq')">
-                            <img src="assets/icons/icon_service_driving_time_and_frequency.png" alt="Driving Time">
-                            <div class="service-tile-name">${isEn ? 'Driving Time' : 'เวลาและความถี่'}</div>
-                            <div class="service-tile-sub">${isEn ? 'First/Last Train' : 'ขบวนแรก/สุดท้าย'}</div>
-                        </div>
-                        <div class="service-tile" onclick="App.scrollToService('sec-fares')">
-                            <img src="assets/icons/icon_service_routes_and_fares.png" alt="Routes & Fares">
-                            <div class="service-tile-name">${isEn ? 'Routes & Fares' : 'อัตราค่าโดยสาร'}</div>
-                            <div class="service-tile-sub">${isEn ? '20B & Fare Matrix' : '20 บาท & ตารางราคา'}</div>
-                        </div>
-                        <div class="service-tile" onclick="App.scrollToService('sec-parking')">
-                            <img src="assets/icons/icon_parking_near_the_station.png" alt="Park & Ride">
-                            <div class="service-tile-name">${isEn ? 'Park & Ride' : 'ที่จอดรถใกล้สถานี'}</div>
-                            <div class="service-tile-sub">${isEn ? 'Locations & Fees' : 'จุดจอดแล้วจร'}</div>
-                        </div>
-                        <div class="service-tile" onclick="App.scrollToService('sec-bicycle')">
-                            <img src="assets/icons/ic_bicycle_stop.png" alt="Bicycle Stop">
-                            <div class="service-tile-name">${isEn ? 'Bicycle Racks' : 'จุดจอดจักรยาน'}</div>
-                            <div class="service-tile-sub">${isEn ? 'Stations & Rules' : 'จุดจอดและกฎพกพา'}</div>
-                        </div>
-                        <div class="service-tile" onclick="App.switchView('exits')">
-                            <img src="assets/icons/icon_service_station_area_map.png" alt="Station Area Map">
-                            <div class="service-tile-name">${isEn ? 'Station Map' : 'แผนที่บริเวณสถานี'}</div>
-                            <div class="service-tile-sub">${isEn ? 'Exits & Facilities' : 'ทางออก & สิ่งอำนวยฯ'}</div>
-                        </div>
-                        <div class="service-tile" onclick="App.scrollToService('sec-lost')">
-                            <img src="assets/icons/icon_lost_property.png" alt="Lost Property">
-                            <div class="service-tile-name">${isEn ? 'Lost Property' : 'ของหาย'}</div>
-                            <div class="service-tile-sub">${isEn ? 'Call Center & Help' : 'รับแจ้งทรัพย์สินสูญหาย'}</div>
-                        </div>
-                        <div class="service-tile" onclick="App.scrollToService('sec-rabbit')">
-                            <img src="assets/icons/icon_service_reabbit_rewarde.png" alt="Rabbit Rewards">
-                            <div class="service-tile-name">${isEn ? 'Rabbit Card' : 'บัตรแรบบิท'}</div>
-                            <div class="service-tile-sub">${isEn ? 'Cards & Rewards' : 'สิทธิประโยชน์'}</div>
-                        </div>
-                        <div class="service-tile" onclick="App.scrollToService('sec-faq')">
-                            <img src="assets/icons/icon_faq.png" alt="FAQ">
-                            <div class="service-tile-name">${isEn ? 'FAQ' : 'คำถามที่พบบ่อย'}</div>
-                            <div class="service-tile-sub">${isEn ? 'Rules & Tips' : 'ข้อปฏิบัติการเดินทาง'}</div>
-                        </div>
-                    </div>
-                    ` : ''}
-
-                    <!-- Section: First & Last Train Timetables and Frequency -->
-                    ${showFreq ? `
-                    <div id="sec-freq" class="info-card">
-                        <h3 style="display:flex;align-items:center;gap:10px;">
-                            <img src="assets/icons/icon_service_driving_time_and_frequency.png" width="24" height="24" alt="Freq" style="object-fit:contain;">
-                            <span>${isEn ? 'Driving Time & Train Frequency' : 'เวลาและความถี่การเดินรถ (ขบวนแรกและขบวนสุดท้าย)'}</span>
+                    <!-- 20 Baht Flat Fare Policy Banner -->
+                    <div class="info-card" style="background:linear-gradient(135deg,#dc26260d,#ef444415);border-color:#ef444444">
+                        <span class="fare-badge-20">${isEn ? '20 Baht Flat Fare Policy' : 'นโยบาย 20 บาทตลอดสาย'}</span>
+                        <h3 style="color:#b91c1c;display:flex;align-items:center;gap:8px">
+                            <span style="display:inline-flex;gap:4px;align-items:center">${getLineIconSvg(102, false, 20)} ${getLineIconSvg(103, false, 20)}</span>
+                            <span>${isEn ? 'Flat 20 Baht Fare (EMV Contactless)' : 'รถไฟฟ้า 20 บาทตลอดสาย (EMV Contactless)'}</span>
                         </h3>
-                        <div style="font-size:12px;color:var(--muted);margin-bottom:10px;">${isEn ? 'Timetable and peak / off-peak headway across transit network' : 'ตารางเวลาเดินรถขบวนแรก ขบวนสุดท้าย และความถี่ช่วงเร่งด่วน'}</div>
+                        <div style="font-size:12.5px;color:var(--ink);line-height:1.6">
+                            ${isEn ? 'Passengers paying with <b>EMV Contactless</b> credit/debit cards pay a maximum fare of <b>฿20</b>:' : 'ผู้โดยสารที่แตะจ่ายด้วยบัตรเครดิต/เดบิต <b>EMV Contactless</b> เดินทางด้วยค่าโดยสารสูงสุดไม่เกิน <b>20 บาท</b>:'}
+                            <ul style="margin:8px 0 8px 6px;padding-left:14px;list-style:none">
+                                <li style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+                                    ${getLineIconSvg(102, false, 18)}
+                                    <span><b>${isEn ? 'MRT Purple Line:' : 'สายสีม่วง (MRT Purple Line):'}</b> ${isEn ? 'Khlong Bang Phai ↔ Tao Poon' : 'คลองบางไผ่ ↔ เตาปูน'}</span>
+                                </li>
+                                <li style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+                                    ${getLineIconSvg(103, false, 18)}
+                                    <span><b>${isEn ? 'SRT Red Line:' : 'สายสีแดง (SRT Red Line):'}</b> ${isEn ? 'Krung Thep Aphiwat ↔ Rangsit / Taling Chan' : 'กรุงเทพอภิวัฒน์ ↔ รังสิต / ตลิ่งชัน'}</span>
+                                </li>
+                                <li style="display:flex;align-items:center;gap:8px">
+                                    <span style="display:inline-flex;align-items:center;gap:3px">${getLineIconSvg(102, false, 15)}⇄${getLineIconSvg(103, false, 15)}</span>
+                                    <span><b>${isEn ? 'Cross-line Transfer (Purple ⇄ Red):' : 'เชื่อมต่อข้ามสายสีม่วงและสายสีแดง:'}</b> ${isEn ? 'Max ฿20 combined (transfer at Bang Sue station within 30 mins)' : 'สูงสุดรวม 20 บาท (แตะเปลี่ยนขบวนที่สถานีบางซื่อภายใน 30 นาที)'}</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- BTS Fare Structure -->
+                    <div class="info-card">
+                        <h3 style="display:flex;align-items:center;gap:8px">
+                            <span style="display:inline-flex;gap:4px;align-items:center">${getLineIconSvg(1, false, 18)} ${getLineIconSvg(2, false, 18)}</span>
+                            <span>${isEn ? 'BTS Fare Structure (Sukhumvit & Silom Line)' : 'อัตราค่าโดยสารรถไฟฟ้า BTS (สายสุขุมวิท & สายสีลม)'}</span>
+                        </h3>
+                        <div style="font-size:12px;color:var(--muted);margin-bottom:8px">${isEn ? 'Calculated by distance and number of stations traveled' : 'คำนวณตามระยะทางและจำนวนสถานีที่เดินทาง'}</div>
                         <div class="fare-table-wrap">
                             <table class="fare-grid-table">
                                 <thead>
                                     <tr>
-                                        <th>${isEn ? 'Transit Line' : 'สายรถไฟฟ้า'}</th>
+                                        <th>${isEn ? 'Stations' : 'จำนวนสถานี'}</th>
+                                        <th>${isEn ? 'Adult' : 'บุคคลทั่วไป'}</th>
+                                        <th>${isEn ? 'Student' : 'นักเรียน/นักศึกษา'}</th>
+                                        <th>${isEn ? 'Senior' : 'ผู้สูงอายุ'}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>${isEn ? '1 station' : '1 สถานี'}</td><td>฿17</td><td>฿12</td><td>฿9</td></tr>
+                                    <tr><td>${isEn ? '2 - 3 stations' : '2 - 3 สถานี'}</td><td>฿25 - ฿28</td><td>฿18 - ฿20</td><td>฿13 - ฿14</td></tr>
+                                    <tr><td>${isEn ? '4 - 5 stations' : '4 - 5 สถานี'}</td><td>฿32 - ฿35</td><td>฿23 - ฿25</td><td>฿16 - ฿18</td></tr>
+                                    <tr><td>${isEn ? '6 - 8 stations' : '6 - 8 สถานี'}</td><td>฿40 - ฿47</td><td>฿28 - ฿33</td><td>฿20 - ฿24</td></tr>
+                                    <tr><td>${isEn ? 'Extensions' : 'ส่วนต่อขยาย (Extension)'}</td><td>+฿15</td><td>+฿15</td><td>+฿8</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- MRT Blue / Monorail Fares -->
+                    <div class="info-card">
+                        <h3 style="display:flex;align-items:center;gap:8px">
+                            <span style="display:inline-flex;gap:4px;align-items:center;flex-shrink:0">${getLineIconSvg(101, false, 18)} ${getLineIconSvg(4, false, 18)} ${getLineIconSvg(5, false, 18)}</span>
+                            <span>${isEn ? 'MRT, Monorails & Other Lines Fares' : 'อัตราค่าโดยสาร MRT, โมโนเรล และสายอื่นๆ'}</span>
+                        </h3>
+                        <div class="fare-table-wrap">
+                            <table class="fare-grid-table">
+                                <thead>
+                                    <tr>
+                                        <th>${isEn ? 'Transit System' : 'ระบบรถไฟฟ้า'}</th>
+                                        <th>${isEn ? 'Min Fare' : 'ราคาเริ่มต้น'}</th>
+                                        <th>${isEn ? 'Max Fare' : 'ราคาสูงสุด'}</th>
+                                        <th>${isEn ? 'Supported Tickets & Cards' : 'บัตรโดยสารที่รองรับ'}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td><span style="display:inline-flex;align-items:center;gap:6px">${getLineIconSvg(101, false, 16)} <b>${isEn ? 'MRT Blue Line' : 'MRT สายสีน้ำเงิน'}</b></span></td><td>฿17</td><td>฿43</td><td>${isEn ? 'Token, MRT Card, EMV Contactless' : 'เหรียญโดยสาร, บัตร MRT, บัตร EMV'}</td></tr>
+                                    <tr><td><span style="display:inline-flex;align-items:center;gap:6px">${getLineIconSvg(4, false, 16)} <b>${isEn ? 'MRT Yellow Line' : 'MRT สายสีเหลือง'}</b></span></td><td>฿15</td><td>฿45</td><td>${isEn ? 'Rabbit Card, EMV Contactless' : 'บัตร Rabbit, บัตร EMV Contactless'}</td></tr>
+                                    <tr><td><span style="display:inline-flex;align-items:center;gap:6px">${getLineIconSvg(5, false, 16)} <b>${isEn ? 'MRT Pink Line' : 'MRT สายสีชมพู'}</b></span></td><td>฿15</td><td>฿45</td><td>${isEn ? 'Rabbit Card, EMV Contactless' : 'บัตร Rabbit, บัตร EMV Contactless'}</td></tr>
+                                    <tr><td><span style="display:inline-flex;align-items:center;gap:6px">${getLineIconSvg(3, false, 16)} <b>${isEn ? 'BTS Gold Line' : 'รถไฟฟ้าสายสีทอง'}</b></span></td><td>฿16</td><td>฿16</td><td>${isEn ? 'Rabbit Card, Single Journey Token' : 'บัตร Rabbit, เหรียญ Single Journey'}</td></tr>
+                                    <tr><td><span style="display:inline-flex;align-items:center;gap:6px">${getLineIconSvg(104, false, 16)} <b>${isEn ? 'Airport Rail Link (ARL)' : 'แอร์พอร์ต เรล ลิงก์ (ARL)'}</b></span></td><td>฿15</td><td>฿45</td><td>${isEn ? 'Smart Token, ARL Card' : 'Smart Token, บัตร ARL'}</td></tr>
+                                    <tr><td><span style="display:inline-flex;align-items:center;gap:6px">${getLineIconSvg(102, false, 16)} <b>${isEn ? 'MRT Purple Line' : 'MRT สายสีม่วง'}</b></span></td><td>฿14</td><td>฿20</td><td>${isEn ? 'Token, MRT Plus, EMV (Max ฿20)' : 'เหรียญโดยสาร, บัตร MRT Plus, บัตร EMV (20 บาทสูงสุด)'}</td></tr>
+                                    <tr><td><span style="display:inline-flex;align-items:center;gap:6px">${getLineIconSvg(103, false, 16)} <b>${isEn ? 'SRT Red Line' : 'SRT รถไฟชานเมืองสายสีแดง'}</b></span></td><td>฿12</td><td>฿20</td><td>${isEn ? 'Token, SRT Card, EMV (Max ฿20)' : 'เหรียญโดยสาร, บัตร SRT, บัตร EMV (20 บาทสูงสุด)'}</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- First & Last Train Timetables -->
+                    <div class="info-card">
+                        <h3>⏰ ${isEn ? 'First & Last Train Timetables' : 'ตารางเวลาเดินรถขบวนแรกและขบวนสุดท้าย'}</h3>
+                        <div class="fare-table-wrap">
+                            <table class="fare-grid-table">
+                                <thead>
+                                    <tr>
+                                        <th>${isEn ? 'Line' : 'สายรถไฟฟ้า'}</th>
                                         <th>${isEn ? 'First Train' : 'ขบวนแรก'}</th>
                                         <th>${isEn ? 'Last Train' : 'ขบวนสุดท้าย'}</th>
                                         <th>${isEn ? 'Peak Frequency' : 'ความถี่ช่วงเร่งด่วน'}</th>
@@ -2714,7 +2495,7 @@ gQIDAQAB
                                 <tbody>
                                     <tr><td><span style="display:inline-flex;align-items:center;gap:6px">${getLineIconSvg(1, false, 16)} ${isEn ? 'BTS Sukhumvit Line' : 'BTS สายสุขุมวิท'}</span></td><td>05:15 - 05:30</td><td>24:00 - 00:30</td><td>2.4 - 3.5 ${isEn ? 'min' : 'นาที'}</td></tr>
                                     <tr><td><span style="display:inline-flex;align-items:center;gap:6px">${getLineIconSvg(2, false, 16)} ${isEn ? 'BTS Silom Line' : 'BTS สายสีลม'}</span></td><td>05:30</td><td>24:00</td><td>3.5 - 4.5 ${isEn ? 'min' : 'นาที'}</td></tr>
-                                    <tr><td><span style="display:inline-flex;align-items:center;gap:6px">${getLineIconSvg(3, false, 16)} ${isEn ? 'BTS Gold Line' : 'สายสีทอง'}</span></td><td>06:00</td><td>24:00</td><td>6 - 8 ${isEn ? 'min' : 'นาที'}</td></tr>
+                                    <tr><td><span style="display:inline-flex;align-items:center;gap:6px">${getLineIconSvg(3, false, 16)} ${isEn ? 'Gold Line' : 'สายสีทอง'}</span></td><td>06:00</td><td>24:00</td><td>6 - 8 ${isEn ? 'min' : 'นาที'}</td></tr>
                                     <tr><td><span style="display:inline-flex;align-items:center;gap:6px">${getLineIconSvg(101, false, 16)} ${isEn ? 'MRT Blue Line' : 'MRT สายสีน้ำเงิน'}</span></td><td>06:00 ${isEn ? '(Holiday 06:00)' : '(วันหยุด 06:00)'}</td><td>23:30 - 24:00</td><td>3.5 - 4 ${isEn ? 'min' : 'นาที'}</td></tr>
                                     <tr><td><span style="display:inline-flex;align-items:center;gap:6px">${getLineIconSvg(102, false, 16)} ${isEn ? 'MRT Purple Line' : 'MRT สายสีม่วง'}</span></td><td>05:30 ${isEn ? '(Holiday 06:00)' : '(วันหยุด 06:00)'}</td><td>23:30 - 24:00</td><td>5 - 6 ${isEn ? 'min' : 'นาที'}</td></tr>
                                     <tr><td><span style="display:inline-flex;align-items:center;gap:6px">${getLineIconSvg(4, false, 16)} ${isEn ? 'MRT Yellow Line' : 'MRT สายสีเหลือง'}</span></td><td>06:00</td><td>24:00</td><td>5 ${isEn ? 'min' : 'นาที'}</td></tr>
@@ -2724,235 +2505,7 @@ gQIDAQAB
                                 </tbody>
                             </table>
                         </div>
-                    </div>
-                    ` : ''}
-
-                    <!-- Section: Routes & Fares -->
-                    ${showFare ? `
-                    <div id="sec-fares">
-                        <!-- 20 Baht Flat Fare Policy Banner -->
-                        <div class="info-card" style="background:linear-gradient(135deg,#dc26260d,#ef444415);border-color:#ef444444">
-                            <span class="fare-badge-20">${isEn ? '20 Baht Flat Fare Policy' : 'นโยบาย 20 บาทตลอดสาย'}</span>
-                            <h3 style="color:#b91c1c;display:flex;align-items:center;gap:8px">
-                                <span style="display:inline-flex;gap:4px;align-items:center">${getLineIconSvg(102, false, 20)} ${getLineIconSvg(103, false, 20)}</span>
-                                <span>${isEn ? 'Flat 20 Baht Fare (EMV Contactless)' : 'รถไฟฟ้า 20 บาทตลอดสาย (EMV Contactless)'}</span>
-                            </h3>
-                            <div style="font-size:12.5px;color:var(--ink);line-height:1.6">
-                                ${isEn ? 'Passengers paying with <b>EMV Contactless</b> credit/debit cards pay a maximum fare of <b>฿20</b>:' : 'ผู้โดยสารที่แตะจ่ายด้วยบัตรเครดิต/เดบิต <b>EMV Contactless</b> เดินทางด้วยค่าโดยสารสูงสุดไม่เกิน <b>20 บาท</b>:'}
-                                <ul style="margin:8px 0 8px 6px;padding-left:14px;list-style:none">
-                                    <li style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-                                        ${getLineIconSvg(102, false, 18)}
-                                        <span><b>${isEn ? 'MRT Purple Line:' : 'สายสีม่วง (MRT Purple Line):'}</b> ${isEn ? 'Khlong Bang Phai ↔ Tao Poon' : 'คลองบางไผ่ ↔ เตาปูน'}</span>
-                                    </li>
-                                    <li style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-                                        ${getLineIconSvg(103, false, 18)}
-                                        <span><b>${isEn ? 'SRT Red Line:' : 'สายสีแดง (SRT Red Line):'}</b> ${isEn ? 'Krung Thep Aphiwat ↔ Rangsit / Taling Chan' : 'กรุงเทพอภิวัฒน์ ↔ รังสิต / ตลิ่งชัน'}</span>
-                                    </li>
-                                    <li style="display:flex;align-items:center;gap:8px">
-                                        <span style="display:inline-flex;align-items:center;gap:3px">${getLineIconSvg(102, false, 15)}⇄${getLineIconSvg(103, false, 15)}</span>
-                                        <span><b>${isEn ? 'Cross-line Transfer (Purple ⇄ Red):' : 'เชื่อมต่อข้ามสายสีม่วงและสายสีแดง:'}</b> ${isEn ? 'Max ฿20 combined (transfer at Bang Sue within 30 mins)' : 'สูงสุดรวม 20 บาท (แตะเปลี่ยนขบวนที่สถานีบางซื่อภายใน 30 นาที)'}</span>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <!-- BTS Fare Structure -->
-                        <div class="info-card">
-                            <h3 style="display:flex;align-items:center;gap:8px">
-                                <img src="assets/icons/icon_service_routes_and_fares.png" width="22" height="22" alt="Fares" style="object-fit:contain;">
-                                <span>${isEn ? 'BTS Fare Structure (Sukhumvit & Silom Line)' : 'อัตราค่าโดยสารรถไฟฟ้า BTS (สายสุขุมวิท & สายสีลม)'}</span>
-                            </h3>
-                            <div style="font-size:12px;color:var(--muted);margin-bottom:8px">${isEn ? 'Calculated by distance and number of stations traveled' : 'คำนวณตามระยะทางและจำนวนสถานีที่เดินทาง'}</div>
-                            <div class="fare-table-wrap">
-                                <table class="fare-grid-table">
-                                    <thead>
-                                        <tr>
-                                            <th>${isEn ? 'Stations' : 'จำนวนสถานี'}</th>
-                                            <th>${isEn ? 'Adult' : 'บุคคลทั่วไป'}</th>
-                                            <th>${isEn ? 'Student' : 'นักเรียน/นักศึกษา'}</th>
-                                            <th>${isEn ? 'Senior' : 'ผู้สูงอายุ'}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr><td>${isEn ? '1 station' : '1 สถานี'}</td><td>฿17</td><td>฿12</td><td>฿9</td></tr>
-                                        <tr><td>${isEn ? '2 - 3 stations' : '2 - 3 สถานี'}</td><td>฿25 - ฿28</td><td>฿18 - ฿20</td><td>฿13 - ฿14</td></tr>
-                                        <tr><td>${isEn ? '4 - 5 stations' : '4 - 5 สถานี'}</td><td>฿32 - ฿35</td><td>฿23 - ฿25</td><td>฿16 - ฿18</td></tr>
-                                        <tr><td>${isEn ? '6 - 8 stations' : '6 - 8 สถานี'}</td><td>฿40 - ฿47</td><td>฿28 - ฿33</td><td>฿20 - ฿24</td></tr>
-                                        <tr><td>${isEn ? 'Extensions' : 'ส่วนต่อขยาย (Extension)'}</td><td>+฿15</td><td>+฿15</td><td>+฿8</td></tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <!-- MRT, Monorails & Other Lines Fares -->
-                        <div class="info-card">
-                            <h3 style="display:flex;align-items:center;gap:8px">
-                                <span style="display:inline-flex;gap:4px;align-items:center;flex-shrink:0">${getLineIconSvg(101, false, 18)} ${getLineIconSvg(4, false, 18)} ${getLineIconSvg(5, false, 18)}</span>
-                                <span>${isEn ? 'MRT, Monorails & Other Lines Fares' : 'อัตราค่าโดยสาร MRT, โมโนเรล และสายอื่นๆ'}</span>
-                            </h3>
-                            <div class="fare-table-wrap">
-                                <table class="fare-grid-table">
-                                    <thead>
-                                        <tr>
-                                            <th>${isEn ? 'Transit System' : 'ระบบรถไฟฟ้า'}</th>
-                                            <th>${isEn ? 'Min Fare' : 'ราคาเริ่มต้น'}</th>
-                                            <th>${isEn ? 'Max Fare' : 'ราคาสูงสุด'}</th>
-                                            <th>${isEn ? 'Supported Tickets & Cards' : 'บัตรโดยสารที่รองรับ'}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr><td><span style="display:inline-flex;align-items:center;gap:6px">${getLineIconSvg(101, false, 16)} <b>${isEn ? 'MRT Blue Line' : 'MRT สายสีน้ำเงิน'}</b></span></td><td>฿17</td><td>฿43</td><td>${isEn ? 'Token, MRT Card, EMV Contactless' : 'เหรียญโดยสาร, บัตร MRT, บัตร EMV'}</td></tr>
-                                        <tr><td><span style="display:inline-flex;align-items:center;gap:6px">${getLineIconSvg(4, false, 16)} <b>${isEn ? 'MRT Yellow Line' : 'MRT สายสีเหลือง'}</b></span></td><td>฿15</td><td>฿45</td><td>${isEn ? 'Rabbit Card, EMV Contactless' : 'บัตร Rabbit, บัตร EMV Contactless'}</td></tr>
-                                        <tr><td><span style="display:inline-flex;align-items:center;gap:6px">${getLineIconSvg(5, false, 16)} <b>${isEn ? 'MRT Pink Line' : 'MRT สายสีชมพู'}</b></span></td><td>฿15</td><td>฿45</td><td>${isEn ? 'Rabbit Card, EMV Contactless' : 'บัตร Rabbit, บัตร EMV Contactless'}</td></tr>
-                                        <tr><td><span style="display:inline-flex;align-items:center;gap:6px">${getLineIconSvg(3, false, 16)} <b>${isEn ? 'BTS Gold Line' : 'รถไฟฟ้าสายสีทอง'}</b></span></td><td>฿16</td><td>฿16</td><td>${isEn ? 'Rabbit Card, Single Journey Token' : 'บัตร Rabbit, เหรียญ Single Journey'}</td></tr>
-                                        <tr><td><span style="display:inline-flex;align-items:center;gap:6px">${getLineIconSvg(104, false, 16)} <b>${isEn ? 'Airport Rail Link (ARL)' : 'แอร์พอร์ต เรล ลิงก์ (ARL)'}</b></span></td><td>฿15</td><td>฿45</td><td>${isEn ? 'Smart Token, ARL Card' : 'Smart Token, บัตร ARL'}</td></tr>
-                                        <tr><td><span style="display:inline-flex;align-items:center;gap:6px">${getLineIconSvg(102, false, 16)} <b>${isEn ? 'MRT Purple Line' : 'MRT สายสีม่วง'}</b></span></td><td>฿14</td><td>฿20</td><td>${isEn ? 'Token, MRT Plus, EMV (Max ฿20)' : 'เหรียญโดยสาร, บัตร MRT Plus, บัตร EMV (20 บาทสูงสุด)'}</td></tr>
-                                        <tr><td><span style="display:inline-flex;align-items:center;gap:6px">${getLineIconSvg(103, false, 16)} <b>${isEn ? 'SRT Red Line' : 'SRT รถไฟชานเมืองสายสีแดง'}</b></span></td><td>฿12</td><td>฿20</td><td>${isEn ? 'Token, SRT Card, EMV (Max ฿20)' : 'เหรียญโดยสาร, บัตร SRT, บัตร EMV (20 บาทสูงสุด)'}</td></tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    ` : ''}
-
-                    <!-- Section: Park & Ride Directory -->
-                    ${showPark ? `
-                    <div id="sec-parking" class="info-card">
-                        <h3 style="display:flex;align-items:center;gap:10px;">
-                            <img src="assets/icons/icon_parking_near_the_station.png" width="24" height="24" alt="Parking" style="object-fit:contain;">
-                            <span>${isEn ? 'Park & Ride Directory (Stations with Parking)' : 'อาคารและลานจอดแล้วจร (Park & Ride)'}</span>
-                        </h3>
-                        <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">${isEn ? 'Official parking facilities connected to transit stations' : 'จุดบริการที่จอดรถสำหรับผู้เดินทางด้วยรถไฟฟ้า'}</div>
-                        <div style="display:flex;flex-direction:column;gap:8px;">
-                            ${parkAndRideLocations.map(p => `
-                                <div class="park-ride-card">
-                                    <div class="park-ride-header">
-                                        <div style="display:flex;align-items:center;gap:8px;">
-                                            <span style="background:${p.color};color:#fff;font-size:11px;font-weight:800;padding:2px 7px;border-radius:6px;">${p.badge}</span>
-                                            <span style="font-weight:700;font-size:13px;color:var(--ink);">${p.name}</span>
-                                        </div>
-                                        <span style="font-size:11.5px;font-weight:700;color:var(--accent);">${p.cap}</span>
-                                    </div>
-                                    <div style="font-size:12px;color:var(--muted);line-height:1.5;">
-                                        <div>🕒 <b>${isEn ? 'Hours:' : 'เวลาเปิด-ปิด:'}</b> ${p.hours}</div>
-                                        <div>💰 <b>${isEn ? 'Rate:' : 'อัตราค่าบริการ:'}</b> ${p.fee}</div>
-                                    </div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-
-                    <!-- Section: Bicycle Parking & Rules -->
-                    <div id="sec-bicycle" class="info-card">
-                        <h3 style="display:flex;align-items:center;gap:10px;">
-                            <img src="assets/icons/ic_bicycle_stop.png" width="24" height="24" alt="Bicycle" style="object-fit:contain;">
-                            <span>${isEn ? 'Bicycle Parking & Boarding Regulations' : 'จุดจอดจักรยาน & กฎการนำจักรยานขึ้นรถไฟฟ้า'}</span>
-                        </h3>
-                        <div style="font-size:12px;color:var(--muted);margin-bottom:10px;">${isEn ? 'Guidelines for cyclists traveling on Bangkok transit networks' : 'ข้อมูลจุดจอดและแนวทางปฏิบัติสำหรับผู้โดยสารที่นำจักรยานเดินทาง'}</div>
-                        <div style="display:flex;flex-direction:column;gap:10px;">
-                            <div class="park-ride-card" style="border-left:3px solid #10b981;">
-                                <div style="font-weight:700;font-size:13px;color:#059669;margin-bottom:4px;">🚲 ${isEn ? 'Folding Bicycles (Always Free)' : 'จักรยานพับได้ (นำขึ้นฟรีตลอดเวลา)'}</div>
-                                <div style="font-size:12px;color:var(--ink);line-height:1.5;">${isEn ? 'Can be brought onto trains free of charge at all times. Must be folded neatly before passing the ticket gates.' : 'สามารถพับให้เรียบร้อยแล้วนำขึ้นขบวนรถไฟฟ้าได้ฟรีทุกช่วงเวลาโดยไม่มีค่าธรรมเนียมเพิ่มเติม'}</div>
-                            </div>
-                            <div class="park-ride-card" style="border-left:3px solid #f59e0b;">
-                                <div style="font-weight:700;font-size:13px;color:#d97706;margin-bottom:4px;">🚲 ${isEn ? 'Standard Bicycles (Off-Peak Only)' : 'จักรยานธรรมดา (เฉพาะนอกเวลาเร่งด่วน)'}</div>
-                                <div style="font-size:12px;color:var(--ink);line-height:1.5;">${isEn ? 'Allowed Monday-Friday 06:00-06:30, 09:00-16:30, 20:00-24:00 and all day on Weekends/Holidays. Board only at first or last carriage.' : 'อนุญาตเฉพาะวันจันทร์-ศุกร์ (06:00-06:30, 09:00-16:30, 20:00-24:00) และวันหยุดทั้งวัน โดยเข้าขบวนรถได้เฉพาะตู้แรกและตู้สุดท้ายเท่านั้น'}</div>
-                            </div>
-                            <div class="park-ride-card">
-                                <div style="font-weight:700;font-size:13px;color:var(--ink);margin-bottom:4px;">📍 ${isEn ? 'Stations with Bicycle Racks' : 'สถานีที่มีจุดจอดจักรยาน'}</div>
-                                <div style="font-size:12px;color:var(--muted);line-height:1.5;">BTS หมอชิต, อารีย์, สนามเป้า, อนุสาวรีย์ชัยสมรภูมิ, อุดมสุข, บางนา, แบริ่ง, เคหะฯ, แยก คปอ., คูคต</div>
-                            </div>
-                        </div>
-                    </div>
-                    ` : ''}
-
-                    <!-- Section: Lost Property & Help Center -->
-                    ${showLost ? `
-                    <div id="sec-lost" class="info-card">
-                        <h3 style="display:flex;align-items:center;gap:10px;">
-                            <img src="assets/icons/icon_lost_property.png" width="24" height="24" alt="Lost" style="object-fit:contain;">
-                            <span>${isEn ? 'Lost & Found / Contact Centers' : 'ศูนย์รับแจ้งทรัพย์สินสูญหาย & ช่วยเหลือ'}</span>
-                        </h3>
-                        <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">${isEn ? 'If you lost an item on the train or station platform, contact transit centers immediately' : 'ลืมสิ่งของไว้บนขบวนรถหรือในสถานี ติดต่อศูนย์รับแจ้งของหายได้ทันที'}</div>
-                        <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;">
-                            ${lostPropertyContacts.map(c => `
-                                <div class="lost-found-row">
-                                    <div>
-                                        <div style="font-weight:700;font-size:13px;color:var(--ink);">${c.agency}</div>
-                                        <div style="font-size:11.5px;color:var(--muted);">${c.desc} (${c.hours})</div>
-                                    </div>
-                                    ${c.tel ? `
-                                        <a href="tel:${c.tel}" class="call-btn">
-                                            <span>📞</span>
-                                            <span>${c.displayTel}</span>
-                                        </a>
-                                    ` : `
-                                        <span style="font-weight:700;font-size:12px;color:var(--accent);">${c.displayTel}</span>
-                                    `}
-                                </div>
-                            `).join('')}
-                        </div>
-                        <div style="background:var(--bg-subtle);border-radius:var(--radius);padding:12px;font-size:12px;color:var(--ink);line-height:1.6;">
-                            <b>📌 ${isEn ? 'How to recover your lost belongings:' : 'ขั้นตอนการติดตามและขอรับทรัพย์สินคืน:'}</b>
-                            <ol style="margin:6px 0 0 16px;padding:0;">
-                                <li>${isEn ? 'Note the time, date, train line, traveling direction, and carriage number (if available).' : 'จดจำวัน-เวลา, สายรถไฟฟ้า, ทิศทางขบวนรถ, หรือสถานีที่ลืม'}</li>
-                                <li>${isEn ? 'Call the transit Call Center or notify station staff at the nearest ticket office.' : 'ติดต่อแจ้งเจ้าหน้าที่ ณ ห้องจำหน่ายตั๋ว หรือโทรสายด่วน Call Center ทันที'}</li>
-                                <li>${isEn ? 'Present your National ID Card / Passport when claiming your recovered items.' : 'เตรียมบัตรประชาชนหรือหนังสือเดินทางเพื่อใช้ยืนยันตัวตนในการรับของคืน'}</li>
-                            </ol>
-                        </div>
-                    </div>
-                    ` : ''}
-
-                    <!-- Section: Rabbit Card & Loyalty Rewards -->
-                    ${showFare ? `
-                    <div id="sec-rabbit" class="info-card">
-                        <h3 style="display:flex;align-items:center;gap:10px;">
-                            <img src="assets/icons/icon_service_reabbit_rewarde.png" width="24" height="24" alt="Rabbit" style="object-fit:contain;">
-                            <span>${isEn ? 'Rabbit Card & Rabbit Rewards' : 'บัตรแรบบิท และสิทธิประโยชน์ (Rabbit Rewards)'}</span>
-                        </h3>
-                        <div style="font-size:12.5px;color:var(--ink);line-height:1.6;margin-bottom:10px;">
-                            ${isEn
-                                ? '<b>Rabbit Card</b> is Bangkok’s most popular transit and lifestyle smart card, accepted on BTS, MRT Yellow Line, MRT Pink Line, Gold Line, BRT, and Chao Phraya Express Boats.'
-                                : '<b>บัตรแรบบิท (Rabbit Card)</b> บัตรสมาร์ตการ์ดที่รองรับการแตะจ่ายทั้งรถไฟฟ้า BTS, สายสีเหลือง, สายสีชมพู, สายสีทอง, รถด่วน BRT และเรือด่วนเจ้าพระยา'}
-                        </div>
-                        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(130px, 1fr));gap:8px;margin-bottom:10px;">
-                            <div class="park-ride-card" style="padding:10px;">
-                                <div style="font-weight:700;color:var(--accent);">Orange (Adult)</div>
-                                <div style="font-size:11.5px;color:var(--muted);">${isEn ? 'Standard fare for general public' : 'สำหรับบุคคลทั่วไป'}</div>
-                            </div>
-                            <div class="park-ride-card" style="padding:10px;">
-                                <div style="font-weight:700;color:#10b981;">Green (Student)</div>
-                                <div style="font-size:11.5px;color:var(--muted);">${isEn ? 'Discounted fare for students under 23' : 'ลดพิเศษสำหรับนักเรียน/นักศึกษา'}</div>
-                            </div>
-                            <div class="park-ride-card" style="padding:10px;">
-                                <div style="font-weight:700;color:#ec4899;">Purple (Senior)</div>
-                                <div style="font-size:11.5px;color:var(--muted);">${isEn ? '50% discount for Thai seniors 60+' : 'ลด 50% สำหรับผู้สูงอายุ 60 ปีขึ้นไป'}</div>
-                            </div>
-                        </div>
-                        <div style="font-size:12px;color:var(--muted);">
-                            💡 ${isEn ? 'Link your card with <b>Rabbit Rewards</b> to earn points on every ride for discounts and free trips via the Rabbit Rewards app.' : 'ผูกบัตรกับ <b>Rabbit Rewards</b> เพื่อสะสมแต้มทุกเที่ยวการเดินทาง แลกเป็นส่วนลดค่าโดยสารและของรางวัล'}
-                        </div>
-                    </div>
-                    ` : ''}
-
-                    <!-- Section: FAQ -->
-                    ${showFaq ? `
-                    <div id="sec-faq" class="info-card">
-                        <h3 style="display:flex;align-items:center;gap:10px;">
-                            <img src="assets/icons/icon_faq.png" width="24" height="24" alt="FAQ" style="object-fit:contain;">
-                            <span>${isEn ? 'Frequently Asked Questions (FAQ)' : 'คำถามที่พบบ่อย (FAQ)'}</span>
-                        </h3>
-                        <div style="display:flex;flex-direction:column;gap:10px;">
-                            ${faqs.map(f => `
-                                <div class="park-ride-card">
-                                    <div style="font-weight:700;font-size:13px;color:var(--ink);margin-bottom:4px;">❓ ${f.q}</div>
-                                    <div style="font-size:12px;color:var(--muted);line-height:1.5;">${f.a}</div>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                    ` : ''}
-                `;
+                    </div>`;
             },
 
 
@@ -3047,13 +2600,11 @@ gQIDAQAB
                 set('navLblPlanner', T('navPlanner'));
                 set('navLblExits', T('navExits'));
                 set('navLblFares', T('navFares'));
-                set('navLblServices', T('navServices'));
                 setAttr('tab-home', 'aria-label', T('navHome'));
                 setAttr('tab-map', 'aria-label', T('navMap'));
                 setAttr('tab-planner', 'aria-label', T('navPlanner'));
                 setAttr('tab-exits', 'aria-label', T('navExits'));
                 setAttr('tab-fares', 'aria-label', T('navFares'));
-                setAttr('tab-services', 'aria-label', T('navServices'));
 
                 // Nearest Station Popup Modal
                 set('nearestPopupTitle', T('popupTitle'));

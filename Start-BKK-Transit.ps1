@@ -144,36 +144,6 @@ const server = http.createServer((req, res) => {
     return;
   }
 
-  // Reverse Proxy for Official BTS/EBM Services API endpoints (/api/ebm-proxy)
-  if (reqUrl.pathname.startsWith('/api/ebm-proxy')) {
-    const targetPath = reqUrl.pathname.replace(/^\/api\/ebm-proxy/, '');
-    const targetUrl = 'https://www.ebm.co.th/mobapi-routemap/api' + targetPath + reqUrl.search;
-    console.log('[EBM API ' + req.method + '] ' + targetPath + (reqUrl.search ? reqUrl.search : ''));
-
-    const proxyReq = https.request(targetUrl, {
-      method: req.method,
-      headers: {
-        'content-type': req.headers['content-type'] || 'application/json',
-        'user-agent': 'Dart/3.1 (dart:io)'
-      }
-    }, proxyRes => {
-      res.writeHead(proxyRes.statusCode, {
-        'Content-Type': proxyRes.headers['content-type'] || 'application/json',
-        'Access-Control-Allow-Origin': '*'
-      });
-      proxyRes.pipe(res);
-    });
-
-    proxyReq.on('error', err => {
-      console.error('EBM Proxy Error:', err.message);
-      res.writeHead(502, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
-      res.end(JSON.stringify({ ErrCode: 502, ErrMessage: 'EBM Gateway error: ' + err.message }));
-    });
-
-    req.pipe(proxyReq);
-    return;
-  }
-
   // Static File Server
   let cleanUrl = reqUrl.pathname;
   if (cleanUrl === '/' || cleanUrl === '') cleanUrl = '/index.html';

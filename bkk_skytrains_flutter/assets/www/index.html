@@ -2419,6 +2419,241 @@
             box-shadow: 0 0 10px var(--accent);
         }
 
+        /* ===== Background Geofencing Notification Widget ===== */
+        .geofence-widget {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-lg);
+            padding: 14px 16px;
+            margin-bottom: 14px;
+            box-shadow: var(--shadow-sm);
+            transition: all var(--transition-smooth);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .geofence-widget.active {
+            border-color: rgba(34, 197, 94, 0.45);
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.06), rgba(2, 132, 199, 0.04));
+            box-shadow: 0 4px 20px rgba(34, 197, 94, 0.12);
+        }
+
+        .geofence-widget-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .geofence-icon-wrap {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-full);
+            background: rgba(148, 163, 184, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--muted);
+            flex-shrink: 0;
+            transition: all var(--transition-fast);
+        }
+
+        .geofence-widget.active .geofence-icon-wrap {
+            background: rgba(34, 197, 94, 0.18);
+            color: #22c55e;
+        }
+
+        .geofence-radar-pulse {
+            display: none;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 2px solid #22c55e;
+            animation: radarPulse 2s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+        }
+
+        .geofence-widget.active .geofence-radar-pulse {
+            display: block;
+        }
+
+        @keyframes radarPulse {
+            0% { transform: scale(1); opacity: 0.9; }
+            100% { transform: scale(1.75); opacity: 0; }
+        }
+
+        .geofence-title-col {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .geofence-title-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .geofence-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1.3;
+        }
+
+        .geofence-badge {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: var(--radius-full);
+            background: rgba(148, 163, 184, 0.18);
+            color: var(--muted);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            transition: all var(--transition-fast);
+        }
+
+        .geofence-badge.active {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            box-shadow: 0 0 8px rgba(34, 197, 94, 0.25);
+        }
+
+        .geofence-sub {
+            font-size: 11.5px;
+            color: var(--muted);
+            margin-top: 2px;
+            line-height: 1.35;
+        }
+
+        /* Toggle Switch */
+        .geofence-switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 28px;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        .geofence-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .geofence-slider {
+            position: absolute;
+            inset: 0;
+            background-color: rgba(148, 163, 184, 0.35);
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            border-radius: 34px;
+            border: 1px solid var(--line);
+        }
+
+        .geofence-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: #fff;
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .geofence-switch input:checked + .geofence-slider {
+            background-color: #22c55e;
+            border-color: #16a34a;
+            box-shadow: 0 0 12px rgba(34, 197, 94, 0.4);
+        }
+
+        .geofence-switch input:checked + .geofence-slider:before {
+            transform: translateX(20px);
+            background-color: #fff;
+        }
+
+        /* Details section (expanded when active) */
+        .geofence-details {
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid var(--line);
+            display: none;
+            animation: viewFadeIn 0.2s ease-out;
+        }
+
+        .geofence-widget.active .geofence-details {
+            display: block;
+        }
+
+        .geofence-setting-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .geofence-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--ink);
+        }
+
+        .geofence-pills {
+            display: flex;
+            gap: 6px;
+        }
+
+        .geofence-pill {
+            background: var(--bg);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-full);
+            padding: 4px 10px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--muted);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .geofence-pill.active {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+            box-shadow: 0 2px 8px rgba(34, 197, 94, 0.35);
+        }
+
+        .geofence-actions-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .geofence-status-text {
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        /* Top bar indicator */
+        .header-notif-dot {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #22c55e;
+            box-shadow: 0 0 6px #22c55e;
+        }
+
         /* ===== App Views Display ===== */
         .app-view {
             display: none;
@@ -2892,6 +3127,10 @@
             </div>
         </div>
         <div class="header-controls">
+            <button class="header-pill-btn" id="headerGeofenceBtn" onclick="App.scrollToGeofenceWidget()" aria-label="สถานะแจ้งเตือนเบื้องหลัง" title="แจ้งเตือนสถานีเบื้องหลัง (Background Geofencing)" style="position:relative;">
+                <span id="headerGeofenceIcon">🔔</span>
+                <span class="header-notif-dot" id="headerNotifDot" style="display:none;"></span>
+            </button>
             <button class="header-pill-btn" id="themeBtn" onclick="App.setTheme()" aria-label="Toggle dark mode">🌙</button>
             <button class="header-pill-btn" id="langBtn" onclick="App.setLang()">EN</button>
             <div class="clock">
@@ -2917,6 +3156,46 @@
                     <button class="btn btn-big" onclick="App.locate(true)">📍 ค้นหาสถานีใกล้ฉัน</button>
                 </div>
             </section>
+
+            <!-- ===== Background Geofencing Notification Widget ===== -->
+            <div class="geofence-widget" id="geofenceWidget">
+                <div class="geofence-widget-header">
+                    <div class="geofence-icon-wrap" id="geofenceIconWrap">
+                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                        </svg>
+                        <span class="geofence-radar-pulse" id="geofencePulse"></span>
+                    </div>
+                    <div class="geofence-title-col">
+                        <div class="geofence-title-row">
+                            <span class="geofence-title" id="geofenceTitle">แจ้งเตือนสถานีใกล้ฉันเบื้องหลัง</span>
+                            <span class="geofence-badge" id="geofenceBadge">ปิดอยู่</span>
+                        </div>
+                        <div class="geofence-sub" id="geofenceSub">เตือนอัตโนมัติแม้ปิดแอปหรือล็อกหน้าจอ (True Background Geofencing)</div>
+                    </div>
+                    <label class="geofence-switch" aria-label="เปิด/ปิดแจ้งเตือนสถานีเบื้องหลัง">
+                        <input type="checkbox" id="geofenceToggle" onchange="App.toggleBackgroundGeofence(this.checked)">
+                        <span class="geofence-slider"></span>
+                    </label>
+                </div>
+                <div class="geofence-details" id="geofenceDetails">
+                    <div class="geofence-setting-row">
+                        <span class="geofence-label" id="geofenceRadiusLbl">รัศมีตรวจจับ:</span>
+                        <div class="geofence-pills">
+                            <button type="button" class="geofence-pill" onclick="App.setGeofenceRadius(500)" data-radius="500">500 ม.</button>
+                            <button type="button" class="geofence-pill active" onclick="App.setGeofenceRadius(1000)" data-radius="1000">1 กม.</button>
+                            <button type="button" class="geofence-pill" onclick="App.setGeofenceRadius(2000)" data-radius="2000">2 กม.</button>
+                        </div>
+                    </div>
+                    <div class="geofence-actions-row">
+                        <button type="button" class="btn btn-ghost btn-sm" onclick="App.testGeofenceNotification()">
+                            🔔 <span id="geofenceTestBtnLbl">ทดสอบแจ้งเตือนล็อกหน้าจอ</span>
+                        </button>
+                        <span class="geofence-status-text" id="geofenceStatusText">พร้อมเตือนทุกสถานี</span>
+                    </div>
+                </div>
+            </div>
 
             <!-- Quick Trip Planner Banner / Link to Tab 3 -->
             <div class="card" style="padding:13px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;background:linear-gradient(135deg,rgba(2,132,199,0.08),rgba(16,185,129,0.08));border:1px solid rgba(2,132,199,0.22);margin-bottom:12px;" onclick="App.switchView('planner')">

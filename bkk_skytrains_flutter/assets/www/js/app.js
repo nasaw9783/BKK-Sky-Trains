@@ -635,6 +635,21 @@ gQIDAQAB
                 popupPlatSub: 'กำลังเข้า / นับถอยหลังสด',
                 popupAction: 'ดูรายละเอียดสถานี & ทางออกเต็มจอ',
                 popupDismiss: 'รับทราบ',
+                geofenceTitle: 'แจ้งเตือนสถานีใกล้ฉันเบื้องหลัง',
+                geofenceSub: 'เตือนอัตโนมัติแม้ปิดแอปหรือล็อกหน้าจอ (True Background Geofencing)',
+                geofenceRadius: 'รัศมีตรวจจับ:',
+                geofenceActive: 'เปิดทำงาน',
+                geofenceDisabled: 'ปิดอยู่',
+                geofenceStatusOn: 'ระบบเบื้องหลังกำลังตรวจจับตำแหน่งและสถานีใกล้คุณ',
+                geofenceStatusOff: 'แตะสวิตช์เพื่อเริ่มรับการแจ้งเตือนอัตโนมัติ',
+                geofenceTestBtn: 'ทดสอบแจ้งเตือนล็อกหน้าจอ',
+                geofenceToastOn: '🔔 เปิดแจ้งเตือนสถานีเบื้องหลังเรียบร้อย',
+                geofenceToastOff: '🔕 ปิดแจ้งเตือนสถานีเบื้องหลังแล้ว',
+                geofenceNotifTitle: name => `🚆 ใกล้สถานี ${name}`,
+                geofenceNotifBody: (dist, name) => `ห่างจากสถานี ${name} เพียง ${dist} — แตะเพื่อดูเวลาขบวนรถ`,
+                geofenceTestTitle: '🔔 ทดสอบการแจ้งเตือน BKK SkyTrains',
+                geofenceTestBody: 'ระบบแจ้งเตือนเบื้องหลังและล็อกหน้าจอทำงานได้อย่างสมบูรณ์แบบ!',
+                geofencePermissionDenied: 'กรุณาอนุญาตสิทธิ์การแจ้งเตือน (Notifications) ในเบราว์เซอร์หรือการตั้งค่าเครื่อง',
             },
             en: {
                 appName: 'BKK SKYTRAINs',
@@ -758,6 +773,21 @@ gQIDAQAB
                 popupPlatSub: 'Arriving / Live countdown',
                 popupAction: 'View Full Station & Exit Details',
                 popupDismiss: 'Got it',
+                geofenceTitle: 'Background Station Alerts',
+                geofenceSub: 'Automatic alerts even when app is closed or locked (True Background Geofencing)',
+                geofenceRadius: 'Detection Radius:',
+                geofenceActive: 'Active',
+                geofenceDisabled: 'Off',
+                geofenceStatusOn: 'Background service is actively monitoring nearby stations',
+                geofenceStatusOff: 'Toggle switch to enable automatic alerts',
+                geofenceTestBtn: 'Test Lock Screen Alert',
+                geofenceToastOn: '🔔 Background station alerts enabled',
+                geofenceToastOff: '🔕 Background station alerts disabled',
+                geofenceNotifTitle: name => `🚆 Approaching ${name} Station`,
+                geofenceNotifBody: (dist, name) => `${dist} away from ${name} — tap to view real-time arrivals`,
+                geofenceTestTitle: '🔔 BKK SkyTrains Test Notification',
+                geofenceTestBody: 'Background & lock screen notifications are working properly!',
+                geofencePermissionDenied: 'Please allow notification permissions in browser/device settings',
             }
         };
 
@@ -1519,6 +1549,11 @@ gQIDAQAB
             locError: null,
             refreshTimer: null,
             fallbackTimer: null,  // ตัวจับเวลา 10 วิ ก่อนใช้สถานีตั้งต้น (อโศก)
+            geofenceEnabled: false,
+            geofenceRadius: 1000,
+            webGeofenceWatchId: null,
+            lastGeofenceAlertKey: null,
+            lastGeofenceAlertTime: 0,
 
             /* ---------- THE SKYTRAINs: View Navigation ---------- */
             currentView: 'home',
@@ -2561,6 +2596,14 @@ gQIDAQAB
                 set('homePlannerSub', T('homeJourneySub'));
                 set('homePlannerBtn', T('homeJourneyBtn'));
 
+                // Geofencing Widget
+                set('geofenceTitle', T('geofenceTitle'));
+                set('geofenceSub', T('geofenceSub'));
+                set('geofenceRadiusLbl', T('geofenceRadius'));
+                set('geofenceTestBtnLbl', T('geofenceTestBtn'));
+                set('geofenceBadge', this.geofenceEnabled ? T('geofenceActive') : T('geofenceDisabled'));
+                set('geofenceStatusText', this.geofenceEnabled ? T('geofenceStatusOn') : T('geofenceStatusOff'));
+
                 const si = document.getElementById('searchInput');
                 if (si) si.placeholder = T('searchPh');
 
@@ -2623,6 +2666,7 @@ gQIDAQAB
                 this.applyStaticLang();
                 this.updateThemeBtn();   // ธีมถูกตั้งไว้แล้วจากสคริปต์ใน <head> — ปรับไอคอนปุ่มให้ตรง
                 this.startClock();
+                this.initGeofence();
                 document.getElementById('searchInput').addEventListener('input', () => this.renderStrip());
                 document.addEventListener('visibilitychange', () => {
                     if (!document.hidden) this.refreshAll();
@@ -3474,6 +3518,320 @@ gQIDAQAB
                     el.classList.remove('visible');
                     setTimeout(() => { if (!el.classList.contains('visible')) el.style.display = 'none'; }, 260);
                 }, 2600);
+            },
+
+            /* ---------- BACKGROUND GEOFENCING & NOTIFICATIONS MODULE ---------- */
+            initGeofence() {
+                try {
+                    const saved = localStorage.getItem('bkk_geofence_enabled');
+                    if (saved !== null) {
+                        this.geofenceEnabled = saved === 'true';
+                    }
+                    const savedRad = localStorage.getItem('bkk_geofence_radius');
+                    if (savedRad) {
+                        this.geofenceRadius = parseInt(savedRad, 10) || 1000;
+                    }
+                } catch (e) {}
+
+                // Service Worker message listener (เมื่อแตะการแจ้งเตือนจาก Web PWA)
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.addEventListener('message', (event) => {
+                        if (event.data && event.data.action === 'openStation' && event.data.stationKey) {
+                            this.handleNotificationOpen(event.data.stationKey);
+                        }
+                    });
+                }
+
+                // หากอยู่ใน Flutter Native ให้ตรวจเช็คสถานะการทำงานจริงของ Service
+                if (window.NativeGeofence && typeof window.NativeGeofence.getStatus === 'function') {
+                    window.NativeGeofence.getStatus();
+                } else if (this.geofenceEnabled) {
+                    // หากเป็น Web Browser / PWA และเปิดไว้
+                    this.startWebGeofence();
+                }
+
+                this.updateGeofenceUI(this.geofenceEnabled, this.geofenceRadius);
+            },
+
+            onNativeBridgeReady() {
+                if (window.NativeGeofence && typeof window.NativeGeofence.getStatus === 'function') {
+                    window.NativeGeofence.getStatus();
+                }
+            },
+
+            onGeofenceStatusChanged(isRunning, radius) {
+                this.geofenceEnabled = !!isRunning;
+                if (radius && typeof radius === 'number') this.geofenceRadius = radius;
+                try {
+                    localStorage.setItem('bkk_geofence_enabled', this.geofenceEnabled ? 'true' : 'false');
+                    if (radius) localStorage.setItem('bkk_geofence_radius', String(radius));
+                } catch (e) {}
+                this.updateGeofenceUI(this.geofenceEnabled, this.geofenceRadius);
+            },
+
+            scrollToGeofenceWidget() {
+                if (this.currentView !== 'home') {
+                    this.switchView('home');
+                }
+                const widget = document.getElementById('geofenceWidget');
+                if (widget) {
+                    widget.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    widget.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
+                    widget.style.borderColor = 'var(--accent, #0284c7)';
+                    widget.style.boxShadow = '0 0 0 3px rgba(2, 132, 199, 0.35)';
+                    setTimeout(() => {
+                        widget.style.borderColor = '';
+                        widget.style.boxShadow = '';
+                    }, 1500);
+                }
+            },
+
+            async toggleBackgroundGeofence(enabled) {
+                if (enabled) {
+                    // ตรวจสอบและขอสิทธิ์การแจ้งเตือน
+                    if ('Notification' in window && Notification.permission !== 'granted') {
+                        try {
+                            const res = await Notification.requestPermission();
+                            if (res !== 'granted') {
+                                this.showToast(T('geofencePermissionDenied'));
+                                this.updateGeofenceUI(false, this.geofenceRadius);
+                                return;
+                            }
+                        } catch (e) {
+                            console.warn('Notification permission error:', e);
+                        }
+                    }
+
+                    this.geofenceEnabled = true;
+                    try {
+                        localStorage.setItem('bkk_geofence_enabled', 'true');
+                    } catch (e) {}
+
+                    if (window.NativeGeofence && typeof window.NativeGeofence.toggle === 'function') {
+                        window.NativeGeofence.toggle(true, this.geofenceRadius);
+                    } else {
+                        this.startWebGeofence();
+                    }
+
+                    this.showToast(T('geofenceToastOn'));
+                } else {
+                    this.geofenceEnabled = false;
+                    try {
+                        localStorage.setItem('bkk_geofence_enabled', 'false');
+                    } catch (e) {}
+
+                    if (window.NativeGeofence && typeof window.NativeGeofence.toggle === 'function') {
+                        window.NativeGeofence.toggle(false, this.geofenceRadius);
+                    } else {
+                        this.stopWebGeofence();
+                    }
+
+                    this.showToast(T('geofenceToastOff'));
+                }
+
+                this.updateGeofenceUI(this.geofenceEnabled, this.geofenceRadius);
+            },
+
+            setGeofenceRadius(radius) {
+                const r = parseInt(radius, 10) || 1000;
+                this.geofenceRadius = r;
+                try {
+                    localStorage.setItem('bkk_geofence_radius', String(r));
+                } catch (e) {}
+
+                if (window.NativeGeofence && typeof window.NativeGeofence.setRadius === 'function') {
+                    window.NativeGeofence.setRadius(r);
+                }
+
+                this.updateGeofenceUI(this.geofenceEnabled, this.geofenceRadius);
+                this.showToast(lang === 'th' ? `🎯 ตั้งรัศมีตรวจจับ ${r >= 1000 ? (r / 1000) + ' กม.' : r + ' ม.'}` : `🎯 Detection radius set to ${r >= 1000 ? (r / 1000) + ' km' : r + ' m'}`);
+            },
+
+            updateGeofenceUI(enabled, radius) {
+                const toggle = document.getElementById('geofenceToggle');
+                if (toggle) toggle.checked = !!enabled;
+
+                const widget = document.getElementById('geofenceWidget');
+                if (widget) widget.classList.toggle('active', !!enabled);
+
+                const badge = document.getElementById('geofenceBadge');
+                if (badge) {
+                    badge.classList.toggle('active', !!enabled);
+                    badge.textContent = enabled ? T('geofenceActive') : T('geofenceDisabled');
+                }
+
+                const notifDot = document.getElementById('headerNotifDot');
+                if (notifDot) {
+                    notifDot.style.display = enabled ? 'block' : 'none';
+                }
+
+                const statusText = document.getElementById('geofenceStatusText');
+                if (statusText) {
+                    statusText.textContent = enabled ? T('geofenceStatusOn') : T('geofenceStatusOff');
+                }
+
+                const pills = document.querySelectorAll('.geofence-pill');
+                pills.forEach(pill => {
+                    const pRad = parseInt(pill.getAttribute('data-radius'), 10);
+                    pill.classList.toggle('active', pRad === radius);
+                });
+            },
+
+            async testGeofenceNotification() {
+                if (window.NativeGeofence && typeof window.NativeGeofence.test === 'function') {
+                    window.NativeGeofence.test();
+                    this.showToast(lang === 'th' ? '🔔 ส่งการแจ้งเตือนทดสอบไปยังล็อกหน้าจอแล้ว' : '🔔 Sent test notification to lock screen');
+                    return;
+                }
+
+                // Web Notification Test
+                if (!('Notification' in window)) {
+                    this.showToast(T('geofenceTestBody'));
+                    return;
+                }
+
+                if (Notification.permission !== 'granted') {
+                    const perm = await Notification.requestPermission();
+                    if (perm !== 'granted') {
+                        this.showToast(T('geofencePermissionDenied'));
+                        return;
+                    }
+                }
+
+                const title = T('geofenceTestTitle');
+                const options = {
+                    body: T('geofenceTestBody'),
+                    icon: '/icon-192.png',
+                    badge: '/icon-192.png',
+                    vibrate: [200, 100, 200],
+                    tag: 'bkk-skytrains-test',
+                    renotify: true,
+                    data: { stationKey: 'CEN' }
+                };
+
+                try {
+                    if ('serviceWorker' in navigator) {
+                        const reg = await navigator.serviceWorker.ready;
+                        if (reg && reg.showNotification) {
+                            await reg.showNotification(title, options);
+                            this.showToast(lang === 'th' ? '🔔 ส่งการแจ้งเตือนทดสอบแล้ว (PWA)' : '🔔 Test notification sent (PWA)');
+                            return;
+                        }
+                    }
+                    new Notification(title, options);
+                    this.showToast(lang === 'th' ? '🔔 ส่งการแจ้งเตือนทดสอบแล้ว' : '🔔 Test notification sent');
+                } catch (e) {
+                    console.error('Web notification failed:', e);
+                    this.showToast(T('geofenceTestBody'));
+                }
+            },
+
+            startWebGeofence() {
+                if (!navigator.geolocation) return;
+                this.stopWebGeofence();
+                this.webGeofenceWatchId = navigator.geolocation.watchPosition(
+                    (pos) => {
+                        const lat = pos.coords.latitude;
+                        const lon = pos.coords.longitude;
+                        this.checkWebGeofenceTrigger(lat, lon);
+                    },
+                    (err) => {
+                        console.warn('Web Geofence watch error:', err);
+                    },
+                    { enableHighAccuracy: true, maximumAge: 10000, timeout: 20000 }
+                );
+            },
+
+            stopWebGeofence() {
+                if (this.webGeofenceWatchId !== null && navigator.geolocation) {
+                    navigator.geolocation.clearWatch(this.webGeofenceWatchId);
+                    this.webGeofenceWatchId = null;
+                }
+            },
+
+            checkWebGeofenceTrigger(lat, lon) {
+                if (!this.uniqueStations || !this.uniqueStations.length) return;
+                const radiusKm = (this.geofenceRadius || 1000) / 1000;
+                let closest = null;
+                let minDist = 999999;
+
+                for (const s of this.uniqueStations) {
+                    if (!s.Latitude || !s.Longitude) continue;
+                    const d = haversineKm(lat, lon, s.Latitude, s.Longitude);
+                    if (d < minDist) {
+                        minDist = d;
+                        closest = s;
+                    }
+                }
+
+                if (closest && minDist <= radiusKm) {
+                    const now = Date.now();
+                    const isSameStation = this.lastGeofenceAlertKey === closest.StationKey;
+                    const cooldown = 12 * 60 * 1000; // 12 นาที
+                    if (!isSameStation || (now - this.lastGeofenceAlertTime > cooldown)) {
+                        this.lastGeofenceAlertKey = closest.StationKey;
+                        this.lastGeofenceAlertTime = now;
+                        this.triggerWebGeofenceAlert(closest, minDist);
+                    }
+                }
+            },
+
+            async triggerWebGeofenceAlert(station, distKm) {
+                const sName = stName(station);
+                const distStr = distKm < 1 ? Math.round(distKm * 1000) + T('mUnit') : distKm.toFixed(1) + T('kmUnit');
+                const title = T('geofenceNotifTitle', sName);
+                const body = T('geofenceNotifBody', distStr, sName);
+
+                if ('Notification' in window && Notification.permission === 'granted') {
+                    const options = {
+                        body: body,
+                        icon: '/icon-192.png',
+                        badge: '/icon-192.png',
+                        vibrate: [250, 100, 250, 100, 250],
+                        tag: 'bkk-station-' + station.StationKey,
+                        renotify: true,
+                        data: { stationKey: station.StationKey }
+                    };
+                    try {
+                        if ('serviceWorker' in navigator) {
+                            const reg = await navigator.serviceWorker.ready;
+                            if (reg && reg.showNotification) {
+                                await reg.showNotification(title, options);
+                                return;
+                            }
+                        }
+                        new Notification(title, options);
+                    } catch (e) {
+                        console.warn('triggerWebGeofenceAlert failed:', e);
+                    }
+                }
+            },
+
+            onGeofenceTriggered(stationKey, distKm) {
+                const st = this.findStation(stationKey);
+                if (st) {
+                    const sName = stName(st);
+                    const distStr = distKm < 1 ? Math.round(distKm * 1000) + T('mUnit') : distKm.toFixed(1) + T('kmUnit');
+                    this.showToast(`🚆 ${sName} (${distStr})`);
+                }
+            },
+
+            handleNotificationOpen(stationKey) {
+                if (!stationKey) return;
+                const s = this.findStation(stationKey);
+                if (s) {
+                    this.pinnedKey = s.StationKey;
+                    this.selectedExitKey = s.StationKey;
+                    this.switchView('home');
+                    this.renderNearest();
+                    this.renderNearestExit();
+                    this.renderStrip();
+                    if (!usesStaticTimetable(s)) this.loadArrivals(s, true);
+                    requestAnimationFrame(() => {
+                        const el = document.getElementById('nearestCard');
+                        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    });
+                }
             },
 
             // แสดงสถานีตั้งต้น เมื่อหาตำแหน่งจริงไม่ได้ —

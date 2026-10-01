@@ -70,6 +70,12 @@
 	<string>แอพต้องการเข้าถึงตำแหน่งปัจจุบันของคุณ เพื่อค้นหาสถานีรถไฟฟ้า BTS/MRT ที่ใกล้ที่สุดและคำนวณเวลาขบวนรถแบบเรียลไทม์</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>แอพต้องการเข้าถึงตำแหน่งเพื่อแจ้งเตือนเมื่อคุณเข้าใกล้สถานีรถไฟฟ้า</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>location</string>
+		<string>fetch</string>
+		<string>remote-notification</string>
+	</array>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>

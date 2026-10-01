@@ -72,3 +72,25 @@ self.addEventListener('fetch', event => {
         })
     );
 });
+
+// จัดการเมื่อผู้ใช้แตะการแจ้งเตือนจากล็อกหน้าจอหรือแถบแจ้งเตือน
+self.addEventListener('notificationclick', event => {
+    event.notification.close();
+    const stationKey = event.notification.data?.stationKey;
+    event.waitUntil(
+        self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then(clientList => {
+            for (const client of clientList) {
+                if ('focus' in client) {
+                    if (stationKey && 'postMessage' in client) {
+                        client.postMessage({ action: 'openStation', stationKey: stationKey });
+                    }
+                    return client.focus();
+                }
+            }
+            if (self.clients.openWindow) {
+                const targetUrl = stationKey ? '/#st=' + encodeURIComponent(stationKey) : '/';
+                return self.clients.openWindow(targetUrl);
+            }
+        })
+    );
+});

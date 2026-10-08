@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
-import '../services/background_geofence_service.dart';
 
 class BkkWebViewScreen extends StatefulWidget {
   const BkkWebViewScreen({super.key});
@@ -16,16 +16,22 @@ class BkkWebViewScreen extends StatefulWidget {
 
 class _BkkWebViewScreenState extends State<BkkWebViewScreen> {
   late final WebViewController _controller;
-  final BackgroundGeofenceService _geofenceService = BackgroundGeofenceService();
   bool _isLoading = true;
 
   @override
   void initState() {
     super.initState();
 
+    // Clear legacy geofence settings permanently
+    SharedPreferences.getInstance().then((prefs) {
+      prefs.remove('bkk_native_geofence_enabled');
+      prefs.remove('bkk_native_geofence_radius');
+    }).catchError((_) {});
+
     final WebViewController controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(const Color(0xFF10213A))
+      ..clearCache()
       ..setOnConsoleMessage((JavaScriptConsoleMessage message) {
         debugPrint('[JS ${message.level.name}] ${message.message}');
       })
@@ -69,76 +75,17 @@ class _BkkWebViewScreenState extends State<BkkWebViewScreen> {
 
     _controller = controller;
     _controller.loadFlutterAsset('assets/www/index.html');
-
-    _initGeofenceService();
-  }
-
-  Future<void> _initGeofenceService() async {
-    await _geofenceService.init(
-      onNotificationTap: (stationKey) {
-        _controller.runJavaScript(
-          "if (window.App && App.handleNotificationOpen) { App.handleNotificationOpen('$stationKey'); }",
-        );
-      },
-    );
-
-    _geofenceService.onLocationUpdated = (lat, lon, acc) {
-      _controller.runJavaScript(
-        "if (window.App && App.onNativeLocationSuccess) { App.onNativeLocationSuccess($lat, $lon, $acc); }",
-      );
-    };
-
-    _geofenceService.onGeofenceTriggered = (st, distKm) {
-      _controller.runJavaScript(
-        "if (window.App && App.onGeofenceTriggered) { App.onGeofenceTriggered('${st.stationKey}', $distKm); }",
-      );
-    };
   }
 
   void _injectBridgeHelpers() {
-    final isRunning = _geofenceService.isRunning;
-    final radius = _geofenceService.geofenceRadiusMeters;
-
     const bridgeScript = '''
       window.isFlutterApp = true;
-      window.NativeGeofence = {
-        toggle: function(enabled, radius) {
-          if (window.FlutterLocation) {
-            window.FlutterLocation.postMessage(JSON.stringify({
-              action: 'toggleBackgroundGeofence',
-              enabled: !!enabled,
-              radius: radius || 1000
-            }));
-          }
-        },
-        test: function() {
-          if (window.FlutterLocation) {
-            window.FlutterLocation.postMessage(JSON.stringify({ action: 'testGeofenceNotification' }));
-          }
-        },
-        setRadius: function(radius) {
-          if (window.FlutterLocation) {
-            window.FlutterLocation.postMessage(JSON.stringify({
-              action: 'setGeofenceRadius',
-              radius: radius
-            }));
-          }
-        },
-        getStatus: function() {
-          if (window.FlutterLocation) {
-            window.FlutterLocation.postMessage(JSON.stringify({ action: 'getGeofenceStatus' }));
-          }
-        }
-      };
       if (window.App && App.onNativeBridgeReady) {
         App.onNativeBridgeReady();
       }
     ''';
 
     _controller.runJavaScript(bridgeScript);
-    _controller.runJavaScript(
-      "if (window.App && App.onGeofenceStatusChanged) { App.onGeofenceStatusChanged($isRunning, $radius); }",
-    );
   }
 
   void _handleLocationMessage(String message) async {
@@ -148,33 +95,6 @@ class _BkkWebViewScreenState extends State<BkkWebViewScreen> {
         final action = data['action'];
         if (action == 'getLocation') {
           _requestNativeLocation();
-        } else if (action == 'toggleBackgroundGeofence') {
-          final enabled = data['enabled'] == true;
-          final radius = (data['radius'] as num?)?.toInt() ?? _geofenceService.geofenceRadiusMeters;
-          if (enabled) {
-            final ok = await _geofenceService.startGeofencing(radiusMeters: radius);
-            _controller.runJavaScript(
-              "if (window.App && App.onGeofenceStatusChanged) { App.onGeofenceStatusChanged($ok, $radius); }",
-            );
-          } else {
-            await _geofenceService.stopGeofencing();
-            _controller.runJavaScript(
-              "if (window.App && App.onGeofenceStatusChanged) { App.onGeofenceStatusChanged(false, $radius); }",
-            );
-          }
-        } else if (action == 'setGeofenceRadius') {
-          final radius = (data['radius'] as num?)?.toInt() ?? 1000;
-          await _geofenceService.setRadius(radius);
-          _controller.runJavaScript(
-            "if (window.App && App.onGeofenceStatusChanged) { App.onGeofenceStatusChanged(${_geofenceService.isRunning}, $radius); }",
-          );
-        } else if (action == 'testGeofenceNotification') {
-          final key = data['stationKey'] as String?;
-          await _geofenceService.sendTestNotification(customStationKey: key);
-        } else if (action == 'getGeofenceStatus') {
-          _controller.runJavaScript(
-            "if (window.App && App.onGeofenceStatusChanged) { App.onGeofenceStatusChanged(${_geofenceService.isRunning}, ${_geofenceService.geofenceRadiusMeters}); }",
-          );
         }
       }
     } catch (e) {

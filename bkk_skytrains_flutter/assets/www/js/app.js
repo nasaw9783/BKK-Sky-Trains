@@ -3,27 +3,33 @@
         /* ================= CONFIG ================= */
         const REMOTE_API = 'https://bkkskytrain.online/api/bts-proxy';
         const LOCAL_ORIGIN = 'http://localhost:3000';
-        // เมื่อเปิดผ่าน file:/// หรือรันบนเซิร์ฟเวอร์ที่ไม่มี proxy ในตัว ให้ชี้ตรงไปยัง REMOTE_API (รองรับ CORS จากทุก origin)
-        const PROXY_URL = (location.protocol === 'file:' || location.origin === 'null')
-            ? REMOTE_API
-            : '/api/bts-proxy';
+        // ตรวจสอบว่าโฮสต์ปัจจุบันมี local backend proxy จริงหรือไม่ (bkkskytrain.online หรือ Node บนพอร์ต 3000)
+        // สำหรับทุกกรณีอื่น (WebView, file://, localhost พอร์ตอื่นๆ, GitHub Pages ฯลฯ) ชี้ตรงไปยัง REMOTE_API ทันที 0ms
+        const hasLocalProxyHost = Boolean(
+            (typeof location !== 'undefined') &&
+            ((location.hostname === 'bkkskytrain.online' || location.hostname.endsWith('.bkkskytrain.online')) ||
+             ((location.hostname === 'localhost' || location.hostname === '127.0.0.1') && location.port === '3000'))
+        );
+
+        let activeProxyBase = hasLocalProxyHost ? '/api/bts-proxy' : REMOTE_API;
+
         const proxyUrl = (endpoint, params = {}) => {
             const q = new URLSearchParams({ endpoint, ...params });
-            return `${PROXY_URL}?${q.toString()}`;
+            return `${activeProxyBase}?${q.toString()}`;
         };
-        const STATION_LIST_URL = proxyUrl('station-list', { lang: 'en' });
-        const TTA_URL = proxyUrl('tta');
-        const JOURNEY_URL = proxyUrl('journey');
-        const TRAFFIC_URL = proxyUrl('traffic');
+        const STATION_LIST_URL = (langParam = 'en') => proxyUrl('station-list', { lang: langParam });
+        const TTA_URL = () => proxyUrl('tta');
+        const JOURNEY_URL = (pLang) => proxyUrl('journey', { lang: pLang || 'th' });
+        const TRAFFIC_URL = () => proxyUrl('traffic');
         const TRAFFIC_REFRESH_MS = 180000;  // สถานะเดินรถทุก 3 นาที
         const REFRESH_MS = 20000;       // refresh ข้อมูลขบวนรถทุก 20 วิ
         const TICK_MS = 1000;           // นับถอยหลังทุก 1 วิ
         const CACHE_KEY = 'bts_stations_v1';
         const CACHE_TTL = 24 * 3600 * 1000;
         const SIAM_KEY = 'CEN';
-        // สถานีตั้งต้นเมื่อระบุตำแหน่งผู้ใช้ไม่ได้ (ปฏิเสธสิทธิ์ / รอนาน / อยู่นอกพื้นที่)
+        // สถานีสำรองเมื่อระบุตำแหน่งผู้ใช้ไม่ได้ (ปฏิเสธสิทธิ์ / รอนาน / อยู่นอกพื้นที่)
         const FALLBACK_STATION_KEY = 'E4';   // อโศก
-        const FALLBACK_AFTER_MS = 10000;     // รอตำแหน่งนานสุด 10 วิ ก่อนแสดงสถานีตั้งต้น
+        const FALLBACK_AFTER_MS = 5000;      // รอตำแหน่งนานสุด 5 วิ ก่อนแสดงสถานีสำรอง
         const FALLBACK_MAX_KM = 120;         // ขยายขอบเขตตรวจจับสถานีใกล้เคียงครอบคลุมปริมณฑล (กทม. และจังหวัดใกล้เคียง)
         const YELLOW_MAP_SRC = 'เส้นทางและอัตราค่าโดยสาร_files/yellow-map.jpg';
         const GOLD_LINE_ID = 3;
@@ -519,16 +525,15 @@ gQIDAQAB
                 affiliation: 'ไม่เกี่ยวข้องกับทาง BTS/MRT/SRT/ARL',
                 nearestTitle: 'สถานีใกล้คุณที่สุด',
                 nearestExitTitle: 'ทางออกใกล้คุณที่สุด',
-                relocate: 'หาใหม่',
+                relocate: 'หาตำแหน่งปัจจุบัน',
                 findNearest: 'ค้นหาสถานีใกล้ฉัน',
                 findNearestExit: 'ระบุทางออกที่คุณยืนอยู่ด้วย GPS',
                 locating: 'กำลังหาตำแหน่งของคุณ…',
-                fromYou: 'จากคุณ',
+                fromYou: 'จากตำแหน่งคุณ',
                 atStation: 'อยู่ที่สถานี',
                 currentLocation: 'ตำแหน่งปัจจุบัน',
                 lastLocation: 'ตำแหน่งที่บันทึกไว้',
                 confirmHere: 'ฉันอยู่ที่สถานีนี้ (ยืนยันพิกัด)',
-                defaultStation: 'สถานีตั้งต้น',
                 searchPh: 'ค้นหาสถานี เช่น สยาม, N8, Mo Chit…',
                 notFound: q => `ไม่พบสถานี “${q}”`,
                 nearYou: 'ใกล้คุณ',
@@ -565,6 +570,8 @@ gQIDAQAB
                 langBtn: 'EN',
                 clockLocale: 'th-TH',
                 lines: { 1: 'สุขุมวิท', 2: 'สีลม', 3: 'สีทอง', 4: 'สีเหลือง', 5: 'สีชมพู', 101: 'สีน้ำเงิน', 102: 'สีม่วง', 103: 'สีแดง', 104: 'แอร์พอร์ต ลิงก์' },
+                timetableBadge: 'ตามตารางเวลา',
+                timetableSchedule: 'ดูตารางความถี่การเดินรถทางการ',
                 mrtFreqTitle: 'ความถี่ขบวนรถ',
                 mrtFreqNow: f => `ขบวนมาทุก ~${String(f || '').replace(/^~/, '')} นาที`,
                 mrtFreqNote: 'ข้อมูลจากตารางเวลาปกติ (ไม่ใช่ real-time)',
@@ -600,7 +607,6 @@ gQIDAQAB
                 jMap: 'ดูแผนที่เส้นทาง',
                 jFail: 'ค้นหาเส้นทางไม่สำเร็จ ลองใหม่อีกครั้ง',
                 jSearching: 'กำลังค้นหาเส้นทาง…',
-                chooseDefault: '⭐ สถานีตั้งต้น',
                 homeJourneyTitle: 'วางแผนการเดินทาง & เช็คค่าโดยสาร',
                 homeJourneySub: 'ค้นหาเส้นทาง คำนวณเวลา และราคาข้าม 10 สาย',
                 homeJourneyBtn: 'เปิด ➔',
@@ -609,6 +615,9 @@ gQIDAQAB
                 navPlanner: 'วางแผน',
                 navExits: 'ทางออก',
                 navFares: 'ค่าโดยสาร',
+                navTimetables: 'เวลาเดินรถ',
+                faresTitle: 'อัตราค่าโดยสารรถไฟฟ้าตามสาย',
+                timetablesTitle: 'ตารางเวลาเดินรถ & ความถี่ตามสาย',
                 mapTitle: '🗺️ ผังโครงข่ายรถไฟฟ้า 10 สาย',
                 mapZoomIn: '➕ ขยาย',
                 mapZoomOut: '➖ ย่อ',
@@ -622,8 +631,6 @@ gQIDAQAB
                 sheetExitsSub: 'ทางออก 1, 2, 3, Skywalk, ลิฟต์คนพิการ',
                 sheetLive: 'ดูเวลารถไฟฟ้าขบวนถัดไปสด (Live Arrival)',
                 sheetLiveSub: 'เวลานับถอยหลังจริงจากชานชาลา',
-                sheetDefault: 'ตั้งเป็นสถานีตั้งต้น (Set Default Station)',
-                sheetDefaultSub: 'ใช้เป็นสถานีเริ่มต้นเมื่อเปิดแอปหรืออยู่นอกพื้นที่',
                 plannerHubTitle: '🌟 สถานีชุมทางยอดนิยม (แตะเพื่อเลือกด่วน)',
                 exitCardTitle: '🚪 ข้อมูลทางออกสถานี & สิ่งอำนวยความสะดวก',
                 exitCardSub: 'เลือกสายและสถานี เพื่อตรวจสอบตำแหน่งทางออก สกายวอล์ก ลิฟต์คนพิการ และสถานที่ใกล้เคียง',
@@ -635,21 +642,6 @@ gQIDAQAB
                 popupPlatSub: 'กำลังเข้า / นับถอยหลังสด',
                 popupAction: 'ดูรายละเอียดสถานี & ทางออกเต็มจอ',
                 popupDismiss: 'รับทราบ',
-                geofenceTitle: 'แจ้งเตือนสถานีใกล้ฉันเบื้องหลัง',
-                geofenceSub: 'เตือนอัตโนมัติแม้ปิดแอปหรือล็อกหน้าจอ (True Background Geofencing)',
-                geofenceRadius: 'รัศมีตรวจจับ:',
-                geofenceActive: 'เปิดทำงาน',
-                geofenceDisabled: 'ปิดอยู่',
-                geofenceStatusOn: 'ระบบเบื้องหลังกำลังตรวจจับตำแหน่งและสถานีใกล้คุณ',
-                geofenceStatusOff: 'แตะสวิตช์เพื่อเริ่มรับการแจ้งเตือนอัตโนมัติ',
-                geofenceTestBtn: 'ทดสอบแจ้งเตือนล็อกหน้าจอ',
-                geofenceToastOn: '🔔 เปิดแจ้งเตือนสถานีเบื้องหลังเรียบร้อย',
-                geofenceToastOff: '🔕 ปิดแจ้งเตือนสถานีเบื้องหลังแล้ว',
-                geofenceNotifTitle: name => `🚆 ใกล้สถานี ${name}`,
-                geofenceNotifBody: (dist, name) => `ห่างจากสถานี ${name} เพียง ${dist} — แตะเพื่อดูเวลาขบวนรถ`,
-                geofenceTestTitle: '🔔 ทดสอบการแจ้งเตือน BKK SkyTrains',
-                geofenceTestBody: 'ระบบแจ้งเตือนเบื้องหลังและล็อกหน้าจอทำงานได้อย่างสมบูรณ์แบบ!',
-                geofencePermissionDenied: 'กรุณาอนุญาตสิทธิ์การแจ้งเตือน (Notifications) ในเบราว์เซอร์หรือการตั้งค่าเครื่อง',
             },
             en: {
                 appName: 'BKK SKYTRAINs',
@@ -657,16 +649,15 @@ gQIDAQAB
                 affiliation: 'Not affiliated with BTS/MRT/SRT/ARL.',
                 nearestTitle: 'Nearest station',
                 nearestExitTitle: 'Nearest Exit to You',
-                relocate: 'Relocate',
+                relocate: 'Current Location',
                 findNearest: 'Find my nearest station',
                 findNearestExit: 'Find your nearest exit by GPS',
                 locating: 'Locating you…',
-                fromYou: 'from you',
+                fromYou: 'from your location',
                 atStation: 'At Station',
                 currentLocation: 'Current Location',
                 lastLocation: 'Saved Location',
                 confirmHere: "I'm at this station (Confirm)",
-                defaultStation: 'Default station',
                 searchPh: 'Search station e.g. Siam, N8, Mo Chit…',
                 notFound: q => `No station found for “${q}”`,
                 nearYou: 'Nearest',
@@ -703,6 +694,8 @@ gQIDAQAB
                 langBtn: 'ไทย',
                 clockLocale: 'en-GB',
                 lines: { 1: 'Sukhumvit', 2: 'Silom', 3: 'Gold', 4: 'Yellow', 5: 'Pink', 101: 'Blue', 102: 'Purple', 103: 'Red', 104: 'Airport Link' },
+                timetableBadge: 'Timetable',
+                timetableSchedule: 'View Official Frequency Schedule',
                 mrtFreqTitle: 'Train frequency',
                 mrtFreqNow: f => `Every ~${String(f || '').replace(/^~/, '')} min`,
                 mrtFreqNote: 'Based on regular timetable (not real-time)',
@@ -738,7 +731,6 @@ gQIDAQAB
                 jMap: 'View route map',
                 jFail: 'Could not find a route, please retry',
                 jSearching: 'Finding routes…',
-                chooseDefault: '⭐ Default Station',
                 homeJourneyTitle: 'Journey Planner & Fare Guide',
                 homeJourneySub: 'Find routes, estimate travel time & fares across 10 lines',
                 homeJourneyBtn: 'Open ➔',
@@ -747,6 +739,9 @@ gQIDAQAB
                 navPlanner: 'Plan',
                 navExits: 'Exits',
                 navFares: 'Fares',
+                navTimetables: 'Timetable',
+                faresTitle: 'Transit Fares & Pricing by Line',
+                timetablesTitle: 'Train Timetables & Frequency by Line',
                 mapTitle: '🗺️ 10 Transit Lines Network Map',
                 mapZoomIn: '➕ Zoom In',
                 mapZoomOut: '➖ Zoom Out',
@@ -760,8 +755,6 @@ gQIDAQAB
                 sheetExitsSub: 'Exits, Skywalks, Priority Elevators',
                 sheetLive: 'Live Train Arrivals',
                 sheetLiveSub: 'Real-time platform countdowns',
-                sheetDefault: 'Set as Default Station',
-                sheetDefaultSub: 'Use as initial station on launch or outside service area',
                 plannerHubTitle: '🌟 Popular Hub Stations (Quick Select)',
                 exitCardTitle: '🚪 Station Exits & Facilities',
                 exitCardSub: 'Select line and station to check exits, skywalks, priority elevators, and nearby landmarks',
@@ -773,21 +766,6 @@ gQIDAQAB
                 popupPlatSub: 'Arriving / Live countdown',
                 popupAction: 'View Full Station & Exit Details',
                 popupDismiss: 'Got it',
-                geofenceTitle: 'Background Station Alerts',
-                geofenceSub: 'Automatic alerts even when app is closed or locked (True Background Geofencing)',
-                geofenceRadius: 'Detection Radius:',
-                geofenceActive: 'Active',
-                geofenceDisabled: 'Off',
-                geofenceStatusOn: 'Background service is actively monitoring nearby stations',
-                geofenceStatusOff: 'Toggle switch to enable automatic alerts',
-                geofenceTestBtn: 'Test Lock Screen Alert',
-                geofenceToastOn: '🔔 Background station alerts enabled',
-                geofenceToastOff: '🔕 Background station alerts disabled',
-                geofenceNotifTitle: name => `🚆 Approaching ${name} Station`,
-                geofenceNotifBody: (dist, name) => `${dist} away from ${name} — tap to view real-time arrivals`,
-                geofenceTestTitle: '🔔 BKK SkyTrains Test Notification',
-                geofenceTestBody: 'Background & lock screen notifications are working properly!',
-                geofencePermissionDenied: 'Please allow notification permissions in browser/device settings',
             }
         };
 
@@ -831,7 +809,9 @@ gQIDAQAB
             }
         };
         function shortDest(name) {
-            return (DEST_ABBR[lang] || {})[name] || name;
+            if (!name) return '';
+            const clean = String(name).replace(/\s*\([^)]*\)/g, '').trim();
+            return (DEST_ABBR[lang] || {})[clean] || (DEST_ABBR[lang] || {})[name] || clean;
         }
 
         /* ================= CRYPTO (AES-GCM + RSA, ใช้เมื่อ proxy ต้องการ Authkey) ================= */
@@ -865,10 +845,17 @@ gQIDAQAB
         const TTA_MODES = ['encrypted'];
         let ttaMode = 'encrypted';
 
-        async function postJSON(url, body, headers, timeoutMs = 20000) {
-            const doFetch = async (targetUrl) => {
+        async function postJSON(url, body, headers, timeoutMs = 6000) {
+            // หาก URL เป็น local proxy ให้ใช้ timeout สั้นพิเศษ 1,500ms เพื่อ failover ไปยัง REMOTE_API ทันที ไม่รอค้าง
+            const isLocalProxy = typeof url === 'string' && (
+                (!url.startsWith('http://') && !url.startsWith('https://')) ||
+                (!url.startsWith(REMOTE_API) && (url.includes('localhost') || url.includes('127.0.0.1')))
+            );
+            const effectiveTimeout = isLocalProxy ? Math.min(timeoutMs, 1800) : timeoutMs;
+
+            const doFetch = async (targetUrl, tMs) => {
                 const ctrl = new AbortController();
-                const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+                const timer = setTimeout(() => ctrl.abort(), tMs);
                 try {
                     const res = await fetch(targetUrl, {
                         method: 'POST',
@@ -884,23 +871,32 @@ gQIDAQAB
                 }
             };
 
+            const switchPermanentlyToRemote = () => {
+                if (activeProxyBase !== REMOTE_API) {
+                    activeProxyBase = REMOTE_API;
+                    console.info('⚡ BKK Transit: Switched to REMOTE_API permanently for faster response');
+                }
+            };
+
             try {
-                const res = await doFetch(url);
-                // หากต่อ local proxy ได้ 404 หรือ 502 ให้ failover ไปยัง REMOTE_API ทันที
+                const res = await doFetch(url, effectiveTimeout);
+                // หากต่อ local proxy ได้ 404 หรือ 502 ให้ failover ไปยัง REMOTE_API ทันที และจำค่าไว้ถาวร
                 if ((res.status === 404 || res.status === 502) && !url.startsWith(REMOTE_API)) {
+                    switchPermanentlyToRemote();
                     const fallbackUrl = url.replace(/^(?:https?:\/\/[^\/]+)?\/api\/bts-proxy/, REMOTE_API);
                     if (fallbackUrl !== url) {
-                        return await doFetch(fallbackUrl);
+                        return await doFetch(fallbackUrl, timeoutMs);
                     }
                 }
                 return res;
             } catch (err) {
                 // หาก network ต่อ local proxy ไม่ได้ ให้ลอง REMOTE_API อัตโนมัติ
                 if (!url.startsWith(REMOTE_API)) {
+                    switchPermanentlyToRemote();
                     const fallbackUrl = url.replace(/^(?:https?:\/\/[^\/]+)?\/api\/bts-proxy/, REMOTE_API);
                     if (fallbackUrl !== url) {
                         try {
-                            return await doFetch(fallbackUrl);
+                            return await doFetch(fallbackUrl, timeoutMs);
                         } catch (e2) {
                             throw err;
                         }
@@ -918,7 +914,7 @@ gQIDAQAB
 
         async function attemptTTA(mode, payload) {
             const { authKey, bodyBase64 } = await encryptBody(payload);
-            return postJSON(TTA_URL, { data: bodyBase64, lang: 'th' }, { 'Authkey': authKey });
+            return postJSON(TTA_URL(), { data: bodyBase64, lang: 'th' }, { 'Authkey': authKey }, 5000);
         }
 
         async function fetchArrivals(station) {
@@ -947,22 +943,22 @@ gQIDAQAB
         // เส้นทาง from→to: คืน data.RoutesMap = [{RoutesJorney, TotalTime, TotalKm,
         // Count_Station, Count_InterChange, FareRate_Total, FareRateInfo, ...}, ...]
         async function fetchJourney(originKey, destKey) {
-            const res = await postJSON(proxyUrl('journey', { lang }), {
+            const res = await postJSON(JOURNEY_URL(lang), {
                 Origin: originKey, Destination: destKey,
                 Origin_Location: 0, Destination_Location: 0
-            }, {}, 30000);
+            }, {}, 7000);
             if (res.status !== 200 || res.data?.ErrMessage !== 'Success' || !res.data.data)
                 throw new Error(T('jFail'));
             return res.data.data;
         }
 
         async function fetchTraffic() {
-            const res = await postJSON(TRAFFIC_URL, {}, {}, 20000);
+            const res = await postJSON(TRAFFIC_URL(), {}, {}, 5000);
             if (res.status === 200 && res.data?.IsSuccess) return res.data;
             throw new Error('traffic unavailable');
         }
 
-                const FALLBACK_STATION_LIST = [{"LineId":1,"LineName_TH":"สายสุขุมวิท","LineName_EN":"Sukhumvit Line","LineColor":"#7AB420","StationList":[{"StationId":79,"StationName":"คูคต | Khu Khot","StationNameTH":"คูคต","StationNameEN":"Khu Khot","StationKey":"N24","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.93234,"Longitude":100.6466,"PinmapX":"3250","PinmapY":"249","IsCrowded":false,"Orderlist":24},{"StationId":78,"StationName":"แยก คปอ. | Yaek Kor Por Aor","StationNameTH":"แยก คปอ.","StationNameEN":"Yaek Kor Por Aor","StationKey":"N23","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.92498,"Longitude":100.6259,"PinmapX":"3068","PinmapY":"255","IsCrowded":false,"Orderlist":23},{"StationId":77,"StationName":"พิพิธภัณฑ์กองทัพอากาศ | Royal Thai Air Force Museum","StationNameTH":"พิพิธภัณฑ์กองทัพอากาศ","StationNameEN":"Royal Thai Air Force Museum","StationKey":"N22","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.91795,"Longitude":100.6217,"PinmapX":"2873","PinmapY":"341","IsCrowded":false,"Orderlist":22},{"StationId":76,"StationName":"โรงพยาบาลภูมิพลอดุลยเดช | Bhumibol Adulyadej Hospital","StationNameTH":"โรงพยาบาลภูมิพลอดุลยเดช","StationNameEN":"Bhumibol Adulyadej Hospital","StationKey":"N21","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.91072,"Longitude":100.6174,"PinmapX":"2792","PinmapY":"424","IsCrowded":false,"Orderlist":21},{"StationId":75,"StationName":"สะพานใหม่ | Saphan Mai","StationNameTH":"สะพานใหม่","StationNameEN":"Saphan Mai","StationKey":"N20","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.8966,"Longitude":100.6091,"PinmapX":"2714","PinmapY":"503","IsCrowded":false,"Orderlist":20},{"StationId":74,"StationName":"สายหยุด | Sai Yud","StationNameTH":"สายหยุด","StationNameEN":"Sai Yud","StationKey":"N19","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.88844,"Longitude":100.6043,"PinmapX":"2638","PinmapY":"584","IsCrowded":false,"Orderlist":19},{"StationId":73,"StationName":"พหลโยธิน 59 | Phahon Yothin 59","StationNameTH":"พหลโยธิน 59","StationNameEN":"Phahon Yothin 59","StationKey":"N18","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.88245,"Longitude":100.6008,"PinmapX":"2554","PinmapY":"663","IsCrowded":false,"Orderlist":18},{"StationId":69,"StationName":"วัดพระศรีมหาธาตุ | Wat Phra Sri Mahathat","StationNameTH":"วัดพระศรีมหาธาตุ","StationNameEN":"Wat Phra Sri Mahathat","StationKey":"N17","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.87529,"Longitude":100.5968,"PinmapX":"2463","PinmapY":"795","IsCrowded":false,"Orderlist":17},{"StationId":68,"StationName":"กรมทหารราบที่ 11 | 11th Infantry Regiment","StationNameTH":"กรมทหารราบที่ 11","StationNameEN":"11th Infantry Regiment","StationKey":"N16","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.86753,"Longitude":100.5919,"PinmapX":"2469","PinmapY":"917","IsCrowded":false,"Orderlist":16},{"StationId":67,"StationName":"บางบัว | Bang Bua","StationNameTH":"บางบัว","StationNameEN":"Bang Bua","StationKey":"N15","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.85599,"Longitude":100.5852,"PinmapX":"2461","PinmapY":"1043","IsCrowded":false,"Orderlist":15},{"StationId":66,"StationName":"กรมป่าไม้ | Royal Forest Department","StationNameTH":"กรมป่าไม้","StationNameEN":"Royal Forest Department","StationKey":"N14","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.85026,"Longitude":100.5818,"PinmapX":"2464","PinmapY":"1164","IsCrowded":false,"Orderlist":14},{"StationId":62,"StationName":"มหาวิทยาลัยเกษตรศาสตร์ | Kasetsart University","StationNameTH":"มหาวิทยาลัยเกษตรศาสตร์","StationNameEN":"Kasetsart University","StationKey":"N13","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.84207,"Longitude":100.577,"PinmapX":"2464","PinmapY":"1271","IsCrowded":false,"Orderlist":13},{"StationId":61,"StationName":"เสนานิคม | Sena Nikhom","StationNameTH":"เสนานิคม","StationNameEN":"Sena Nikhom","StationKey":"N12","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.83661,"Longitude":100.5738,"PinmapX":"2463","PinmapY":"1406","IsCrowded":false,"Orderlist":12},{"StationId":60,"StationName":"รัชโยธิน | Ratchayothin","StationNameTH":"รัชโยธิน","StationNameEN":"Ratchayothin","StationKey":"N11","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.82968,"Longitude":100.5697,"PinmapX":"2464","PinmapY":"1524","IsCrowded":false,"Orderlist":11},{"StationId":59,"StationName":"พหลโยธิน 24 | Phahon Yothin 24","StationNameTH":"พหลโยธิน 24","StationNameEN":"Phahon Yothin 24","StationKey":"N10","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.82385,"Longitude":100.5664,"PinmapX":"2469","PinmapY":"1646","IsCrowded":false,"Orderlist":10},{"StationId":54,"StationName":"ห้าแยกลาดพร้าว | Ha Yaek Lat Phrao","StationNameTH":"ห้าแยกลาดพร้าว","StationNameEN":"Ha Yaek Lat Phrao","StationKey":"N9","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.81723,"Longitude":100.5623,"PinmapX":"2464","PinmapY":"1791","IsCrowded":false,"Orderlist":9},{"StationId":1,"StationName":"หมอชิต | Mo Chit","StationNameTH":"หมอชิต","StationNameEN":"Mo Chit","StationKey":"N8","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.80265,"Longitude":100.5538,"PinmapX":"2468","PinmapY":"1930","IsCrowded":false,"Orderlist":8},{"StationId":2,"StationName":"สะพานควาย | Saphan Khwai","StationNameTH":"สะพานควาย","StationNameEN":"Saphan Khwai","StationKey":"N7","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.79383,"Longitude":100.5497,"PinmapX":"2461","PinmapY":"2032","IsCrowded":false,"Orderlist":7},{"StationId":3,"StationName":"อารีย์ | Ari","StationNameTH":"อารีย์","StationNameEN":"Ari","StationKey":"N5","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.77979,"Longitude":100.5447,"PinmapX":"2463","PinmapY":"2213","IsCrowded":true,"Orderlist":5},{"StationId":4,"StationName":"สนามเป้า | Sanam Pao","StationNameTH":"สนามเป้า","StationNameEN":"Sanam Pao","StationKey":"N4","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.77264,"Longitude":100.5421,"PinmapX":"2464","PinmapY":"2312","IsCrowded":true,"Orderlist":4},{"StationId":5,"StationName":"อนุสาวรีย์ชัยสมรภูมิ | Victory Monument","StationNameTH":"อนุสาวรีย์ชัยสมรภูมิ","StationNameEN":"Victory Monument","StationKey":"N3","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.76279,"Longitude":100.5371,"PinmapX":"2466","PinmapY":"2399","IsCrowded":false,"Orderlist":3},{"StationId":6,"StationName":"พญาไท | Phaya Thai","StationNameTH":"พญาไท","StationNameEN":"Phaya Thai","StationKey":"N2","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.75682,"Longitude":100.5338,"PinmapX":"2462","PinmapY":"2501","IsCrowded":false,"Orderlist":2},{"StationId":7,"StationName":"ราชเทวี | Ratchathewi","StationNameTH":"ราชเทวี","StationNameEN":"Ratchathewi","StationKey":"N1","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.75193,"Longitude":100.5315,"PinmapX":"2465","PinmapY":"2693","IsCrowded":false,"Orderlist":1},{"StationId":8,"StationName":"สยาม | Siam","StationNameTH":"สยาม","StationNameEN":"Siam","StationKey":"CEN","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.74556,"Longitude":100.5346,"PinmapX":"2506","PinmapY":"2878","IsCrowded":true,"Orderlist":0},{"StationId":9,"StationName":"ชิดลม | Chit Lom","StationNameTH":"ชิดลม","StationNameEN":"Chit Lom","StationKey":"E1","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.74409,"Longitude":100.543,"PinmapX":"2647","PinmapY":"2866","IsCrowded":false,"Orderlist":1},{"StationId":10,"StationName":"เพลินจิต | Phloen Chit","StationNameTH":"เพลินจิต","StationNameEN":"Phloen Chit","StationKey":"E2","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.74306,"Longitude":100.5488,"PinmapX":"2784","PinmapY":"2870","IsCrowded":false,"Orderlist":2},{"StationId":11,"StationName":"นานา | Nana","StationNameTH":"นานา","StationNameEN":"Nana","StationKey":"E3","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.74051,"Longitude":100.5554,"PinmapX":"2926","PinmapY":"2866","IsCrowded":false,"Orderlist":3},{"StationId":12,"StationName":"อโศก | Asok","StationNameTH":"อโศก","StationNameEN":"Asok","StationKey":"E4","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.737,"Longitude":100.5604,"PinmapX":"3067","PinmapY":"2869","IsCrowded":false,"Orderlist":4},{"StationId":13,"StationName":"พร้อมพงษ์ | Phrom Phong","StationNameTH":"พร้อมพงษ์","StationNameEN":"Phrom Phong","StationKey":"E5","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.73043,"Longitude":100.5697,"PinmapX":"3193","PinmapY":"2868","IsCrowded":false,"Orderlist":5},{"StationId":14,"StationName":"ทองหล่อ | Thong Lo","StationNameTH":"ทองหล่อ","StationNameEN":"Thong Lo","StationKey":"E6","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.72424,"Longitude":100.5785,"PinmapX":"3308","PinmapY":"2935","IsCrowded":false,"Orderlist":6},{"StationId":15,"StationName":"เอกมัย | Ekkamai","StationNameTH":"เอกมัย","StationNameEN":"Ekkamai","StationKey":"E7","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.71944,"Longitude":100.5853,"PinmapX":"3388","PinmapY":"3019","IsCrowded":false,"Orderlist":7},{"StationId":16,"StationName":"พระโขนง | Phra Khanong","StationNameTH":"พระโขนง","StationNameEN":"Phra Khanong","StationKey":"E8","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.71518,"Longitude":100.5913,"PinmapX":"3472","PinmapY":"3095","IsCrowded":false,"Orderlist":8},{"StationId":17,"StationName":"อ่อนนุช | On Nut","StationNameTH":"อ่อนนุช","StationNameEN":"On Nut","StationKey":"E9","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.70555,"Longitude":100.6011,"PinmapX":"3554","PinmapY":"3179","IsCrowded":false,"Orderlist":9},{"StationId":18,"StationName":"บางจาก | Bang Chak","StationNameTH":"บางจาก","StationNameEN":"Bang Chak","StationKey":"E10","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.69655,"Longitude":100.6055,"PinmapX":"3636","PinmapY":"3262","IsCrowded":false,"Orderlist":10},{"StationId":19,"StationName":"ปุณณวิถี | Punnawithi","StationNameTH":"ปุณณวิถี","StationNameEN":"Punnawithi","StationKey":"E11","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.6893,"Longitude":100.609,"PinmapX":"3677","PinmapY":"3363","IsCrowded":false,"Orderlist":11},{"StationId":20,"StationName":"อุดมสุข | Udom Suk","StationNameTH":"อุดมสุข","StationNameEN":"Udom Suk","StationKey":"E12","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.67993,"Longitude":100.6096,"PinmapX":"3675","PinmapY":"3483","IsCrowded":false,"Orderlist":12},{"StationId":21,"StationName":"บางนา | Bang Na","StationNameTH":"บางนา","StationNameEN":"Bang Na","StationKey":"E13","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.66812,"Longitude":100.6046,"PinmapX":"3675","PinmapY":"3603","IsCrowded":false,"Orderlist":13},{"StationId":22,"StationName":"แบริ่ง | Bearing","StationNameTH":"แบริ่ง","StationNameEN":"Bearing","StationKey":"E14","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.66117,"Longitude":100.6019,"PinmapX":"3676","PinmapY":"3730","IsCrowded":false,"Orderlist":14},{"StationId":23,"StationName":"สำโรง | Samrong","StationNameTH":"สำโรง","StationNameEN":"Samrong","StationKey":"E15","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.64619,"Longitude":100.5957,"PinmapX":"3679","PinmapY":"3850","IsCrowded":false,"Orderlist":15},{"StationId":46,"StationName":"ปู่เจ้า | Pu Chao","StationNameTH":"ปู่เจ้า","StationNameEN":"Pu Chao","StationKey":"E16","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.63725,"Longitude":100.592,"PinmapX":"3679","PinmapY":"3965","IsCrowded":false,"Orderlist":16},{"StationId":47,"StationName":"ช้างเอราวัณ | Chang Erawan","StationNameTH":"ช้างเอราวัณ","StationNameEN":"Chang Erawan","StationKey":"E17","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.62145,"Longitude":100.5901,"PinmapX":"3675","PinmapY":"4080","IsCrowded":false,"Orderlist":17},{"StationId":48,"StationName":"โรงเรียนนายเรือ | Royal Thai Naval Academy","StationNameTH":"โรงเรียนนายเรือ","StationNameEN":"Royal Thai Naval Academy","StationKey":"E18","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.60855,"Longitude":100.5948,"PinmapX":"3676","PinmapY":"4195","IsCrowded":false,"Orderlist":18},{"StationId":49,"StationName":"ปากน้ำ | Pak Nam","StationNameTH":"ปากน้ำ","StationNameEN":"Pak Nam","StationKey":"E19","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.60207,"Longitude":100.5971,"PinmapX":"3674","PinmapY":"4312","IsCrowded":false,"Orderlist":19},{"StationId":50,"StationName":"ศรีนครินทร์ | Srinagarindra","StationNameTH":"ศรีนครินทร์","StationNameEN":"Srinagarindra","StationKey":"E20","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.59208,"Longitude":100.6089,"PinmapX":"3676","PinmapY":"4426","IsCrowded":false,"Orderlist":20},{"StationId":51,"StationName":"แพรกษา | Phraek Sa","StationNameTH":"แพรกษา","StationNameEN":"Phraek Sa","StationKey":"E21","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.58432,"Longitude":100.608,"PinmapX":"3674","PinmapY":"4541","IsCrowded":false,"Orderlist":21},{"StationId":52,"StationName":"สายลวด | Sai Luat","StationNameTH":"สายลวด","StationNameEN":"Sai Luat","StationKey":"E22","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.57778,"Longitude":100.6054,"PinmapX":"3674","PinmapY":"4655","IsCrowded":false,"Orderlist":22},{"StationId":53,"StationName":"เคหะฯ | Kheha","StationNameTH":"เคหะฯ","StationNameEN":"Kheha","StationKey":"E23","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.56765,"Longitude":100.6077,"PinmapX":"3790","PinmapY":"4771","IsCrowded":false,"Orderlist":23}]},{"LineId":2,"LineName_TH":"สายสีลม","LineName_EN":"Silom Line","LineColor":"#00807D","StationList":[{"StationId":26,"StationName":"สนามกีฬาแห่งชาติ | National Stadium","StationNameTH":"สนามกีฬาแห่งชาติ","StationNameEN":"National Stadium","StationKey":"W1","StationLineId":2,"StationLineName":"สายสีลม | Silom Line","LineNameTH":"สายสีลม","LineNameEN":"Silom Line","StationLineColor":"#00807D","Latitude":13.74649,"Longitude":100.5294,"PinmapX":"2317","PinmapY":"2886","IsCrowded":false,"Orderlist":1},{"StationId":27,"StationName":"สยาม | Siam","StationNameTH":"สยาม","StationNameEN":"Siam","StationKey":"CEN","StationLineId":2,"StationLineName":"สายสีลม | Silom Line","LineNameTH":"สายสีลม","LineNameEN":"Silom Line","StationLineColor":"#00807D","Latitude":13.74552,"Longitude":100.5346,"PinmapX":"","PinmapY":"","IsCrowded":false,"Orderlist":0},{"StationId":28,"StationName":"ราชดำริ | Ratchadamri","StationNameTH":"ราชดำริ","StationNameEN":"Ratchadamri","StationKey":"S1","StationLineId":2,"StationLineName":"สายสีลม | Silom Line","LineNameTH":"สายสีลม","LineNameEN":"Silom Line","StationLineColor":"#00807D","Latitude":13.73947,"Longitude":100.5395,"PinmapX":"2545","PinmapY":"3007","IsCrowded":false,"Orderlist":1},{"StationId":29,"StationName":"ศาลาแดง | Sala Daeng","StationNameTH":"ศาลาแดง","StationNameEN":"Sala Daeng","StationKey":"S2","StationLineId":2,"StationLineName":"สายสีลม | Silom Line","LineNameTH":"สายสีลม","LineNameEN":"Silom Line","StationLineColor":"#00807D","Latitude":13.72855,"Longitude":100.5343,"PinmapX":"2547","PinmapY":"3127","IsCrowded":false,"Orderlist":2},{"StationId":30,"StationName":"ช่องนนทรี | Chong Nonsi","StationNameTH":"ช่องนนทรี","StationNameEN":"Chong Nonsi","StationKey":"S3","StationLineId":2,"StationLineName":"สายสีลม | Silom Line","LineNameTH":"สายสีลม","LineNameEN":"Silom Line","StationLineColor":"#00807D","Latitude":13.72373,"Longitude":100.5294,"PinmapX":"2544","PinmapY":"3294","IsCrowded":false,"Orderlist":3},{"StationId":80,"StationName":"เซนต์หลุยส์ | Saint Louis","StationNameTH":"เซนต์หลุยส์","StationNameEN":"Saint Louis","StationKey":"S4","StationLineId":2,"StationLineName":"สายสีลม | Silom Line","LineNameTH":"สายสีลม","LineNameEN":"Silom Line","StationLineColor":"#00807D","Latitude":13.72107,"Longitude":100.527,"PinmapX":"2522","PinmapY":"3443","IsCrowded":false,"Orderlist":4},{"StationId":31,"StationName":"สุรศักดิ์ | Surasak","StationNameTH":"สุรศักดิ์","StationNameEN":"Surasak","StationKey":"S5","StationLineId":2,"StationLineName":"สายสีลม | Silom Line","LineNameTH":"สายสีลม","LineNameEN":"Silom Line","StationLineColor":"#00807D","Latitude":13.71931,"Longitude":100.5216,"PinmapX":"2447","PinmapY":"3510","IsCrowded":false,"Orderlist":5},{"StationId":32,"StationName":"สะพานตากสิน | Saphan Taksin","StationNameTH":"สะพานตากสิน","StationNameEN":"Saphan Taksin","StationKey":"S6","StationLineId":2,"StationLineName":"สายสีลม | Silom Line","LineNameTH":"สายสีลม","LineNameEN":"Silom Line","StationLineColor":"#00807D","Latitude":13.7188,"Longitude":100.5141,"PinmapX":"2384","PinmapY":"3578","IsCrowded":false,"Orderlist":6},{"StationId":33,"StationName":"กรุงธนบุรี | Krung Thon Buri","StationNameTH":"กรุงธนบุรี","StationNameEN":"Krung Thon Buri","StationKey":"S7","StationLineId":2,"StationLineName":"สายสีลม | Silom Line","LineNameTH":"สายสีลม","LineNameEN":"Silom Line","StationLineColor":"#00807D","Latitude":13.72088,"Longitude":100.5028,"PinmapX":"2190","PinmapY":"3651","IsCrowded":false,"Orderlist":7},{"StationId":34,"StationName":"วงเวียนใหญ่ | Wongwian Yai","StationNameTH":"วงเวียนใหญ่","StationNameEN":"Wongwian Yai","StationKey":"S8","StationLineId":2,"StationLineName":"สายสีลม | Silom Line","LineNameTH":"สายสีลม","LineNameEN":"Silom Line","StationLineColor":"#00807D","Latitude":13.72115,"Longitude":100.4953,"PinmapX":"1966","PinmapY":"3646","IsCrowded":false,"Orderlist":8},{"StationId":35,"StationName":"โพธิ์นิมิตร | Pho Nimit","StationNameTH":"โพธิ์นิมิตร","StationNameEN":"Pho Nimit","StationKey":"S9","StationLineId":2,"StationLineName":"สายสีลม | Silom Line","LineNameTH":"สายสีลม","LineNameEN":"Silom Line","StationLineColor":"#00807D","Latitude":13.71922,"Longitude":100.4859,"PinmapX":"1744","PinmapY":"3649","IsCrowded":false,"Orderlist":9},{"StationId":36,"StationName":"ตลาดพลู | Talat Phlu","StationNameTH":"ตลาดพลู","StationNameEN":"Talat Phlu","StationKey":"S10","StationLineId":2,"StationLineName":"สายสีลม | Silom Line","LineNameTH":"สายสีลม","LineNameEN":"Silom Line","StationLineColor":"#00807D","Latitude":13.71422,"Longitude":100.4767,"PinmapX":"1519","PinmapY":"3647","IsCrowded":false,"Orderlist":10},{"StationId":37,"StationName":"วุฒากาศ | Wutthakat","StationNameTH":"วุฒากาศ","StationNameEN":"Wutthakat","StationKey":"S11","StationLineId":2,"StationLineName":"สายสีลม | Silom Line","LineNameTH":"สายสีลม","LineNameEN":"Silom Line","StationLineColor":"#00807D","Latitude":13.71297,"Longitude":100.4689,"PinmapX":"1279","PinmapY":"3537","IsCrowded":false,"Orderlist":11},{"StationId":38,"StationName":"บางหว้า | Bang Wa","StationNameTH":"บางหว้า","StationNameEN":"Bang Wa","StationKey":"S12","StationLineId":2,"StationLineName":"สายสีลม | Silom Line","LineNameTH":"สายสีลม","LineNameEN":"Silom Line","StationLineColor":"#00807D","Latitude":13.7207,"Longitude":100.4578,"PinmapX":"1100","PinmapY":"3358","IsCrowded":false,"Orderlist":12}]},{"LineId":3,"LineName_TH":"สายสีทอง","LineName_EN":"Gold Line","LineColor":"#a88b34","StationList":[{"StationId":70,"StationName":"กรุงธนบุรี (Gold Line) | Krung Thon Buri (Gold Line)","StationNameTH":"กรุงธนบุรี (Gold Line)","StationNameEN":"Krung Thon Buri (Gold Line)","StationKey":"G1","StationLineId":3,"StationLineName":"สายสีทอง | Gold Line","LineNameTH":"สายสีทอง","LineNameEN":"Gold Line","StationLineColor":"#a88b34","Latitude":13.72127,"Longitude":100.5037,"PinmapX":"2188","PinmapY":"3582","IsCrowded":false,"Orderlist":1},{"StationId":71,"StationName":"เจริญนคร | Charoen Nakhon","StationNameTH":"เจริญนคร","StationNameEN":"Charoen Nakhon","StationKey":"G2","StationLineId":3,"StationLineName":"สายสีทอง | Gold Line","LineNameTH":"สายสีทอง","LineNameEN":"Gold Line","StationLineColor":"#a88b34","Latitude":13.72783,"Longitude":100.5093,"PinmapX":"2121","PinmapY":"3459","IsCrowded":false,"Orderlist":2},{"StationId":72,"StationName":"คลองสาน | Khlong San","StationNameTH":"คลองสาน","StationNameEN":"Khlong San","StationKey":"G3","StationLineId":3,"StationLineName":"สายสีทอง | Gold Line","LineNameTH":"สายสีทอง","LineNameEN":"Gold Line","StationLineColor":"#a88b34","Latitude":13.7317,"Longitude":100.5078,"PinmapX":"1991","PinmapY":"3385","IsCrowded":false,"Orderlist":3}]},{"LineId":4,"LineName_TH":"สายสีเหลือง","LineName_EN":"Yellow Line","LineColor":"#FAD53D","StationList":[{"StationId":81,"StationName":"ลาดพร้าว | Lat Phrao","StationNameTH":"ลาดพร้าว","StationNameEN":"Lat Phrao","StationKey":"YL01","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.80701,"Longitude":100.5749,"PinmapX":"2695","PinmapY":"1745","IsCrowded":false,"Orderlist":1},{"StationId":82,"StationName":"ภาวนา | Phawana","StationNameTH":"ภาวนา","StationNameEN":"Phawana","StationKey":"YL02","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.80016,"Longitude":100.5842,"PinmapX":"2876","PinmapY":"1742","IsCrowded":false,"Orderlist":2},{"StationId":83,"StationName":"โชคชัย 4 | Chok Chai 4","StationNameTH":"โชคชัย 4","StationNameEN":"Chok Chai 4","StationKey":"YL03","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.79442,"Longitude":100.5945,"PinmapX":"3079","PinmapY":"1741","IsCrowded":false,"Orderlist":3},{"StationId":84,"StationName":"ลาดพร้าว 71 | Lat Phrao 71","StationNameTH":"ลาดพร้าว 71","StationNameEN":"Lat Phrao 71","StationKey":"YL04","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.78708,"Longitude":100.6076,"PinmapX":"3276","PinmapY":"1744","IsCrowded":false,"Orderlist":4},{"StationId":85,"StationName":"ลาดพร้าว 83 | Lat Phrao 83","StationNameTH":"ลาดพร้าว 83","StationNameEN":"Lat Phrao 83","StationKey":"YL05","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.78367,"Longitude":100.6137,"PinmapX":"3480","PinmapY":"1744","IsCrowded":false,"Orderlist":5},{"StationId":87,"StationName":"มหาดไทย | Mahat Thai","StationNameTH":"มหาดไทย","StationNameEN":"Mahat Thai","StationKey":"YL06","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.77833,"Longitude":100.6233,"PinmapX":"3638","PinmapY":"1784","IsCrowded":false,"Orderlist":6},{"StationId":86,"StationName":"ลาดพร้าว 101 | Lat Phrao 101","StationNameTH":"ลาดพร้าว 101","StationNameEN":"Lat Phrao 101","StationKey":"YL07","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.77461,"Longitude":100.6299,"PinmapX":"3757","PinmapY":"1900","IsCrowded":false,"Orderlist":7},{"StationId":88,"StationName":"บางกะปิ | Bang Kapi","StationNameTH":"บางกะปิ","StationNameEN":"Bang Kapi","StationKey":"YL08","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.76906,"Longitude":100.6398,"PinmapX":"3876","PinmapY":"2014","IsCrowded":false,"Orderlist":8},{"StationId":89,"StationName":"แยกลำสาลี | Yaek Lam Sali","StationNameTH":"แยกลำสาลี","StationNameEN":"Yaek Lam Sali","StationKey":"YL09","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.76173,"Longitude":100.6455,"PinmapX":"3992","PinmapY":"2131","IsCrowded":false,"Orderlist":9},{"StationId":90,"StationName":"ศรีกรีฑา | Si Kritha","StationNameTH":"ศรีกรีฑา","StationNameEN":"Si Kritha","StationKey":"YL10","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.75037,"Longitude":100.6448,"PinmapX":"4105","PinmapY":"2298","IsCrowded":false,"Orderlist":10},{"StationId":91,"StationName":"หัวหมาก | Hua Mak","StationNameTH":"หัวหมาก","StationNameEN":"Hua Mak","StationKey":"YL11","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.73605,"Longitude":100.6411,"PinmapX":"4106","PinmapY":"2559","IsCrowded":false,"Orderlist":11},{"StationId":92,"StationName":"กลันตัน | Kalantan","StationNameTH":"กลันตัน","StationNameEN":"Kalantan","StationKey":"YL12","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.72531,"Longitude":100.6418,"PinmapX":"4103","PinmapY":"2692","IsCrowded":false,"Orderlist":12},{"StationId":93,"StationName":"ศรีนุช | Si Nut","StationNameTH":"ศรีนุช","StationNameEN":"Si Nut","StationKey":"YL13","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.71101,"Longitude":100.6442,"PinmapX":"4104","PinmapY":"2824","IsCrowded":false,"Orderlist":13},{"StationId":94,"StationName":"ศรีนครินทร์ 38 | Srinagarindra 38","StationNameTH":"ศรีนครินทร์ 38","StationNameEN":"Srinagarindra 38","StationKey":"YL14","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.701,"Longitude":100.6465,"PinmapX":"4101","PinmapY":"2959","IsCrowded":false,"Orderlist":14},{"StationId":95,"StationName":"สวนหลวง ร.9 | Suan Luang Rama IX","StationNameTH":"สวนหลวง ร.9","StationNameEN":"Suan Luang Rama IX","StationKey":"YL15","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.69073,"Longitude":100.6471,"PinmapX":"4103","PinmapY":"3092","IsCrowded":false,"Orderlist":15},{"StationId":96,"StationName":"ศรีอุดม | Si Udom","StationNameTH":"ศรีอุดม","StationNameEN":"Si Udom","StationKey":"YL16","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.67659,"Longitude":100.6462,"PinmapX":"4104","PinmapY":"3225","IsCrowded":false,"Orderlist":16},{"StationId":97,"StationName":"ศรีเอี่ยม | Si lam","StationNameTH":"ศรีเอี่ยม","StationNameEN":"Si lam","StationKey":"YL17","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.66769,"Longitude":100.6451,"PinmapX":"4104","PinmapY":"3361","IsCrowded":false,"Orderlist":17},{"StationId":98,"StationName":"ศรีลาซาล | Si La Salle","StationNameTH":"ศรีลาซาล","StationNameEN":"Si La Salle","StationKey":"YL18","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.65502,"Longitude":100.6421,"PinmapX":"4103","PinmapY":"3492","IsCrowded":false,"Orderlist":18},{"StationId":99,"StationName":"ศรีแบริ่ง | Si Bearing","StationNameTH":"ศรีแบริ่ง","StationNameEN":"Si Bearing","StationKey":"YL19","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.64346,"Longitude":100.6362,"PinmapX":"4104","PinmapY":"3626","IsCrowded":false,"Orderlist":19},{"StationId":100,"StationName":"ศรีด่าน | Si Dan","StationNameTH":"ศรีด่าน","StationNameEN":"Si Dan","StationKey":"YL20","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.63313,"Longitude":100.6301,"PinmapX":"4101","PinmapY":"3759","IsCrowded":false,"Orderlist":20},{"StationId":101,"StationName":"ศรีเทพา | Si Thepha","StationNameTH":"ศรีเทพา","StationNameEN":"Si Thepha","StationKey":"YL21","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.62997,"Longitude":100.6227,"PinmapX":"3982","PinmapY":"3847","IsCrowded":false,"Orderlist":21},{"StationId":102,"StationName":"ทิพวัล | Thipphawan","StationNameTH":"ทิพวัล","StationNameEN":"Thipphawan","StationKey":"YL22","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.63679,"Longitude":100.6099,"PinmapX":"3863","PinmapY":"3850","IsCrowded":false,"Orderlist":22},{"StationId":103,"StationName":"สำโรง | Samrong","StationNameTH":"สำโรง","StationNameEN":"Samrong","StationKey":"YL23","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.64506,"Longitude":100.5966,"PinmapX":"3743","PinmapY":"3850","IsCrowded":false,"Orderlist":23}]},{"LineId":5,"LineName_TH":"สายสีชมพู","LineName_EN":"Pink Line","LineColor":"#D76886","StationList":[{"StationId":134,"StationName":"ศูนย์ราชการนนทบุรี | Nonthaburi Civic Center","StationNameTH":"ศูนย์ราชการนนทบุรี","StationNameEN":"Nonthaburi Civic Center","StationKey":"PK01","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.85967,"Longitude":100.5182,"PinmapX":"1345","PinmapY":"1277","IsCrowded":false,"Orderlist":1},{"StationId":135,"StationName":"แคราย | Khae Rai","StationNameTH":"แคราย","StationNameEN":"Khae Rai","StationKey":"PK02","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.86271,"Longitude":100.5206,"PinmapX":"1266","PinmapY":"1212","IsCrowded":false,"Orderlist":2},{"StationId":136,"StationName":"สนามบินน้ำ | Sanambin Nam","StationNameTH":"สนามบินน้ำ","StationNameEN":"Sanambin Nam","StationKey":"PK03","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.8742,"Longitude":100.5163,"PinmapX":"1179","PinmapY":"1127","IsCrowded":false,"Orderlist":3},{"StationId":137,"StationName":"สามัคคี | Samakkhi","StationNameTH":"สามัคคี","StationNameEN":"Samakkhi","StationKey":"PK04","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.88935,"Longitude":100.5105,"PinmapX":"1103","PinmapY":"1047","IsCrowded":false,"Orderlist":4},{"StationId":138,"StationName":"กรมชลประทาน | Royal Irrigation Department","StationNameTH":"กรมชลประทาน","StationNameEN":"Royal Irrigation Department","StationKey":"PK05","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.89863,"Longitude":100.507,"PinmapX":"1063","PinmapY":"942","IsCrowded":false,"Orderlist":5},{"StationId":139,"StationName":"แยกปากเกร็ด | Yaek Pak Kret","StationNameTH":"แยกปากเกร็ด","StationNameEN":"Yaek Pak Kret","StationKey":"PK06","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.9063,"Longitude":100.5054,"PinmapX":"1058","PinmapY":"827","IsCrowded":false,"Orderlist":6},{"StationId":140,"StationName":"เลี่ยงเมืองปากเกร็ด | Pak Kret Bypass","StationNameTH":"เลี่ยงเมืองปากเกร็ด","StationNameEN":"Pak Kret Bypass","StationKey":"PK07","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.90648,"Longitude":100.5156,"PinmapX":"1188","PinmapY":"784","IsCrowded":false,"Orderlist":7},{"StationId":141,"StationName":"แจ้งวัฒนะ-ปากเกร็ด 28 | Chaeng Watthana-Pak Kret 28","StationNameTH":"แจ้งวัฒนะ-ปากเกร็ด 28","StationNameEN":"Chaeng Watthana-Pak Kret 28","StationKey":"PK08","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.90417,"Longitude":100.5292,"PinmapX":"1321","PinmapY":"784","IsCrowded":false,"Orderlist":8},{"StationId":142,"StationName":"ศรีรัช | Si Rat","StationNameTH":"ศรีรัช","StationNameEN":"Si Rat","StationKey":"PK09","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.90056,"Longitude":100.54,"PinmapX":"1454","PinmapY":"790","IsCrowded":false,"Orderlist":9},{"StationId":143,"StationName":"เมืองทองธานี | Muang Thong Thani","StationNameTH":"เมืองทองธานี","StationNameEN":"Muang Thong Thani","StationKey":"PK10","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.89739,"Longitude":100.5484,"PinmapX":"1582","PinmapY":"787","IsCrowded":false,"Orderlist":10},{"StationId":144,"StationName":"แจ้งวัฒนะ 14 | Chaeng Watthana 14","StationNameTH":"แจ้งวัฒนะ 14","StationNameEN":"Chaeng Watthana 14","StationKey":"PK11","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.89328,"Longitude":100.5601,"PinmapX":"1715","PinmapY":"785","IsCrowded":false,"Orderlist":11},{"StationId":145,"StationName":"ศูนย์ราชการเฉลิมพระเกียรติ | Government Complex","StationNameTH":"ศูนย์ราชการเฉลิมพระเกียรติ","StationNameEN":"Government Complex","StationKey":"PK12","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.89073,"Longitude":100.5673,"PinmapX":"1844","PinmapY":"788","IsCrowded":false,"Orderlist":12},{"StationId":146,"StationName":"โทรคมนาคมแห่งชาติ | National Telecom","StationNameTH":"โทรคมนาคมแห่งชาติ","StationNameEN":"National Telecom","StationKey":"PK13","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.88756,"Longitude":100.5757,"PinmapX":"1971","PinmapY":"789","IsCrowded":false,"Orderlist":13},{"StationId":147,"StationName":"หลักสี่ | Lak Si","StationNameTH":"หลักสี่","StationNameEN":"Lak Si","StationKey":"PK14","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.88411,"Longitude":100.5826,"PinmapX":"2179","PinmapY":"790","IsCrowded":false,"Orderlist":14},{"StationId":148,"StationName":"ราชภัฏพระนคร | Rajabhat Phranakhon","StationNameTH":"ราชภัฏพระนคร","StationNameEN":"Rajabhat Phranakhon","StationKey":"PK15","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.88002,"Longitude":100.5892,"PinmapX":"2314","PinmapY":"790","IsCrowded":false,"Orderlist":15},{"StationId":149,"StationName":"วัดพระศรีมหาธาตุ | Wat Phra Sri Mahathat","StationNameTH":"วัดพระศรีมหาธาตุ","StationNameEN":"Wat Phra Sri Mahathat","StationKey":"PK16","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.87442,"Longitude":100.5968,"PinmapX":"2527","PinmapY":"785","IsCrowded":false,"Orderlist":16},{"StationId":150,"StationName":"รามอินทรา 3 | Ram Inthra 3","StationNameTH":"รามอินทรา 3","StationNameEN":"Ram Inthra 3","StationKey":"PK17","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.87094,"Longitude":100.6026,"PinmapX":"2705","PinmapY":"792","IsCrowded":false,"Orderlist":17},{"StationId":151,"StationName":"ลาดปลาเค้า | Lat Pla Khao","StationNameTH":"ลาดปลาเค้า","StationNameEN":"Lat Pla Khao","StationKey":"PK18","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.86278,"Longitude":100.6178,"PinmapX":"2879","PinmapY":"789","IsCrowded":false,"Orderlist":18},{"StationId":152,"StationName":"รามอินทรา กม.4 | Ram Inthra Kor Mor 4","StationNameTH":"รามอินทรา กม.4","StationNameEN":"Ram Inthra Kor Mor 4","StationKey":"PK19","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.85829,"Longitude":100.6261,"PinmapX":"3053","PinmapY":"787","IsCrowded":false,"Orderlist":19},{"StationId":153,"StationName":"มัยลาภ | Maiyalap","StationNameTH":"มัยลาภ","StationNameEN":"Maiyalap","StationKey":"PK20","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.85501,"Longitude":100.6322,"PinmapX":"3224","PinmapY":"788","IsCrowded":false,"Orderlist":20},{"StationId":154,"StationName":"วัชรพล | Vacharaphol","StationNameTH":"วัชรพล","StationNameEN":"Vacharaphol","StationKey":"PK21","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.84922,"Longitude":100.6429,"PinmapX":"3408","PinmapY":"787","IsCrowded":false,"Orderlist":21},{"StationId":155,"StationName":"รามอินทรา กม.6 | Ram Inthra Kor Mor 6","StationNameTH":"รามอินทรา กม.6","StationNameEN":"Ram Inthra Kor Mor 6","StationKey":"PK22","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.84523,"Longitude":100.6502,"PinmapX":"3579","PinmapY":"791","IsCrowded":false,"Orderlist":22},{"StationId":156,"StationName":"คู้บอน | Khu Bon","StationNameTH":"คู้บอน","StationNameEN":"Khu Bon","StationKey":"PK23","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.84059,"Longitude":100.6588,"PinmapX":"3754","PinmapY":"786","IsCrowded":false,"Orderlist":23},{"StationId":157,"StationName":"รามอินทรา กม.9 | Ram Inthra Kor Mor 9","StationNameTH":"รามอินทรา กม.9","StationNameEN":"Ram Inthra Kor Mor 9","StationKey":"PK24","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.83383,"Longitude":100.6675,"PinmapX":"3928","PinmapY":"788","IsCrowded":false,"Orderlist":24},{"StationId":158,"StationName":"วงแหวนรามอินทรา | Outer Ring Road-Ram Inthra","StationNameTH":"วงแหวนรามอินทรา","StationNameEN":"Outer Ring Road-Ram Inthra","StationKey":"PK25","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.82449,"Longitude":100.6771,"PinmapX":"4073","PinmapY":"874","IsCrowded":false,"Orderlist":25},{"StationId":159,"StationName":"นพรัตน์ | Nopparat","StationNameTH":"นพรัตน์","StationNameEN":"Nopparat","StationKey":"PK26","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.81658,"Longitude":100.6856,"PinmapX":"4185","PinmapY":"989","IsCrowded":false,"Orderlist":26},{"StationId":160,"StationName":"บางชัน | Bang Chan","StationNameTH":"บางชัน","StationNameEN":"Bang Chan","StationKey":"PK27","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.81272,"Longitude":100.7028,"PinmapX":"4296","PinmapY":"1107","IsCrowded":false,"Orderlist":27},{"StationId":161,"StationName":"เศรษฐบุตรบำเพ็ญ | Setthabutbamphen","StationNameTH":"เศรษฐบุตรบำเพ็ญ","StationNameEN":"Setthabutbamphen","StationKey":"PK28","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.81272,"Longitude":100.7124,"PinmapX":"4405","PinmapY":"1214","IsCrowded":false,"Orderlist":28},{"StationId":162,"StationName":"ตลาดมีนบุรี | Min Buri Market","StationNameTH":"ตลาดมีนบุรี","StationNameEN":"Min Buri Market","StationKey":"PK29","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.81255,"Longitude":100.7257,"PinmapX":"4522","PinmapY":"1323","IsCrowded":false,"Orderlist":29},{"StationId":163,"StationName":"มีนบุรี | Min Buri","StationNameTH":"มีนบุรี","StationNameEN":"Min Buri","StationKey":"PK30","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.80842,"Longitude":100.7326,"PinmapX":"4629","PinmapY":"1435","IsCrowded":false,"Orderlist":30},{"StationId":164,"StationName":"อิมแพ็ค เมืองทองธานี | Impact Muang Thong Thani","StationNameTH":"อิมแพ็ค เมืองทองธานี","StationNameEN":"Impact Muang Thong Thani","StationKey":"MT01","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.94048,"Longitude":100.5413,"PinmapX":"1529","PinmapY":"584","IsCrowded":false,"Orderlist":31},{"StationId":165,"StationName":"ทะเลสาบเมืองทองธานี | Lake Muang Thong Thani","StationNameTH":"ทะเลสาบเมืองทองธานี","StationNameEN":"Lake Muang Thong Thani","StationKey":"MT02","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.92075,"Longitude":100.543,"PinmapX":"1531","PinmapY":"425","IsCrowded":false,"Orderlist":32}]}];
+                const FALLBACK_STATION_LIST = [{"LineId":1,"LineName_TH":"สายสุขุมวิท","LineName_EN":"Sukhumvit Line","LineColor":"#7AB420","StationList":[{"StationId":79,"StationName":"คูคต | Khu Khot","StationNameTH":"คูคต","StationNameEN":"Khu Khot","StationKey":"N24","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.93234,"Longitude":100.6466,"PinmapX":"3250","PinmapY":"249","IsCrowded":false,"Orderlist":24},{"StationId":78,"StationName":"แยก คปอ. | Yaek Kor Por Aor","StationNameTH":"แยก คปอ.","StationNameEN":"Yaek Kor Por Aor","StationKey":"N23","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.92498,"Longitude":100.6259,"PinmapX":"3068","PinmapY":"255","IsCrowded":false,"Orderlist":23},{"StationId":77,"StationName":"พิพิธภัณฑ์กองทัพอากาศ | Royal Thai Air Force Museum","StationNameTH":"พิพิธภัณฑ์กองทัพอากาศ","StationNameEN":"Royal Thai Air Force Museum","StationKey":"N22","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.91795,"Longitude":100.6217,"PinmapX":"2873","PinmapY":"341","IsCrowded":false,"Orderlist":22},{"StationId":76,"StationName":"โรงพยาบาลภูมิพลอดุลยเดช | Bhumibol Adulyadej Hospital","StationNameTH":"โรงพยาบาลภูมิพลอดุลยเดช","StationNameEN":"Bhumibol Adulyadej Hospital","StationKey":"N21","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.91072,"Longitude":100.6174,"PinmapX":"2792","PinmapY":"424","IsCrowded":false,"Orderlist":21},{"StationId":75,"StationName":"สะพานใหม่ | Saphan Mai","StationNameTH":"สะพานใหม่","StationNameEN":"Saphan Mai","StationKey":"N20","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.8966,"Longitude":100.6091,"PinmapX":"2714","PinmapY":"503","IsCrowded":false,"Orderlist":20},{"StationId":74,"StationName":"สายหยุด | Sai Yud","StationNameTH":"สายหยุด","StationNameEN":"Sai Yud","StationKey":"N19","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.88844,"Longitude":100.6043,"PinmapX":"2638","PinmapY":"584","IsCrowded":false,"Orderlist":19},{"StationId":73,"StationName":"พหลโยธิน 59 | Phahon Yothin 59","StationNameTH":"พหลโยธิน 59","StationNameEN":"Phahon Yothin 59","StationKey":"N18","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.88245,"Longitude":100.6008,"PinmapX":"2554","PinmapY":"663","IsCrowded":false,"Orderlist":18},{"StationId":69,"StationName":"วัดพระศรีมหาธาตุ | Wat Phra Sri Mahathat","StationNameTH":"วัดพระศรีมหาธาตุ","StationNameEN":"Wat Phra Sri Mahathat","StationKey":"N17","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.87529,"Longitude":100.5968,"PinmapX":"2463","PinmapY":"795","IsCrowded":false,"Orderlist":17},{"StationId":68,"StationName":"กรมทหารราบที่ 11 | 11th Infantry Regiment","StationNameTH":"กรมทหารราบที่ 11","StationNameEN":"11th Infantry Regiment","StationKey":"N16","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.86753,"Longitude":100.5919,"PinmapX":"2469","PinmapY":"917","IsCrowded":false,"Orderlist":16},{"StationId":67,"StationName":"บางบัว | Bang Bua","StationNameTH":"บางบัว","StationNameEN":"Bang Bua","StationKey":"N15","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.85599,"Longitude":100.5852,"PinmapX":"2461","PinmapY":"1043","IsCrowded":false,"Orderlist":15},{"StationId":66,"StationName":"กรมป่าไม้ | Royal Forest Department","StationNameTH":"กรมป่าไม้","StationNameEN":"Royal Forest Department","StationKey":"N14","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.85026,"Longitude":100.5818,"PinmapX":"2464","PinmapY":"1164","IsCrowded":false,"Orderlist":14},{"StationId":62,"StationName":"มหาวิทยาลัยเกษตรศาสตร์ | Kasetsart University","StationNameTH":"มหาวิทยาลัยเกษตรศาสตร์","StationNameEN":"Kasetsart University","StationKey":"N13","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.84207,"Longitude":100.577,"PinmapX":"2464","PinmapY":"1271","IsCrowded":false,"Orderlist":13},{"StationId":61,"StationName":"เสนานิคม | Sena Nikhom","StationNameTH":"เสนานิคม","StationNameEN":"Sena Nikhom","StationKey":"N12","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.83661,"Longitude":100.5738,"PinmapX":"2463","PinmapY":"1406","IsCrowded":false,"Orderlist":12},{"StationId":60,"StationName":"รัชโยธิน | Ratchayothin","StationNameTH":"รัชโยธิน","StationNameEN":"Ratchayothin","StationKey":"N11","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.82968,"Longitude":100.5697,"PinmapX":"2464","PinmapY":"1524","IsCrowded":false,"Orderlist":11},{"StationId":59,"StationName":"พหลโยธิน 24 | Phahon Yothin 24","StationNameTH":"พหลโยธิน 24","StationNameEN":"Phahon Yothin 24","StationKey":"N10","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.82385,"Longitude":100.5664,"PinmapX":"2469","PinmapY":"1646","IsCrowded":false,"Orderlist":10},{"StationId":54,"StationName":"ห้าแยกลาดพร้าว | Ha Yaek Lat Phrao","StationNameTH":"ห้าแยกลาดพร้าว","StationNameEN":"Ha Yaek Lat Phrao","StationKey":"N9","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.81723,"Longitude":100.5623,"PinmapX":"2464","PinmapY":"1791","IsCrowded":false,"Orderlist":9},{"StationId":1,"StationName":"หมอชิต | Mo Chit","StationNameTH":"หมอชิต","StationNameEN":"Mo Chit","StationKey":"N8","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.80265,"Longitude":100.5538,"PinmapX":"2468","PinmapY":"1930","IsCrowded":false,"Orderlist":8},{"StationId":2,"StationName":"สะพานควาย | Saphan Khwai","StationNameTH":"สะพานควาย","StationNameEN":"Saphan Khwai","StationKey":"N7","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.79383,"Longitude":100.5497,"PinmapX":"2461","PinmapY":"2032","IsCrowded":false,"Orderlist":7},{"StationId":3,"StationName":"อารีย์ | Ari","StationNameTH":"อารีย์","StationNameEN":"Ari","StationKey":"N5","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.77979,"Longitude":100.5447,"PinmapX":"2463","PinmapY":"2213","IsCrowded":true,"Orderlist":5},{"StationId":4,"StationName":"สนามเป้า | Sanam Pao","StationNameTH":"สนามเป้า","StationNameEN":"Sanam Pao","StationKey":"N4","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.77264,"Longitude":100.5421,"PinmapX":"2464","PinmapY":"2312","IsCrowded":true,"Orderlist":4},{"StationId":5,"StationName":"อนุสาวรีย์ชัยสมรภูมิ | Victory Monument","StationNameTH":"อนุสาวรีย์ชัยสมรภูมิ","StationNameEN":"Victory Monument","StationKey":"N3","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.76279,"Longitude":100.5371,"PinmapX":"2466","PinmapY":"2399","IsCrowded":false,"Orderlist":3},{"StationId":6,"StationName":"พญาไท | Phaya Thai","StationNameTH":"พญาไท","StationNameEN":"Phaya Thai","StationKey":"N2","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.75682,"Longitude":100.5338,"PinmapX":"2462","PinmapY":"2501","IsCrowded":false,"Orderlist":2},{"StationId":7,"StationName":"ราชเทวี | Ratchathewi","StationNameTH":"ราชเทวี","StationNameEN":"Ratchathewi","StationKey":"N1","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.75193,"Longitude":100.5315,"PinmapX":"2465","PinmapY":"2693","IsCrowded":false,"Orderlist":1},{"StationId":8,"StationName":"สยาม | Siam","StationNameTH":"สยาม","StationNameEN":"Siam","StationKey":"CEN","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.74556,"Longitude":100.5346,"PinmapX":"2506","PinmapY":"2878","IsCrowded":true,"Orderlist":0},{"StationId":9,"StationName":"ชิดลม | Chit Lom","StationNameTH":"ชิดลม","StationNameEN":"Chit Lom","StationKey":"E1","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.74409,"Longitude":100.543,"PinmapX":"2647","PinmapY":"2866","IsCrowded":false,"Orderlist":1},{"StationId":10,"StationName":"เพลินจิต | Phloen Chit","StationNameTH":"เพลินจิต","StationNameEN":"Phloen Chit","StationKey":"E2","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.74306,"Longitude":100.5488,"PinmapX":"2784","PinmapY":"2870","IsCrowded":false,"Orderlist":2},{"StationId":11,"StationName":"นานา | Nana","StationNameTH":"นานา","StationNameEN":"Nana","StationKey":"E3","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.74051,"Longitude":100.5554,"PinmapX":"2926","PinmapY":"2866","IsCrowded":false,"Orderlist":3},{"StationId":12,"StationName":"อโศก | Asok","StationNameTH":"อโศก","StationNameEN":"Asok","StationKey":"E4","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.737,"Longitude":100.5604,"PinmapX":"3067","PinmapY":"2869","IsCrowded":false,"Orderlist":4},{"StationId":13,"StationName":"พร้อมพงษ์ | Phrom Phong","StationNameTH":"พร้อมพงษ์","StationNameEN":"Phrom Phong","StationKey":"E5","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.73043,"Longitude":100.5697,"PinmapX":"3193","PinmapY":"2868","IsCrowded":false,"Orderlist":5},{"StationId":14,"StationName":"ทองหล่อ | Thong Lo","StationNameTH":"ทองหล่อ","StationNameEN":"Thong Lo","StationKey":"E6","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.72424,"Longitude":100.5785,"PinmapX":"3308","PinmapY":"2935","IsCrowded":false,"Orderlist":6},{"StationId":15,"StationName":"เอกมัย | Ekkamai","StationNameTH":"เอกมัย","StationNameEN":"Ekkamai","StationKey":"E7","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.71944,"Longitude":100.5853,"PinmapX":"3388","PinmapY":"3019","IsCrowded":false,"Orderlist":7},{"StationId":16,"StationName":"พระโขนง | Phra Khanong","StationNameTH":"พระโขนง","StationNameEN":"Phra Khanong","StationKey":"E8","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.71518,"Longitude":100.5913,"PinmapX":"3472","PinmapY":"3095","IsCrowded":false,"Orderlist":8},{"StationId":17,"StationName":"อ่อนนุช | On Nut","StationNameTH":"อ่อนนุช","StationNameEN":"On Nut","StationKey":"E9","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.70555,"Longitude":100.6011,"PinmapX":"3554","PinmapY":"3179","IsCrowded":false,"Orderlist":9},{"StationId":18,"StationName":"บางจาก | Bang Chak","StationNameTH":"บางจาก","StationNameEN":"Bang Chak","StationKey":"E10","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.69655,"Longitude":100.6055,"PinmapX":"3636","PinmapY":"3262","IsCrowded":false,"Orderlist":10},{"StationId":19,"StationName":"ปุณณวิถี | Punnawithi","StationNameTH":"ปุณณวิถี","StationNameEN":"Punnawithi","StationKey":"E11","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.6893,"Longitude":100.609,"PinmapX":"3677","PinmapY":"3363","IsCrowded":false,"Orderlist":11},{"StationId":20,"StationName":"อุดมสุข | Udom Suk","StationNameTH":"อุดมสุข","StationNameEN":"Udom Suk","StationKey":"E12","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.67993,"Longitude":100.6096,"PinmapX":"3675","PinmapY":"3483","IsCrowded":false,"Orderlist":12},{"StationId":21,"StationName":"บางนา | Bang Na","StationNameTH":"บางนา","StationNameEN":"Bang Na","StationKey":"E13","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.66812,"Longitude":100.6046,"PinmapX":"3675","PinmapY":"3603","IsCrowded":false,"Orderlist":13},{"StationId":22,"StationName":"แบริ่ง | Bearing","StationNameTH":"แบริ่ง","StationNameEN":"Bearing","StationKey":"E14","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.66117,"Longitude":100.6019,"PinmapX":"3676","PinmapY":"3730","IsCrowded":false,"Orderlist":14},{"StationId":23,"StationName":"สำโรง | Samrong","StationNameTH":"สำโรง","StationNameEN":"Samrong","StationKey":"E15","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.64619,"Longitude":100.5957,"PinmapX":"3679","PinmapY":"3850","IsCrowded":false,"Orderlist":15},{"StationId":46,"StationName":"ปู่เจ้า | Pu Chao","StationNameTH":"ปู่เจ้า","StationNameEN":"Pu Chao","StationKey":"E16","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.63725,"Longitude":100.592,"PinmapX":"3679","PinmapY":"3965","IsCrowded":false,"Orderlist":16},{"StationId":47,"StationName":"ช้างเอราวัณ | Chang Erawan","StationNameTH":"ช้างเอราวัณ","StationNameEN":"Chang Erawan","StationKey":"E17","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.62145,"Longitude":100.5901,"PinmapX":"3675","PinmapY":"4080","IsCrowded":false,"Orderlist":17},{"StationId":48,"StationName":"โรงเรียนนายเรือ | Royal Thai Naval Academy","StationNameTH":"โรงเรียนนายเรือ","StationNameEN":"Royal Thai Naval Academy","StationKey":"E18","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.60855,"Longitude":100.5948,"PinmapX":"3676","PinmapY":"4195","IsCrowded":false,"Orderlist":18},{"StationId":49,"StationName":"ปากน้ำ | Pak Nam","StationNameTH":"ปากน้ำ","StationNameEN":"Pak Nam","StationKey":"E19","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.60207,"Longitude":100.5971,"PinmapX":"3674","PinmapY":"4312","IsCrowded":false,"Orderlist":19},{"StationId":50,"StationName":"ศรีนครินทร์ | Srinagarindra","StationNameTH":"ศรีนครินทร์","StationNameEN":"Srinagarindra","StationKey":"E20","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.59208,"Longitude":100.6089,"PinmapX":"3676","PinmapY":"4426","IsCrowded":false,"Orderlist":20},{"StationId":51,"StationName":"แพรกษา | Phraek Sa","StationNameTH":"แพรกษา","StationNameEN":"Phraek Sa","StationKey":"E21","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.58432,"Longitude":100.608,"PinmapX":"3674","PinmapY":"4541","IsCrowded":false,"Orderlist":21},{"StationId":52,"StationName":"สายลวด | Sai Luat","StationNameTH":"สายลวด","StationNameEN":"Sai Luat","StationKey":"E22","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.57778,"Longitude":100.6054,"PinmapX":"3674","PinmapY":"4655","IsCrowded":false,"Orderlist":22},{"StationId":53,"StationName":"เคหะฯ | Kheha","StationNameTH":"เคหะฯ","StationNameEN":"Kheha","StationKey":"E23","StationLineId":1,"StationLineName":"สายสุขุมวิท | Sukhumvit Line","LineNameTH":"สายสุขุมวิท","LineNameEN":"Sukhumvit Line","StationLineColor":"#7AB420","Latitude":13.56765,"Longitude":100.6077,"PinmapX":"3790","PinmapY":"4771","IsCrowded":false,"Orderlist":23}]},{"LineId":2,"LineName_TH":"สายสีลม","LineName_EN":"Silom Line","LineColor":"#00807D","StationList":[{"StationId":26,"StationName":"สนามกีฬาแห่งชาติ | National Stadium","StationNameTH":"สนามกีฬาแห่งชาติ","StationNameEN":"National Stadium","StationKey":"W1","StationLineId":2,"StationLineName":"สายสีลม | Silom Line","LineNameTH":"สายสีลม","LineNameEN":"Silom Line","StationLineColor":"#00807D","Latitude":13.74649,"Longitude":100.5294,"PinmapX":"2317","PinmapY":"2886","IsCrowded":false,"Orderlist":1},{"StationId":27,"StationName":"สยาม | Siam","StationNameTH":"สยาม","StationNameEN":"Siam","StationKey":"CEN","StationLineId":2,"StationLineName":"สายสีลม | Silom Line","LineNameTH":"สายสีลม","LineNameEN":"Silom Line","StationLineColor":"#00807D","Latitude":13.74552,"Longitude":100.5346,"PinmapX":"","PinmapY":"","IsCrowded":false,"Orderlist":0},{"StationId":28,"StationName":"ราชดำริ | Ratchadamri","StationNameTH":"ราชดำริ","StationNameEN":"Ratchadamri","StationKey":"S1","StationLineId":2,"StationLineName":"สายสีลม | Silom Line","LineNameTH":"สายสีลม","LineNameEN":"Silom Line","StationLineColor":"#00807D","Latitude":13.73947,"Longitude":100.5395,"PinmapX":"2545","PinmapY":"3007","IsCrowded":false,"Orderlist":1},{"StationId":29,"StationName":"ศาลาแดง | Sala Daeng","StationNameTH":"ศาลาแดง","StationNameEN":"Sala Daeng","StationKey":"S2","StationLineId":2,"StationLineName":"สายสีลม | Silom Line","LineNameTH":"สายสีลม","LineNameEN":"Silom Line","StationLineColor":"#00807D","Latitude":13.72855,"Longitude":100.5343,"PinmapX":"2547","PinmapY":"3127","IsCrowded":false,"Orderlist":2},{"StationId":30,"StationName":"ช่องนนทรี | Chong Nonsi","StationNameTH":"ช่องนนทรี","StationNameEN":"Chong Nonsi","StationKey":"S3","StationLineId":2,"StationLineName":"สายสีลม | Silom Line","LineNameTH":"สายสีลม","LineNameEN":"Silom Line","StationLineColor":"#00807D","Latitude":13.72373,"Longitude":100.5294,"PinmapX":"2544","PinmapY":"3294","IsCrowded":false,"Orderlist":3},{"StationId":80,"StationName":"เซนต์หลุยส์ | Saint Louis","StationNameTH":"เซนต์หลุยส์","StationNameEN":"Saint Louis","StationKey":"S4","StationLineId":2,"StationLineName":"สายสีลม | Silom Line","LineNameTH":"สายสีลม","LineNameEN":"Silom Line","StationLineColor":"#00807D","Latitude":13.72107,"Longitude":100.527,"PinmapX":"2522","PinmapY":"3443","IsCrowded":false,"Orderlist":4},{"StationId":31,"StationName":"สุรศักดิ์ | Surasak","StationNameTH":"สุรศักดิ์","StationNameEN":"Surasak","StationKey":"S5","StationLineId":2,"StationLineName":"สายสีลม | Silom Line","LineNameTH":"สายสีลม","LineNameEN":"Silom Line","StationLineColor":"#00807D","Latitude":13.71931,"Longitude":100.5216,"PinmapX":"2447","PinmapY":"3510","IsCrowded":false,"Orderlist":5},{"StationId":32,"StationName":"สะพานตากสิน | Saphan Taksin","StationNameTH":"สะพานตากสิน","StationNameEN":"Saphan Taksin","StationKey":"S6","StationLineId":2,"StationLineName":"สายสีลม | Silom Line","LineNameTH":"สายสีลม","LineNameEN":"Silom Line","StationLineColor":"#00807D","Latitude":13.7188,"Longitude":100.5141,"PinmapX":"2384","PinmapY":"3578","IsCrowded":false,"Orderlist":6},{"StationId":33,"StationName":"กรุงธนบุรี | Krung Thon Buri","StationNameTH":"กรุงธนบุรี","StationNameEN":"Krung Thon Buri","StationKey":"S7","StationLineId":2,"StationLineName":"สายสีลม | Silom Line","LineNameTH":"สายสีลม","LineNameEN":"Silom Line","StationLineColor":"#00807D","Latitude":13.72088,"Longitude":100.5028,"PinmapX":"2190","PinmapY":"3651","IsCrowded":false,"Orderlist":7},{"StationId":34,"StationName":"วงเวียนใหญ่ | Wongwian Yai","StationNameTH":"วงเวียนใหญ่","StationNameEN":"Wongwian Yai","StationKey":"S8","StationLineId":2,"StationLineName":"สายสีลม | Silom Line","LineNameTH":"สายสีลม","LineNameEN":"Silom Line","StationLineColor":"#00807D","Latitude":13.72115,"Longitude":100.4953,"PinmapX":"1966","PinmapY":"3646","IsCrowded":false,"Orderlist":8},{"StationId":35,"StationName":"โพธิ์นิมิตร | Pho Nimit","StationNameTH":"โพธิ์นิมิตร","StationNameEN":"Pho Nimit","StationKey":"S9","StationLineId":2,"StationLineName":"สายสีลม | Silom Line","LineNameTH":"สายสีลม","LineNameEN":"Silom Line","StationLineColor":"#00807D","Latitude":13.71922,"Longitude":100.4859,"PinmapX":"1744","PinmapY":"3649","IsCrowded":false,"Orderlist":9},{"StationId":36,"StationName":"ตลาดพลู | Talat Phlu","StationNameTH":"ตลาดพลู","StationNameEN":"Talat Phlu","StationKey":"S10","StationLineId":2,"StationLineName":"สายสีลม | Silom Line","LineNameTH":"สายสีลม","LineNameEN":"Silom Line","StationLineColor":"#00807D","Latitude":13.71422,"Longitude":100.4767,"PinmapX":"1519","PinmapY":"3647","IsCrowded":false,"Orderlist":10},{"StationId":37,"StationName":"วุฒากาศ | Wutthakat","StationNameTH":"วุฒากาศ","StationNameEN":"Wutthakat","StationKey":"S11","StationLineId":2,"StationLineName":"สายสีลม | Silom Line","LineNameTH":"สายสีลม","LineNameEN":"Silom Line","StationLineColor":"#00807D","Latitude":13.71297,"Longitude":100.4689,"PinmapX":"1279","PinmapY":"3537","IsCrowded":false,"Orderlist":11},{"StationId":38,"StationName":"บางหว้า | Bang Wa","StationNameTH":"บางหว้า","StationNameEN":"Bang Wa","StationKey":"S12","StationLineId":2,"StationLineName":"สายสีลม | Silom Line","LineNameTH":"สายสีลม","LineNameEN":"Silom Line","StationLineColor":"#00807D","Latitude":13.7207,"Longitude":100.4578,"PinmapX":"1100","PinmapY":"3358","IsCrowded":false,"Orderlist":12}]},{"LineId":3,"LineName_TH":"สายสีทอง","LineName_EN":"Gold Line","LineColor":"#a88b34","StationList":[{"StationId":70,"StationName":"กรุงธนบุรี | Krung Thon Buri","StationNameTH":"กรุงธนบุรี","StationNameEN":"Krung Thon Buri","StationKey":"G1","StationLineId":3,"StationLineName":"สายสีทอง | Gold Line","LineNameTH":"สายสีทอง","LineNameEN":"Gold Line","StationLineColor":"#a88b34","Latitude":13.72127,"Longitude":100.5037,"PinmapX":"2188","PinmapY":"3582","IsCrowded":false,"Orderlist":1},{"StationId":71,"StationName":"เจริญนคร | Charoen Nakhon","StationNameTH":"เจริญนคร","StationNameEN":"Charoen Nakhon","StationKey":"G2","StationLineId":3,"StationLineName":"สายสีทอง | Gold Line","LineNameTH":"สายสีทอง","LineNameEN":"Gold Line","StationLineColor":"#a88b34","Latitude":13.72783,"Longitude":100.5093,"PinmapX":"2121","PinmapY":"3459","IsCrowded":false,"Orderlist":2},{"StationId":72,"StationName":"คลองสาน | Khlong San","StationNameTH":"คลองสาน","StationNameEN":"Khlong San","StationKey":"G3","StationLineId":3,"StationLineName":"สายสีทอง | Gold Line","LineNameTH":"สายสีทอง","LineNameEN":"Gold Line","StationLineColor":"#a88b34","Latitude":13.7317,"Longitude":100.5078,"PinmapX":"1991","PinmapY":"3385","IsCrowded":false,"Orderlist":3}]},{"LineId":4,"LineName_TH":"สายสีเหลือง","LineName_EN":"Yellow Line","LineColor":"#FAD53D","StationList":[{"StationId":81,"StationName":"ลาดพร้าว | Lat Phrao","StationNameTH":"ลาดพร้าว","StationNameEN":"Lat Phrao","StationKey":"YL01","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.80701,"Longitude":100.5749,"PinmapX":"2695","PinmapY":"1745","IsCrowded":false,"Orderlist":1},{"StationId":82,"StationName":"ภาวนา | Phawana","StationNameTH":"ภาวนา","StationNameEN":"Phawana","StationKey":"YL02","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.80016,"Longitude":100.5842,"PinmapX":"2876","PinmapY":"1742","IsCrowded":false,"Orderlist":2},{"StationId":83,"StationName":"โชคชัย 4 | Chok Chai 4","StationNameTH":"โชคชัย 4","StationNameEN":"Chok Chai 4","StationKey":"YL03","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.79442,"Longitude":100.5945,"PinmapX":"3079","PinmapY":"1741","IsCrowded":false,"Orderlist":3},{"StationId":84,"StationName":"ลาดพร้าว 71 | Lat Phrao 71","StationNameTH":"ลาดพร้าว 71","StationNameEN":"Lat Phrao 71","StationKey":"YL04","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.78708,"Longitude":100.6076,"PinmapX":"3276","PinmapY":"1744","IsCrowded":false,"Orderlist":4},{"StationId":85,"StationName":"ลาดพร้าว 83 | Lat Phrao 83","StationNameTH":"ลาดพร้าว 83","StationNameEN":"Lat Phrao 83","StationKey":"YL05","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.78367,"Longitude":100.6137,"PinmapX":"3480","PinmapY":"1744","IsCrowded":false,"Orderlist":5},{"StationId":87,"StationName":"มหาดไทย | Mahat Thai","StationNameTH":"มหาดไทย","StationNameEN":"Mahat Thai","StationKey":"YL06","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.77833,"Longitude":100.6233,"PinmapX":"3638","PinmapY":"1784","IsCrowded":false,"Orderlist":6},{"StationId":86,"StationName":"ลาดพร้าว 101 | Lat Phrao 101","StationNameTH":"ลาดพร้าว 101","StationNameEN":"Lat Phrao 101","StationKey":"YL07","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.77461,"Longitude":100.6299,"PinmapX":"3757","PinmapY":"1900","IsCrowded":false,"Orderlist":7},{"StationId":88,"StationName":"บางกะปิ | Bang Kapi","StationNameTH":"บางกะปิ","StationNameEN":"Bang Kapi","StationKey":"YL08","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.76906,"Longitude":100.6398,"PinmapX":"3876","PinmapY":"2014","IsCrowded":false,"Orderlist":8},{"StationId":89,"StationName":"แยกลำสาลี | Yaek Lam Sali","StationNameTH":"แยกลำสาลี","StationNameEN":"Yaek Lam Sali","StationKey":"YL09","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.76173,"Longitude":100.6455,"PinmapX":"3992","PinmapY":"2131","IsCrowded":false,"Orderlist":9},{"StationId":90,"StationName":"ศรีกรีฑา | Si Kritha","StationNameTH":"ศรีกรีฑา","StationNameEN":"Si Kritha","StationKey":"YL10","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.75037,"Longitude":100.6448,"PinmapX":"4105","PinmapY":"2298","IsCrowded":false,"Orderlist":10},{"StationId":91,"StationName":"หัวหมาก | Hua Mak","StationNameTH":"หัวหมาก","StationNameEN":"Hua Mak","StationKey":"YL11","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.73605,"Longitude":100.6411,"PinmapX":"4106","PinmapY":"2559","IsCrowded":false,"Orderlist":11},{"StationId":92,"StationName":"กลันตัน | Kalantan","StationNameTH":"กลันตัน","StationNameEN":"Kalantan","StationKey":"YL12","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.72531,"Longitude":100.6418,"PinmapX":"4103","PinmapY":"2692","IsCrowded":false,"Orderlist":12},{"StationId":93,"StationName":"ศรีนุช | Si Nut","StationNameTH":"ศรีนุช","StationNameEN":"Si Nut","StationKey":"YL13","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.71101,"Longitude":100.6442,"PinmapX":"4104","PinmapY":"2824","IsCrowded":false,"Orderlist":13},{"StationId":94,"StationName":"ศรีนครินทร์ 38 | Srinagarindra 38","StationNameTH":"ศรีนครินทร์ 38","StationNameEN":"Srinagarindra 38","StationKey":"YL14","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.701,"Longitude":100.6465,"PinmapX":"4101","PinmapY":"2959","IsCrowded":false,"Orderlist":14},{"StationId":95,"StationName":"สวนหลวง ร.9 | Suan Luang Rama IX","StationNameTH":"สวนหลวง ร.9","StationNameEN":"Suan Luang Rama IX","StationKey":"YL15","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.69073,"Longitude":100.6471,"PinmapX":"4103","PinmapY":"3092","IsCrowded":false,"Orderlist":15},{"StationId":96,"StationName":"ศรีอุดม | Si Udom","StationNameTH":"ศรีอุดม","StationNameEN":"Si Udom","StationKey":"YL16","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.67659,"Longitude":100.6462,"PinmapX":"4104","PinmapY":"3225","IsCrowded":false,"Orderlist":16},{"StationId":97,"StationName":"ศรีเอี่ยม | Si lam","StationNameTH":"ศรีเอี่ยม","StationNameEN":"Si lam","StationKey":"YL17","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.66769,"Longitude":100.6451,"PinmapX":"4104","PinmapY":"3361","IsCrowded":false,"Orderlist":17},{"StationId":98,"StationName":"ศรีลาซาล | Si La Salle","StationNameTH":"ศรีลาซาล","StationNameEN":"Si La Salle","StationKey":"YL18","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.65502,"Longitude":100.6421,"PinmapX":"4103","PinmapY":"3492","IsCrowded":false,"Orderlist":18},{"StationId":99,"StationName":"ศรีแบริ่ง | Si Bearing","StationNameTH":"ศรีแบริ่ง","StationNameEN":"Si Bearing","StationKey":"YL19","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.64346,"Longitude":100.6362,"PinmapX":"4104","PinmapY":"3626","IsCrowded":false,"Orderlist":19},{"StationId":100,"StationName":"ศรีด่าน | Si Dan","StationNameTH":"ศรีด่าน","StationNameEN":"Si Dan","StationKey":"YL20","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.63313,"Longitude":100.6301,"PinmapX":"4101","PinmapY":"3759","IsCrowded":false,"Orderlist":20},{"StationId":101,"StationName":"ศรีเทพา | Si Thepha","StationNameTH":"ศรีเทพา","StationNameEN":"Si Thepha","StationKey":"YL21","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.62997,"Longitude":100.6227,"PinmapX":"3982","PinmapY":"3847","IsCrowded":false,"Orderlist":21},{"StationId":102,"StationName":"ทิพวัล | Thipphawan","StationNameTH":"ทิพวัล","StationNameEN":"Thipphawan","StationKey":"YL22","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.63679,"Longitude":100.6099,"PinmapX":"3863","PinmapY":"3850","IsCrowded":false,"Orderlist":22},{"StationId":103,"StationName":"สำโรง | Samrong","StationNameTH":"สำโรง","StationNameEN":"Samrong","StationKey":"YL23","StationLineId":4,"StationLineName":"สายสีเหลือง | Yellow Line","LineNameTH":"สายสีเหลือง","LineNameEN":"Yellow Line","StationLineColor":"#FAD53D","Latitude":13.64506,"Longitude":100.5966,"PinmapX":"3743","PinmapY":"3850","IsCrowded":false,"Orderlist":23}]},{"LineId":5,"LineName_TH":"สายสีชมพู","LineName_EN":"Pink Line","LineColor":"#D76886","StationList":[{"StationId":134,"StationName":"ศูนย์ราชการนนทบุรี | Nonthaburi Civic Center","StationNameTH":"ศูนย์ราชการนนทบุรี","StationNameEN":"Nonthaburi Civic Center","StationKey":"PK01","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.85967,"Longitude":100.5182,"PinmapX":"1345","PinmapY":"1277","IsCrowded":false,"Orderlist":1},{"StationId":135,"StationName":"แคราย | Khae Rai","StationNameTH":"แคราย","StationNameEN":"Khae Rai","StationKey":"PK02","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.86271,"Longitude":100.5206,"PinmapX":"1266","PinmapY":"1212","IsCrowded":false,"Orderlist":2},{"StationId":136,"StationName":"สนามบินน้ำ | Sanambin Nam","StationNameTH":"สนามบินน้ำ","StationNameEN":"Sanambin Nam","StationKey":"PK03","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.8742,"Longitude":100.5163,"PinmapX":"1179","PinmapY":"1127","IsCrowded":false,"Orderlist":3},{"StationId":137,"StationName":"สามัคคี | Samakkhi","StationNameTH":"สามัคคี","StationNameEN":"Samakkhi","StationKey":"PK04","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.88935,"Longitude":100.5105,"PinmapX":"1103","PinmapY":"1047","IsCrowded":false,"Orderlist":4},{"StationId":138,"StationName":"กรมชลประทาน | Royal Irrigation Department","StationNameTH":"กรมชลประทาน","StationNameEN":"Royal Irrigation Department","StationKey":"PK05","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.89863,"Longitude":100.507,"PinmapX":"1063","PinmapY":"942","IsCrowded":false,"Orderlist":5},{"StationId":139,"StationName":"แยกปากเกร็ด | Yaek Pak Kret","StationNameTH":"แยกปากเกร็ด","StationNameEN":"Yaek Pak Kret","StationKey":"PK06","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.9063,"Longitude":100.5054,"PinmapX":"1058","PinmapY":"827","IsCrowded":false,"Orderlist":6},{"StationId":140,"StationName":"เลี่ยงเมืองปากเกร็ด | Pak Kret Bypass","StationNameTH":"เลี่ยงเมืองปากเกร็ด","StationNameEN":"Pak Kret Bypass","StationKey":"PK07","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.90648,"Longitude":100.5156,"PinmapX":"1188","PinmapY":"784","IsCrowded":false,"Orderlist":7},{"StationId":141,"StationName":"แจ้งวัฒนะ-ปากเกร็ด 28 | Chaeng Watthana-Pak Kret 28","StationNameTH":"แจ้งวัฒนะ-ปากเกร็ด 28","StationNameEN":"Chaeng Watthana-Pak Kret 28","StationKey":"PK08","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.90417,"Longitude":100.5292,"PinmapX":"1321","PinmapY":"784","IsCrowded":false,"Orderlist":8},{"StationId":142,"StationName":"ศรีรัช | Si Rat","StationNameTH":"ศรีรัช","StationNameEN":"Si Rat","StationKey":"PK09","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.90056,"Longitude":100.54,"PinmapX":"1454","PinmapY":"790","IsCrowded":false,"Orderlist":9},{"StationId":143,"StationName":"เมืองทองธานี | Muang Thong Thani","StationNameTH":"เมืองทองธานี","StationNameEN":"Muang Thong Thani","StationKey":"PK10","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.89739,"Longitude":100.5484,"PinmapX":"1582","PinmapY":"787","IsCrowded":false,"Orderlist":10},{"StationId":144,"StationName":"แจ้งวัฒนะ 14 | Chaeng Watthana 14","StationNameTH":"แจ้งวัฒนะ 14","StationNameEN":"Chaeng Watthana 14","StationKey":"PK11","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.89328,"Longitude":100.5601,"PinmapX":"1715","PinmapY":"785","IsCrowded":false,"Orderlist":11},{"StationId":145,"StationName":"ศูนย์ราชการเฉลิมพระเกียรติ | Government Complex","StationNameTH":"ศูนย์ราชการเฉลิมพระเกียรติ","StationNameEN":"Government Complex","StationKey":"PK12","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.89073,"Longitude":100.5673,"PinmapX":"1844","PinmapY":"788","IsCrowded":false,"Orderlist":12},{"StationId":146,"StationName":"โทรคมนาคมแห่งชาติ | National Telecom","StationNameTH":"โทรคมนาคมแห่งชาติ","StationNameEN":"National Telecom","StationKey":"PK13","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.88756,"Longitude":100.5757,"PinmapX":"1971","PinmapY":"789","IsCrowded":false,"Orderlist":13},{"StationId":147,"StationName":"หลักสี่ | Lak Si","StationNameTH":"หลักสี่","StationNameEN":"Lak Si","StationKey":"PK14","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.88411,"Longitude":100.5826,"PinmapX":"2179","PinmapY":"790","IsCrowded":false,"Orderlist":14},{"StationId":148,"StationName":"ราชภัฏพระนคร | Rajabhat Phranakhon","StationNameTH":"ราชภัฏพระนคร","StationNameEN":"Rajabhat Phranakhon","StationKey":"PK15","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.88002,"Longitude":100.5892,"PinmapX":"2314","PinmapY":"790","IsCrowded":false,"Orderlist":15},{"StationId":149,"StationName":"วัดพระศรีมหาธาตุ | Wat Phra Sri Mahathat","StationNameTH":"วัดพระศรีมหาธาตุ","StationNameEN":"Wat Phra Sri Mahathat","StationKey":"PK16","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.87442,"Longitude":100.5968,"PinmapX":"2527","PinmapY":"785","IsCrowded":false,"Orderlist":16},{"StationId":150,"StationName":"รามอินทรา 3 | Ram Inthra 3","StationNameTH":"รามอินทรา 3","StationNameEN":"Ram Inthra 3","StationKey":"PK17","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.87094,"Longitude":100.6026,"PinmapX":"2705","PinmapY":"792","IsCrowded":false,"Orderlist":17},{"StationId":151,"StationName":"ลาดปลาเค้า | Lat Pla Khao","StationNameTH":"ลาดปลาเค้า","StationNameEN":"Lat Pla Khao","StationKey":"PK18","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.86278,"Longitude":100.6178,"PinmapX":"2879","PinmapY":"789","IsCrowded":false,"Orderlist":18},{"StationId":152,"StationName":"รามอินทรา กม.4 | Ram Inthra Kor Mor 4","StationNameTH":"รามอินทรา กม.4","StationNameEN":"Ram Inthra Kor Mor 4","StationKey":"PK19","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.85829,"Longitude":100.6261,"PinmapX":"3053","PinmapY":"787","IsCrowded":false,"Orderlist":19},{"StationId":153,"StationName":"มัยลาภ | Maiyalap","StationNameTH":"มัยลาภ","StationNameEN":"Maiyalap","StationKey":"PK20","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.85501,"Longitude":100.6322,"PinmapX":"3224","PinmapY":"788","IsCrowded":false,"Orderlist":20},{"StationId":154,"StationName":"วัชรพล | Vacharaphol","StationNameTH":"วัชรพล","StationNameEN":"Vacharaphol","StationKey":"PK21","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.84922,"Longitude":100.6429,"PinmapX":"3408","PinmapY":"787","IsCrowded":false,"Orderlist":21},{"StationId":155,"StationName":"รามอินทรา กม.6 | Ram Inthra Kor Mor 6","StationNameTH":"รามอินทรา กม.6","StationNameEN":"Ram Inthra Kor Mor 6","StationKey":"PK22","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.84523,"Longitude":100.6502,"PinmapX":"3579","PinmapY":"791","IsCrowded":false,"Orderlist":22},{"StationId":156,"StationName":"คู้บอน | Khu Bon","StationNameTH":"คู้บอน","StationNameEN":"Khu Bon","StationKey":"PK23","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.84059,"Longitude":100.6588,"PinmapX":"3754","PinmapY":"786","IsCrowded":false,"Orderlist":23},{"StationId":157,"StationName":"รามอินทรา กม.9 | Ram Inthra Kor Mor 9","StationNameTH":"รามอินทรา กม.9","StationNameEN":"Ram Inthra Kor Mor 9","StationKey":"PK24","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.83383,"Longitude":100.6675,"PinmapX":"3928","PinmapY":"788","IsCrowded":false,"Orderlist":24},{"StationId":158,"StationName":"วงแหวนรามอินทรา | Outer Ring Road-Ram Inthra","StationNameTH":"วงแหวนรามอินทรา","StationNameEN":"Outer Ring Road-Ram Inthra","StationKey":"PK25","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.82449,"Longitude":100.6771,"PinmapX":"4073","PinmapY":"874","IsCrowded":false,"Orderlist":25},{"StationId":159,"StationName":"นพรัตน์ | Nopparat","StationNameTH":"นพรัตน์","StationNameEN":"Nopparat","StationKey":"PK26","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.81658,"Longitude":100.6856,"PinmapX":"4185","PinmapY":"989","IsCrowded":false,"Orderlist":26},{"StationId":160,"StationName":"บางชัน | Bang Chan","StationNameTH":"บางชัน","StationNameEN":"Bang Chan","StationKey":"PK27","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.81272,"Longitude":100.7028,"PinmapX":"4296","PinmapY":"1107","IsCrowded":false,"Orderlist":27},{"StationId":161,"StationName":"เศรษฐบุตรบำเพ็ญ | Setthabutbamphen","StationNameTH":"เศรษฐบุตรบำเพ็ญ","StationNameEN":"Setthabutbamphen","StationKey":"PK28","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.81272,"Longitude":100.7124,"PinmapX":"4405","PinmapY":"1214","IsCrowded":false,"Orderlist":28},{"StationId":162,"StationName":"ตลาดมีนบุรี | Min Buri Market","StationNameTH":"ตลาดมีนบุรี","StationNameEN":"Min Buri Market","StationKey":"PK29","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.81255,"Longitude":100.7257,"PinmapX":"4522","PinmapY":"1323","IsCrowded":false,"Orderlist":29},{"StationId":163,"StationName":"มีนบุรี | Min Buri","StationNameTH":"มีนบุรี","StationNameEN":"Min Buri","StationKey":"PK30","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.80842,"Longitude":100.7326,"PinmapX":"4629","PinmapY":"1435","IsCrowded":false,"Orderlist":30},{"StationId":164,"StationName":"อิมแพ็ค เมืองทองธานี | Impact Muang Thong Thani","StationNameTH":"อิมแพ็ค เมืองทองธานี","StationNameEN":"Impact Muang Thong Thani","StationKey":"MT01","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.94048,"Longitude":100.5413,"PinmapX":"1529","PinmapY":"584","IsCrowded":false,"Orderlist":31},{"StationId":165,"StationName":"ทะเลสาบเมืองทองธานี | Lake Muang Thong Thani","StationNameTH":"ทะเลสาบเมืองทองธานี","StationNameEN":"Lake Muang Thong Thani","StationKey":"MT02","StationLineId":5,"StationLineName":"สายสีชมพู | Pink Line","LineNameTH":"สายสีชมพู","LineNameEN":"Pink Line","StationLineColor":"#D76886","Latitude":13.92075,"Longitude":100.543,"PinmapX":"1531","PinmapY":"425","IsCrowded":false,"Orderlist":32}]}];
 
         async function fetchStationList() {
             // cache 24 ชม. หรือ fallback ในเครื่อง — เปิดแอปขึ้นทันที 0ms แล้วค่อย refresh เบื้องหลัง
@@ -981,7 +977,7 @@ gQIDAQAB
                 return cached;
             }
             try {
-                const res = await postJSON(STATION_LIST_URL, null, {});
+                const res = await postJSON(STATION_LIST_URL('en'), null, {}, 5000);
                 if (res.status === 200 && res.data?.ErrMessage === 'Success' && Array.isArray(res.data.data)) {
                     localStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), data: res.data.data }));
                     return res.data.data;
@@ -997,7 +993,7 @@ gQIDAQAB
 
         async function refreshStationListInBackground() {
             try {
-                const res = await postJSON(STATION_LIST_URL, null, {});
+                const res = await postJSON(STATION_LIST_URL('en'), null, {}, 5000);
                 if (res.status === 200 && res.data?.ErrMessage === 'Success') {
                     localStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), data: res.data.data }));
                     applyCrowdedUpdate(res.data.data);
@@ -1041,6 +1037,26 @@ gQIDAQAB
             if (km == null) return '';
             if (km <= 0.12) return T('atStation');
             return km < 1 ? Math.round(km * 1000) + T('mUnit') : km.toFixed(1) + T('kmUnit');
+        }
+
+        async function fetchIpLocation(timeoutMs = 2500) {
+            if (typeof fetch !== 'function') throw new Error('fetch not available');
+            const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+            const timer = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;
+            try {
+                const res = await fetch('https://ipwho.is/', {
+                    signal: controller ? controller.signal : undefined,
+                    cache: 'no-cache'
+                });
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const data = await res.json();
+                if (data && data.success && data.latitude && data.longitude) {
+                    return { lat: data.latitude, lon: data.longitude };
+                }
+                throw new Error('Invalid IP geo payload');
+            } finally {
+                if (timer) clearTimeout(timer);
+            }
         }
 
         function isMrtLineId(id) {
@@ -1103,7 +1119,10 @@ gQIDAQAB
         }
 
         function allJourneyLines() {
-            return [...(App.lines || []), ...MRT_STATIC_DB.lines];
+            const appLines = (typeof App !== 'undefined' && App.lines && App.lines.length)
+                ? App.lines
+                : (typeof FALLBACK_STATION_LIST !== 'undefined' ? FALLBACK_STATION_LIST : []);
+            return [...appLines, ...MRT_STATIC_DB.lines];
         }
 
         function journeyLineById(id) {
@@ -1526,6 +1545,398 @@ gQIDAQAB
             ];
         }
 
+        /* ================= TRANSIT LINES CATALOG & DETAILED TABLES ================= */
+        const TRANSIT_LINES_CATALOG = [
+            {
+                id: 0,
+                nameTH: 'ทั้งหมด',
+                nameEN: 'All Lines',
+                color: '#64748B',
+                operatorTH: 'โครงข่ายรถไฟฟ้า 10 สาย กทม. และปริมณฑล',
+                operatorEN: '10 Transit Lines Network in Bangkok',
+                terminusTH: 'ทุกเส้นทางครอบคลุมทั้งระบบ',
+                terminusEN: 'Comprehensive Network Coverage',
+                minFare: 12,
+                maxFare: 62,
+                pricingModelTH: 'ขึ้นกับแต่ละสาย (ตามระยะทาง / นโยบาย 20 บาท)',
+                pricingModelEN: 'Line-dependent (Distance / 20 Baht Flat Cap)',
+                ticketsTH: 'EMV Contactless, Rabbit, Token, Smart Pass',
+                ticketsEN: 'EMV Contactless, Rabbit, Token, Smart Pass',
+                firstTrainTH: '05:00 - 06:00 น.',
+                firstTrainEN: '05:00 - 06:00',
+                lastTrainTH: '23:30 - 00:30 น.',
+                lastTrainEN: '23:30 - 00:30',
+                peakFreqTH: '2.30 - 5.00 นาที',
+                peakFreqEN: '2.30 - 5.00 min',
+                offPeakFreqTH: '5.00 - 15.00 นาที',
+                offPeakFreqEN: '5.00 - 15.00 min'
+            },
+            {
+                id: 1,
+                nameTH: 'BTS สายสุขุมวิท',
+                nameEN: 'BTS Sukhumvit Line',
+                color: '#7AB420',
+                operatorTH: 'BTSC (ระบบรถไฟฟ้าบีทีเอส)',
+                operatorEN: 'BTSC (Bangkok Mass Transit System)',
+                terminusTH: 'คูคต ↔ เคหะฯ (47 สถานี)',
+                terminusEN: 'Khu Khot ↔ Kheha (47 Stations)',
+                minFare: 17,
+                maxFare: 62,
+                pricingModelTH: 'ตามจำนวนสถานี (สัมปทานหลัก ฿17-฿47 + ส่วนต่อขยาย +฿15)',
+                pricingModelEN: 'By stations (Core ฿17-฿47 + Extensions +฿15)',
+                ticketsTH: 'บัตร Rabbit, บัตรเที่ยวเดียว, One-Day Pass (฿150)',
+                ticketsEN: 'Rabbit Card, Single Journey Ticket, One-Day Pass (฿150)',
+                firstTrainTH: '05:15 - 05:30 น.',
+                firstTrainEN: '05:15 - 05:30',
+                lastTrainTH: '24:00 - 00:30 น.',
+                lastTrainEN: '24:00 - 00:30',
+                peakFreqTH: '2.30 - 3.50 นาที',
+                peakFreqEN: '2.30 - 3.50 min',
+                offPeakFreqTH: '5.00 - 8.00 นาที',
+                offPeakFreqEN: '5.00 - 8.00 min',
+                dir1: { toTH: 'คูคต (Khu Khot)', toEN: 'Khu Khot', first: '05:15', last: '23:30' },
+                dir2: { toTH: 'เคหะฯ (Kheha)', toEN: 'Kheha', first: '05:15', last: '23:30' }
+            },
+            {
+                id: 2,
+                nameTH: 'BTS สายสีลม',
+                nameEN: 'BTS Silom Line',
+                color: '#00807D',
+                operatorTH: 'BTSC (ระบบรถไฟฟ้าบีทีเอส)',
+                operatorEN: 'BTSC (Bangkok Mass Transit System)',
+                terminusTH: 'สนามกีฬาแห่งชาติ ↔ บางหว้า (14 สถานี)',
+                terminusEN: 'National Stadium ↔ Bang Wa (14 Stations)',
+                minFare: 17,
+                maxFare: 62,
+                pricingModelTH: 'ตามจำนวนสถานี (สัมปทานหลัก ฿17-฿47 + ส่วนต่อขยาย +฿15)',
+                pricingModelEN: 'By stations (Core ฿17-฿47 + Extensions +฿15)',
+                ticketsTH: 'บัตร Rabbit, บัตรเที่ยวเดียว, One-Day Pass (฿150)',
+                ticketsEN: 'Rabbit Card, Single Journey Ticket, One-Day Pass (฿150)',
+                firstTrainTH: '05:30 น.',
+                firstTrainEN: '05:30',
+                lastTrainTH: '24:00 น.',
+                lastTrainEN: '24:00',
+                peakFreqTH: '3.45 นาที',
+                peakFreqEN: '3.45 min',
+                offPeakFreqTH: '6.00 - 8.00 นาที',
+                offPeakFreqEN: '6.00 - 8.00 min',
+                dir1: { toTH: 'สนามกีฬาแห่งชาติ (National Stadium)', toEN: 'National Stadium', first: '05:30', last: '24:00' },
+                dir2: { toTH: 'บางหว้า (Bang Wa)', toEN: 'Bang Wa', first: '05:30', last: '24:00' }
+            },
+            {
+                id: 3,
+                nameTH: 'สายสีทอง',
+                nameEN: 'Gold Line (APM)',
+                color: '#C9A038',
+                operatorTH: 'กรุงเทพธนาคม (KT) / BTSC',
+                operatorEN: 'Krungthep Thanakom / BTSC',
+                terminusTH: 'กรุงธนบุรี ↔ คลองสาน (3 สถานี)',
+                terminusEN: 'Krung Thon Buri ↔ Khlong San (3 Stations)',
+                minFare: 16,
+                maxFare: 16,
+                pricingModelTH: 'ราคาเดียว 16 บาท ตลอดสาย (Flat Rate ฿16)',
+                pricingModelEN: 'Flat Rate ฿16 regardless of distance',
+                ticketsTH: 'บัตร Rabbit, บัตรโดยสารเที่ยวเดียว',
+                ticketsEN: 'Rabbit Card, Single Journey Ticket',
+                firstTrainTH: '06:00 น.',
+                firstTrainEN: '06:00',
+                lastTrainTH: '24:00 น.',
+                lastTrainEN: '24:00',
+                peakFreqTH: '8.00 นาที',
+                peakFreqEN: '8.00 min',
+                offPeakFreqTH: '10.00 - 15.00 นาที',
+                offPeakFreqEN: '10.00 - 15.00 min',
+                dir1: { toTH: 'กรุงธนบุรี (Krung Thon Buri)', toEN: 'Krung Thon Buri', first: '06:00', last: '24:00' },
+                dir2: { toTH: 'คลองสาน (Khlong San)', toEN: 'Khlong San', first: '06:00', last: '24:00' }
+            },
+            {
+                id: 4,
+                nameTH: 'MRT สายสีเหลือง',
+                nameEN: 'MRT Yellow Line',
+                color: '#FFD100',
+                operatorTH: 'EBM (Eastern Bangkok Monorail)',
+                operatorEN: 'EBM (Eastern Bangkok Monorail)',
+                terminusTH: 'ลาดพร้าว ↔ สำโรง (23 สถานี)',
+                terminusEN: 'Lat Phrao ↔ Samrong (23 Stations)',
+                minFare: 15,
+                maxFare: 45,
+                pricingModelTH: 'คำนวณตามระยะทาง (฿15 - ฿45)',
+                pricingModelEN: 'Distance-based tariff (฿15 - ฿45)',
+                ticketsTH: 'บัตร Rabbit, บัตร EMV Contactless, บัตรเที่ยวเดียว',
+                ticketsEN: 'Rabbit Card, EMV Contactless, Single Journey Ticket',
+                firstTrainTH: '06:00 น.',
+                firstTrainEN: '06:00',
+                lastTrainTH: '24:00 น.',
+                lastTrainEN: '24:00',
+                peakFreqTH: '5.00 นาที',
+                peakFreqEN: '5.00 min',
+                offPeakFreqTH: '10.00 นาที',
+                offPeakFreqEN: '10.00 min',
+                dir1: { toTH: 'ลาดพร้าว (Lat Phrao)', toEN: 'Lat Phrao', first: '06:00', last: '24:00' },
+                dir2: { toTH: 'สำโรง (Samrong)', toEN: 'Samrong', first: '06:00', last: '24:00' }
+            },
+            {
+                id: 5,
+                nameTH: 'MRT สายสีชมพู',
+                nameEN: 'MRT Pink Line',
+                color: '#EC4899',
+                operatorTH: 'NBM (Northern Bangkok Monorail)',
+                operatorEN: 'NBM (Northern Bangkok Monorail)',
+                terminusTH: 'ศูนย์ราชการนนทบุรี ↔ มีนบุรี (30 สถานี)',
+                terminusEN: 'Nonthaburi Civic Center ↔ Min Buri (30 Stations)',
+                minFare: 15,
+                maxFare: 45,
+                pricingModelTH: 'คำนวณตามระยะทาง (฿15 - ฿45)',
+                pricingModelEN: 'Distance-based tariff (฿15 - ฿45)',
+                ticketsTH: 'บัตร Rabbit, บัตร EMV Contactless, บัตรเที่ยวเดียว',
+                ticketsEN: 'Rabbit Card, EMV Contactless, Single Journey Ticket',
+                firstTrainTH: '06:00 น.',
+                firstTrainEN: '06:00',
+                lastTrainTH: '24:00 น.',
+                lastTrainEN: '24:00',
+                peakFreqTH: '5.00 นาที',
+                peakFreqEN: '5.00 min',
+                offPeakFreqTH: '10.00 นาที',
+                offPeakFreqEN: '10.00 min',
+                dir1: { toTH: 'ศูนย์ราชการนนทบุรี (Nonthaburi Civic Center)', toEN: 'Nonthaburi Civic Center', first: '06:00', last: '24:00' },
+                dir2: { toTH: 'มีนบุรี (Min Buri)', toEN: 'Min Buri', first: '06:00', last: '24:00' }
+            },
+            {
+                id: 101,
+                nameTH: 'MRT สายสีน้ำเงิน',
+                nameEN: 'MRT Blue Line',
+                color: '#0284C7',
+                operatorTH: 'BEM (Bangkok Expressway and Metro) / รฟม.',
+                operatorEN: 'BEM / MRTA (Mass Rapid Transit Authority)',
+                terminusTH: 'ท่าพระ ↔ หลักสอง (สายวงกลม, 38 สถานี)',
+                terminusEN: 'Tha Phra ↔ Lak Song (Loop Line, 38 Stations)',
+                minFare: 17,
+                maxFare: 43,
+                pricingModelTH: 'คำนวณตามจำนวนสถานี (฿17 - ฿43)',
+                pricingModelEN: 'Calculated by stations (฿17 - ฿43)',
+                ticketsTH: 'เหรียญโดยสาร (Token), บัตร MRT, บัตร EMV Contactless',
+                ticketsEN: 'Single Journey Token, MRT Card, EMV Contactless',
+                firstTrainTH: '06:00 น. (วันหยุด 06:00 น.)',
+                firstTrainEN: '06:00 (Holidays 06:00)',
+                lastTrainTH: '23:30 - 24:00 น.',
+                lastTrainEN: '23:30 - 24:00',
+                peakFreqTH: '3.30 - 4.00 นาที',
+                peakFreqEN: '3.30 - 4.00 min',
+                offPeakFreqTH: '5.00 - 8.00 นาที',
+                offPeakFreqEN: '5.00 - 8.00 min',
+                dir1: { toTH: 'ท่าพระ (ผ่านบางซื่อ)', toEN: 'Tha Phra (via Bang Sue)', first: '05:30', last: '23:30' },
+                dir2: { toTH: 'หลักสอง (ผ่านหัวลำโพง)', toEN: 'Lak Song (via Hua Lamphong)', first: '05:30', last: '23:30' }
+            },
+            {
+                id: 102,
+                nameTH: 'MRT สายสีม่วง',
+                nameEN: 'MRT Purple Line',
+                color: '#8A2C9B',
+                operatorTH: 'BEM / รฟม.',
+                operatorEN: 'BEM / MRTA',
+                terminusTH: 'คลองบางไผ่ ↔ เตาปูน (16 สถานี)',
+                terminusEN: 'Khlong Bang Phai ↔ Tao Poon (16 Stations)',
+                minFare: 14,
+                maxFare: 20,
+                pricingModelTH: '🌟 นโยบาย 20 บาทตลอดสาย (สูงสุดไม่เกิน ฿20)',
+                pricingModelEN: '🌟 Flat 20 Baht Policy (Capped at ฿20 max)',
+                ticketsTH: 'เหรียญโดยสาร (Token), บัตร MRT Plus, บัตร EMV Contactless',
+                ticketsEN: 'Single Journey Token, MRT Plus Card, EMV Contactless',
+                firstTrainTH: '05:30 น. (วันหยุด 06:00 น.)',
+                firstTrainEN: '05:30 (Holidays 06:00)',
+                lastTrainTH: '23:30 - 24:00 น.',
+                lastTrainEN: '23:30 - 24:00',
+                peakFreqTH: '4.30 - 6.00 นาที',
+                peakFreqEN: '4.30 - 6.00 min',
+                offPeakFreqTH: '7.00 - 9.00 นาที',
+                offPeakFreqEN: '7.00 - 9.00 min',
+                dir1: { toTH: 'เตาปูน (Tao Poon)', toEN: 'Tao Poon', first: '05:30', last: '23:25' },
+                dir2: { toTH: 'คลองบางไผ่ (Khlong Bang Phai)', toEN: 'Khlong Bang Phai', first: '06:00', last: '23:55' }
+            },
+            {
+                id: 103,
+                nameTH: 'SRT สายสีแดง',
+                nameEN: 'SRT Red Line',
+                color: '#DC2626',
+                operatorTH: 'SRTET (รถไฟฟ้า ร.ฟ.ท.)',
+                operatorEN: 'SRTET (State Railway of Thailand Electrified Train)',
+                terminusTH: 'กรุงเทพอภิวัฒน์ ↔ รังสิต / ตลิ่งชัน (14 สถานี)',
+                terminusEN: 'Krung Thep Aphiwat ↔ Rangsit / Taling Chan (14 Stations)',
+                minFare: 12,
+                maxFare: 20,
+                pricingModelTH: '🌟 นโยบาย 20 บาทตลอดสาย (สูงสุดไม่เกิน ฿20)',
+                pricingModelEN: '🌟 Flat 20 Baht Policy (Capped at ฿20 max)',
+                ticketsTH: 'เหรียญโดยสาร (Token), บัตร SRTET, บัตร EMV Contactless',
+                ticketsEN: 'Single Journey Token, SRTET Card, EMV Contactless',
+                firstTrainTH: '05:00 น.',
+                firstTrainEN: '05:00',
+                lastTrainTH: '24:00 น.',
+                lastTrainEN: '24:00',
+                peakFreqTH: '10.00 นาที (สายเหนือ) / 20.00 นาที (สายตะวันตก)',
+                peakFreqEN: '10.00 min (North) / 20.00 min (West)',
+                offPeakFreqTH: '20.00 นาที (สายเหนือ) / 30.00 นาที (สายตะวันตก)',
+                offPeakFreqEN: '20.00 min (North) / 30.00 min (West)',
+                dir1: { toTH: 'รังสิต (สายเหนือ)', toEN: 'Rangsit (North Line)', first: '05:00', last: '24:00' },
+                dir2: { toTH: 'ตลิ่งชัน (สายตะวันตก)', toEN: 'Taling Chan (West Line)', first: '05:00', last: '24:00' }
+            },
+            {
+                id: 104,
+                nameTH: 'แอร์พอร์ต ลิงก์',
+                nameEN: 'Airport Rail Link (ARL)',
+                color: '#8A1538',
+                operatorTH: 'รถไฟฟ้า ร.ฟ.ท. (เอเชีย เอรา วัน)',
+                operatorEN: 'SRT Electrified Train (Asia Era One)',
+                terminusTH: 'พญาไท ↔ สุวรรณภูมิ (8 สถานี)',
+                terminusEN: 'Phaya Thai ↔ Suvarnabhumi (8 Stations)',
+                minFare: 15,
+                maxFare: 45,
+                pricingModelTH: 'คำนวณตามระยะทาง (฿15 - ฿45)',
+                pricingModelEN: 'Distance-based tariff (฿15 - ฿45)',
+                ticketsTH: 'เหรียญโดยสาร (Smart Token), บัตร Smart Pass ARL',
+                ticketsEN: 'Smart Token, ARL Smart Pass Card',
+                firstTrainTH: '05:30 น.',
+                firstTrainEN: '05:30',
+                lastTrainTH: '24:00 น.',
+                lastTrainEN: '24:00',
+                peakFreqTH: '9.00 นาที',
+                peakFreqEN: '9.00 min',
+                offPeakFreqTH: '10.00 - 15.00 นาที',
+                offPeakFreqEN: '10.00 - 15.00 min',
+                dir1: { toTH: 'สุวรรณภูมิ (Suvarnabhumi Airport)', toEN: 'Suvarnabhumi Airport', first: '05:30', last: '24:00' },
+                dir2: { toTH: 'พญาไท (Phaya Thai)', toEN: 'Phaya Thai', first: '05:30', last: '24:00' }
+            }
+        ];
+
+        const BTS_STATION_FARES = [
+            { stnTH: '1 สถานี', stnEN: '1 Station', adult: 17, student: 12, senior: 9 },
+            { stnTH: '2 สถานี', stnEN: '2 Stations', adult: 25, student: 18, senior: 13 },
+            { stnTH: '3 สถานี', stnEN: '3 Stations', adult: 28, student: 20, senior: 14 },
+            { stnTH: '4 สถานี', stnEN: '4 Stations', adult: 32, student: 23, senior: 16 },
+            { stnTH: '5 สถานี', stnEN: '5 Stations', adult: 35, student: 25, senior: 18 },
+            { stnTH: '6 สถานี', stnEN: '6 Stations', adult: 40, student: 28, senior: 20 },
+            { stnTH: '7 สถานี', stnEN: '7 Stations', adult: 43, student: 30, senior: 22 },
+            { stnTH: '8 สถานีขึ้นไป', stnEN: '8+ Stations', adult: 47, student: 33, senior: 24 },
+            { stnTH: 'ส่วนต่อขยาย (Extensions)', stnEN: 'Extensions', adult: '+15', student: '+15', senior: '+8' }
+        ];
+
+        const MRT_BLUE_FARES = [
+            { stnTH: '1 สถานี', stnEN: '1 Station', adult: 17, student: 15, senior: 9 },
+            { stnTH: '2 - 3 สถานี', stnEN: '2 - 3 Stations', adult: '20 - 23', student: '18 - 21', senior: '10 - 12' },
+            { stnTH: '4 - 6 สถานี', stnEN: '4 - 6 Stations', adult: '26 - 31', student: '23 - 28', senior: '13 - 16' },
+            { stnTH: '7 - 9 สถานี', stnEN: '7 - 9 Stations', adult: '33 - 38', student: '30 - 34', senior: '17 - 19' },
+            { stnTH: '10 - 12 สถานีขึ้นไป', stnEN: '10 - 12+ Stations', adult: '41 - 43', student: '37 - 39', senior: '21 - 22' }
+        ];
+
+        const MONORAIL_FARES = [
+            { stnTH: '1 สถานี', stnEN: '1 Station', price: '฿15 - ฿18' },
+            { stnTH: '2 - 4 สถานี', stnEN: '2 - 4 Stations', price: '฿21 - ฿28' },
+            { stnTH: '5 - 8 สถานี', stnEN: '5 - 8 Stations', price: '฿31 - ฿37' },
+            { stnTH: '9 สถานีขึ้นไป', stnEN: '9+ Stations', price: '฿40 - ฿45' }
+        ];
+
+        const ARL_STATION_FARES = [
+            { code: 'A8', th: 'พญาไท', en: 'Phaya Thai', price: '-' },
+            { code: 'A7', th: 'ราชปรารภ', en: 'Ratchaprarop', price: '฿15' },
+            { code: 'A6', th: 'มักกะสัน (เชื่อม MRT เพชรบุรี)', en: 'Makkasan (MRT Phetchaburi)', price: '฿20' },
+            { code: 'A5', th: 'รามคำแหง', en: 'Ramkhamhaeng', price: '฿25' },
+            { code: 'A4', th: 'หัวหมาก (เชื่อม MRT สีเหลือง)', en: 'Hua Mak (MRT Yellow)', price: '฿30' },
+            { code: 'A3', th: 'บ้านทับช้าง', en: 'Ban Thap Chang', price: '฿35' },
+            { code: 'A2', th: 'ลาดกระบัง', en: 'Lat Krabang', price: '฿40' },
+            { code: 'A1', th: 'สุวรรณภูมิ (สนามบิน)', en: 'Suvarnabhumi Airport', price: '฿45' }
+        ];
+
+        function renderLineFilterBar(activeLineId, onClickHandlerName) {
+            return `<div class="line-filter-bar">
+                ${TRANSIT_LINES_CATALOG.map(l => {
+                    const isActive = l.id === activeLineId;
+                    const name = lang === 'en' ? l.nameEN : l.nameTH;
+                    const activeStyle = isActive
+                        ? `background:${l.color};color:#ffffff;border-color:${l.color};font-weight:700;box-shadow:0 3px 10px ${l.color}55;`
+                        : '';
+                    return `<button type="button" class="line-filter-pill ${isActive ? 'active' : ''}"
+                        style="${activeStyle}"
+                        onclick="App.${onClickHandlerName}(${l.id})">
+                        ${getLineIconSvg(l.id, isActive, 15)}
+                        <span>${esc(name)}</span>
+                    </button>`;
+                }).join('')}
+            </div>`;
+        }
+
+        function getLineScheduleTables(lineId) {
+            const we = isWeekend();
+            if (lineId === 1 || lineId === 2) {
+                const data = getBtsFreqData(lineId);
+                if (!data) return null;
+                return {
+                    weekday: buildBtsFreqRows(data.weekday, !we),
+                    weekend: buildBtsFreqRows(data.weekend, we),
+                    note: lineId === 1 ? (lang === 'en' ? '* Mo Chit–Samrong · ** Samrong–Kheha and Mo Chit–Khu Khot' : '* หมอชิต–สำโรง · ** สำโรง–เคหะฯ และ หมอชิต–คูคต') : ''
+                };
+            }
+            const t = getMrtFreqTable(lineId);
+            if (!t) return null;
+            let note = '';
+            if (lineId === 103) {
+                note = lang === 'en' ? '* North line (Rangsit) 10-20 min · West line (Taling Chan) 20-30 min' : '* สายธานีรัถยา (รังสิต) ทุก 10-20 นาที · สายนครวิถี (ตลิ่งชัน) ทุก 20-30 นาที';
+            } else if (lineId === 101) {
+                note = lang === 'en' ? '* Inner Circle (Bang Sue ↔ Tha Phra) / Outer Loop' : '* ช่วง 07:00–09:00 ช่วงบางซื่อ–ท่าพระ–หลักสอง ความถี่ตามตารางทางการ';
+            }
+            return {
+                weekday: t.weekday || [],
+                weekend: t.weekend || [],
+                note
+            };
+        }
+
+        function renderFrequencyTablesHtml(sched) {
+            if (!sched || (!sched.weekday.length && !sched.weekend.length)) return '';
+            const tbl = rows => `<table class="mrt-freq-table">
+                <thead><tr><th>${lang === 'en' ? 'Time Window' : 'ช่วงเวลา'}</th><th>${lang === 'en' ? 'Frequency' : 'ความถี่'}</th></tr></thead>
+                <tbody>${rows.map(r => {
+                    const lbl = String(r.freqLabel || '').startsWith('~') ? r.freqLabel : `~${r.freqLabel}`;
+                    return `<tr class="${r.isCurrent ? 'now' : ''}">
+                        <td>${esc(r.timeStr)}</td><td>${esc(lbl)} ${T('minUnit').trim()}</td></tr>`;
+                }).join('')}</tbody>
+            </table>`;
+
+            return `
+                <div style="margin-top:10px">
+                    <div style="font-weight:700;font-size:13px;color:var(--ink);margin:0 0 8px;display:flex;align-items:center;gap:6px">
+                        <span>🗓️ ${lang === 'en' ? 'Monday - Friday (Weekday)' : 'วันจันทร์ – ศุกร์ (วันธรรมดา)'}</span>
+                        ${!isWeekend() ? '<span style="font-size:10px;background:#22c55e22;color:#16a34a;font-weight:800;padding:2px 6px;border-radius:6px">วันนี้ (Today)</span>' : ''}
+                    </div>
+                    ${tbl(sched.weekday)}
+                </div>
+                <div style="margin-top:14px">
+                    <div style="font-weight:700;font-size:13px;color:var(--ink);margin:0 0 8px;display:flex;align-items:center;gap:6px">
+                        <span>🗓️ ${lang === 'en' ? 'Saturday - Sunday & Public Holidays' : 'วันเสาร์ – อาทิตย์ และวันหยุดนักขัตฤกษ์'}</span>
+                        ${isWeekend() ? '<span style="font-size:10px;background:#22c55e22;color:#16a34a;font-weight:800;padding:2px 6px;border-radius:6px">วันนี้ (Today)</span>' : ''}
+                    </div>
+                    ${tbl(sched.weekend)}
+                </div>
+                ${sched.note ? `<div class="mrt-freq-note" style="margin-top:10px;text-align:left;">${esc(sched.note)}</div>` : ''}
+            `;
+        }
+
+        function parseStationCodeAndName(text) {
+            if (!text) return { name: '', code: '' };
+            const match = String(text).match(/^(.*?)\s*\((.*?)\)$/);
+            if (match) {
+                return { name: match[1].trim(), code: match[2].trim() };
+            }
+            return { name: String(text).trim(), code: '' };
+        }
+
+        function getLineStationsList(lineId) {
+            if (!lineId) return [];
+            if ([1, 2, 3, 4, 5].includes(lineId)) {
+                return (App.stations || []).filter(s => s.StationLineId === lineId);
+            }
+            const mrtLine = (MRT_STATIC_DB.lines || []).find(l => l.LineId === lineId);
+            return mrtLine ? mrtLine.StationList : [];
+        }
+
         /* ================= APP ================= */
         const App = {
             lines: [],            // [{LineId, LineName_TH/EN, LineColor, StationList}]
@@ -1536,6 +1947,8 @@ gQIDAQAB
             nearestList: [],      // 3 สถานีใกล้สุดให้สลับดูเร็ว ๆ
             pinnedKey: null,      // สถานีที่ user เลือกดูในการ์ดบน (default = ใกล้สุด)
             activeLine: 1,
+            userPickedLineManually: false, // ผู้ใช้เคยกดเลือกสายด้วยตนเองหรือไม่
+            lastSyncedStationKey: null,    // สถานีล่าสุดที่ทำการซิงค์แท็บสายอัตโนมัติ
             expandedKey: null,    // สถานีที่กางดูใน strip
             arrivals: {},         // StationKey -> {fetchedAt, time, platforms, error, loading}
             selTrain: {},         // "StationKey|platform" -> {idx, trainNo} ขบวนที่ user เลือกตามปลายทาง
@@ -1548,21 +1961,19 @@ gQIDAQAB
             locating: false,
             locError: null,
             refreshTimer: null,
-            fallbackTimer: null,  // ตัวจับเวลา 10 วิ ก่อนใช้สถานีตั้งต้น (อโศก)
-            geofenceEnabled: false,
-            geofenceRadius: 1000,
-            webGeofenceWatchId: null,
-            lastGeofenceAlertKey: null,
-            lastGeofenceAlertTime: 0,
+            fallbackTimer: null,  // ตัวจับเวลา 10 วิ ก่อนใช้สถานีสำรอง (อโศก)
+
 
             /* ---------- THE SKYTRAINs: View Navigation ---------- */
             currentView: 'home',
             selectedMapStationKey: 'CEN',
             selectedExitKey: 'CEN',
             mapZoom: 1.0,
+            faresActiveLine: 0,
+            timetablesActiveLine: 0,
 
             switchView(viewName) {
-                const validViews = ['home', 'map', 'planner', 'exits', 'fares'];
+                const validViews = ['home', 'map', 'planner', 'exits', 'fares', 'timetables'];
                 if (!validViews.includes(viewName)) viewName = 'home';
                 this.currentView = viewName;
 
@@ -1579,7 +1990,9 @@ gQIDAQAB
                 });
 
                 // Trigger view specific rendering
-                if (viewName === 'map') {
+                if (viewName === 'home') {
+                    this.scrollActiveTabIntoView();
+                } else if (viewName === 'map') {
                     this.renderInteractiveMap();
                 } else if (viewName === 'exits') {
                     const fallback = this.pinnedStation()?.StationKey || this.nearest?.station?.StationKey || 'CEN';
@@ -1589,9 +2002,30 @@ gQIDAQAB
                     this.renderJourney();
                 } else if (viewName === 'fares') {
                     this.renderFaresView();
+                } else if (viewName === 'timetables') {
+                    this.renderTimetablesView();
                 }
 
                 window.scrollTo({ top: 0, behavior: 'smooth' });
+            },
+
+            setFaresLine(lineId) {
+                this.faresActiveLine = Number(lineId) || 0;
+                this.renderFaresView();
+            },
+
+            setTimetablesLine(lineId) {
+                this.timetablesActiveLine = Number(lineId) || 0;
+                this.renderTimetablesView();
+            },
+
+            toggleTimetableStations() {
+                const el = document.getElementById('stnListBody');
+                const chev = document.getElementById('stnListChev');
+                if (!el) return;
+                const isHidden = el.style.display === 'none';
+                el.style.display = isHidden ? 'block' : 'none';
+                if (chev) chev.textContent = isHidden ? '▲' : '▼';
             },
 
             /* ---------- THE SKYTRAINs: Passenger Crowdedness Gauge ---------- */
@@ -1768,16 +2202,6 @@ gQIDAQAB
                 const q = this.exitSearchQuery;
                 const curKey = this.selectedExitKey || 'CEN';
 
-                const getLineOptLabel = (l) => {
-                    const th = l.LineName_TH || '';
-                    const en = l.LineName_EN || '';
-                    if (lang === 'en') {
-                        return en || th;
-                    }
-                    const name = th.startsWith('สาย') ? th : ('สาย' + th);
-                    return `${name} (${en})`;
-                };
-
                 let html = '';
                 let totalMatching = 0;
 
@@ -1797,6 +2221,8 @@ gQIDAQAB
 
                     const color = line.LineColor || '#7AB420';
                     const groupLabel = getLineOptLabel(line);
+                    const isBright = isBrightColor(color);
+                    const codeTextColor = isBright ? '#0f172a' : '#ffffff';
 
                     const stationChips = stations.map(s => {
                         const isSelected = s.StationKey === curKey;
@@ -1804,8 +2230,8 @@ gQIDAQAB
                         return `
                             <button type="button" class="station-picker-chip ${isSelected ? 'selected' : ''}"
                                 onclick="App.selectExitStation('${esc(s.StationKey)}')">
-                                <span class="chip-code" style="background:${color}">${esc(s.StationKey)}</span>
-                                <span class="chip-name">${esc(name)}</span>
+                                <span class="chip-code" style="background:${color};color:${codeTextColor}">${esc(s.StationKey)}</span>
+                                <span class="chip-name" title="${esc(name)}">${esc(name)}</span>
                             </button>`;
                     }).join('');
 
@@ -1816,7 +2242,7 @@ gQIDAQAB
                                     ${getLineIconSvg(line.LineId, false, 18)}
                                     <span>${esc(groupLabel)}</span>
                                 </div>
-                                <span class="line-frame-count" style="background:${color}22; color:${color}; border:1px solid ${color}44;">
+                                <span class="line-frame-count" style="background:${color}22; color:${isBright ? '#ca8a04' : color}; border:1px solid ${color}44;">
                                     ${stations.length} ${lang === 'th' ? 'สถานี' : 'stations'}
                                 </span>
                             </div>
@@ -2309,21 +2735,38 @@ gQIDAQAB
                         </g>
 
                         <!-- Map Legend Box -->
-                        <g transform="translate(20, 600)">
-                            <rect width="210" height="110" rx="8" fill="rgba(255,255,255,0.88)" stroke="#cbd5e1" stroke-width="1" />
+                        <g transform="translate(20, 595)">
+                            <rect width="215" height="120" rx="8" fill="rgba(255,255,255,0.92)" stroke="#cbd5e1" stroke-width="1" />
                             <text x="10" y="18" font-size="10" font-weight="700" fill="#0f172a">${lang === 'th' ? 'สัญลักษณ์สายรถไฟฟ้า' : 'Transit Lines Legend'}</text>
                             
-                            <line x1="12" y1="34" x2="32" y2="34" stroke="#7AB420" stroke-width="4" stroke-linecap="round"/>
-                            <text x="38" y="38" font-size="9" fill="#334155">${lang === 'th' ? 'สายสุขุมวิท / สีลม' : 'Sukhumvit / Silom Line'}</text>
+                            <!-- Column 1 -->
+                            <line x1="12" y1="34" x2="28" y2="34" stroke="#7AB420" stroke-width="3.5" stroke-linecap="round"/>
+                            <text x="33" y="37.5" font-size="8.5" fill="#334155">${lang === 'th' ? 'สายสุขุมวิท' : 'Sukhumvit Line'}</text>
 
-                            <line x1="12" y1="52" x2="32" y2="52" stroke="#1f8fdf" stroke-width="4" stroke-linecap="round"/>
-                            <text x="38" y="56" font-size="9" fill="#334155">${lang === 'th' ? 'สายสีน้ำเงิน / สีม่วง' : 'Blue / Purple Line'}</text>
+                            <line x1="12" y1="52" x2="28" y2="52" stroke="#00807D" stroke-width="3.5" stroke-linecap="round"/>
+                            <text x="33" y="55.5" font-size="8.5" fill="#334155">${lang === 'th' ? 'สายสีลม' : 'Silom Line'}</text>
 
-                            <line x1="12" y1="70" x2="32" y2="70" stroke="#F5C242" stroke-width="4" stroke-linecap="round"/>
-                            <text x="38" y="74" font-size="9" fill="#334155">${lang === 'th' ? 'สายสีเหลือง / สีชมพู' : 'Yellow / Pink Monorail'}</text>
+                            <line x1="12" y1="70" x2="28" y2="70" stroke="#B89D18" stroke-width="3.5" stroke-linecap="round"/>
+                            <text x="33" y="73.5" font-size="8.5" fill="#334155">${lang === 'th' ? 'สายสีทอง' : 'Gold Line'}</text>
 
-                            <line x1="12" y1="88" x2="32" y2="88" stroke="#a11b22" stroke-width="4" stroke-linecap="round"/>
-                            <text x="38" y="92" font-size="9" fill="#334155">${lang === 'th' ? 'ARL / รถไฟสายสีแดง' : 'Airport Rail Link / SRT Red'}</text>
+                            <line x1="12" y1="88" x2="28" y2="88" stroke="#1f8fdf" stroke-width="3.5" stroke-linecap="round"/>
+                            <text x="33" y="91.5" font-size="8.5" fill="#334155">${lang === 'th' ? 'สายสีน้ำเงิน' : 'Blue Line'}</text>
+
+                            <line x1="12" y1="106" x2="28" y2="106" stroke="#8a2c9b" stroke-width="3.5" stroke-linecap="round"/>
+                            <text x="33" y="109.5" font-size="8.5" fill="#334155">${lang === 'th' ? 'สายสีม่วง' : 'Purple Line'}</text>
+
+                            <!-- Column 2 -->
+                            <line x1="114" y1="34" x2="130" y2="34" stroke="#F5C242" stroke-width="3.5" stroke-linecap="round"/>
+                            <text x="135" y="37.5" font-size="8.5" fill="#334155">${lang === 'th' ? 'สายสีเหลือง' : 'Yellow Line'}</text>
+
+                            <line x1="114" y1="52" x2="130" y2="52" stroke="#F2779A" stroke-width="3.5" stroke-linecap="round"/>
+                            <text x="135" y="55.5" font-size="8.5" fill="#334155">${lang === 'th' ? 'สายสีชมพู' : 'Pink Line'}</text>
+
+                            <line x1="114" y1="70" x2="130" y2="70" stroke="#c21e25" stroke-width="3.5" stroke-dasharray="4,2" stroke-linecap="round"/>
+                            <text x="135" y="73.5" font-size="8.5" fill="#334155">${lang === 'th' ? 'รถไฟสายสีแดง' : 'SRT Red Line'}</text>
+
+                            <line x1="114" y1="88" x2="130" y2="88" stroke="#a11b22" stroke-width="3.5" stroke-linecap="round"/>
+                            <text x="135" y="91.5" font-size="8.5" fill="#334155">${lang === 'th' ? 'แอร์พอร์ต ลิงก์' : 'Airport Rail Link'}</text>
                         </g>
                     </svg>`;
 
@@ -2403,7 +2846,7 @@ gQIDAQAB
                     this.setLine(s.StationLineId);
                     this.expandedKey = key;
                     this.renderStrip();
-                    if (!usesStaticTimetable(s)) this.loadArrivals(s);
+                    this.loadArrivals(s);
                     setTimeout(() => {
                         document.querySelector(`[id^="row-${CSS.escape(key)}-"]`)
                             ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -2423,125 +2866,633 @@ gQIDAQAB
                 if (this.journey.from && this.journey.to) this.findRoute();
             },
 
-            /* ---------- THE SKYTRAINs: Fares & Timetable Guide View ---------- */
+            /* ---------- THE SKYTRAINs: Fares View (อัตราค่าโดยสารตามสาย) ---------- */
             renderFaresView() {
                 const el = document.getElementById('faresViewContent');
                 if (!el) return;
 
                 const isEn = lang === 'en';
+                const activeId = this.faresActiveLine || 0;
+                const activeLine = TRANSIT_LINES_CATALOG.find(l => l.id === activeId) || TRANSIT_LINES_CATALOG[0];
+
+                let bodyHtml = '';
+
+                if (activeId === 0) {
+                    // ทั้งหมด (All Lines Overview)
+                    bodyHtml = `
+                        <!-- 20 Baht Flat Fare Policy Banner -->
+                        <div class="info-card" style="background:linear-gradient(135deg,#dc26260d,#ef444415);border-color:#ef444444">
+                            <span class="fare-badge-20">${isEn ? '20 Baht Flat Fare Policy' : 'นโยบาย 20 บาทตลอดสาย'}</span>
+                            <h3 style="color:#b91c1c;display:flex;align-items:center;gap:8px">
+                                <span style="display:inline-flex;gap:4px;align-items:center">${getLineIconSvg(102, false, 20)} ${getLineIconSvg(103, false, 20)}</span>
+                                <span>${isEn ? 'Flat 20 Baht Fare (EMV Contactless)' : 'รถไฟฟ้า 20 บาทตลอดสาย (EMV Contactless)'}</span>
+                            </h3>
+                            <div style="font-size:12.5px;color:var(--ink);line-height:1.6">
+                                ${isEn ? 'Passengers paying with <b>EMV Contactless</b> credit/debit cards pay a maximum fare of <b>฿20</b>:' : 'ผู้โดยสารที่แตะจ่ายด้วยบัตรเครดิต/เดบิต <b>EMV Contactless</b> เดินทางด้วยค่าโดยสารสูงสุดไม่เกิน <b>20 บาท</b>:'}
+                                <ul style="margin:8px 0 8px 6px;padding-left:14px;list-style:none">
+                                    <li style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+                                        ${getLineIconSvg(102, false, 18)}
+                                        <span><b>${isEn ? 'MRT Purple Line:' : 'สายสีม่วง (MRT Purple Line):'}</b> ${isEn ? 'Khlong Bang Phai ↔ Tao Poon (Max ฿20)' : 'คลองบางไผ่ ↔ เตาปูน (สูงสุด 20 บาท)'}</span>
+                                    </li>
+                                    <li style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+                                        ${getLineIconSvg(103, false, 18)}
+                                        <span><b>${isEn ? 'SRT Red Line:' : 'สายสีแดง (SRT Red Line):'}</b> ${isEn ? 'Krung Thep Aphiwat ↔ Rangsit / Taling Chan (Max ฿20)' : 'กรุงเทพอภิวัฒน์ ↔ รังสิต / ตลิ่งชัน (สูงสุด 20 บาท)'}</span>
+                                    </li>
+                                    <li style="display:flex;align-items:center;gap:8px">
+                                        <span style="display:inline-flex;align-items:center;gap:3px">${getLineIconSvg(102, false, 15)}⇄${getLineIconSvg(103, false, 15)}</span>
+                                        <span><b>${isEn ? 'Cross-line Transfer (Purple ⇄ Red):' : 'เชื่อมต่อข้ามสายสีม่วงและสายสีแดง:'}</b> ${isEn ? 'Max ฿20 combined (transfer at Bang Sue station within 30 mins)' : 'สูงสุดรวม 20 บาท (แตะเปลี่ยนขบวนที่สถานีบางซื่อภายใน 30 นาที)'}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- All Lines Comparison Table -->
+                        <div class="info-card">
+                            <h3 style="display:flex;align-items:center;gap:8px">
+                                <span>💳</span>
+                                <span>${isEn ? 'Fare Comparison across 10 Lines' : 'เปรียบเทียบอัตราค่าโดยสารทั้ง 10 สาย'}</span>
+                            </h3>
+                            <div style="font-size:12px;color:var(--muted);margin-bottom:8px">
+                                ${isEn ? 'Tap any line below or use the pills above to view detailed fare structure' : 'แตะที่สายรถไฟฟ้าหรือแถบด้านบนเพื่อดูตารางราคาแบบละเอียด'}
+                            </div>
+                            <div class="fare-table-wrap">
+                                <table class="fare-grid-table">
+                                    <thead>
+                                        <tr>
+                                            <th>${isEn ? 'Line' : 'สายรถไฟฟ้า'}</th>
+                                            <th>${isEn ? 'Min - Max' : 'อัตราเริ่มต้น - สูงสุด'}</th>
+                                            <th>${isEn ? 'Pricing Model' : 'รูปแบบราคา'}</th>
+                                            <th>${isEn ? 'Cards / Tickets' : 'บัตรโดยสาร'}</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${TRANSIT_LINES_CATALOG.filter(l => l.id !== 0).map(l => `
+                                            <tr style="cursor:pointer;" onclick="App.setFaresLine(${l.id})">
+                                                <td style="white-space:nowrap;">
+                                                    <span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap;">
+                                                        ${getLineIconSvg(l.id, false, 16)}
+                                                        <b>${esc(isEn ? l.nameEN : l.nameTH)}</b>
+                                                    </span>
+                                                </td>
+                                                <td style="white-space:nowrap;"><b style="color:${l.color}">฿${l.minFare} - ฿${l.maxFare}</b></td>
+                                                <td style="white-space:nowrap;">${esc(isEn ? l.pricingModelEN : l.pricingModelTH)}</td>
+                                                <td style="white-space:nowrap;font-size:11.5px;color:var(--muted)">${esc(isEn ? l.ticketsEN : l.ticketsTH)}</td>
+                                                <td style="white-space:nowrap;">
+                                                    <button type="button" class="btn btn-ghost" style="padding:4px 8px;font-size:11px;white-space:nowrap;" onclick="event.stopPropagation();App.setFaresLine(${l.id})">
+                                                        ${isEn ? 'Details' : 'ดูราคา'} ➔
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Payment & Card Guide -->
+                        <div class="info-card">
+                            <h3>🎟️ ${isEn ? 'Tickets & Payment Methods Guide' : 'คู่มือประเภทบัตรและวิธีการชำระค่าโดยสาร'}</h3>
+                            <div style="font-size:12.5px;color:var(--ink);line-height:1.6">
+                                <div style="margin-bottom:10px">
+                                    <b style="color:var(--sky)">💳 บัตร EMV Contactless (Visa / Mastercard)</b>:
+                                    ${isEn ? 'Tap to pay at MRT Blue, Purple, Yellow, Pink lines, and SRT Red Line. Enjoy transfer fee waivers between connecting lines within 30 minutes.' : 'แตะจ่ายได้ทันทีผ่านประตูอัตโนมัติของ MRT สายสีน้ำเงิน, สายสีม่วง, สายสีเหลือง, สายสีชมพู และ SRT สายสีแดง พร้อมสิทธิ์ยกเว้นค่าแรกเข้าเมื่อแตะเปลี่ยนสายภายใน 30 นาที'}
+                                </div>
+                                <div style="margin-bottom:10px">
+                                    <b style="color:#f59e0b">🐇 บัตรแรบบิท (Rabbit Card)</b>:
+                                    ${isEn ? 'Accepted on BTS Sukhumvit, Silom, Gold lines, and MRT Yellow, Pink lines. Stored-value and 30-day passes available.' : 'บัตรแตะเดินทางยอดนิยม ใช้ได้กับ BTS สายสุขุมวิท, สายสีลม, สายสีทอง, MRT สายสีเหลือง และสายสีชมพู รองรับทั้งการเติมเงินและแพ็กเกจเที่ยวเดินทาง 30 วัน'}
+                                </div>
+                                <div>
+                                    <b style="color:var(--muted)">🪙 เหรียญ / ตั๋วเที่ยวเดียว (Single Journey Token & Card)</b>:
+                                    ${isEn ? 'Available at automatic ticket vending machines and ticket offices at every station across all networks.' : 'หยอดเหรียญหรือสแกน QR Code ซื้อได้ที่ตู้จำหน่ายตั๋วอัตโนมัติและเคาน์เตอร์ทุกสถานี'}
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    // ข้อมูลเฉพาะสาย (Specific Line View)
+                    const lineName = isEn ? activeLine.nameEN : activeLine.nameTH;
+                    const terminus = isEn ? activeLine.terminusEN : activeLine.terminusTH;
+                    const operator = isEn ? activeLine.operatorEN : activeLine.operatorTH;
+
+                    // ส่วนเฉพาะของแต่ละสาย
+                    let specificContent = '';
+
+                    if (activeId === 1 || activeId === 2) {
+                        // BTS Sukhumvit or Silom
+                        specificContent = `
+                            <div class="info-card">
+                                <h3>📊 ${isEn ? 'Station Count Fare Structure' : 'ตารางอัตราค่าโดยสารตามจำนวนสถานี'}</h3>
+                                <div style="font-size:12px;color:var(--muted);margin-bottom:8px">
+                                    ${isEn ? 'Standard concession fare calculated by number of stations traveled' : 'คำนวณตามจำนวนสถานีในเส้นทางสัมปทานหลัก'}
+                                </div>
+                                <div class="fare-table-wrap">
+                                    <table class="fare-grid-table compact-table">
+                                        <thead>
+                                            <tr>
+                                                <th style="white-space:nowrap;">${isEn ? 'Stations' : 'จำนวนสถานี'}</th>
+                                                <th style="white-space:nowrap;">${isEn ? 'Adult' : 'บุคคลทั่วไป'}</th>
+                                                <th style="white-space:nowrap;">${isEn ? 'Student' : 'นักเรียน/นักศึกษา'}</th>
+                                                <th style="white-space:nowrap;">${isEn ? 'Senior' : 'ผู้สูงอายุ'}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${BTS_STATION_FARES.map(r => `
+                                                <tr>
+                                                    <td style="white-space:nowrap;"><b>${esc(isEn ? r.stnEN : r.stnTH)}</b></td>
+                                                    <td style="white-space:nowrap;color:${activeLine.color}"><b>฿${r.adult}</b></td>
+                                                    <td style="white-space:nowrap;">฿${r.student}</td>
+                                                    <td style="white-space:nowrap;">฿${r.senior}</td>
+                                                </tr>
+                                            `).join('')}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div style="font-size:12px;color:var(--muted);margin-top:8px;line-height:1.5;">
+                                    💡 <b>${isEn ? 'Extension Fee Rule:' : 'เงื่อนไขส่วนต่อขยาย:'}</b>
+                                    ${activeId === 1
+                                        ? (isEn ? 'Traveling into extension sections (Mo Chit–Khu Khot or On Nut–Kheha) adds ฿15 (Senior ฿8). Maximum fare is capped at ฿62.' : 'การเดินทางเข้าสู่ส่วนต่อขยาย (หมอชิต–คูคต หรือ อ่อนนุช–เคหะฯ) คิดค่าโดยสารเพิ่ม 15 บาท (ผู้สูงอายุ 8 บาท) รวมค่าโดยสารสูงสุดไม่เกิน 62 บาท')
+                                        : (isEn ? 'Traveling into extension section (Krung Thon Buri–Bang Wa) adds ฿15 (Senior ฿8). Maximum fare is capped at ฿62.' : 'การเดินทางเข้าสู่ส่วนต่อขยาย (กรุงธนบุรี–บางหว้า) คิดค่าโดยสารเพิ่ม 15 บาท (ผู้สูงอายุ 8 บาท) รวมค่าโดยสารสูงสุดไม่เกิน 62 บาท')
+                                    }
+                                </div>
+                            </div>
+                        `;
+                    } else if (activeId === 3) {
+                        // Gold Line
+                        specificContent = `
+                            <div class="info-card" style="background:linear-gradient(135deg,#c9a03810,#c9a03820);border-color:#c9a03855">
+                                <span class="fare-badge-20" style="background:#C9A038">฿16 ${isEn ? 'Flat Rate' : 'ราคาเดียวตลอดสาย'}</span>
+                                <h3 style="color:#a17c24">
+                                    <span>${isEn ? 'Flat 16 Baht Fare' : 'อัตราค่าโดยสาร 16 บาท ตลอดสาย'}</span>
+                                </h3>
+                                <div style="font-size:12.5px;color:var(--ink);line-height:1.6">
+                                    ${isEn
+                                        ? 'The Gold Line operates under a single flat fare of <b>฿16</b> regardless of distance across all 3 stations (Krung Thon Buri ↔ Charoen Nakhon ↔ Khlong San).'
+                                        : 'รถไฟฟ้าสายสีทองคิดค่าโดยสารอัตราเดียว <b>16 บาท</b> ตลอดสายครอบคลุมทั้ง 3 สถานี (กรุงธนบุรี ↔ เจริญนคร (ไอคอนสยาม) ↔ คลองสาน) เดินทาง 1 สถานี หรือจนสุดสายราคาเท่ากัน'
+                                    }
+                                </div>
+                            </div>
+                        `;
+                    } else if (activeId === 4 || activeId === 5) {
+                        // Yellow / Pink Line Monorails
+                        specificContent = `
+                            <div class="info-card">
+                                <h3>📊 ${isEn ? 'Distance-Based Fare Tiers' : 'ตารางอัตราค่าโดยสารตามระยะทาง'}</h3>
+                                <div style="font-size:12px;color:var(--muted);margin-bottom:8px">
+                                    ${isEn ? 'Distance-based tariff structure starting at ฿15 up to ฿45' : 'อัตราค่าโดยสารตามระยะทางเริ่มต้น 15 บาท ถึงสูงสุด 45 บาท'}
+                                </div>
+                                <div class="fare-table-wrap">
+                                    <table class="fare-grid-table compact-table">
+                                        <thead>
+                                            <tr>
+                                                <th style="white-space:nowrap;">${isEn ? 'Distance Traveled' : 'ระยะทาง / สถานีที่เดินทาง'}</th>
+                                                <th style="white-space:nowrap;">${isEn ? 'Fare Rate' : 'อัตราค่าโดยสาร'}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${MONORAIL_FARES.map(r => `
+                                                <tr>
+                                                    <td style="white-space:nowrap;"><b>${esc(isEn ? r.stnEN : r.stnTH)}</b></td>
+                                                    <td style="white-space:nowrap;color:${activeLine.color}"><b>${r.price}</b></td>
+                                                </tr>
+                                            `).join('')}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div style="font-size:12px;color:var(--muted);margin-top:8px;line-height:1.5;">
+                                    💡 <b>${isEn ? 'EMV Transfer Waiver:' : 'สิทธิประโยชน์การเปลี่ยนสาย (EMV):'}</b>
+                                    ${isEn
+                                        ? 'When transferring with connecting MRT or SRT lines via the same EMV Contactless card within 30 minutes, the second entry fee is waived automatically.'
+                                        : 'เมื่อเดินทางเปลี่ยนสายไปยังระบบรถไฟฟ้าที่เชื่อมต่อกัน (เช่น สายสีน้ำเงิน, สายสีม่วง, สายสีแดง, ARL) ด้วยบัตร EMV ใบเดิมภายใน 30 นาที จะได้รับยกเว้นค่าแรกเข้าของสายที่สองทันที'
+                                    }
+                                </div>
+                            </div>
+                        `;
+                    } else if (activeId === 101) {
+                        // MRT Blue Line
+                        specificContent = `
+                            <div class="info-card">
+                                <h3>📊 ${isEn ? 'Station Count Fare Structure' : 'ตารางอัตราค่าโดยสารตามจำนวนสถานี'}</h3>
+                                <div class="fare-table-wrap">
+                                    <table class="fare-grid-table compact-table">
+                                        <thead>
+                                            <tr>
+                                                <th style="white-space:nowrap;">${isEn ? 'Stations' : 'จำนวนสถานี'}</th>
+                                                <th style="white-space:nowrap;">${isEn ? 'Adult' : 'บุคคลทั่วไป'}</th>
+                                                <th style="white-space:nowrap;">${isEn ? 'Student (-10%)' : 'นักเรียน/นักศึกษา (-10%)'}</th>
+                                                <th style="white-space:nowrap;">${isEn ? 'Children/Senior (-50%)' : 'เด็ก/ผู้สูงอายุ (-50%)'}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${MRT_BLUE_FARES.map(r => `
+                                                <tr>
+                                                    <td style="white-space:nowrap;"><b>${esc(isEn ? r.stnEN : r.stnTH)}</b></td>
+                                                    <td style="white-space:nowrap;color:${activeLine.color}"><b>฿${r.adult}</b></td>
+                                                    <td style="white-space:nowrap;">฿${r.student}</td>
+                                                    <td style="white-space:nowrap;">฿${r.senior}</td>
+                                                </tr>
+                                            `).join('')}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div style="font-size:12px;color:var(--muted);margin-top:8px;line-height:1.5;">
+                                    💡 <b>${isEn ? 'Loop Calculation Principle:' : 'หลักการคำนวณราคาเส้นทางวงกลม:'}</b>
+                                    ${isEn
+                                        ? 'For round trips or connecting via Tha Phra junction, the fare is always charged based on the shortest geometric distance between origin and destination.'
+                                        : 'สำหรับการเดินทางในสายวงกลมหรือผ่านสถานีชุมทางท่าพระ ระบบจะคำนวณและคิดค่าโดยสารตามเส้นทางที่สั้นที่สุดเสมอ แม้ผู้โดยสารจะเลือกเดินทางผ่านทางที่ยาวกว่า'
+                                    }
+                                </div>
+                            </div>
+                        `;
+                    } else if (activeId === 102 || activeId === 103) {
+                        // MRT Purple or SRT Red Line
+                        specificContent = `
+                            <div class="info-card" style="background:linear-gradient(135deg,#dc26260d,#ef444415);border-color:#ef444444">
+                                <span class="fare-badge-20">${isEn ? '20 Baht Flat Fare Policy' : 'นโยบาย 20 บาทตลอดสาย'}</span>
+                                <h3 style="color:#b91c1c">
+                                    <span>${isEn ? 'Government 20 Baht Maximum Cap' : 'มาตรการค่าโดยสารสูงสุด 20 บาท'}</span>
+                                </h3>
+                                <div style="font-size:12.5px;color:var(--ink);line-height:1.6">
+                                    ${isEn
+                                        ? `Passengers pay a maximum of <b>฿20</b> for any distance traveled on this line. When transferring between <b>MRT Purple Line ⇄ SRT Red Line</b> at Bang Sue / Bang Son within 30 minutes via the same EMV Contactless card, the total combined fare is capped at only <b>฿20</b>!`
+                                        : `ผู้โดยสารเดินทางด้วยค่าโดยสารสูงสุด <b>ไม่เกิน 20 บาท</b> ตลอดสาย (ราคาปกติตามระยะทางคือ ฿${activeLine.minFare} - ฿20 หากคำนวณเกิน 20 บาทจะคิดเพียง 20 บาท) และเมื่อแตะเปลี่ยนขบวนระหว่าง <b>สายสีม่วง ⇄ สายสีแดง</b> ที่สถานีบางซื่อ/บางซ่อน ภายใน 30 นาทีด้วยบัตร EMV ใบเดิม รวมค่าเดินทางทั้ง 2 สายสูงสุดไม่เกิน <b>20 บาท</b> เช่นกัน`
+                                    }
+                                </div>
+                            </div>
+                        `;
+                    } else if (activeId === 104) {
+                        // ARL
+                        specificContent = `
+                            <div class="info-card">
+                                <h3>📊 ${isEn ? 'Airport Rail Link Station Fare Matrix' : 'อัตราค่าโดยสารสถานี แอร์พอร์ต เรล ลิงก์ (จากพญาไท)'}</h3>
+                                <div class="fare-table-wrap">
+                                    <table class="fare-grid-table compact-table">
+                                        <thead>
+                                            <tr>
+                                                <th style="white-space:nowrap;">${isEn ? 'Station' : 'สถานี'}</th>
+                                                <th style="white-space:nowrap;">${isEn ? 'From Phaya Thai (A8)' : 'ราคาจากพญาไท (A8)'}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${ARL_STATION_FARES.map(r => `
+                                                <tr>
+                                                    <td style="white-space:nowrap;">
+                                                        <span class="stn-code-badge" style="background:${activeLine.color};margin-right:6px;">${r.code}</span>
+                                                        <b>${esc(isEn ? r.en : r.th)}</b>
+                                                    </td>
+                                                    <td style="white-space:nowrap;color:${activeLine.color}"><b>${r.price}</b></td>
+                                                </tr>
+                                            `).join('')}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div style="font-size:12px;color:var(--muted);margin-top:8px;">
+                                    ✈️ ${isEn ? 'Express travel from downtown (Phaya Thai) direct to Suvarnabhumi Airport in just 26 minutes for only ฿45.' : 'เดินทางจากใจกลางเมือง (พญาไท) ตรงสู่สนามบินสุวรรณภูมิ รวดเร็วเพียง 26 นาที ในราคา 45 บาท'}
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    bodyHtml = `
+                        <!-- Line Hero Card -->
+                        <div class="line-hero-card" style="border-left:5px solid ${activeLine.color}">
+                            <div class="line-hero-header" style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+                                <div style="display:flex;align-items:center;gap:10px;min-width:0;">
+                                    ${getLineIconSvg(activeLine.id, false, 28)}
+                                    <div style="min-width:0;">
+                                        <div style="font-size:16.5px;font-weight:800;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(lineName)}</div>
+                                        <div style="font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(operator)} · ${esc(terminus)}</div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-ghost" style="padding:5px 10px;font-size:11.5px;margin-left:auto;white-space:nowrap;flex-shrink:0;" onclick="App.setFaresLine(0)">
+                                    ${isEn ? 'View All Lines' : 'ดูทุกสาย'} ↺
+                                </button>
+                            </div>
+
+                            <div class="line-metrics-grid">
+                                <div class="line-metric-box">
+                                    <div class="label">${isEn ? 'Starting Fare' : 'ราคาเริ่มต้น'}</div>
+                                    <div class="val" style="color:${activeLine.color}">฿${activeLine.minFare}</div>
+                                </div>
+                                <div class="line-metric-box">
+                                    <div class="label">${isEn ? 'Maximum Fare' : 'ราคาสูงสุด'}</div>
+                                    <div class="val" style="color:${activeLine.color}">฿${activeLine.maxFare}</div>
+                                </div>
+                                <div class="line-metric-box full-col">
+                                    <div class="label">${isEn ? 'Pricing Basis' : 'การคำนวณราคา'}</div>
+                                    <div class="val">${esc(isEn ? activeLine.pricingModelEN : activeLine.pricingModelTH)}</div>
+                                </div>
+                                <div class="line-metric-box full-col">
+                                    <div class="label">${isEn ? 'Tickets & Cards' : 'บัตรโดยสารที่รองรับ'}</div>
+                                    <div class="val" style="color:var(--muted);">${esc(isEn ? activeLine.ticketsEN : activeLine.ticketsTH)}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        ${specificContent}
+
+                        <!-- Action Button to Switch to Timetables of this Line -->
+                        <div style="text-align:center;margin:16px 0 6px;">
+                            <button type="button" class="btn btn-primary" style="background:${activeLine.color};border-color:${activeLine.color};box-shadow:0 4px 14px ${activeLine.color}40;display:inline-flex;align-items:center;gap:8px;white-space:nowrap;padding:11px 22px;max-width:100%;"
+                                onclick="App.switchView('timetables');App.setTimetablesLine(${activeLine.id})">
+                                <span>⏰ ${isEn ? 'View Timetables of This Line' : 'ดูเวลาเดินรถ & ความถี่สายนี้'}</span>
+                                <span>➔</span>
+                            </button>
+                        </div>
+                    `;
+                }
 
                 el.innerHTML = `
-                    <!-- 20 Baht Flat Fare Policy Banner -->
-                    <div class="info-card" style="background:linear-gradient(135deg,#dc26260d,#ef444415);border-color:#ef444444">
-                        <span class="fare-badge-20">${isEn ? '20 Baht Flat Fare Policy' : 'นโยบาย 20 บาทตลอดสาย'}</span>
-                        <h3 style="color:#b91c1c;display:flex;align-items:center;gap:8px">
-                            <span style="display:inline-flex;gap:4px;align-items:center">${getLineIconSvg(102, false, 20)} ${getLineIconSvg(103, false, 20)}</span>
-                            <span>${isEn ? 'Flat 20 Baht Fare (EMV Contactless)' : 'รถไฟฟ้า 20 บาทตลอดสาย (EMV Contactless)'}</span>
-                        </h3>
-                        <div style="font-size:12.5px;color:var(--ink);line-height:1.6">
-                            ${isEn ? 'Passengers paying with <b>EMV Contactless</b> credit/debit cards pay a maximum fare of <b>฿20</b>:' : 'ผู้โดยสารที่แตะจ่ายด้วยบัตรเครดิต/เดบิต <b>EMV Contactless</b> เดินทางด้วยค่าโดยสารสูงสุดไม่เกิน <b>20 บาท</b>:'}
-                            <ul style="margin:8px 0 8px 6px;padding-left:14px;list-style:none">
-                                <li style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-                                    ${getLineIconSvg(102, false, 18)}
-                                    <span><b>${isEn ? 'MRT Purple Line:' : 'สายสีม่วง (MRT Purple Line):'}</b> ${isEn ? 'Khlong Bang Phai ↔ Tao Poon' : 'คลองบางไผ่ ↔ เตาปูน'}</span>
-                                </li>
-                                <li style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-                                    ${getLineIconSvg(103, false, 18)}
-                                    <span><b>${isEn ? 'SRT Red Line:' : 'สายสีแดง (SRT Red Line):'}</b> ${isEn ? 'Krung Thep Aphiwat ↔ Rangsit / Taling Chan' : 'กรุงเทพอภิวัฒน์ ↔ รังสิต / ตลิ่งชัน'}</span>
-                                </li>
-                                <li style="display:flex;align-items:center;gap:8px">
-                                    <span style="display:inline-flex;align-items:center;gap:3px">${getLineIconSvg(102, false, 15)}⇄${getLineIconSvg(103, false, 15)}</span>
-                                    <span><b>${isEn ? 'Cross-line Transfer (Purple ⇄ Red):' : 'เชื่อมต่อข้ามสายสีม่วงและสายสีแดง:'}</b> ${isEn ? 'Max ฿20 combined (transfer at Bang Sue station within 30 mins)' : 'สูงสุดรวม 20 บาท (แตะเปลี่ยนขบวนที่สถานีบางซื่อภายใน 30 นาที)'}</span>
-                                </li>
-                            </ul>
+                    <div style="margin-bottom:12px;">
+                        <h2 style="font-size:18px;font-weight:800;color:var(--ink);margin:0 0 4px;display:flex;align-items:center;gap:8px;">
+                            <span>💰</span>
+                            <span>${T('faresTitle')}</span>
+                        </h2>
+                        <div style="font-size:12px;color:var(--muted)">
+                            ${isEn ? 'Select a transit line below to view fare rates, pricing models, and payment methods' : 'เลือกสายรถไฟฟ้าด้านล่าง เพื่อดูอัตราค่าโดยสาร โครงสร้างราคา และบัตรโดยสารที่รองรับ'}
                         </div>
                     </div>
-
-                    <!-- BTS Fare Structure -->
-                    <div class="info-card">
-                        <h3 style="display:flex;align-items:center;gap:8px">
-                            <span style="display:inline-flex;gap:4px;align-items:center">${getLineIconSvg(1, false, 18)} ${getLineIconSvg(2, false, 18)}</span>
-                            <span>${isEn ? 'BTS Fare Structure (Sukhumvit & Silom Line)' : 'อัตราค่าโดยสารรถไฟฟ้า BTS (สายสุขุมวิท & สายสีลม)'}</span>
-                        </h3>
-                        <div style="font-size:12px;color:var(--muted);margin-bottom:8px">${isEn ? 'Calculated by distance and number of stations traveled' : 'คำนวณตามระยะทางและจำนวนสถานีที่เดินทาง'}</div>
-                        <div class="fare-table-wrap">
-                            <table class="fare-grid-table">
-                                <thead>
-                                    <tr>
-                                        <th>${isEn ? 'Stations' : 'จำนวนสถานี'}</th>
-                                        <th>${isEn ? 'Adult' : 'บุคคลทั่วไป'}</th>
-                                        <th>${isEn ? 'Student' : 'นักเรียน/นักศึกษา'}</th>
-                                        <th>${isEn ? 'Senior' : 'ผู้สูงอายุ'}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr><td>${isEn ? '1 station' : '1 สถานี'}</td><td>฿17</td><td>฿12</td><td>฿9</td></tr>
-                                    <tr><td>${isEn ? '2 - 3 stations' : '2 - 3 สถานี'}</td><td>฿25 - ฿28</td><td>฿18 - ฿20</td><td>฿13 - ฿14</td></tr>
-                                    <tr><td>${isEn ? '4 - 5 stations' : '4 - 5 สถานี'}</td><td>฿32 - ฿35</td><td>฿23 - ฿25</td><td>฿16 - ฿18</td></tr>
-                                    <tr><td>${isEn ? '6 - 8 stations' : '6 - 8 สถานี'}</td><td>฿40 - ฿47</td><td>฿28 - ฿33</td><td>฿20 - ฿24</td></tr>
-                                    <tr><td>${isEn ? 'Extensions' : 'ส่วนต่อขยาย (Extension)'}</td><td>+฿15</td><td>+฿15</td><td>+฿8</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- MRT Blue / Monorail Fares -->
-                    <div class="info-card">
-                        <h3 style="display:flex;align-items:center;gap:8px">
-                            <span style="display:inline-flex;gap:4px;align-items:center;flex-shrink:0">${getLineIconSvg(101, false, 18)} ${getLineIconSvg(4, false, 18)} ${getLineIconSvg(5, false, 18)}</span>
-                            <span>${isEn ? 'MRT, Monorails & Other Lines Fares' : 'อัตราค่าโดยสาร MRT, โมโนเรล และสายอื่นๆ'}</span>
-                        </h3>
-                        <div class="fare-table-wrap">
-                            <table class="fare-grid-table">
-                                <thead>
-                                    <tr>
-                                        <th>${isEn ? 'Transit System' : 'ระบบรถไฟฟ้า'}</th>
-                                        <th>${isEn ? 'Min Fare' : 'ราคาเริ่มต้น'}</th>
-                                        <th>${isEn ? 'Max Fare' : 'ราคาสูงสุด'}</th>
-                                        <th>${isEn ? 'Supported Tickets & Cards' : 'บัตรโดยสารที่รองรับ'}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr><td><span style="display:inline-flex;align-items:center;gap:6px">${getLineIconSvg(101, false, 16)} <b>${isEn ? 'MRT Blue Line' : 'MRT สายสีน้ำเงิน'}</b></span></td><td>฿17</td><td>฿43</td><td>${isEn ? 'Token, MRT Card, EMV Contactless' : 'เหรียญโดยสาร, บัตร MRT, บัตร EMV'}</td></tr>
-                                    <tr><td><span style="display:inline-flex;align-items:center;gap:6px">${getLineIconSvg(4, false, 16)} <b>${isEn ? 'MRT Yellow Line' : 'MRT สายสีเหลือง'}</b></span></td><td>฿15</td><td>฿45</td><td>${isEn ? 'Rabbit Card, EMV Contactless' : 'บัตร Rabbit, บัตร EMV Contactless'}</td></tr>
-                                    <tr><td><span style="display:inline-flex;align-items:center;gap:6px">${getLineIconSvg(5, false, 16)} <b>${isEn ? 'MRT Pink Line' : 'MRT สายสีชมพู'}</b></span></td><td>฿15</td><td>฿45</td><td>${isEn ? 'Rabbit Card, EMV Contactless' : 'บัตร Rabbit, บัตร EMV Contactless'}</td></tr>
-                                    <tr><td><span style="display:inline-flex;align-items:center;gap:6px">${getLineIconSvg(3, false, 16)} <b>${isEn ? 'BTS Gold Line' : 'รถไฟฟ้าสายสีทอง'}</b></span></td><td>฿16</td><td>฿16</td><td>${isEn ? 'Rabbit Card, Single Journey Token' : 'บัตร Rabbit, เหรียญ Single Journey'}</td></tr>
-                                    <tr><td><span style="display:inline-flex;align-items:center;gap:6px">${getLineIconSvg(104, false, 16)} <b>${isEn ? 'Airport Rail Link (ARL)' : 'แอร์พอร์ต เรล ลิงก์ (ARL)'}</b></span></td><td>฿15</td><td>฿45</td><td>${isEn ? 'Smart Token, ARL Card' : 'Smart Token, บัตร ARL'}</td></tr>
-                                    <tr><td><span style="display:inline-flex;align-items:center;gap:6px">${getLineIconSvg(102, false, 16)} <b>${isEn ? 'MRT Purple Line' : 'MRT สายสีม่วง'}</b></span></td><td>฿14</td><td>฿20</td><td>${isEn ? 'Token, MRT Plus, EMV (Max ฿20)' : 'เหรียญโดยสาร, บัตร MRT Plus, บัตร EMV (20 บาทสูงสุด)'}</td></tr>
-                                    <tr><td><span style="display:inline-flex;align-items:center;gap:6px">${getLineIconSvg(103, false, 16)} <b>${isEn ? 'SRT Red Line' : 'SRT รถไฟชานเมืองสายสีแดง'}</b></span></td><td>฿12</td><td>฿20</td><td>${isEn ? 'Token, SRT Card, EMV (Max ฿20)' : 'เหรียญโดยสาร, บัตร SRT, บัตร EMV (20 บาทสูงสุด)'}</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- First & Last Train Timetables -->
-                    <div class="info-card">
-                        <h3>⏰ ${isEn ? 'First & Last Train Timetables' : 'ตารางเวลาเดินรถขบวนแรกและขบวนสุดท้าย'}</h3>
-                        <div class="fare-table-wrap">
-                            <table class="fare-grid-table">
-                                <thead>
-                                    <tr>
-                                        <th>${isEn ? 'Line' : 'สายรถไฟฟ้า'}</th>
-                                        <th>${isEn ? 'First Train' : 'ขบวนแรก'}</th>
-                                        <th>${isEn ? 'Last Train' : 'ขบวนสุดท้าย'}</th>
-                                        <th>${isEn ? 'Peak Frequency' : 'ความถี่ช่วงเร่งด่วน'}</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr><td><span style="display:inline-flex;align-items:center;gap:6px">${getLineIconSvg(1, false, 16)} ${isEn ? 'BTS Sukhumvit Line' : 'BTS สายสุขุมวิท'}</span></td><td>05:15 - 05:30</td><td>24:00 - 00:30</td><td>2.4 - 3.5 ${isEn ? 'min' : 'นาที'}</td></tr>
-                                    <tr><td><span style="display:inline-flex;align-items:center;gap:6px">${getLineIconSvg(2, false, 16)} ${isEn ? 'BTS Silom Line' : 'BTS สายสีลม'}</span></td><td>05:30</td><td>24:00</td><td>3.5 - 4.5 ${isEn ? 'min' : 'นาที'}</td></tr>
-                                    <tr><td><span style="display:inline-flex;align-items:center;gap:6px">${getLineIconSvg(3, false, 16)} ${isEn ? 'Gold Line' : 'สายสีทอง'}</span></td><td>06:00</td><td>24:00</td><td>6 - 8 ${isEn ? 'min' : 'นาที'}</td></tr>
-                                    <tr><td><span style="display:inline-flex;align-items:center;gap:6px">${getLineIconSvg(101, false, 16)} ${isEn ? 'MRT Blue Line' : 'MRT สายสีน้ำเงิน'}</span></td><td>06:00 ${isEn ? '(Holiday 06:00)' : '(วันหยุด 06:00)'}</td><td>23:30 - 24:00</td><td>3.5 - 4 ${isEn ? 'min' : 'นาที'}</td></tr>
-                                    <tr><td><span style="display:inline-flex;align-items:center;gap:6px">${getLineIconSvg(102, false, 16)} ${isEn ? 'MRT Purple Line' : 'MRT สายสีม่วง'}</span></td><td>05:30 ${isEn ? '(Holiday 06:00)' : '(วันหยุด 06:00)'}</td><td>23:30 - 24:00</td><td>5 - 6 ${isEn ? 'min' : 'นาที'}</td></tr>
-                                    <tr><td><span style="display:inline-flex;align-items:center;gap:6px">${getLineIconSvg(4, false, 16)} ${isEn ? 'MRT Yellow Line' : 'MRT สายสีเหลือง'}</span></td><td>06:00</td><td>24:00</td><td>5 ${isEn ? 'min' : 'นาที'}</td></tr>
-                                    <tr><td><span style="display:inline-flex;align-items:center;gap:6px">${getLineIconSvg(5, false, 16)} ${isEn ? 'MRT Pink Line' : 'MRT สายสีชมพู'}</span></td><td>06:00</td><td>24:00</td><td>5 ${isEn ? 'min' : 'นาที'}</td></tr>
-                                    <tr><td><span style="display:inline-flex;align-items:center;gap:6px">${getLineIconSvg(103, false, 16)} ${isEn ? 'SRT Red Line' : 'SRT สายสีแดง'}</span></td><td>05:00</td><td>24:00</td><td>10 - 15 ${isEn ? 'min' : 'นาที'}</td></tr>
-                                    <tr><td><span style="display:inline-flex;align-items:center;gap:6px">${getLineIconSvg(104, false, 16)} ${isEn ? 'ARL Airport Link' : 'ARL สุวรรณภูมิ'}</span></td><td>05:30</td><td>24:00</td><td>8 - 10 ${isEn ? 'min' : 'นาที'}</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>`;
+                    ${renderLineFilterBar(activeId, 'setFaresLine')}
+                    ${bodyHtml}
+                `;
             },
+
+            /* ---------- THE SKYTRAINs: Timetables View (เวลาเดินรถ & ความถี่ตามสาย) ---------- */
+            renderTimetablesView() {
+                const el = document.getElementById('timetablesViewContent');
+                if (!el) return;
+
+                const isEn = lang === 'en';
+                const activeId = this.timetablesActiveLine || 0;
+                const activeLine = TRANSIT_LINES_CATALOG.find(l => l.id === activeId) || TRANSIT_LINES_CATALOG[0];
+
+                let bodyHtml = '';
+
+                if (activeId === 0) {
+                    // ทั้งหมด (All Lines Timetables Overview)
+                    bodyHtml = `
+                        <!-- All Lines Timetable Summary Table -->
+                        <div class="info-card">
+                            <h3 style="display:flex;align-items:center;gap:8px">
+                                <span>⏰</span>
+                                <span>${isEn ? 'First & Last Train Timetables across 10 Lines' : 'ตารางเวลาเดินรถขบวนแรกและขบวนสุดท้าย 10 สาย'}</span>
+                            </h3>
+                            <div style="font-size:12px;color:var(--muted);margin-bottom:8px">
+                                ${isEn ? 'Tap any line below or use the pills above to view official frequency schedule table' : 'แตะที่สายรถไฟฟ้าหรือแถบด้านบนเพื่อดูตารางความถี่การเดินรถแบบละเอียด'}
+                            </div>
+                            <div class="fare-table-wrap">
+                                <table class="fare-grid-table">
+                                    <thead>
+                                        <tr>
+                                            <th>${isEn ? 'Line' : 'สายรถไฟฟ้า'}</th>
+                                            <th>${isEn ? 'First Train' : 'ขบวนแรก'}</th>
+                                            <th>${isEn ? 'Last Train' : 'ขบวนสุดท้าย'}</th>
+                                            <th>${isEn ? 'Peak Frequency' : 'ความถี่ช่วงเร่งด่วน'}</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${TRANSIT_LINES_CATALOG.filter(l => l.id !== 0).map(l => `
+                                            <tr style="cursor:pointer;" onclick="App.setTimetablesLine(${l.id})">
+                                                <td style="white-space:nowrap;">
+                                                    <span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap;">
+                                                        ${getLineIconSvg(l.id, false, 16)}
+                                                        <b>${esc(isEn ? l.nameEN : l.nameTH)}</b>
+                                                    </span>
+                                                </td>
+                                                <td style="white-space:nowrap;"><b>${esc(isEn ? l.firstTrainEN : l.firstTrainTH)}</b></td>
+                                                <td style="white-space:nowrap;"><b>${esc(isEn ? l.lastTrainEN : l.lastTrainTH)}</b></td>
+                                                <td style="white-space:nowrap;color:${l.color}"><b>${esc(isEn ? l.peakFreqEN : l.peakFreqTH)}</b></td>
+                                                <td style="white-space:nowrap;">
+                                                    <button type="button" class="btn btn-ghost" style="padding:4px 8px;font-size:11px;white-space:nowrap;" onclick="event.stopPropagation();App.setTimetablesLine(${l.id})">
+                                                        ${isEn ? 'Timetable' : 'ดูตาราง'} ➔
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- General Operating Tips -->
+                        <div class="info-card">
+                            <h3>ℹ️ ${isEn ? 'Bangkok Transit Operating Guidelines' : 'ข้อแนะนำเวลาการให้บริการและการเดินทาง'}</h3>
+                            <div style="font-size:12.5px;color:var(--ink);line-height:1.6">
+                                <ul style="margin:0;padding-left:16px;">
+                                    <li style="margin-bottom:6px">
+                                        <b>${isEn ? 'Morning Services:' : 'เวลาเปิดให้บริการตอนเช้า:'}</b>
+                                        ${isEn ? 'SRT Red Line starts earliest at 05:00, BTS at 05:15-05:30, ARL at 05:30, and MRT lines at 05:30-06:00.' : 'SRT สายสีแดงเปิดให้บริการเร็วที่สุดตั้งแต่ 05:00 น., BTS เริ่ม 05:15–05:30 น., ARL เริ่ม 05:30 น. และ MRT สายต่างๆ เริ่ม 05:30–06:00 น.'}
+                                    </li>
+                                    <li style="margin-bottom:6px">
+                                        <b>${isEn ? 'Night Closing:' : 'เวลาปิดให้บริการตอนกลางคืน:'}</b>
+                                        ${isEn ? 'All transit lines close between 24:00 (Midnight) and 00:30.' : 'ทุกสายสิ้นสุดการให้บริการประมาณ 24:00 น. (เที่ยงคืน) ถึง 00:30 น.'}
+                                    </li>
+                                    <li>
+                                        <b>${isEn ? 'Connecting Trains:' : 'คำแนะนำสำหรับผู้โดยสารที่ต้องเปลี่ยนสาย:'}</b>
+                                        ${isEn ? 'For late night journeys requiring interchanges, plan to reach transfer stations before 23:30 to avoid missing the final train.' : 'ในเที่ยวเดินทางรอบดึกที่ต้องเปลี่ยนสาย ควรเดินทางถึงสถานีเปลี่ยนสายก่อน 23:30 น. เพื่อให้ทันขบวนสุดท้ายของอีกสาย'}
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    // ข้อมูลเวลาเดินรถเฉพาะสาย (Specific Line Timetable)
+                    const lineName = isEn ? activeLine.nameEN : activeLine.nameTH;
+                    const operator = isEn ? activeLine.operatorEN : activeLine.operatorTH;
+
+                    // Parse terminus with compact station badges
+                    const tRaw = isEn ? activeLine.terminusEN : activeLine.terminusTH;
+                    const tParts = tRaw.split('–').map(s => s.trim());
+                    let terminusHtml = '';
+                    if (tParts.length === 2) {
+                        const t1 = parseStationCodeAndName(tParts[0]);
+                        const t2 = parseStationCodeAndName(tParts[1]);
+                        terminusHtml = `
+                            <span style="display:inline-flex;align-items:center;gap:4px;vertical-align:middle;">
+                                ${t1.code ? `<span class="stn-code-badge" style="background:${activeLine.color}">${esc(t1.code)}</span>` : ''}
+                                <span>${esc(t1.name)}</span>
+                                <span style="color:var(--muted)">⇄</span>
+                                ${t2.code ? `<span class="stn-code-badge" style="background:${activeLine.color}">${esc(t2.code)}</span>` : ''}
+                                <span>${esc(t2.name)}</span>
+                            </span>
+                        `;
+                    } else {
+                        terminusHtml = esc(tRaw);
+                    }
+
+                    // Parse terminal directions with compact station badges
+                    const d1 = parseStationCodeAndName(isEn ? activeLine.dir1.toEN || activeLine.dir1.toTH : activeLine.dir1.toTH);
+                    const d2 = parseStationCodeAndName(isEn ? activeLine.dir2.toEN || activeLine.dir2.toTH : activeLine.dir2.toTH);
+
+                    // คำนวณความถี่สด
+                    const liveFreq = getCurrentMrtFreq(activeLine.id);
+                    let liveFreqHtml = '';
+                    if (liveFreq) {
+                        const cleanLabel = String(liveFreq.label || '').replace(/^~/, '');
+                        liveFreqHtml = `
+                            <div style="display:inline-flex;align-items:center;gap:6px;background:#22c55e18;color:#16a34a;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap;">
+                                <span class="live-dot" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#16a34a;animation:pulse 1.5s infinite;"></span>
+                                <span>${isEn ? `Current Headway: ~${cleanLabel} min` : `ความถี่ขณะนี้: รถมาทุก ~${cleanLabel} นาที`}</span>
+                            </div>
+                        `;
+                    } else {
+                        liveFreqHtml = `
+                            <div style="display:inline-flex;align-items:center;gap:6px;background:var(--line);color:var(--muted);padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;white-space:nowrap;">
+                                <span>⚪ ${isEn ? 'Currently Out of Service Hours' : 'ขณะนี้นอกเวลาให้บริการ'}</span>
+                            </div>
+                        `;
+                    }
+
+                    // ขบวนแรก-สุดท้ายแยกทิศทาง พร้อมป้ายรหัสสถานีขนาดกะทัดรัด
+                    const dirCards = `
+                        <div class="dir-timetables-grid">
+                            <div class="dir-time-card">
+                                <div class="dir-title">
+                                    <span style="font-size:11.5px;color:var(--muted);">${isEn ? 'Towards' : 'ทิศทางมุ่งหน้า'}</span>
+                                    ${d1.code ? `<span class="stn-code-badge" style="background:${activeLine.color}">${esc(d1.code)}</span>` : ''}
+                                    <b style="color:var(--ink);">${esc(d1.name)}</b>
+                                </div>
+                                <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:13px;white-space:nowrap;">
+                                    <div style="white-space:nowrap;"><span style="font-size:11px;color:var(--muted)">${isEn ? 'First Train:' : 'ขบวนแรก:'}</span> <b style="color:${activeLine.color}">${activeLine.dir1.first} น.</b></div>
+                                    <div style="white-space:nowrap;"><span style="font-size:11px;color:var(--muted)">${isEn ? 'Last Train:' : 'ขบวนสุดท้าย:'}</span> <b>${activeLine.dir1.last} น.</b></div>
+                                </div>
+                            </div>
+                            <div class="dir-time-card">
+                                <div class="dir-title">
+                                    <span style="font-size:11.5px;color:var(--muted);">${isEn ? 'Towards' : 'ทิศทางมุ่งหน้า'}</span>
+                                    ${d2.code ? `<span class="stn-code-badge" style="background:${activeLine.color}">${esc(d2.code)}</span>` : ''}
+                                    <b style="color:var(--ink);">${esc(d2.name)}</b>
+                                </div>
+                                <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:13px;white-space:nowrap;">
+                                    <div style="white-space:nowrap;"><span style="font-size:11px;color:var(--muted)">${isEn ? 'First Train:' : 'ขบวนแรก:'}</span> <b style="color:${activeLine.color}">${activeLine.dir2.first} น.</b></div>
+                                    <div style="white-space:nowrap;"><span style="font-size:11px;color:var(--muted)">${isEn ? 'Last Train:' : 'ขบวนสุดท้าย:'}</span> <b>${activeLine.dir2.last} น.</b></div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    // ตารางความถี่ทางการ
+                    const sched = getLineScheduleTables(activeLine.id);
+                    const schedTablesHtml = renderFrequencyTablesHtml(sched);
+
+                    // รายชื่อสถานีประจำสายพร้อมป้ายรหัสสถานีขนาดกะทัดรัด
+                    const lineStations = getLineStationsList(activeLine.id);
+                    let stnDirectoryHtml = '';
+                    if (lineStations && lineStations.length > 0) {
+                        stnDirectoryHtml = `
+                            <div class="info-card">
+                                <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;" onclick="App.toggleTimetableStations()">
+                                    <h3 style="margin:0;display:flex;align-items:center;gap:8px;">
+                                        <span>🚉</span>
+                                        <span>${isEn ? `Stations on Line (${lineStations.length})` : `รายชื่อสถานี & รหัสสถานีในสายนี้ (${lineStations.length} สถานี)`}</span>
+                                    </h3>
+                                    <span id="stnListChev" style="font-size:12px;color:var(--muted);transition:transform .2s ease;">▼</span>
+                                </div>
+                                <div id="stnListBody" style="display:none;margin-top:10px;">
+                                    <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(140px, 1fr));gap:6px;">
+                                        ${lineStations.map(s => {
+                                            const sKey = s.StationKey;
+                                            const sTh = s.StationNameTH || (s.StationName ? s.StationName.split('|')[0].trim() : '');
+                                            const sEn = s.StationNameEN || s.StationName_EN || '';
+                                            return `
+                                                <div style="display:flex;align-items:center;gap:6px;background:var(--bg-subtle);padding:6px 8px;border-radius:6px;border:1px solid var(--line);white-space:nowrap;overflow:hidden;">
+                                                    <span class="stn-code-badge" style="background:${activeLine.color}">${esc(sKey)}</span>
+                                                    <div style="overflow:hidden;text-overflow:ellipsis;min-width:0;">
+                                                        <div style="font-size:12px;font-weight:700;color:var(--ink);overflow:hidden;text-overflow:ellipsis;">${esc(isEn ? sEn || sTh : sTh)}</div>
+                                                    </div>
+                                                </div>
+                                            `;
+                                        }).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+
+                    bodyHtml = `
+                        <!-- Line Hero Card -->
+                        <div class="line-hero-card" style="border-left:5px solid ${activeLine.color}">
+                            <div class="line-hero-header" style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+                                <div style="display:flex;align-items:center;gap:10px;min-width:0;">
+                                    ${getLineIconSvg(activeLine.id, false, 28)}
+                                    <div style="min-width:0;">
+                                        <div style="font-size:16.5px;font-weight:800;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(lineName)}</div>
+                                        <div style="font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(operator)} · ${terminusHtml}</div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-ghost" style="padding:5px 10px;font-size:11.5px;margin-left:auto;white-space:nowrap;flex-shrink:0;" onclick="App.setTimetablesLine(0)">
+                                    ${isEn ? 'View All Lines' : 'ดูทุกสาย'} ↺
+                                </button>
+                            </div>
+
+                            <div style="margin:8px 0 12px;">
+                                ${liveFreqHtml}
+                            </div>
+
+                            <div class="line-metrics-grid">
+                                <div class="line-metric-box">
+                                    <div class="label" style="white-space:nowrap;">${isEn ? 'First Train Service' : 'เวลาขบวนแรก'}</div>
+                                    <div class="val" style="color:${activeLine.color};white-space:nowrap;">${esc(isEn ? activeLine.firstTrainEN : activeLine.firstTrainTH)}</div>
+                                </div>
+                                <div class="line-metric-box">
+                                    <div class="label" style="white-space:nowrap;">${isEn ? 'Last Train Service' : 'เวลาขบวนสุดท้าย'}</div>
+                                    <div class="val" style="white-space:nowrap;">${esc(isEn ? activeLine.lastTrainEN : activeLine.lastTrainTH)}</div>
+                                </div>
+                                <div class="line-metric-box">
+                                    <div class="label" style="white-space:nowrap;">${isEn ? 'Peak Hour Headway' : 'ความถี่ช่วงเร่งด่วน'}</div>
+                                    <div class="val" style="font-size:13px;color:${activeLine.color};white-space:nowrap;">${esc(isEn ? activeLine.peakFreqEN : activeLine.peakFreqTH)}</div>
+                                </div>
+                                <div class="line-metric-box">
+                                    <div class="label" style="white-space:nowrap;">${isEn ? 'Off-Peak Headway' : 'ความถี่ช่วงปกติ'}</div>
+                                    <div class="val" style="font-size:13px;white-space:nowrap;">${esc(isEn ? activeLine.offPeakFreqEN : activeLine.offPeakFreqTH)}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Terminal Directions Timetable -->
+                        <div class="info-card">
+                            <h3>🧭 ${isEn ? 'First & Last Train by Terminal Direction' : 'เวลาขบวนแรกและขบวนสุดท้ายแยกตามทิศทาง'}</h3>
+                            ${dirCards}
+                        </div>
+
+                        <!-- Official Frequency Schedule Tables -->
+                        <div class="info-card">
+                            <h3>🗓️ ${isEn ? 'Official Headway Frequency Schedule' : 'ตารางความถี่การเดินรถอย่างเป็นทางการ'}</h3>
+                            <div style="font-size:12px;color:var(--muted);margin-bottom:6px">
+                                ${isEn ? 'Row highlighted in green indicates current operational time slot' : 'แถบสีเขียวแสดงช่วงเวลาเดินรถที่กำลังให้บริการอยู่ ณ ขณะนี้'}
+                            </div>
+                            ${schedTablesHtml}
+                        </div>
+
+                        ${stnDirectoryHtml}
+
+                        <!-- Action Button to Switch to Fares of this Line -->
+                        <div style="text-align:center;margin:16px 0 6px;">
+                            <button type="button" class="btn btn-primary" style="background:${activeLine.color};border-color:${activeLine.color};box-shadow:0 4px 14px ${activeLine.color}40;display:inline-flex;align-items:center;gap:8px;white-space:nowrap;padding:11px 22px;max-width:100%;"
+                                onclick="App.switchView('fares');App.setFaresLine(${activeLine.id})">
+                                <span>💳 ${isEn ? 'Check Fares of This Line' : 'เช็คอัตราค่าโดยสารสายนี้'}</span>
+                                <span>➔</span>
+                            </button>
+                        </div>
+                    `;
+                }
+
+                el.innerHTML = `
+                    <div style="margin-bottom:12px;">
+                        <h2 style="font-size:18px;font-weight:800;color:var(--ink);margin:0 0 4px;display:flex;align-items:center;gap:8px;">
+                            <span>⏰</span>
+                            <span>${T('timetablesTitle')}</span>
+                        </h2>
+                        <div style="font-size:12px;color:var(--muted)">
+                            ${isEn ? 'Select a transit line below to view first & last trains and official frequency schedules' : 'เลือกสายรถไฟฟ้าด้านล่าง เพื่อดูเวลาขบวนแรก ขบวนสุดท้าย และตารางความถี่การเดินรถ'}
+                        </div>
+                    </div>
+                    ${renderLineFilterBar(activeId, 'setTimetablesLine')}
+                    ${bodyHtml}
+                `;
+            },
+
 
 
             /* ---------- theme (dark mode) ---------- */
@@ -2571,6 +3522,7 @@ gQIDAQAB
                 this.renderJourney();
                 this.renderInteractiveMap(true);
                 this.renderFaresView();
+                this.renderTimetablesView();
                 this.renderQuickHubChips();
                 this.renderExitsView(this.selectedExitKey);
                 if (this.journey.picking) this.renderPicker();
@@ -2590,19 +3542,10 @@ gQIDAQAB
 
                 // Home view
                 set('nearestTitle', T('nearestTitle'));
-                set('chooseDefaultBtn', T('chooseDefault'));
                 set('relocateBtn', '🧭 ' + T('relocate'));
                 set('homePlannerTitle', T('homeJourneyTitle'));
                 set('homePlannerSub', T('homeJourneySub'));
                 set('homePlannerBtn', T('homeJourneyBtn'));
-
-                // Geofencing Widget
-                set('geofenceTitle', T('geofenceTitle'));
-                set('geofenceSub', T('geofenceSub'));
-                set('geofenceRadiusLbl', T('geofenceRadius'));
-                set('geofenceTestBtnLbl', T('geofenceTestBtn'));
-                set('geofenceBadge', this.geofenceEnabled ? T('geofenceActive') : T('geofenceDisabled'));
-                set('geofenceStatusText', this.geofenceEnabled ? T('geofenceStatusOn') : T('geofenceStatusOff'));
 
                 const si = document.getElementById('searchInput');
                 if (si) si.placeholder = T('searchPh');
@@ -2623,8 +3566,6 @@ gQIDAQAB
                 set('sheetExitsSub', T('sheetExitsSub'));
                 set('sheetLiveTitle', T('sheetLive'));
                 set('sheetLiveSub', T('sheetLiveSub'));
-                set('sheetDefaultTitle', T('sheetDefault'));
-                set('sheetDefaultSub', T('sheetDefaultSub'));
 
                 // Planner view
                 set('plannerHubTitle', T('plannerHubTitle'));
@@ -2641,13 +3582,13 @@ gQIDAQAB
                 set('navLblHome', T('navHome'));
                 set('navLblMap', T('navMap'));
                 set('navLblPlanner', T('navPlanner'));
-                set('navLblExits', T('navExits'));
                 set('navLblFares', T('navFares'));
+                set('navLblTimetables', T('navTimetables'));
                 setAttr('tab-home', 'aria-label', T('navHome'));
                 setAttr('tab-map', 'aria-label', T('navMap'));
                 setAttr('tab-planner', 'aria-label', T('navPlanner'));
-                setAttr('tab-exits', 'aria-label', T('navExits'));
                 setAttr('tab-fares', 'aria-label', T('navFares'));
+                setAttr('tab-timetables', 'aria-label', T('navTimetables'));
 
                 // Nearest Station Popup Modal
                 set('nearestPopupTitle', T('popupTitle'));
@@ -2666,7 +3607,17 @@ gQIDAQAB
                 this.applyStaticLang();
                 this.updateThemeBtn();   // ธีมถูกตั้งไว้แล้วจากสคริปต์ใน <head> — ปรับไอคอนปุ่มให้ตรง
                 this.startClock();
-                this.initGeofence();
+                try {
+                    localStorage.removeItem('bkk_geofence_enabled');
+                    localStorage.removeItem('bkk_geofence_radius');
+                } catch (e) {}
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.addEventListener('message', (event) => {
+                        if (event.data && event.data.action === 'openStation' && event.data.stationKey) {
+                            this.handleNotificationOpen(event.data.stationKey);
+                        }
+                    });
+                }
                 document.getElementById('searchInput').addEventListener('input', () => this.renderStrip());
                 document.addEventListener('visibilitychange', () => {
                     if (!document.hidden) this.refreshAll();
@@ -2685,9 +3636,9 @@ gQIDAQAB
                          <button class="btn btn-ghost" onclick="location.reload()">${T('retry')}</button></div>`;
                     return;
                 }
-                this.lineById = Object.fromEntries(this.lines.map(l => [l.LineId, l]));
-                const seen = new Set();
                 const allLines = [...this.lines, ...MRT_STATIC_DB.lines];
+                this.lineById = Object.fromEntries(allLines.map(l => [l.LineId, l]));
+                const seen = new Set();
                 this.uniqueStations = allLines.flatMap(l => l.StationList)
                     .filter(s => s.Latitude && s.Longitude && !seen.has(s.StationKey) && seen.add(s.StationKey));
                 this.keyLines = {};
@@ -2704,13 +3655,14 @@ gQIDAQAB
                 this.renderExitsView();
                 this.renderInteractiveMap();
                 this.renderFaresView();
+                this.renderTimetablesView();
                 this.renderStrip();
                 const initialView = new URLSearchParams(location.search).get('view');
                 if (initialView) this.switchView(initialView);
                 if (window.addEventListener) window.addEventListener('hashchange', () => this.onHashChange());
                 if (this.expandedKey) {
                     const deepSt = this.findStation(this.expandedKey);
-                    if (deepSt && !usesStaticTimetable(deepSt)) this.loadArrivals(deepSt);
+                    if (deepSt) this.loadArrivals(deepSt);
                     requestAnimationFrame(() => {
                         document.querySelector(`[id^="row-${CSS.escape(this.expandedKey)}-"]`)
                             ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -2726,12 +3678,17 @@ gQIDAQAB
                     if (saved.stationKey && this.findStation(saved.stationKey)) {
                         this.pinnedKey = saved.stationKey;
                         this.selectedExitKey = saved.stationKey;
+                        const savedSt = this.findStation(saved.stationKey);
+                        if (savedSt) {
+                            this.syncLineToStation(savedSt, true);
+                            this.loadArrivals(savedSt);
+                        }
                         this.renderNearest();
                         this.renderNearestExit();
                     }
                 }
 
-                // แสดงสถานีตั้งต้นทันทีหากยังไม่มีข้อมูลที่บันทึกไว้ (UI พร้อมใช้งานทันที 0ms)
+                // แสดงสถานีสำรองทันทีหากยังไม่มีข้อมูลที่บันทึกไว้ (UI พร้อมใช้งานทันที 0ms)
                 if (!saved) {
                     this.useFallbackStation();
                 }
@@ -2910,13 +3867,15 @@ gQIDAQAB
             // กดป้ายเชื่อมต่อ → กระโดดไปสถานีนั้นบนอีกสาย
             jumpTo(key, lineId) {
                 document.getElementById('searchInput').value = '';
+                this.userPickedLineManually = true;
                 this.activeLine = lineId;
                 this.expandedKey = key;
                 this.renderTabs();
                 this.renderStrip();
                 this.syncUrl();
+                this.scrollActiveTabIntoView();
                 const station = this.findStation(key);
-                if (station && !usesStaticTimetable(station)) {
+                if (station) {
                     this.loadArrivals(station);
                 }
                 requestAnimationFrame(() => {
@@ -2949,13 +3908,17 @@ gQIDAQAB
             applyUrl() {
                 const p = new URLSearchParams((location.hash || '').slice(1));
                 const line = parseInt(p.get('line'), 10);
-                if (line && journeyLineById(line)) this.activeLine = line;
+                if (line && journeyLineById(line)) {
+                    this.activeLine = line;
+                    this.userPickedLineManually = true;
+                }
                 const st = p.get('st');
                 if (st && this.findStation(st)) {
                     // สถานีไม่อยู่ในสายที่เลือก → สลับไปสายแรกของสถานีนั้น
                     const stLines = (this.keyLines[st] || []).map(x => x.lineId);
                     if (stLines.length && !stLines.includes(this.activeLine)) this.activeLine = stLines[0];
                     this.expandedKey = st;
+                    this.userPickedLineManually = true;
                 }
                 const from = p.get('from'), to = p.get('to');
                 if (from && journeyStationByKey(from)) { this.journey.from = from; this.journey.open = true; }
@@ -2969,7 +3932,7 @@ gQIDAQAB
                 this.renderStrip();
                 this.renderJourney();
                 const st = this.expandedKey && this.findStation(this.expandedKey);
-                if (st && !usesStaticTimetable(st)) this.loadArrivals(st);
+                if (st) this.loadArrivals(st);
                 if (this.journey.from && this.journey.to && !this.journey.result) this.findRoute();
             },
 
@@ -2995,13 +3958,12 @@ gQIDAQAB
             openPicker(which) {
                 const j = this.journey;
                 j.picking = which;
-                const isDef = which === 'defaultStation';
-                const selectedKey = isDef ? this.getDefaultStationKey() : (which === 'from' ? j.from : j.to);
+                const selectedKey = which === 'from' ? j.from : j.to;
                 const selectedLines = (this.keyLines[selectedKey] || []).map(x => x.lineId);
                 if (selectedLines.length) {
                     j.pickerLine = selectedLines.includes(this.activeLine) ? this.activeLine : selectedLines[0];
-                } else if (!journeyLineById(j.pickerLine)) {
-                    j.pickerLine = this.activeLine || this.lines[0]?.LineId || 1;
+                } else {
+                    j.pickerLine = 0;
                 }
                 this.renderPicker();
                 const el = document.getElementById('pickerOverlay');
@@ -3019,11 +3981,6 @@ gQIDAQAB
 
             pickJourneyStation(key) {
                 const j = this.journey;
-                if (j.picking === 'defaultStation') {
-                    this.setDefaultStation(key);
-                    this.closePicker();
-                    return;
-                }
                 if (j.picking === 'from') j.from = key;
                 else if (j.picking === 'to') j.to = key;
                 this.closePicker();
@@ -3119,34 +4076,19 @@ gQIDAQAB
             renderPicker() {
                 const el = document.getElementById('pickerOverlay');
                 if (!el) return;
-                const isDef = this.journey.picking === 'defaultStation';
-                const curDefKey = this.getDefaultStationKey();
-                const curDefStation = this.findStation(curDefKey);
-                const defTitleHtml = isDef ? `
-                    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
-                        <div style="display:flex;align-items:center;gap:8px;">
-                            <span style="font-size:22px">⭐</span>
-                            <div>
-                                <div style="font-weight:800;font-size:15px;color:var(--ink)">${lang === 'th' ? 'เลือกสถานีตั้งต้น (Default Station)' : 'Select Default Station'}</div>
-                                <div style="font-size:11.5px;color:var(--muted)">${lang === 'th' ? 'ปัจจุบัน:' : 'Current:'} <b style="color:var(--accent)">${esc(curDefKey)} ${esc(stName(curDefStation))}</b> · ${lang === 'th' ? 'แสดงเมื่อเปิดแอปหรือหา GPS ไม่พบ' : 'Shown when app opens or outside GPS range'}</div>
-                            </div>
-                        </div>
-                        <button class="btn btn-ghost" onclick="App.closePicker()" style="font-size:16px;padding:4px 8px;">✕</button>
-                    </div>` : '';
                 el.innerHTML = `
                     <div class="picker-bg" onclick="App.closePicker()"></div>
                     <div class="picker">
                         <div class="picker-head">
-                            ${defTitleHtml}
                             <div style="display:flex;gap:8px;align-items:center;">
-                                <input id="pickerSearch" type="search" placeholder="${isDef ? (lang === 'th' ? 'ค้นหาสถานีตั้งต้น เช่น สยาม, N24, E4...' : 'Search default station e.g. Siam, N24, E4...') : T('searchPh')}" autocomplete="off" style="flex:1;">
-                                ${!isDef ? `<button class="btn btn-ghost" onclick="App.closePicker()">✕</button>` : ''}
+                                <input id="pickerSearch" type="search" placeholder="${T('searchPh')}" autocomplete="off" style="flex:1;">
+                                <button class="btn btn-ghost" onclick="App.closePicker()" aria-label="Close">✕</button>
                             </div>
                         </div>
                         <div class="tabs picker-tabs" id="pickerTabs"></div>
-                        ${this.nearest && !isDef ? `<button class="alt-chip" style="margin-bottom:8px;align-self:flex-start"
+                        ${this.nearest ? `<div style="padding:2px 14px 6px;"><button class="alt-chip" style="align-self:flex-start;"
                             onclick="App.pickJourneyStation('${esc(this.nearest.station.StationKey)}')">
-                            ${T('jUseNearest')} · <b>${esc(this.nearest.station.StationKey)}</b> ${esc(stName(this.nearest.station))}</button>` : ''}
+                            ${T('jUseNearest')} · <b>${esc(this.nearest.station.StationKey)}</b> ${esc(stName(this.nearest.station))}</button></div>` : ''}
                         <div class="picker-list" id="pickerList"></div>
                     </div>`;
                 this.renderPickerTabs();
@@ -3157,11 +4099,18 @@ gQIDAQAB
             renderPickerTabs() {
                 const el = document.getElementById('pickerTabs');
                 if (!el) return;
-                el.innerHTML = allJourneyLines().map(l => {
+                const isAll = this.journey.pickerLine === 0;
+                el.innerHTML = `
+                    <button class="tab ${isAll ? 'on' : ''}" style="${isAll ? 'background:var(--primary,#0284c7);color:#fff;' : ''}"
+                        aria-pressed="${isAll ? 'true' : 'false'}" onclick="App.setPickerLine(0)">
+                        ${getLineIconSvg(0, isAll, 18)}
+                        <span>${lang === 'th' ? 'ทุกสาย' : 'All Lines'}</span>
+                    </button>` + allJourneyLines().map(l => {
                     const on = l.LineId === this.journey.pickerLine;
                     const st = this.traffic?.lines?.find(x => x.LineId === l.LineId);
                     const warn = st && st.TrafficStatus !== 1 ? ' ⚠️' : '';
-                    return `<button class="tab ${on ? 'on' : ''}" style="${on ? 'background:' + l.LineColor : ''}"
+                    const textColor = on ? (isBrightColor(l.LineColor) ? '#0f172a' : '#fff') : '';
+                    return `<button class="tab ${on ? 'on' : ''}" style="${on ? 'background:' + l.LineColor + ';color:' + textColor + ';' : ''}"
                         aria-pressed="${on ? 'true' : 'false'}" onclick="App.setPickerLine(${l.LineId})">
                         ${getLineIconSvg(l.LineId, on, 18)}
                         <span>${esc(shortLineName(l))}${warn}</span></button>`;
@@ -3178,35 +4127,100 @@ gQIDAQAB
                 const listEl = document.getElementById('pickerList');
                 if (!listEl) return;
                 const q = (document.getElementById('pickerSearch')?.value || '').trim().toLowerCase();
-                const line = journeyLineById(this.journey.pickerLine) || this.lines[0];
-                const seen = new Set();
-                const source = (line ? line.StationList : allJourneyStations())
-                    .filter(s => (s.StaticJourney || (s.Latitude && s.Longitude)) && !seen.has(s.StationKey) && seen.add(s.StationKey));
-                const isDef = this.journey.picking === 'defaultStation';
-                const defKey = this.getDefaultStationKey();
-                const selectedKey = isDef ? defKey : (this.journey.picking === 'from' ? this.journey.from : this.journey.to);
-                let matches = source.filter(s =>
-                    !q || `${s.StationNameTH} ${s.StationNameEN || ''} ${s.StationKey}`.toLowerCase().includes(q)
-                );
-                if (q && !matches.length) {
-                    matches = allJourneyStations().filter(s =>
-                        `${s.StationNameTH} ${s.StationNameEN || ''} ${s.StationKey}`.toLowerCase().includes(q)
-                    );
+                const curPickerLine = this.journey.pickerLine;
+                const allLines = allJourneyLines();
+
+                // Determine lines to show based on tab filter & search
+                let linesToShow;
+                if (q) {
+                    if (curPickerLine && curPickerLine !== 0) {
+                        const activeLineList = allLines.filter(l => l.LineId === curPickerLine);
+                        const hasMatchOnActive = activeLineList.some(l => (l.StationList || []).some(s => {
+                            const nameTh = (stName(s) || s.StationNameTH || '').toLowerCase();
+                            const nameEn = (s.StationName_EN || s.StationNameEN || '').toLowerCase();
+                            const key = (s.StationKey || '').toLowerCase();
+                            return nameTh.includes(q) || nameEn.includes(q) || key.includes(q);
+                        }));
+                        linesToShow = hasMatchOnActive ? activeLineList : allLines;
+                    } else {
+                        linesToShow = allLines;
+                    }
+                } else {
+                    linesToShow = (curPickerLine && curPickerLine !== 0)
+                        ? allLines.filter(l => l.LineId === curPickerLine)
+                        : allLines;
                 }
-                const rows = matches.map(s => {
-                    const dots = (this.keyLines[s.StationKey] || [])
-                        .map(e => `<span class="pdot" style="background:${e.color}"></span>`).join('');
-                    const isCurrentDefault = s.StationKey === defKey;
-                    const starTag = (isDef && isCurrentDefault)
-                        ? `<span class="badge" style="background:rgba(245,158,11,0.15);color:#d97706;border:1px solid rgba(245,158,11,0.4);font-size:11px;margin-left:auto;display:inline-flex;align-items:center;gap:3px;">${lang === 'th' ? '⭐ สถานีตั้งต้นปัจจุบัน' : '⭐ Current Default'}</span>`
-                        : '';
-                    return `<button class="picker-row ${s.StationKey === selectedKey ? 'on' : ''}" onclick="App.pickJourneyStation('${esc(s.StationKey)}')">
-                        ${dots}<span class="st-key" style="background:${s.StationLineColor}">${esc(s.StationKey)}</span>
-                        <span class="pnm">${esc(stName(s))}</span>
-                        ${starTag}
-                    </button>`;
-                }).join('');
-                listEl.innerHTML = rows || `<div class="empty-note">${T('notFound', esc(q))}</div>`;
+
+                const selectedKey = this.journey.picking === 'from' ? this.journey.from : this.journey.to;
+                let html = '';
+                let totalMatching = 0;
+
+                for (const line of linesToShow) {
+                    let stations = line.StationList || [];
+                    const seen = new Set();
+                    stations = stations.filter(s => (s.StaticJourney || (s.Latitude && s.Longitude) || s.StationKey) && !seen.has(s.StationKey) && seen.add(s.StationKey));
+
+                    if (q) {
+                        stations = stations.filter(s => {
+                            const nameTh = (stName(s) || s.StationNameTH || '').toLowerCase();
+                            const nameEn = (s.StationName_EN || s.StationNameEN || '').toLowerCase();
+                            const key = (s.StationKey || '').toLowerCase();
+                            return nameTh.includes(q) || nameEn.includes(q) || key.includes(q);
+                        });
+                    }
+
+                    if (stations.length === 0) continue;
+                    totalMatching += stations.length;
+
+                    const color = line.LineColor || '#7AB420';
+                    const groupLabel = getLineOptLabel(line);
+                    const isBright = isBrightColor(color);
+                    const codeTextColor = isBright ? '#0f172a' : '#ffffff';
+
+                    const stationChips = stations.map(s => {
+                        const isSelected = s.StationKey === selectedKey;
+                        const name = stName(s);
+                        return `
+                            <button type="button" class="station-picker-chip ${isSelected ? 'selected' : ''}"
+                                onclick="App.pickJourneyStation('${esc(s.StationKey)}')">
+                                <span class="chip-code" style="background:${color};color:${codeTextColor}">${esc(s.StationKey)}</span>
+                                <span class="chip-name" title="${esc(name)}">${esc(name)}</span>
+                            </button>`;
+                    }).join('');
+
+                    html += `
+                        <div class="line-frame-box" style="border-color:${color}; background:${color}08;">
+                            <div class="line-frame-head">
+                                <div class="line-frame-title">
+                                    ${getLineIconSvg(line.LineId, false, 18)}
+                                    <span>${esc(groupLabel)}</span>
+                                </div>
+                                <span class="line-frame-count" style="background:${color}22; color:${isBright ? '#ca8a04' : color}; border:1px solid ${color}44;">
+                                    ${stations.length} ${lang === 'th' ? 'สถานี' : 'stations'}
+                                </span>
+                            </div>
+                            <div class="line-stations-grid">
+                                ${stationChips}
+                            </div>
+                        </div>`;
+                }
+
+                if (totalMatching === 0) {
+                    html = `<div style="text-align:center; padding:32px 14px; color:var(--muted); font-size:13px;">
+                        🔍 ${T('notFound', esc(q))}
+                    </div>`;
+                }
+
+                listEl.innerHTML = html;
+
+                if (selectedKey && !q) {
+                    setTimeout(() => {
+                        const selEl = listEl.querySelector('.station-picker-chip.selected');
+                        if (selEl) {
+                            selEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        }
+                    }, 100);
+                }
             },
 
             /* ---------- เลือกขบวนเพื่อดูปลายทางของขบวนนั้น ---------- */
@@ -3253,12 +4267,13 @@ gQIDAQAB
                 this.pinnedKey = s.StationKey;
                 this.selectedExitKey = s.StationKey;
                 this.saveUserPosition(this.userPos, s.StationKey, true);
+                this.syncLineToStation(s, true);
                 this.computeNearest();
                 this.renderNearest();
                 this.renderNearestExit();
                 this.renderStrip();
                 const pinned = this.pinnedStation();
-                if (pinned && !usesStaticTimetable(pinned)) this.loadArrivals(pinned);
+                if (pinned) this.loadArrivals(pinned);
                 if (this.currentView === 'exits') this.renderExitsView(this.selectedExitKey);
             },
 
@@ -3281,18 +4296,13 @@ gQIDAQAB
                 this.locating = false;
                 this.updateRelocateBtn();
                 if (!this.userPos && typeof fetch === 'function') {
-                    fetch('https://ipwho.is/')
-                        .then(r => r.json())
-                        .then(d => {
-                            if (d && d.success && d.latitude && d.longitude) {
-                                this.userPos = { lat: d.latitude, lon: d.longitude, accuracy: 2000, calibrated: false };
-                                this.saveUserPosition(this.userPos, null, false);
-                                this.computeNearest();
-                                this.locError = null;
-                                this.renderNearest();
-                                return;
-                            }
-                            throw new Error('IP geo failed');
+                    fetchIpLocation(2500)
+                        .then(coords => {
+                            this.userPos = { lat: coords.lat, lon: coords.lon, accuracy: 2000, calibrated: false };
+                            this.saveUserPosition(this.userPos, null, false);
+                            this.computeNearest();
+                            this.locError = null;
+                            this.renderNearest();
                         })
                         .catch(() => {
                             this.locError = T('geoFail');
@@ -3307,6 +4317,10 @@ gQIDAQAB
             },
 
             locate(interactive) {
+                if (interactive) {
+                    this.userPickedLineManually = false;
+                    this.lastSyncedStationKey = null;
+                }
                 if (window.FlutterLocation && typeof window.FlutterLocation.postMessage === 'function') {
                     this.locating = true;
                     this.locError = null;
@@ -3373,20 +4387,15 @@ gQIDAQAB
                         this.gpsWatchId = null;
                     }
 
-                    // หากระบุตำแหน่งผ่าน GPS ไม่ได้ (เช่น อยู่บน PC ที่ไม่มี GPS) ให้ลองสำรองด้วย IP Geolocation
+                    // หากระบุตำแหน่งผ่าน GPS ไม่ได้ (เช่น อยู่บน PC ที่ไม่มี GPS) ให้ลองสำรองด้วย IP Geolocation แบบมี timeout รวดเร็ว
                     if (!this.userPos && typeof fetch === 'function') {
-                        fetch('https://ipwho.is/')
-                            .then(r => r.json())
-                            .then(d => {
-                                if (d && d.success && d.latitude && d.longitude) {
-                                    this.userPos = { lat: d.latitude, lon: d.longitude, accuracy: 2000, calibrated: false };
-                                    this.saveUserPosition(this.userPos, null, false);
-                                    this.computeNearest();
-                                    this.locError = null;
-                                    this.renderNearest();
-                                    return;
-                                }
-                                throw new Error('IP geo failed');
+                        fetchIpLocation(2500)
+                            .then(coords => {
+                                this.userPos = { lat: coords.lat, lon: coords.lon, accuracy: 2000, calibrated: false };
+                                this.saveUserPosition(this.userPos, null, false);
+                                this.computeNearest();
+                                this.locError = null;
+                                this.renderNearest();
                             })
                             .catch(() => {
                                 if (interactive || (err && err.code !== err.PERMISSION_DENIED)) {
@@ -3414,7 +4423,7 @@ gQIDAQAB
                             navigator.geolocation.getCurrentPosition(
                                 onPositionSuccess,
                                 (err2) => handleFinalError(err2),
-                                { enableHighAccuracy: false, maximumAge: 60000, timeout: 10000 }
+                                { enableHighAccuracy: false, maximumAge: 60000, timeout: 5000 }
                             );
                             return;
                         } catch(e) {}
@@ -3428,21 +4437,21 @@ gQIDAQAB
                         (err) => {
                             if (fixCount === 0) onPositionError(err);
                         },
-                        { enableHighAccuracy: true, maximumAge: 30000, timeout: 12000 }
+                        { enableHighAccuracy: true, maximumAge: 30000, timeout: 6000 }
                     );
 
-                    // Timeout ปลอดภัย 14 วินาที ไม่ตัดเร็วเกินไป
+                    // Timeout ปลอดภัย 6.5 วินาที ไม่ปล่อยให้ค้างนาน
                     setTimeout(() => {
                         if (this.gpsWatchId != null) {
                             try { navigator.geolocation.clearWatch(this.gpsWatchId); } catch(e){}
                             this.gpsWatchId = null;
                             if (fixCount === 0) {
-                                // ถ้า watchPosition ยังไม่ได้ผลใน 14 วิ ให้ลอง getCurrentPosition low-accuracy
+                                // ถ้า watchPosition ยังไม่ได้ผลใน 6.5 วิ ให้ลอง getCurrentPosition low-accuracy
                                 try {
                                     navigator.geolocation.getCurrentPosition(
                                         onPositionSuccess,
                                         (err3) => handleFinalError(err3),
-                                        { enableHighAccuracy: false, maximumAge: 60000, timeout: 6000 }
+                                        { enableHighAccuracy: false, maximumAge: 60000, timeout: 4000 }
                                     );
                                 } catch(e) {
                                     handleFinalError({ code: 3 });
@@ -3452,57 +4461,13 @@ gQIDAQAB
                                 this.updateRelocateBtn();
                             }
                         }
-                    }, 14000);
+                    }, 6500);
                 } catch (e) {
                     navigator.geolocation.getCurrentPosition(
                         onPositionSuccess,
                         onPositionError,
-                        { enableHighAccuracy: false, maximumAge: 60000, timeout: 10000 }
+                        { enableHighAccuracy: false, maximumAge: 60000, timeout: 5000 }
                     );
-                }
-            },
-
-            // รับค่าคีย์ของสถานีตั้งต้น (จาก localStorage หรือค่าเริ่มต้น E4)
-            getDefaultStationKey() {
-                try {
-                    return localStorage.getItem('bkk_default_station') || FALLBACK_STATION_KEY;
-                } catch (e) {
-                    return FALLBACK_STATION_KEY;
-                }
-            },
-
-            setDefaultStation(key) {
-                if (!key) return;
-                try {
-                    localStorage.setItem('bkk_default_station', key);
-                } catch(e){}
-                const s = this.findStation(key);
-                if (!s) return;
-                this.pinnedKey = s.StationKey;
-                this.selectedExitKey = s.StationKey;
-                if (!this.userPos || (this.nearest && this.nearest.km == null)) {
-                    this.nearest = { station: s, km: null };
-                    this.nearestList = [this.nearest];
-                } else if (!this.nearestList.some(r => r.station.StationKey === s.StationKey)) {
-                    const km = haversineKm(this.userPos.lat, this.userPos.lon, s.Latitude, s.Longitude);
-                    this.nearestList.unshift({ station: s, km });
-                }
-                this.renderNearest();
-                this.renderStrip();
-                this.renderNearestExit();
-                if (!usesStaticTimetable(s)) this.loadArrivals(s, true);
-                this.showToast(lang === 'th' ? `⭐ ตั้ง "${s.StationKey} ${stName(s)}" เป็นสถานีตั้งต้นเรียบร้อยแล้ว` : `⭐ Set "${s.StationKey} ${stName(s)}" as default station`);
-            },
-
-            openDefaultStationPicker() {
-                this.openPicker('defaultStation');
-            },
-
-            setDefaultStationFromActionSheet() {
-                const key = this.activeMapStationKey;
-                if (key) {
-                    this.setDefaultStation(key);
-                    this.closeMapActionSheet();
                 }
             },
 
@@ -3520,313 +4485,18 @@ gQIDAQAB
                 }, 2600);
             },
 
-            /* ---------- BACKGROUND GEOFENCING & NOTIFICATIONS MODULE ---------- */
-            initGeofence() {
-                try {
-                    const saved = localStorage.getItem('bkk_geofence_enabled');
-                    if (saved !== null) {
-                        this.geofenceEnabled = saved === 'true';
-                    }
-                    const savedRad = localStorage.getItem('bkk_geofence_radius');
-                    if (savedRad) {
-                        this.geofenceRadius = parseInt(savedRad, 10) || 1000;
-                    }
-                } catch (e) {}
-
-                // Service Worker message listener (เมื่อแตะการแจ้งเตือนจาก Web PWA)
-                if ('serviceWorker' in navigator) {
-                    navigator.serviceWorker.addEventListener('message', (event) => {
-                        if (event.data && event.data.action === 'openStation' && event.data.stationKey) {
-                            this.handleNotificationOpen(event.data.stationKey);
-                        }
-                    });
-                }
-
-                // หากอยู่ใน Flutter Native ให้ตรวจเช็คสถานะการทำงานจริงของ Service
-                if (window.NativeGeofence && typeof window.NativeGeofence.getStatus === 'function') {
-                    window.NativeGeofence.getStatus();
-                } else if (this.geofenceEnabled) {
-                    // หากเป็น Web Browser / PWA และเปิดไว้
-                    this.startWebGeofence();
-                }
-
-                this.updateGeofenceUI(this.geofenceEnabled, this.geofenceRadius);
-            },
-
-            onNativeBridgeReady() {
-                if (window.NativeGeofence && typeof window.NativeGeofence.getStatus === 'function') {
-                    window.NativeGeofence.getStatus();
-                }
-            },
-
-            onGeofenceStatusChanged(isRunning, radius) {
-                this.geofenceEnabled = !!isRunning;
-                if (radius && typeof radius === 'number') this.geofenceRadius = radius;
-                try {
-                    localStorage.setItem('bkk_geofence_enabled', this.geofenceEnabled ? 'true' : 'false');
-                    if (radius) localStorage.setItem('bkk_geofence_radius', String(radius));
-                } catch (e) {}
-                this.updateGeofenceUI(this.geofenceEnabled, this.geofenceRadius);
-            },
-
-            scrollToGeofenceWidget() {
-                if (this.currentView !== 'home') {
-                    this.switchView('home');
-                }
-                const widget = document.getElementById('geofenceWidget');
-                if (widget) {
-                    widget.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    widget.style.transition = 'box-shadow 0.3s ease, border-color 0.3s ease';
-                    widget.style.borderColor = 'var(--accent, #0284c7)';
-                    widget.style.boxShadow = '0 0 0 3px rgba(2, 132, 199, 0.35)';
-                    setTimeout(() => {
-                        widget.style.borderColor = '';
-                        widget.style.boxShadow = '';
-                    }, 1500);
-                }
-            },
-
-            async toggleBackgroundGeofence(enabled) {
-                if (enabled) {
-                    // ตรวจสอบและขอสิทธิ์การแจ้งเตือน
-                    if ('Notification' in window && Notification.permission !== 'granted') {
-                        try {
-                            const res = await Notification.requestPermission();
-                            if (res !== 'granted') {
-                                this.showToast(T('geofencePermissionDenied'));
-                                this.updateGeofenceUI(false, this.geofenceRadius);
-                                return;
-                            }
-                        } catch (e) {
-                            console.warn('Notification permission error:', e);
-                        }
-                    }
-
-                    this.geofenceEnabled = true;
-                    try {
-                        localStorage.setItem('bkk_geofence_enabled', 'true');
-                    } catch (e) {}
-
-                    if (window.NativeGeofence && typeof window.NativeGeofence.toggle === 'function') {
-                        window.NativeGeofence.toggle(true, this.geofenceRadius);
-                    } else {
-                        this.startWebGeofence();
-                    }
-
-                    this.showToast(T('geofenceToastOn'));
-                } else {
-                    this.geofenceEnabled = false;
-                    try {
-                        localStorage.setItem('bkk_geofence_enabled', 'false');
-                    } catch (e) {}
-
-                    if (window.NativeGeofence && typeof window.NativeGeofence.toggle === 'function') {
-                        window.NativeGeofence.toggle(false, this.geofenceRadius);
-                    } else {
-                        this.stopWebGeofence();
-                    }
-
-                    this.showToast(T('geofenceToastOff'));
-                }
-
-                this.updateGeofenceUI(this.geofenceEnabled, this.geofenceRadius);
-            },
-
-            setGeofenceRadius(radius) {
-                const r = parseInt(radius, 10) || 1000;
-                this.geofenceRadius = r;
-                try {
-                    localStorage.setItem('bkk_geofence_radius', String(r));
-                } catch (e) {}
-
-                if (window.NativeGeofence && typeof window.NativeGeofence.setRadius === 'function') {
-                    window.NativeGeofence.setRadius(r);
-                }
-
-                this.updateGeofenceUI(this.geofenceEnabled, this.geofenceRadius);
-                this.showToast(lang === 'th' ? `🎯 ตั้งรัศมีตรวจจับ ${r >= 1000 ? (r / 1000) + ' กม.' : r + ' ม.'}` : `🎯 Detection radius set to ${r >= 1000 ? (r / 1000) + ' km' : r + ' m'}`);
-            },
-
-            updateGeofenceUI(enabled, radius) {
-                const toggle = document.getElementById('geofenceToggle');
-                if (toggle) toggle.checked = !!enabled;
-
-                const widget = document.getElementById('geofenceWidget');
-                if (widget) widget.classList.toggle('active', !!enabled);
-
-                const badge = document.getElementById('geofenceBadge');
-                if (badge) {
-                    badge.classList.toggle('active', !!enabled);
-                    badge.textContent = enabled ? T('geofenceActive') : T('geofenceDisabled');
-                }
-
-                const notifDot = document.getElementById('headerNotifDot');
-                if (notifDot) {
-                    notifDot.style.display = enabled ? 'block' : 'none';
-                }
-
-                const statusText = document.getElementById('geofenceStatusText');
-                if (statusText) {
-                    statusText.textContent = enabled ? T('geofenceStatusOn') : T('geofenceStatusOff');
-                }
-
-                const pills = document.querySelectorAll('.geofence-pill');
-                pills.forEach(pill => {
-                    const pRad = parseInt(pill.getAttribute('data-radius'), 10);
-                    pill.classList.toggle('active', pRad === radius);
-                });
-            },
-
-            async testGeofenceNotification() {
-                if (window.NativeGeofence && typeof window.NativeGeofence.test === 'function') {
-                    window.NativeGeofence.test();
-                    this.showToast(lang === 'th' ? '🔔 ส่งการแจ้งเตือนทดสอบไปยังล็อกหน้าจอแล้ว' : '🔔 Sent test notification to lock screen');
-                    return;
-                }
-
-                // Web Notification Test
-                if (!('Notification' in window)) {
-                    this.showToast(T('geofenceTestBody'));
-                    return;
-                }
-
-                if (Notification.permission !== 'granted') {
-                    const perm = await Notification.requestPermission();
-                    if (perm !== 'granted') {
-                        this.showToast(T('geofencePermissionDenied'));
-                        return;
-                    }
-                }
-
-                const title = T('geofenceTestTitle');
-                const options = {
-                    body: T('geofenceTestBody'),
-                    icon: '/icon-192.png',
-                    badge: '/icon-192.png',
-                    vibrate: [200, 100, 200],
-                    tag: 'bkk-skytrains-test',
-                    renotify: true,
-                    data: { stationKey: 'CEN' }
-                };
-
-                try {
-                    if ('serviceWorker' in navigator) {
-                        const reg = await navigator.serviceWorker.ready;
-                        if (reg && reg.showNotification) {
-                            await reg.showNotification(title, options);
-                            this.showToast(lang === 'th' ? '🔔 ส่งการแจ้งเตือนทดสอบแล้ว (PWA)' : '🔔 Test notification sent (PWA)');
-                            return;
-                        }
-                    }
-                    new Notification(title, options);
-                    this.showToast(lang === 'th' ? '🔔 ส่งการแจ้งเตือนทดสอบแล้ว' : '🔔 Test notification sent');
-                } catch (e) {
-                    console.error('Web notification failed:', e);
-                    this.showToast(T('geofenceTestBody'));
-                }
-            },
-
-            startWebGeofence() {
-                if (!navigator.geolocation) return;
-                this.stopWebGeofence();
-                this.webGeofenceWatchId = navigator.geolocation.watchPosition(
-                    (pos) => {
-                        const lat = pos.coords.latitude;
-                        const lon = pos.coords.longitude;
-                        this.checkWebGeofenceTrigger(lat, lon);
-                    },
-                    (err) => {
-                        console.warn('Web Geofence watch error:', err);
-                    },
-                    { enableHighAccuracy: true, maximumAge: 10000, timeout: 20000 }
-                );
-            },
-
-            stopWebGeofence() {
-                if (this.webGeofenceWatchId !== null && navigator.geolocation) {
-                    navigator.geolocation.clearWatch(this.webGeofenceWatchId);
-                    this.webGeofenceWatchId = null;
-                }
-            },
-
-            checkWebGeofenceTrigger(lat, lon) {
-                if (!this.uniqueStations || !this.uniqueStations.length) return;
-                const radiusKm = (this.geofenceRadius || 1000) / 1000;
-                let closest = null;
-                let minDist = 999999;
-
-                for (const s of this.uniqueStations) {
-                    if (!s.Latitude || !s.Longitude) continue;
-                    const d = haversineKm(lat, lon, s.Latitude, s.Longitude);
-                    if (d < minDist) {
-                        minDist = d;
-                        closest = s;
-                    }
-                }
-
-                if (closest && minDist <= radiusKm) {
-                    const now = Date.now();
-                    const isSameStation = this.lastGeofenceAlertKey === closest.StationKey;
-                    const cooldown = 12 * 60 * 1000; // 12 นาที
-                    if (!isSameStation || (now - this.lastGeofenceAlertTime > cooldown)) {
-                        this.lastGeofenceAlertKey = closest.StationKey;
-                        this.lastGeofenceAlertTime = now;
-                        this.triggerWebGeofenceAlert(closest, minDist);
-                    }
-                }
-            },
-
-            async triggerWebGeofenceAlert(station, distKm) {
-                const sName = stName(station);
-                const distStr = distKm < 1 ? Math.round(distKm * 1000) + T('mUnit') : distKm.toFixed(1) + T('kmUnit');
-                const title = T('geofenceNotifTitle', sName);
-                const body = T('geofenceNotifBody', distStr, sName);
-
-                if ('Notification' in window && Notification.permission === 'granted') {
-                    const options = {
-                        body: body,
-                        icon: '/icon-192.png',
-                        badge: '/icon-192.png',
-                        vibrate: [250, 100, 250, 100, 250],
-                        tag: 'bkk-station-' + station.StationKey,
-                        renotify: true,
-                        data: { stationKey: station.StationKey }
-                    };
-                    try {
-                        if ('serviceWorker' in navigator) {
-                            const reg = await navigator.serviceWorker.ready;
-                            if (reg && reg.showNotification) {
-                                await reg.showNotification(title, options);
-                                return;
-                            }
-                        }
-                        new Notification(title, options);
-                    } catch (e) {
-                        console.warn('triggerWebGeofenceAlert failed:', e);
-                    }
-                }
-            },
-
-            onGeofenceTriggered(stationKey, distKm) {
-                const st = this.findStation(stationKey);
-                if (st) {
-                    const sName = stName(st);
-                    const distStr = distKm < 1 ? Math.round(distKm * 1000) + T('mUnit') : distKm.toFixed(1) + T('kmUnit');
-                    this.showToast(`🚆 ${sName} (${distStr})`);
-                }
-            },
-
             handleNotificationOpen(stationKey) {
                 if (!stationKey) return;
                 const s = this.findStation(stationKey);
                 if (s) {
                     this.pinnedKey = s.StationKey;
                     this.selectedExitKey = s.StationKey;
+                    this.syncLineToStation(s, true);
                     this.switchView('home');
                     this.renderNearest();
                     this.renderNearestExit();
                     this.renderStrip();
-                    if (!usesStaticTimetable(s)) this.loadArrivals(s, true);
+                    this.loadArrivals(s, true);
                     requestAnimationFrame(() => {
                         const el = document.getElementById('nearestCard');
                         if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -3834,19 +4504,18 @@ gQIDAQAB
                 }
             },
 
-            // แสดงสถานีตั้งต้น เมื่อหาตำแหน่งจริงไม่ได้ —
-            // ไม่ทับสถานีจริงที่เคยหาเจอ (km != null) เก็บค่าที่ดีล่าสุดไว้เสมอ
+            // แสดงสถานีเริ่มต้นเมื่อยังระบุตำแหน่งไม่ได้ (ไม่ทับสถานีจริงที่เคยหาเจอ)
             useFallbackStation() {
                 if (this.nearest && this.nearest.km != null) return;
-                const defKey = this.getDefaultStationKey();
-                const s = this.findStation(defKey) || this.findStation(FALLBACK_STATION_KEY);
+                const s = this.findStation(FALLBACK_STATION_KEY);
                 if (!s) return;
                 this.nearest = { station: s, km: null };
                 this.nearestList = [this.nearest];
                 this.pinnedKey = s.StationKey;
+                this.syncLineToStation(s);
                 this.renderNearest();
                 this.renderStrip();
-                if (!usesStaticTimetable(s)) this.loadArrivals(s);
+                this.loadArrivals(s);
             },
 
             // ปุ่ม "หาใหม่" บนหัวการ์ด: แสดง spin เล็ก ๆ ระหว่างหาตำแหน่ง + กันกดซ้ำ
@@ -3887,7 +4556,7 @@ gQIDAQAB
                         }
                         return distDiff;
                     });
-                // ตำแหน่งอยู่ไกลเครือข่ายผิดปกติ (ต่างจังหวัด/GPS เพี้ยน) → ใช้สถานีตั้งต้นแทน
+                // ตำแหน่งอยู่ไกลเครือข่ายผิดปกติ (ต่างจังหวัด/GPS เพี้ยน) → ใช้สถานีสำรองแทน
                 if (!ranked.length || ranked[0].km > FALLBACK_MAX_KM) {
                     this.useFallbackStation();
                     return;
@@ -3899,12 +4568,13 @@ gQIDAQAB
                 if (!this.userHasPickedExitStation && this.nearest) {
                     this.selectedExitKey = this.nearest.station.StationKey;
                 }
+                const pinned = this.pinnedStation();
+                this.syncLineToStation(pinned);
                 this.renderNearest();
                 this.renderNearestExit();
                 this.renderStrip();
                 this.renderTraffic();
-                const pinned = this.pinnedStation();
-                if (pinned && !usesStaticTimetable(pinned)) this.loadArrivals(pinned);
+                if (pinned) this.loadArrivals(pinned);
                 if (this.currentView === 'exits') this.renderExitsView(this.selectedExitKey);
 
                 // แจ้งเตือน Popup และ Notification ทันทีเมื่อพบสถานีใกล้ฉัน
@@ -3926,31 +4596,30 @@ gQIDAQAB
             onAppForegrounded() {
                 // เมื่อเปิดหรือพับแอปกลับมา: หากมีสถานีใกล้ฉันที่ตรวจพบ ให้แสดง Popup สถานี/แพลตฟอร์ม/เวลา ทันที
                 if (this.pendingFoldedAlert) {
-                    const { station, distText } = this.pendingFoldedAlert;
+                    const { station } = this.pendingFoldedAlert;
                     this.pendingFoldedAlert = null;
-                    this.showNearestPopupFor(station, distText);
+                    this.showNearestPopupFor(station);
                     return;
                 }
                 if (this.nearest && this.nearest.km != null && this.nearest.km <= 2.5) {
-                    const distText = this.nearest.km < 1 ? `~${Math.round(this.nearest.km * 1000)} ${lang === 'th' ? 'ม.' : 'm'}` : `~${this.nearest.km.toFixed(1)} ${lang === 'th' ? 'กม.' : 'km'}`;
                     const modal = document.getElementById('nearestStationPopup');
                     if (!modal || modal.style.display === 'none') {
-                        this.showNearestPopupFor(this.nearest.station, distText);
+                        this.showNearestPopupFor(this.nearest.station);
                     }
                 }
             },
 
             getPlatformsSummaryText(station, arr) {
                 if (!station) return '';
-                if (usesStaticTimetable(station)) {
-                    const curFreq = getCurrentMrtFreq(station.StationLineId, station.StationKey);
-                    if (curFreq) {
-                        const cleanFreq = String(curFreq.label || '').replace(/^~/, '');
-                        return `🚇 ${T('mrtFreqNow', cleanFreq)}`;
-                    }
-                    return `🚇 ${T('mrtOutOfService')}`;
-                }
                 if (!arr || !arr.platforms || !arr.platforms.length) {
+                    if (usesStaticTimetable(station)) {
+                        const curFreq = getCurrentMrtFreq(station.StationLineId, station.StationKey);
+                        if (curFreq) {
+                            const cleanFreq = String(curFreq.label || '').replace(/^~/, '');
+                            return `🚇 ${T('mrtFreqNow', cleanFreq)}`;
+                        }
+                        return `🚇 ${T('mrtOutOfService')}`;
+                    }
                     return lang === 'en' ? '🚆 Loading live trains...' : '🚆 กำลังโหลดเวลาเดินรถสด...';
                 }
                 const plats = visiblePlatformsForStation(station, arr.platforms);
@@ -3989,6 +4658,7 @@ gQIDAQAB
 
                 // ถ้าไม่ใช่เปิดครั้งแรก และไม่ใช่สถานีเปลี่ยน และแอปไม่ได้กำลังพับอยู่
                 if (!isStationChanged && !isFirstOpenAlert && !this.isAppFolded) {
+                    this.updatePopupDistance(s);
                     return;
                 }
 
@@ -4001,12 +4671,12 @@ gQIDAQAB
                     try { navigator.vibrate([120, 60, 120]); } catch(e){}
                 }
 
-                // 2. คำนวณข้อความระยะทาง
-                const distText = km < 1 ? `~${Math.round(km * 1000)} ${lang === 'th' ? 'ม.' : 'm'}` : `~${km.toFixed(1)} ${lang === 'th' ? 'กม.' : 'km'}`;
+                // 2. คำนวณข้อความระยะทาง (ใช้ฟังก์ชันเดียวกันกับการ์ดสถานีใกล้สุด 100%)
+                const distText = fmtDist(km);
                 const stNameTH = s.StationNameTH || s.StationName || key;
 
                 // 3. เตรียมข้อมูลชานชาลาและเวลาเดินรถ
-                if (!usesStaticTimetable(s) && !this.arrivals[key]) {
+                if (!this.arrivals[key]) {
                     this.loadArrivals(s);
                 }
                 const platSummary = this.getPlatformsSummaryText(s, this.arrivals[key]);
@@ -4014,10 +4684,10 @@ gQIDAQAB
                 // 4. จัดการ Popup:
                 // เมื่อปิดหรือพับแอพไว้ เก็บสถานะไว้เพื่อให้แสดง Popup ทันทีที่เปิดกลับมา
                 if (this.isAppFolded) {
-                    this.pendingFoldedAlert = { station: s, distText };
+                    this.pendingFoldedAlert = { station: s };
                 } else {
                     // หากเปิดอยู่ แสดง Popup แจ้งเตือนสถานี/แพลตฟอร์ม/เวลา ทันที
-                    this.showNearestPopupFor(s, distText);
+                    this.showNearestPopupFor(s);
                 }
 
                 // 5. แจ้งเตือน Web Notification พร้อม ข้อมูลสถานี / แพลตฟอร์ม / เวลา
@@ -4030,8 +4700,8 @@ gQIDAQAB
                         try {
                             new Notification(notifTitle, {
                                 body: notifBody,
-                                icon: 'assets/icon-192.png',
-                                badge: 'assets/icon-192.png',
+                                icon: 'icon-192.png',
+                                badge: 'icon-192.png',
                                 tag: 'nearest-station'
                             });
                         } catch(e){}
@@ -4056,7 +4726,7 @@ gQIDAQAB
                 }
             },
 
-            showNearestPopupFor(station, distText) {
+            showNearestPopupFor(station) {
                 const modal = document.getElementById('nearestStationPopup');
                 if (!modal || !station) return;
                 this.popupStation = station;
@@ -4064,7 +4734,6 @@ gQIDAQAB
                 const badge = document.getElementById('nearestPopupLineBadge');
                 const nameTH = document.getElementById('nearestPopupNameTH');
                 const nameEN = document.getElementById('nearestPopupNameEN');
-                const distEl = document.getElementById('nearestPopupDistance');
                 const platContainer = document.getElementById('nearestPopupPlatforms');
 
                 const color = station.StationLineColor || '#7AB420';
@@ -4076,31 +4745,51 @@ gQIDAQAB
                 }
                 if (nameTH) nameTH.textContent = stName(station);
                 if (nameEN) nameEN.textContent = lang === 'en' ? (station.StationNameTH || station.StationName_TH || '') : (station.StationNameEN || station.StationName_EN || '');
-                if (distEl) distEl.textContent = distText || (this.nearest?.km != null ? fmtDist(this.nearest.km) : (lang === 'en' ? 'Near you' : 'ใกล้คุณ'));
+
+                this.updatePopupDistance(station);
 
                 // เรนเดอร์ชานชาลา & เวลาเดินรถสด แบบเดียวกันกับที่แสดงตรงสถานีใกล้คุณที่สุด ทันที!
                 if (platContainer) {
-                    const staticTime = usesStaticTimetable(station);
-                    if (staticTime) {
-                        platContainer.innerHTML = renderMrtFrequency(station);
+                    const arr = this.arrivals[station.StationKey];
+                    if (arr && arr.platforms && arr.platforms.length) {
+                        platContainer.innerHTML = renderPlatformSection(station, arr);
                     } else {
-                        const arr = this.arrivals[station.StationKey];
-                        if (arr && arr.platforms && arr.platforms.length) {
-                            platContainer.innerHTML = renderPlatformSection(station, arr);
-                        } else {
-                            platContainer.innerHTML = `<div class="empty-note" style="padding:14px"><span class="spin dark"></span><br>${T('loadingTrains')}</div>`;
-                            this.loadArrivals(station, true).then(() => {
-                                const freshArr = this.arrivals[station.StationKey];
-                                const curPlat = document.getElementById('nearestPopupPlatforms');
-                                if (curPlat && this.popupStation?.StationKey === station.StationKey) {
-                                    curPlat.innerHTML = renderPlatformSection(station, freshArr);
-                                }
-                            });
-                        }
+                        platContainer.innerHTML = `<div class="empty-note" style="padding:14px"><span class="spin dark"></span><br>${T('loadingTrains')}</div>`;
+                        this.loadArrivals(station, true).then(() => {
+                            const freshArr = this.arrivals[station.StationKey];
+                            const curPlat = document.getElementById('nearestPopupPlatforms');
+                            if (curPlat && this.popupStation?.StationKey === station.StationKey) {
+                                curPlat.innerHTML = renderPlatformSection(station, freshArr);
+                            }
+                        });
                     }
                 }
 
                 modal.style.display = 'flex';
+            },
+
+            updatePopupDistance(station) {
+                const targetStation = station || this.popupStation || this.pinnedStation();
+                if (!targetStation) return;
+                const distEl = document.getElementById('nearestPopupDistance');
+                const distLbl = document.getElementById('nearestPopupDistLbl');
+                if (!distEl && !distLbl) return;
+
+                const pin = this.nearestList.find(r => r.station.StationKey === targetStation.StationKey)
+                    || (this.nearest?.station?.StationKey === targetStation.StationKey ? this.nearest : null);
+                const km = pin ? pin.km : ((this.userPos && targetStation.Latitude && targetStation.Longitude)
+                    ? haversineKm(this.userPos.lat, this.userPos.lon, targetStation.Latitude, targetStation.Longitude)
+                    : null);
+
+                const isAtStation = km != null && km <= 0.12;
+                if (distEl) {
+                    distEl.textContent = km != null
+                        ? (isAtStation ? `📍 ${T('atStation')}` : fmtDist(km))
+                        : (lang === 'en' ? 'Near you' : 'ใกล้คุณ');
+                }
+                if (distLbl) {
+                    distLbl.textContent = isAtStation ? T('currentLocation') : T('fromYou');
+                }
             },
 
             closeNearestPopup() {
@@ -4115,6 +4804,7 @@ gQIDAQAB
                 const st = this.popupStation || (this.nearest && this.nearest.station) || this.pinnedStation();
                 if (st) {
                     this.pinnedKey = st.StationKey;
+                    this.syncLineToStation(st, true);
                     this.switchView('home');
                     this.loadArrivals(st, true);
                     const hero = document.querySelector('.station-hero') || document.getElementById('nearestPlatforms');
@@ -4126,12 +4816,10 @@ gQIDAQAB
                 const s = this.findStation(stationKey);
                 if (s) {
                     this.pinnedKey = s.StationKey;
+                    this.syncLineToStation(s, true);
                     this.switchView('home');
                     this.loadArrivals(s, true);
-                    const dist = (this.nearest && this.nearest.km != null)
-                        ? (this.nearest.km < 1 ? `~${Math.round(this.nearest.km * 1000)} ${lang === 'th' ? 'ม.' : 'm'}` : `~${this.nearest.km.toFixed(1)} ${lang === 'th' ? 'กม.' : 'km'}`)
-                        : '';
-                    this.showNearestPopupFor(s, dist);
+                    this.showNearestPopupFor(s);
                 }
             },
 
@@ -4145,7 +4833,12 @@ gQIDAQAB
                 this.renderNearest();
                 this.renderTraffic();
                 const pinned = this.pinnedStation();
-                if (pinned && !usesStaticTimetable(pinned)) this.loadArrivals(pinned);
+                if (pinned) {
+                    this.syncLineToStation(pinned, true);
+                    this.updatePopupDistance(pinned);
+                }
+                this.renderStrip();
+                if (pinned) this.loadArrivals(pinned);
             },
 
             /* ---------- arrivals ---------- */
@@ -4154,7 +4847,15 @@ gQIDAQAB
                 const key = station.StationKey;
                 const cur = this.arrivals[key];
                 if (usesStaticTimetable(station)) {
-                    this.arrivals[key] = { ...(cur || {}), loading: false, error: null, fetchedAt: Date.now(), time: null, platforms: [] };
+                    const data = generateTimetableArrivals(station);
+                    if (data) {
+                        this.storeArrivals(key, data);
+                        if ((this.pinnedStation()?.StationKey === key || this.expandedKey === key)
+                            && this.arrivals[key].platforms.length)
+                            this.loadRoute(station);
+                    } else {
+                        this.arrivals[key] = { ...(cur || {}), loading: false, error: null, fetchedAt: Date.now(), time: null, platforms: [] };
+                    }
                     this.renderArrivalTargets(key);
                     return;
                 }
@@ -4184,7 +4885,7 @@ gQIDAQAB
             // เก็บผล TTA + จำเวลาเลขล่าสุดของทุกขบวนไว้ — เมื่อรอบถัดไป API ตอบ "--"
             // จะได้แสดงเวลานับถอยหลังจากค่าเดิมแทน ไม่ให้ตัวเลขวูบหายจนผู้ใช้งง
             storeArrivals(key, data) {
-                const fetchedAt = Date.now();
+                const fetchedAt = data.fetchedAt || Date.now();
                 for (const p of data.platform_list || []) {
                     for (const t of p.train_list || []) {
                         if (t.time_come !== '--' && t.time_come_double != null)
@@ -4196,13 +4897,21 @@ gQIDAQAB
                     if (fetchedAt - this.etaMem[k].at > 1800000) delete this.etaMem[k];
                 this.arrivals[key] = {
                     loading: false, error: null, fetchedAt,
+                    isTimetable: !!data.isTimetable,
                     time: data.time, platforms: data.platform_list || []
                 };
             },
 
             // ดึงเวลารถของสถานีอื่นแบบเงียบ ๆ (ใช้กับสถานีข้างเคียงของ route map)
             async ensureArrivals(station) {
-                if (usesStaticTimetable(station)) return [];
+                if (usesStaticTimetable(station)) {
+                    const k = station.StationKey;
+                    if (!this.arrivals[k] || !this.arrivals[k].platforms || !this.arrivals[k].platforms.length) {
+                        const data = generateTimetableArrivals(station);
+                        if (data) this.storeArrivals(k, data);
+                    }
+                    return (this.arrivals[k] && this.arrivals[k].platforms) || [];
+                }
                 const k = station.StationKey, cur = this.arrivals[k];
                 if (cur && !cur.loading && !cur.error && Date.now() - cur.fetchedAt < 10000)
                     return cur.platforms || [];
@@ -4239,7 +4948,8 @@ gQIDAQAB
                 if (this.routes[key]?.loading) return;
                 this.routes[key] = { ...(this.routes[key] || {}), loading: true };
                 const blocks = [];
-                for (const line of this.lines) {
+                const allLines = this.getAllLines();
+                for (const line of allLines) {
                     const list = line.StationList;
                     const idx = list.findIndex(s => s.StationKey === key);
                     if (idx < 0) continue;
@@ -4257,15 +4967,22 @@ gQIDAQAB
 
             refreshAll() {
                 const p = this.pinnedStation();
-                if (p && !usesStaticTimetable(p)) this.loadArrivals(p, true);
+                if (p) this.loadArrivals(p, true);
                 if (this.expandedKey && this.expandedKey !== p?.StationKey) {
                     const st = this.findStation(this.expandedKey);
-                    if (st && !usesStaticTimetable(st)) this.loadArrivals(st, true);
+                    if (st) this.loadArrivals(st, true);
                 }
             },
 
+            getAllLines() {
+                const appLines = (this.lines && this.lines.length)
+                    ? this.lines
+                    : (typeof FALLBACK_STATION_LIST !== 'undefined' ? FALLBACK_STATION_LIST : []);
+                return [...appLines, ...MRT_STATIC_DB.lines];
+            },
+
             findStation(key) {
-                for (const l of this.lines) {
+                for (const l of this.getAllLines()) {
                     const s = l.StationList.find(x => x.StationKey === key);
                     if (s) return s;
                 }
@@ -4282,9 +4999,7 @@ gQIDAQAB
                     const platContainer = document.getElementById('nearestPopupPlatforms');
                     if (platContainer) {
                         const s = this.popupStation;
-                        platContainer.innerHTML = usesStaticTimetable(s)
-                            ? renderMrtFrequency(s)
-                            : renderPlatformSection(s, this.arrivals[key]);
+                        platContainer.innerHTML = renderPlatformSection(s, this.arrivals[key]);
                     }
                 }
             },
@@ -4332,7 +5047,7 @@ gQIDAQAB
                 }).join('');
 
                 const crowded = s.IsCrowded === true;
-                // โหมดสถานีตั้งต้น (km == null): ยังไม่รู้ตำแหน่งจริง — คงปุ่มค้นหาสถานีใกล้ฉันไว้ให้กด
+                // ยังไม่รู้ตำแหน่งจริง (km == null) — แสดงปุ่มค้นหาสถานีใกล้ฉัน
                 const isFallback = pin.km == null;
                 const isAtStation = pin.km != null && pin.km <= 0.12;
 
@@ -4340,15 +5055,10 @@ gQIDAQAB
                     ? `<button class="btn btn-big" style="margin-bottom:10px" disabled><span class="spin"></span> ${T('locating')}</button>`
                     : `<button class="btn btn-big" style="margin-bottom:10px" onclick="App.locate(true)">📍 ${T('findNearest')}</button>`);
 
-                const isDefault = s.StationKey === this.getDefaultStationKey();
-                const defBtn = `<button class="def-star-btn ${isDefault ? 'is-default' : ''}" onclick="App.setDefaultStation('${esc(s.StationKey)}')" title="${isDefault ? (lang === 'th' ? 'สถานีตั้งต้นปัจจุบัน (แตะเพื่อเปลี่ยน)' : 'Current default station (tap to change)') : (lang === 'th' ? 'แตะเพื่อตั้งเป็นสถานีตั้งต้น' : 'Tap to set as default station')}">
-                    ${isDefault ? (lang === 'th' ? '⭐ สถานีตั้งต้น' : '⭐ Default Station') : (lang === 'th' ? '☆ ตั้งเป็นสถานีตั้งต้น' : '☆ Set as Default')}
-                </button>`;
-
                 const distChip = isFallback
-                    ? `<div class="dist-chip" onclick="App.openDefaultStationPicker()" style="cursor:pointer;" title="${lang === 'th' ? 'แตะเพื่อเลือกสถานีตั้งต้นอื่น' : 'Tap to choose another default station'}">
-                        <div class="v" style="color:var(--accent);font-weight:700">⭐ ${T('defaultStation')}</div>
-                        <div class="l">${lang === 'th' ? 'แตะเพื่อเปลี่ยน ➔' : 'Tap to change ➔'}</div>
+                    ? `<div class="dist-chip" onclick="App.locate(true)" style="cursor:pointer;" title="${T('findNearest')}">
+                        <div class="v" style="color:var(--muted)">-- km</div>
+                        <div class="l">${T('fromYou')}</div>
                        </div>`
                     : (isAtStation
                         ? `<div class="dist-chip at-station" style="background:rgba(16,185,129,0.12);border:1px solid #10b981"><div class="v" style="color:#10b981;font-weight:700">📍 ${T('atStation')}</div><div class="l" style="color:var(--text-sub,#64748b)">${T('currentLocation')}</div></div>`
@@ -4363,14 +5073,14 @@ gQIDAQAB
                             <div class="th">${esc(stName(s))}${crowded ? ` <span class="badge crowd-b">${T('crowded')}</span>` : ''}</div>
                             ${(s.StationKey === SIAM_KEY || (App.connections[s.StationKey] || []).length)
                         ? `<div class="en">${s.StationKey === SIAM_KEY ? `<span class="badge inter-b">${T('interchange')}</span>` : ''}${connBadges(s.StationKey, s.StationLineId)}</div>` : ''}
-                            <div>${defBtn}</div>
                         </div>
                         ${distChip}
                     </div>
                     ${this.renderCrowdGauge(s)}
                     <div class="alt-row">${chips}</div>
-                    ${staticTime ? renderMrtFrequency(s) : renderPlatformSection(s, arr)}
-                    ${staticTime ? '' : renderRouteSection(s)}`;
+                    ${renderPlatformSection(s, arr)}
+                    ${renderRouteSection(s)}`;
+                this.updatePopupDistance(s);
             },
 
             /* ---------- render: line tabs ---------- */
@@ -4389,11 +5099,54 @@ gQIDAQAB
             },
 
             setLine(id) {
+                this.userPickedLineManually = true;
                 this.activeLine = id;
                 this.expandedKey = null;
                 this.renderTabs();
                 this.renderStrip();
                 this.syncUrl();
+                this.scrollActiveTabIntoView();
+            },
+
+            scrollActiveTabIntoView(smooth = true) {
+                requestAnimationFrame(() => {
+                    const tabsEl = document.getElementById('lineTabs');
+                    const activeTab = tabsEl ? tabsEl.querySelector('.tab.on') : null;
+                    if (tabsEl && activeTab && tabsEl.clientWidth > 0) {
+                        const tabLeft = activeTab.offsetLeft;
+                        const tabWidth = activeTab.offsetWidth;
+                        const containerWidth = tabsEl.clientWidth;
+                        const scrollTarget = tabLeft - (containerWidth / 2) + (tabWidth / 2);
+                        tabsEl.scrollTo({
+                            left: Math.max(0, scrollTarget),
+                            behavior: smooth ? 'smooth' : 'auto'
+                        });
+                    }
+                });
+            },
+
+            syncLineToStation(station, force = false) {
+                if (!station || !station.StationLineId) return;
+                const stationKey = station.StationKey;
+                const lineId = station.StationLineId;
+
+                // หากผู้ใช้จงใจเลือกสายด้วยตนเองไปแล้ว และสถานีที่ตรวจจับยังคงเป็นสถานีเดิม ไม่สลับสายกลับไปกวนใจ
+                if (!force && this.userPickedLineManually && this.lastSyncedStationKey === stationKey) {
+                    return;
+                }
+
+                this.lastSyncedStationKey = stationKey;
+                if (force) {
+                    this.userPickedLineManually = false;
+                }
+
+                if (this.activeLine !== lineId) {
+                    this.activeLine = lineId;
+                    this.renderTabs();
+                    this.renderStrip();
+                    this.syncUrl();
+                }
+                this.scrollActiveTabIntoView();
             },
 
             /* ---------- render: strip (line map) ---------- */
@@ -4436,14 +5189,14 @@ gQIDAQAB
                 el.innerHTML = stations.map(s => {
                     const staticTime = usesStaticTimetable(s);
                     const color = lineColor || s.StationLineColor;
-                    // สถานีตั้งต้น (km == null) ไม่ใช่ "ใกล้คุณ" จริง — ไม่ติด badge/วงแหวน
+                    // สถานีสำรอง (km == null) ไม่ใช่ "ใกล้คุณ" จริง — ไม่ติด badge/วงแหวน
                     const isNear = this.nearest && this.nearest.km != null
                         && s.StationKey === this.nearest.station.StationKey;
                     const isSiam = s.StationKey === SIAM_KEY;
                     const open = this.expandedKey === s.StationKey;
                     const km = (this.userPos && s.Latitude && s.Longitude)
                         ? haversineKm(this.userPos.lat, this.userPos.lon, s.Latitude, s.Longitude) : null;
-                    const arr = (!staticTime && open) ? this.arrivals[s.StationKey] : null;
+                    const arr = open ? this.arrivals[s.StationKey] : null;
                     // IsCrowded มีเฉพาะสายจาก StationList API — สาย MRT static ไม่มีฟิลด์นี้
                     const crowded = s.IsCrowded === true;
                     return `
@@ -4465,16 +5218,14 @@ gQIDAQAB
                                 </div>
                                 ${km != null ? `<span class="st-dist">${fmtDist(km)}</span>` : ''}
                             </button>
-                            ${open ? (staticTime
-                            ? `<div class="st-expand">${renderMrtFrequency(s)}</div>`
-                            : `<div class="st-expand">
+                            ${open ? `<div class="st-expand">
                                     <div class="x-head">
                                         <span class="updated">${arr?.time ? T('updated', esc(arr.time.split(' ')[1] || arr.time)) : ''}</span>
                                         <button class="btn btn-ghost" onclick="App.loadArrivals(App.findStation('${esc(s.StationKey)}'), true)">${T('refresh')}</button>
                                     </div>
                                     ${renderPlatformSection(s, arr)}
                                     ${renderRouteSection(s)}
-                                </div>`) : ''}
+                                </div>` : ''}
                         </div>
                     </div>`;
                 }).join('');
@@ -4490,9 +5241,8 @@ gQIDAQAB
                 this.expandedKey = key;
                 this.renderStrip();
                 this.syncUrl();
-                // Static timetable stations (MRT/Gold) do not call TTA.
                 const station = this.findStation(key);
-                if (station && !usesStaticTimetable(station)) {
+                if (station) {
                     this.loadArrivals(station);
                 }
                 // เลื่อนให้เห็นการ์ดที่เพิ่งกาง
@@ -4502,6 +5252,291 @@ gQIDAQAB
                 });
             }
         };
+
+        /* ================= TIMETABLE ARRIVALS GENERATOR ================= */
+        function generateTimetableArrivals(station) {
+            if (!station) return null;
+            const lineId = station.StationLineId;
+            const key = station.StationKey;
+            const freq = getCurrentMrtFreq(lineId, key);
+            if (!freq) {
+                // นอกเวลาให้บริการ (เช่น 01:00–05:00)
+                return {
+                    isTimetable: true,
+                    time: null,
+                    fetchedAt: Date.now(),
+                    platform_list: []
+                };
+            }
+
+            const interval = Number(freq.minutes) || 10;
+            const now = new Date();
+            const nowSec = (now.getHours() * 3600) + (now.getMinutes() * 60) + now.getSeconds() + (now.getMilliseconds() / 1000);
+            const nowMin = nowSec / 60;
+            const timeStr = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+
+            // Helper ดึงชื่อสถานีปลายทางแบบ 2 ภาษา (ไทย | อังกฤษ) เพื่อให้ destName แยกภาษาได้อัตโนมัติ
+            const getDestPair = (destKey, fallbackTh, fallbackEn) => {
+                const s = App.findStation(destKey);
+                if (!s) return `${fallbackTh} | ${fallbackEn}`;
+                const th = s.StationNameTH || s.StationName || fallbackTh;
+                const en = s.StationNameEN || fallbackEn;
+                return `${th} | ${en}`;
+            };
+
+            // Helper สร้าง 3 ขบวนสำหรับแต่ละชานชาลา พร้อมความต่อเนื่องของรหัสขบวน
+            const makeTrains = (platform, destStr, destKey, offset, isTerminating) => {
+                if (isTerminating) return [];
+                const cycle = Math.floor((nowMin - offset) / interval);
+                const trains = [];
+                for (let i = 1; i <= 3; i++) {
+                    const K = cycle + i;
+                    const trainArrivalMin = (K * interval) + offset;
+                    const eta = trainArrivalMin - nowMin;
+                    const isArriving = eta <= 0.35;
+                    const m = Math.max(0, eta);
+                    const trainSeq = ((K % 50) + 50) % 50 + 1;
+                    const trainNo = `${lineId}-${platform}-${trainSeq}`;
+                    trains.push({
+                        trainNo,
+                        status: isArriving ? 'arriving' : 'pending',
+                        station: destStr,
+                        station_key: destKey,
+                        time_come: isArriving ? '0' : String(Math.round(m)),
+                        time_come_double: m
+                    });
+                }
+                return trains;
+            };
+
+            const color = station.StationLineColor || LINE_BRAND_COLORS[lineId] || '#64748B';
+            const platforms = [];
+
+            // 1. สายสีทอง (LineId: 3) — G1 (กรุงธนบุรี) <-> G3 (คลองสาน)
+            if (isGoldLineId(lineId)) {
+                const orderMap = { 'G1': 0, 'G2': 1, 'G3': 2 };
+                const idx = orderMap[key] != null ? orderMap[key] : 1;
+                const travelPerStation = 1.8;
+
+                // Platform 1: ไปคลองสาน (G3)
+                const isTerm1 = (key === 'G3');
+                const offset1 = idx * travelPerStation;
+                const dest1 = getDestPair('G3', 'คลองสาน', 'Khlong San');
+                platforms.push({
+                    platform: 1,
+                    LineId: lineId,
+                    LineColor: color,
+                    DestinationStation: dest1,
+                    DestinationStation_key: 'G3',
+                    isDropOffOnly: isTerm1,
+                    train_list: makeTrains(1, dest1, 'G3', offset1, isTerm1)
+                });
+
+                // Platform 2: ไปกรุงธนบุรี (G1)
+                const isTerm2 = (key === 'G1');
+                const offset2 = (2 - idx) * travelPerStation + (interval * 0.5);
+                const dest2 = getDestPair('G1', 'กรุงธนบุรี', 'Krung Thon Buri');
+                platforms.push({
+                    platform: 2,
+                    LineId: lineId,
+                    LineColor: color,
+                    DestinationStation: dest2,
+                    DestinationStation_key: 'G1',
+                    isDropOffOnly: isTerm2,
+                    train_list: makeTrains(2, dest2, 'G1', offset2, isTerm2)
+                });
+            }
+
+            // 2. สายสีม่วง (LineId: 102) — PP01 (คลองบางไผ่) <-> PP16 (เตาปูน)
+            else if (lineId === MRT_LINE_IDS.PURPLE) {
+                const num = parseInt(key.replace(/\D/g, ''), 10) || 1;
+                const idx = Math.max(0, Math.min(15, num - 1));
+                const travelPerStation = 2.1;
+
+                // Platform 1: ไปเตาปูน (PP16)
+                const isTerm1 = (key === 'PP16');
+                const offset1 = idx * travelPerStation;
+                const dest1 = getDestPair('PP16', 'เตาปูน', 'Tao Poon');
+                platforms.push({
+                    platform: 1,
+                    LineId: lineId,
+                    LineColor: color,
+                    DestinationStation: dest1,
+                    DestinationStation_key: 'PP16',
+                    isDropOffOnly: isTerm1,
+                    train_list: makeTrains(1, dest1, 'PP16', offset1, isTerm1)
+                });
+
+                // Platform 2: ไปคลองบางไผ่ (PP01)
+                const isTerm2 = (key === 'PP01');
+                const offset2 = (15 - idx) * travelPerStation + (interval * 0.5);
+                const dest2 = getDestPair('PP01', 'คลองบางไผ่', 'Khlong Bang Phai');
+                platforms.push({
+                    platform: 2,
+                    LineId: lineId,
+                    LineColor: color,
+                    DestinationStation: dest2,
+                    DestinationStation_key: 'PP01',
+                    isDropOffOnly: isTerm2,
+                    train_list: makeTrains(2, dest2, 'PP01', offset2, isTerm2)
+                });
+            }
+
+            // 3. แอร์พอร์ต ลิงก์ (LineId: 104) — A8 (พญาไท) <-> A1 (สุวรรณภูมิ)
+            else if (lineId === MRT_LINE_IDS.ARL) {
+                const num = parseInt(key.replace(/\D/g, ''), 10) || 8;
+                const idx = Math.max(0, Math.min(7, 8 - num));
+                const travelPerStation = 3.2;
+
+                // Platform 1: ไปสุวรรณภูมิ (A1)
+                const isTerm1 = (key === 'A1');
+                const offset1 = idx * travelPerStation;
+                const dest1 = getDestPair('A1', 'สุวรรณภูมิ', 'Suvarnabhumi');
+                platforms.push({
+                    platform: 1,
+                    LineId: lineId,
+                    LineColor: color,
+                    DestinationStation: dest1,
+                    DestinationStation_key: 'A1',
+                    isDropOffOnly: isTerm1,
+                    train_list: makeTrains(1, dest1, 'A1', offset1, isTerm1)
+                });
+
+                // Platform 2: ไปพญาไท (A8)
+                const isTerm2 = (key === 'A8');
+                const offset2 = (7 - idx) * travelPerStation + (interval * 0.5);
+                const dest2 = getDestPair('A8', 'พญาไท', 'Phaya Thai');
+                platforms.push({
+                    platform: 2,
+                    LineId: lineId,
+                    LineColor: color,
+                    DestinationStation: dest2,
+                    DestinationStation_key: 'A8',
+                    isDropOffOnly: isTerm2,
+                    train_list: makeTrains(2, dest2, 'A8', offset2, isTerm2)
+                });
+            }
+
+            // 4. สายสีแดง (LineId: 103) — North (RN01..RN10) & West (RW04..RW02, RN01)
+            else if (lineId === MRT_LINE_IDS.RED) {
+                const isWest = key.startsWith('RW');
+                const travelPerStation = 2.4;
+
+                if (key === 'RN01') {
+                    // ชุมทางกลางกรุงเทพอภิวัฒน์: Plat 1 -> รังสิต (RN10), Plat 2 -> ตลิ่งชัน (RW04)
+                    const dest1 = getDestPair('RN10', 'รังสิต', 'Rangsit');
+                    const dest2 = getDestPair('RW04', 'ตลิ่งชัน', 'Taling Chan');
+                    platforms.push({
+                        platform: 1,
+                        LineId: lineId,
+                        LineColor: color,
+                        DestinationStation: dest1,
+                        DestinationStation_key: 'RN10',
+                        isDropOffOnly: false,
+                        train_list: makeTrains(1, dest1, 'RN10', 0, false)
+                    });
+                    platforms.push({
+                        platform: 2,
+                        LineId: lineId,
+                        LineColor: color,
+                        DestinationStation: dest2,
+                        DestinationStation_key: 'RW04',
+                        isDropOffOnly: false,
+                        train_list: makeTrains(2, dest2, 'RW04', interval * 0.5, false)
+                    });
+                } else if (isWest) {
+                    // สายสีแดงฝั่งตะวันตก (RW02..RW04)
+                    const orderWest = { 'RW04': 0, 'RW03': 1, 'RW02': 2 };
+                    const idx = orderWest[key] != null ? orderWest[key] : 1;
+                    const dest1 = getDestPair('RW04', 'ตลิ่งชัน', 'Taling Chan');
+                    const dest2 = getDestPair('RN01', 'กรุงเทพ อภิวัฒน์', 'Krung Thep Aphiwat');
+                    const isTerm1 = (key === 'RW04');
+
+                    platforms.push({
+                        platform: 1,
+                        LineId: lineId,
+                        LineColor: color,
+                        DestinationStation: dest1,
+                        DestinationStation_key: 'RW04',
+                        isDropOffOnly: isTerm1,
+                        train_list: makeTrains(1, dest1, 'RW04', (2 - idx) * travelPerStation, isTerm1)
+                    });
+                    platforms.push({
+                        platform: 2,
+                        LineId: lineId,
+                        LineColor: color,
+                        DestinationStation: dest2,
+                        DestinationStation_key: 'RN01',
+                        isDropOffOnly: false,
+                        train_list: makeTrains(2, dest2, 'RN01', idx * travelPerStation + (interval * 0.5), false)
+                    });
+                } else {
+                    // สายสีแดงฝั่งเหนือ (RN02..RN10)
+                    const num = parseInt(key.replace(/\D/g, ''), 10) || 1;
+                    const idx = Math.max(0, Math.min(9, num - 1));
+                    const isTerm1 = (key === 'RN10');
+                    const dest1 = getDestPair('RN10', 'รังสิต', 'Rangsit');
+                    const dest2 = getDestPair('RN01', 'กรุงเทพ อภิวัฒน์', 'Krung Thep Aphiwat');
+
+                    platforms.push({
+                        platform: 1,
+                        LineId: lineId,
+                        LineColor: color,
+                        DestinationStation: dest1,
+                        DestinationStation_key: 'RN10',
+                        isDropOffOnly: isTerm1,
+                        train_list: makeTrains(1, dest1, 'RN10', idx * travelPerStation, isTerm1)
+                    });
+                    platforms.push({
+                        platform: 2,
+                        LineId: lineId,
+                        LineColor: color,
+                        DestinationStation: dest2,
+                        DestinationStation_key: 'RN01',
+                        isDropOffOnly: false,
+                        train_list: makeTrains(2, dest2, 'RN01', (9 - idx) * travelPerStation + (interval * 0.5), false)
+                    });
+                }
+            }
+
+            // 5. สายสีน้ำเงิน (LineId: 101) — BL01..BL38
+            else {
+                const blueLine = MRT_STATIC_DB.lines.find(l => l.LineId === MRT_LINE_IDS.BLUE);
+                const list = blueLine?.StationList || [];
+                const idx = Math.max(0, list.findIndex(s => s.StationKey === key));
+                const travelPerStation = 2.0;
+
+                const isTerm1 = (key === 'BL38');
+                const dest1 = getDestPair('BL38', 'หลักสอง', 'Lak Song');
+                const dest2 = getDestPair('BL01', 'ท่าพระ', 'Tha Phra');
+
+                platforms.push({
+                    platform: 1,
+                    LineId: lineId,
+                    LineColor: color,
+                    DestinationStation: dest1,
+                    DestinationStation_key: 'BL38',
+                    isDropOffOnly: isTerm1,
+                    train_list: makeTrains(1, dest1, 'BL38', idx * travelPerStation, isTerm1)
+                });
+                platforms.push({
+                    platform: 2,
+                    LineId: lineId,
+                    LineColor: color,
+                    DestinationStation: dest2,
+                    DestinationStation_key: 'BL01',
+                    isDropOffOnly: false,
+                    train_list: makeTrains(2, dest2, 'BL01', (Math.max(0, list.length - 1 - idx)) * travelPerStation + (interval * 0.5), false)
+                });
+            }
+
+            return {
+                isTimetable: true,
+                time: timeStr,
+                fetchedAt: Date.now(),
+                platform_list: platforms
+            };
+        }
 
         /* ================= MRT FREQUENCY RENDER ================= */
         function renderMrtFrequency(station) {
@@ -4740,6 +5775,30 @@ gQIDAQAB
                 || (lang === 'en' ? (l.LineName_EN || l.LineName_TH) : (l.LineName_TH || l.LineName_EN));
         }
 
+        function isBrightColor(col) {
+            if (!col) return false;
+            if (col === '#FFD100' || col === '#F5C242' || col === '#EAB308' || col === '#F1A80A') return true;
+            const c = String(col).replace('#', '');
+            if (c.length === 6) {
+                const r = parseInt(c.slice(0, 2), 16);
+                const g = parseInt(c.slice(2, 4), 16);
+                const b = parseInt(c.slice(4, 6), 16);
+                return (r * 299 + g * 587 + b * 114) / 1000 > 175;
+            }
+            return false;
+        }
+
+        function getLineOptLabel(l) {
+            if (!l) return '';
+            const th = l.LineName_TH || l.LineNameTH || '';
+            const en = l.LineName_EN || l.LineNameEN || '';
+            if (lang === 'en') {
+                return en || th;
+            }
+            const name = th.startsWith('สาย') ? th : ('สาย' + th);
+            return en ? `${name} (${en})` : name;
+        }
+
         // คืน {text, now} สำหรับ ETA (นาทีคงเหลือ ณ ตอนนี้) — approx = ค่าจากความจำ ใส่ ~ นำหน้า
         function etaText(mins, approx) {
             if (isNaN(mins)) return { text: '<small>--</small>', now: false };
@@ -4875,7 +5934,7 @@ gQIDAQAB
                 return `<div class="empty-note"><span class="spin dark"></span><br>${T('loadingTrains')}</div>`;
             // นอกเวลาให้บริการ → แสดงตารางความถี่ปกติแทนกล่อง error
             const offHoursNote = `<div class="empty-note">${T('noTrainData')}<br><small>${T('offHours')}</small></div>`
-                + renderBtsFrequency(station);
+                + (usesStaticTimetable(station) ? renderMrtFrequency(station) : renderBtsFrequency(station));
             if (arr.error && !arr.platforms)
                 return isOffServiceError(arr.error)
                     ? offHoursNote
@@ -4897,7 +5956,7 @@ gQIDAQAB
             }
             const multiLine = groups.length > 1;
 
-            return groups.map(g => {
+            const platHtml = groups.map(g => {
                 const line = App.lineById[g.lineId];
                 const head = multiLine ? `
                     <div class="line-group-head" style="color:${g.color};display:flex;align-items:center;gap:6px;">
@@ -4907,6 +5966,8 @@ gQIDAQAB
                 const cards = g.list.map(p => renderPlatform(p, arr.fetchedAt, station.StationKey)).join('');
                 return `<div class="line-group">${head}<div class="plat-grid">${cards}</div></div>`;
             }).join('');
+
+            return platHtml;
         }
 
         function renderPlatform(p, fetchedAt, stationKey) {
@@ -4949,10 +6010,10 @@ gQIDAQAB
                 const restHtml = trains.slice(1).map((t, j) => trainBtn(t, j + 1)).join('');
                 rows = trainBtn(trains[0], 0) + (restHtml ? `<div class="train-rest">${restHtml}</div>` : '');
             } else if (isTerminating) {
-                rows = `<div class="dropoff-note" style="padding:14px 6px;text-align:center;background:rgba(255,255,255,0.02);border-radius:10px;border:1px dashed rgba(148,163,184,0.2);">
-                    <div style="font-size:18px;margin-bottom:2px;">🏁</div>
-                    <div style="font-weight:700;font-size:12px;color:var(--ink);">${lang === 'en' ? 'Drop-off only' : 'ส่งผู้โดยสารเท่านั้น'}</div>
-                    <div style="font-size:9.5px;color:var(--muted);margin-top:2px;">${lang === 'en' ? 'No boarding train' : 'ขบวนไม่รับผู้โดยสาร'}</div>
+                rows = `<div class="dropoff-note" style="padding:4px 6px;text-align:center;background:rgba(255,255,255,0.02);border-radius:10px;border:1px dashed rgba(148,163,184,0.2);min-height:48px;">
+                    <div style="font-size:14px;line-height:1;margin-bottom:2px;">🏁</div>
+                    <div style="font-weight:700;font-size:11px;line-height:1.2;color:var(--ink);">${lang === 'en' ? 'Drop-off only' : 'ส่งผู้โดยสารเท่านั้น'}</div>
+                    <div style="font-size:9px;line-height:1.1;color:var(--muted);margin-top:1px;">${lang === 'en' ? 'No boarding train' : 'ขบวนไม่รับผู้โดยสาร'}</div>
                 </div>`;
             } else {
                 rows = `<div class="empty-note" style="padding:6px">${T('noTrains')}</div>`;
@@ -4987,10 +6048,9 @@ gQIDAQAB
             const steps = rm.RoutesJorney || [];
             if (!steps.length) return '';
 
-            // ไล่สีตามสายอย่างต่อเนื่อง: สถานีเปลี่ยนสาย (เช่น CEN) เลือกสายเดียวกับสถานีก่อนหน้า
-            // ถ้าสายเปลี่ยนระหว่างสองสถานี → แทรกแถว "เปลี่ยนสาย"
+            // 1. ไล่สีตามสายอย่างต่อเนื่องสำหรับทุกสถานี
             let prevLine = null, prevColor = '#94a3b8';
-            const rows = [];
+            const picks = [];
             steps.forEach((st, k) => {
                 const entries = App.keyLines[st.StationCode] || [];
                 let pick = entries.find(e => e.lineId === st.LineId)
@@ -5001,15 +6061,42 @@ gQIDAQAB
                     pick = entries.find(e => nextLines.includes(e.lineId)) || entries[0]
                         || { lineId: prevLine, color: prevColor };
                 }
-                if (prevLine != null && pick.lineId !== prevLine)
+                picks.push(pick);
+                prevLine = pick.lineId;
+                prevColor = pick.color;
+            });
+
+            // 2. สร้างแถวสถานีและเส้นรางเชื่อมโยง (พร้อมจุดเปลี่ยนสาย)
+            const rows = [];
+            steps.forEach((st, k) => {
+                const pick = picks[k];
+                const prevPick = k > 0 ? picks[k - 1] : null;
+                const nextPick = k < steps.length - 1 ? picks[k + 1] : null;
+
+                const hasTransferBefore = prevPick && pick.lineId !== prevPick.lineId;
+                const hasTransferAfter = nextPick && pick.lineId !== nextPick.lineId;
+
+                if (hasTransferBefore) {
                     rows.push(`<div class="j-transfer">${T('jTransfer')}</div>`);
-                const isEnd = k === 0 || k === steps.length - 1;
-                rows.push(`<div class="j-step ${isEnd ? 'end' : ''}" style="color:${pick.color}">
+                }
+
+                const isFirst = k === 0;
+                const isLast = k === steps.length - 1;
+                const isEnd = isFirst || isLast;
+
+                const stepClasses = [
+                    'j-step',
+                    isFirst ? 'first' : '',
+                    isLast ? 'last' : '',
+                    isEnd ? 'end' : '',
+                    hasTransferBefore ? 'post-transfer' : '',
+                    hasTransferAfter ? 'pre-transfer' : ''
+                ].filter(Boolean).join(' ');
+
+                rows.push(`<div class="${stepClasses}" style="color:${pick.color}">
                     <span class="ndw"><span class="nd"></span></span>
                     <span class="nm" style="color:var(--ink)"><span style="color:${pick.color};font-size:10.5px;font-weight:800;margin-right:4px">${esc(st.StationCode)}</span>${esc(shortDest(destName(st.Title)))}</span>
                     <span class="tm">${esc(st.TimeRoute || '')}</span></div>`);
-                prevLine = pick.lineId;
-                prevColor = pick.color;
             });
 
             // FareRateInfo เป็น array ที่มีสมาชิกเดียว
@@ -5061,7 +6148,7 @@ gQIDAQAB
                 const tMid = (st, l, r, cur) => `<div class="rt-mid">
                     ${l ? `<span class="tl l" style="background:${color}"></span>` : ''}
                     ${r ? `<span class="tl r" style="background:${color}"></span>` : ''}
-                    ${st ? `<span class="nd ${cur ? 'cur' : ''}" style="border-color:${color};${cur ? 'background:' + color : ''}"></span>
+                    ${st ? `<span class="nd ${cur ? 'cur near' : ''}" style="${cur ? '' : 'border-color:' + color}"></span>
                     <span class="lbl"><b style="${cur ? 'color:' + color : ''}">${esc(st.StationKey)}</b><i>${esc(shortDest(stName(st)))}</i></span>` : ''}
                 </div>`;
                 const trains = [];
@@ -5182,7 +6269,7 @@ gQIDAQAB
             const mid = (st, l, r, cur) => `<div class="rt-mid">
                 ${l ? `<span class="tl l" style="background:${color}"></span>` : ''}
                 ${r ? `<span class="tl r" style="background:${color}"></span>` : ''}
-                ${st ? `<span class="nd ${cur ? 'cur' : ''}" style="border-color:${color};${cur ? 'background:' + color : ''}"></span>
+                ${st ? `<span class="nd ${cur ? 'cur near' : ''}" style="${cur ? '' : 'border-color:' + color}"></span>
                 <span class="lbl"><b style="${cur ? 'color:' + color : ''}">${esc(st.StationKey)}</b><i>${esc(shortDest(stName(st)))}</i></span>` : ''}
             </div>`;
 
@@ -5226,6 +6313,6 @@ gQIDAQAB
 
         /* ================= START ================= */
         window.App = App;
-        window.__test = { bestEta, etaText, shortDest, mrtBlueFare, buildHybridJourney, displayTrains };   // hook สำหรับ test-app.mjs
+        window.__test = { bestEta, etaText, shortDest, mrtBlueFare, buildHybridJourney, displayTrains, generateTimetableArrivals, renderPlatformSection, renderRouteSection, TRANSIT_LINES_CATALOG, getLineScheduleTables };   // hook สำหรับ test-app.mjs
         App.init();
     

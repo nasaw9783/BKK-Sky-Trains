@@ -1,17 +1,110 @@
-# bkk_skytrains_flutter
+# 📱 BKK SkyTrains - Flutter Mobile App
 
-A new Flutter project.
+แอปพลิเคชันมือถือติดตามระบบรถไฟฟ้ากรุงเทพมหานคร พัฒนาด้วย **Flutter SDK** รองรับแพลตฟอร์ม **Android** และ **iOS**
 
-## Getting Started
+---
 
-This project is a starting point for a Flutter application.
+## 🏗️ สถาปัตยกรรมแอปพลิเคชัน (Architecture)
 
-A few resources to get you started if this is your first Flutter project:
+แอปพลิเคชันใช้สถาปัตยกรรมแบบ **Hybrid In-App Container**:
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+1. **Embedded WebView Engine (`lib/screens/bkk_web_view_screen.dart`)**:
+   - ทำงานผ่าน `webview_flutter` โดยโหลดเว็บแอปพลิเคชันเวอร์ชันออฟไลน์จาก `assets/www/index.html` ภายในเครื่องโดยตรง
+   - ให้ประสิทธิภาพสูง โหลดหน้าจอได้ทันทีโดยไม่ต้องพึ่งพาเซิร์ฟเวอร์ภายนอกสำหรับ UI
+2. **Native Geolocation Bridge (`geolocator`)**:
+   - เชื่อมต่อการขอสิทธิ์ GPS และพิกัดตำแหน่งของผู้ใช้งานผ่าน Native Android/iOS API
+   - ส่งต่อพิกัดความแม่นยำสูงเข้าไปยัง JavaScript ในหน้าเว็บแบบเรียลไทม์
+3. **Clean Platform Footprint**:
+   - รองรับเฉพาะ **Android** และ **iOS**
+   - ตัดโฟลเดอร์ boilerplate ที่ไม่จำเป็น (Linux, macOS, Windows Desktop) ออกทั้งหมด เพื่อลดขนาดโปรเจกต์และประหยัดพื้นที่จัดเก็บ
+4. **Native Fallback & Modules**:
+   - มีชุดหน้าจอเนทีฟใน `lib/screens/` (`home_screen.dart`, `fares_screen.dart`, `trip_planner_screen.dart`, `map_screen.dart`) พร้อมรองรับการขยายตัวในอนาคต
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+---
+
+## 📁 โครงสร้างไดเรกทอรี (Directory Structure)
+
+```text
+bkk_skytrains_flutter/
+├── android/                    # การตั้งค่า Native Android (Manifest, Gradle, App Icons)
+├── ios/                        # การตั้งค่า Native iOS (Info.plist, AppIcon, LaunchScreen)
+├── assets/
+│   └── www/                    # ไฟล์เว็บแอปพลิเคชันออฟไลน์ที่ฝังในตัวแอป (ซิงค์ตรงกับ Root)
+│       ├── index.html
+│       ├── js/app.js
+│       ├── sw.js
+│       └── *.png, *.svg
+├── lib/                        # โค้ด Flutter Dart
+│   ├── main.dart               # จุดเริ่มต้นของแอปพลิเคชัน
+│   ├── screens/
+│   │   ├── bkk_web_view_screen.dart  # หน้าจอหลักรัน WebView + Location Bridge
+│   │   ├── home_screen.dart          # หน้าจอ Home แบบเนทีฟ
+│   │   ├── fares_screen.dart         # หน้าจอค่าโดยสาร
+│   │   ├── trip_planner_screen.dart  # หน้าจอคำนวณการเดินทาง
+│   │   └── map_screen.dart           # หน้าจอแผนผัง
+│   ├── services/
+│   │   ├── api_service.dart          # เซอร์วิสเรียก API
+│   │   ├── location_service.dart     # เซอร์วิสจัดการ GPS และพิกัดตำแหน่ง
+│   │   └── static_stations.dart      # ข้อมูลสถานีและพิกัดแบบคงที่
+│   ├── theme/
+│   │   └── app_theme.dart            # การตั้งค่าธีมสีและสไตล์ของแอป
+│   └── widgets/                      # วิดเจ็ตที่ใช้ร่วมกัน
+├── test/                       # Unit & Widget Tests
+└── pubspec.yaml                # การตั้งค่า Dependencies และ Assets
+```
+
+---
+
+## 🚀 การติดตั้งและรันโปรเจกต์ (Getting Started)
+
+### ความต้องการของระบบ (Prerequisites)
+- Flutter SDK 3.24+ หรือเวอร์ชันเสถียรล่าสุด
+- Dart SDK 3.5+
+- Android Studio หรือ Android SDK Platform 34+ (สำหรับการพัฒนา Android)
+- Xcode 15+ และ CocoaPods (สำหรับการพัฒนา iOS)
+
+### คำสั่งเริ่มต้น (Commands)
+
+1. **ดาวน์โหลดและอัปเดต Packages:**
+   ```bash
+   flutter pub get
+   ```
+
+2. **ตรวจสอบคุณภาพโค้ด (Lint & Analysis):**
+   ```bash
+   flutter analyze
+   ```
+
+3. **รันบน Emulator หรือเครื่องจริง:**
+   ```bash
+   flutter run
+   ```
+
+4. **รันการทดสอบ Unit / Widget Test:**
+   ```bash
+   flutter test
+   ```
+
+---
+
+## 📦 การบิลด์แพ็กเกจติดตั้ง (Building Releases)
+
+### บิลด์ Android APK:
+```bash
+flutter build apk --release
+```
+*ไฟล์ APK ที่สร้างเสร็จแล้วจะอยู่ที่ `build/app/outputs/flutter-apk/app-release.apk` และถูกคัดลอกไปไว้ที่โฟลเดอร์ `../releases/` สำหรับการแจกจ่าย*
+
+### บิลด์ iOS Bundle / IPA:
+```bash
+flutter build ipa --no-codesign
+```
+*หรือใช้ระบบ **Automated iOS CI/CD** ผ่าน GitHub Actions ใน `.github/workflows/build_ios.yml` เพื่อให้ GitHub macOS Runner บิลด์ไฟล์ `.ipa` ให้อัตโนมัติในระบบคลาวด์*
+
+---
+
+## 🔄 กฎการซิงค์ไฟล์ (Dual-Asset Synchronization Protocol)
+
+- โฟลเดอร์ `assets/www/` ในโปรเจกต์นี้ เป็นสำเนาของไฟล์เว็บแอปพลิเคชันจากโฟลเดอร์ Root (`index.html`, `js/app.js`, `sw.js` ฯลฯ)
+- **ทุกครั้ง** ที่มีการแก้ไขไฟล์เว็บในโฟลเดอร์หลัก จะต้องคัดลอกไฟล์มาทับใน `assets/www/` ให้ตรงกัน 100% เสมอ เพื่อให้การทำงานในแอปมือถือและบนเว็บมีความถูกต้องตรงกัน
+- ตรวจสอบความถูกต้องด้วย `flutter analyze` ทุกครั้งหลังอัปเดตไฟล์

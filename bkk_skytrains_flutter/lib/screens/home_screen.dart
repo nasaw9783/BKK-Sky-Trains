@@ -6,7 +6,6 @@ import '../services/location_service.dart';
 import '../services/static_stations.dart';
 import '../theme/app_theme.dart';
 import '../widgets/station_picker_modal.dart';
-import 'exits_screen.dart';
 import 'fares_screen.dart';
 import 'map_screen.dart';
 import 'trip_planner_screen.dart';
@@ -105,7 +104,6 @@ class _HomeScreenState extends State<HomeScreen> {
           _buildHomeContent(),
           const MapScreen(),
           const TripPlannerScreen(),
-          const ExitsScreen(),
           const FaresScreen(),
         ],
       ),
@@ -643,7 +641,6 @@ class _HomeScreenState extends State<HomeScreen> {
         NavigationDestination(icon: Icon(Icons.home_outlined), selectedIcon: Icon(Icons.home, color: AppTheme.accentGreen), label: 'หน้าแรก'),
         NavigationDestination(icon: Icon(Icons.map_outlined), selectedIcon: Icon(Icons.map, color: AppTheme.accentGreen), label: 'แผนที่'),
         NavigationDestination(icon: Icon(Icons.route_outlined), selectedIcon: Icon(Icons.route, color: AppTheme.accentGreen), label: 'วางแผน'),
-        NavigationDestination(icon: Icon(Icons.exit_to_app_outlined), selectedIcon: Icon(Icons.exit_to_app, color: AppTheme.accentGreen), label: 'ทางออก'),
         NavigationDestination(icon: Icon(Icons.credit_card_outlined), selectedIcon: Icon(Icons.credit_card, color: AppTheme.accentGreen), label: 'ค่าโดยสาร'),
       ],
     );

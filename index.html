@@ -509,6 +509,7 @@
             align-items: center;
             justify-content: space-between;
             gap: 8px;
+            flex-wrap: wrap;
             padding: 14px 16px 6px;
         }
 
@@ -594,17 +595,19 @@
 
         .key-badge {
             flex: none;
-            min-width: 54px;
-            height: 54px;
-            border-radius: var(--radius-md);
-            display: grid;
-            place-items: center;
+            min-width: 48px;
+            height: 32px;
+            border-radius: 8px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             color: #fff;
             font-weight: 800;
-            font-size: 16.5px;
-            padding: 0 10px;
-            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+            font-size: 13.5px;
+            padding: 0 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.35);
             transition: transform var(--transition-fast);
+            line-height: 1;
         }
 
         .station-hero .names {
@@ -710,7 +713,10 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 72px;
+            min-height: 48px;
+            height: 100%;
+            padding: 4px 6px;
+            box-sizing: border-box;
             text-align: center;
         }
 
@@ -1463,10 +1469,19 @@
             border: 2px solid currentColor;
             display: inline-block;
             box-sizing: border-box;
+            transition: all var(--transition-fast);
         }
 
-        .rt-mid .nd.cur {
+        .rt-mid .nd.cur,
+        .rt-mid .nd.near {
+            width: 14px;
+            height: 14px;
+            margin-top: -2px;
+            margin-bottom: -2px;
+            background: var(--card) !important;
+            border: 3.5px solid var(--accent) !important;
             box-shadow: 0 0 0 2px var(--card);
+            animation: pulseRing 1.8s infinite;
         }
 
         .rt-mid .lbl {
@@ -1893,43 +1908,119 @@
 
         .j-step {
             display: flex;
-            align-items: center;
+            align-items: stretch;
             gap: 10px;
-            padding: 6px 0;
+            padding: 0;
             font-size: 13px;
+            position: relative;
+            min-height: 36px;
         }
 
         .j-step .ndw {
             width: 16px;
+            position: relative;
             display: flex;
             justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        /* Continuous Train Rail Track Line (เส้นรางรถไฟฟ้า) */
+        .j-step .ndw::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: -1px;
+            bottom: -1px;
+            width: 4px;
+            transform: translateX(-50%);
+            background: currentColor;
+            z-index: 1;
+        }
+
+        /* First station of the entire journey: track starts at dot center */
+        .j-step.first .ndw::before {
+            top: 50%;
+            bottom: -1px;
+        }
+
+        /* Last station of the entire journey: track stops at dot center */
+        .j-step.last .ndw::before {
+            top: -1px;
+            bottom: 50%;
+        }
+
+        .j-step.first.last .ndw::before {
+            display: none;
         }
 
         .j-step .nd {
-            width: 9px;
-            height: 9px;
+            width: 10px;
+            height: 10px;
             border-radius: 50%;
             border: 2.5px solid currentColor;
             background: var(--card);
+            position: relative;
+            z-index: 2;
+            box-shadow: 0 0 0 2px var(--bg-subtle);
+            box-sizing: border-box;
+            flex-shrink: 0;
         }
 
-        .j-step.end .nd {
+        .j-step.end .nd,
+        .j-step.first .nd,
+        .j-step.last .nd {
             background: currentColor;
+            width: 12px;
+            height: 12px;
+            box-shadow: 0 0 0 2.5px var(--bg-subtle);
+        }
+
+        .j-step .nm {
+            display: flex;
+            align-items: center;
+            padding: 7px 0;
+            flex: 1;
+            min-width: 0;
+            line-height: 1.4;
         }
 
         .j-step .tm {
+            display: flex;
+            align-items: center;
+            padding: 7px 0;
             font-size: 11px;
             color: var(--muted);
             margin-left: auto;
+            flex-shrink: 0;
         }
 
+        /* Transfer Row with Dashed Walking Line connecting the two line tracks */
         .j-transfer {
-            font-size: 11px;
+            position: relative;
+            font-size: 11.5px;
             font-weight: 700;
             color: #d97706;
-            padding: 4px 10px;
-            margin: 4px 0 4px 18px;
+            padding: 8px 10px 8px 28px;
+            margin: 0;
+            min-height: 32px;
+            display: flex;
+            align-items: center;
+        }
+
+        html.dark .j-transfer {
+            color: #fbbf24;
+        }
+
+        .j-transfer::before {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: -1px;
+            bottom: -1px;
+            width: 0;
             border-left: 2px dashed #f59e0b;
+            z-index: 1;
         }
 
         .j-fares {
@@ -2177,9 +2268,12 @@
         .line-frame-box {
             border: 1.5px solid var(--line);
             border-radius: 12px;
-            padding: 10px 12px;
+            padding: 10px 10px;
             margin-bottom: 10px;
             background: var(--bg-subtle);
+            box-sizing: border-box;
+            width: 100%;
+            overflow: hidden;
         }
 
         .line-frame-head {
@@ -2189,6 +2283,7 @@
             margin-bottom: 8px;
             padding-bottom: 6px;
             border-bottom: 1px solid rgba(100, 116, 139, 0.15);
+            gap: 8px;
         }
 
         .line-frame-title {
@@ -2198,6 +2293,16 @@
             display: flex;
             align-items: center;
             gap: 6px;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .line-frame-title span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .line-frame-count {
@@ -2205,19 +2310,29 @@
             font-weight: 600;
             padding: 2px 8px;
             border-radius: 12px;
+            flex-shrink: 0;
+            white-space: nowrap;
         }
 
         .line-stations-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 6px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        @media (max-width: 340px) {
+            .line-stations-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
         }
 
         .station-picker-chip {
             display: flex;
             align-items: center;
-            gap: 6px;
-            padding: 6px 8px;
+            gap: 5px;
+            padding: 6px 6px;
             background: var(--card);
             border: 1px solid var(--line);
             border-radius: 8px;
@@ -2226,6 +2341,10 @@
             text-align: left;
             transition: all var(--transition-fast);
             outline: none;
+            min-width: 0;
+            width: 100%;
+            box-sizing: border-box;
+            overflow: hidden;
         }
 
         .station-picker-chip:hover {
@@ -2236,27 +2355,35 @@
         .station-picker-chip.selected {
             border-color: var(--accent);
             background: var(--accent-bg);
-            box-shadow: 0 2px 6px rgba(16, 185, 129, 0.2);
+            box-shadow: 0 0 0 1.5px var(--accent), 0 2px 6px rgba(16, 185, 129, 0.2);
+            font-weight: 700;
         }
 
         .station-picker-chip .chip-code {
-            font-size: 10px;
+            font-size: 9.5px;
             font-weight: 800;
             color: #fff;
-            padding: 2px 5px;
+            padding: 2px 4px;
             border-radius: 4px;
-            min-width: 32px;
+            min-width: 26px;
+            max-width: 38px;
             text-align: center;
             flex-shrink: 0;
+            line-height: 1.2;
+            white-space: nowrap;
+            overflow: hidden;
+            box-sizing: border-box;
         }
 
         .station-picker-chip .chip-name {
-            font-size: 11.5px;
+            font-size: 11px;
             color: var(--ink);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            min-width: 0;
             flex: 1;
+            line-height: 1.3;
         }
 
         /* ===== Fares & Timetables View ===== */
@@ -2299,12 +2426,20 @@
         .fare-table-wrap {
             overflow-x: auto;
             margin: 10px 0;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--line);
+            -webkit-overflow-scrolling: touch;
         }
 
         .fare-grid-table {
             width: 100%;
+            min-width: 540px;
             border-collapse: collapse;
             font-size: 12.5px;
+        }
+
+        .fare-grid-table.compact-table {
+            min-width: 360px;
         }
 
         .fare-grid-table th {
@@ -2321,10 +2456,180 @@
             padding: 9px 12px;
             border-bottom: 1px solid var(--line);
             color: var(--ink);
+            white-space: nowrap;
         }
 
         .fare-grid-table tr:hover td {
             background: var(--bg-subtle);
+        }
+
+        .stn-code-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 32px;
+            height: 22px;
+            padding: 0 6px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: 0.2px;
+            flex-shrink: 0;
+            line-height: 1;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.14);
+        }
+
+        /* ===== Line Selector & Detailed Views ===== */
+        .line-filter-bar {
+            display: flex;
+            gap: 7px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            padding: 4px 2px 14px;
+            margin-bottom: 8px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .line-filter-bar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .line-filter-pill {
+            flex: none;
+            background: var(--card);
+            border: 1.5px solid var(--line);
+            border-radius: var(--radius-full);
+            padding: 7px 13px;
+            font-size: 12px;
+            font-family: inherit;
+            font-weight: 600;
+            color: var(--ink);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: var(--shadow-xs);
+            transition: all var(--transition-fast);
+            white-space: nowrap;
+            outline: none;
+        }
+
+        .line-filter-pill:hover {
+            border-color: var(--muted);
+            transform: translateY(-1px);
+        }
+
+        .line-filter-pill:active {
+            transform: scale(0.96);
+        }
+
+        .line-filter-pill.active {
+            color: #fff !important;
+            border-color: transparent !important;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .line-hero-card {
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 14px;
+            background: var(--card);
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow-sm);
+            transition: box-shadow var(--transition-smooth);
+        }
+
+        .line-hero-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .line-badge-lg {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 12px;
+            border-radius: 12px;
+            color: #fff;
+            font-weight: 800;
+            font-size: 13.5px;
+        }
+
+        .line-metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .line-metric-box {
+            background: var(--bg-subtle);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-md);
+            padding: 10px 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .line-metric-box .label {
+            font-size: 11px;
+            color: var(--muted);
+            margin-bottom: 4px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .line-metric-box .val {
+            font-size: 14.5px;
+            font-weight: 800;
+            color: var(--ink);
+            white-space: nowrap;
+        }
+
+        .line-metric-box.full-col {
+            grid-column: 1 / -1;
+        }
+
+        .line-metric-box.full-col .val {
+            white-space: normal;
+            font-size: 12px;
+            font-weight: 600;
+            line-height: 1.45;
+        }
+
+        .dir-timetables-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 10px;
+            margin: 10px 0 14px;
+        }
+
+        .dir-time-card {
+            background: var(--bg-subtle);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-md);
+            padding: 12px 14px;
+        }
+
+        .dir-time-card .dir-title {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: var(--muted);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .dir-time-card .dir-val {
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--ink);
+            white-space: nowrap;
         }
 
         /* ===== Floating Bottom Navigation Dock ===== */
@@ -2391,6 +2696,10 @@
             font-weight: 600;
             margin-top: 2px;
             transition: color var(--transition-fast), font-weight var(--transition-fast);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
         }
 
         .bottom-nav .nav-tab.active {
@@ -2419,240 +2728,23 @@
             box-shadow: 0 0 10px var(--accent);
         }
 
-        /* ===== Background Geofencing Notification Widget ===== */
-        .geofence-widget {
-            background: var(--card);
-            border: 1px solid var(--line);
-            border-radius: var(--radius-lg);
-            padding: 14px 16px;
-            margin-bottom: 14px;
-            box-shadow: var(--shadow-sm);
-            transition: all var(--transition-smooth);
-            position: relative;
-            overflow: hidden;
+        @media (max-width: 420px) {
+            .bottom-nav {
+                padding: 0 4px;
+                left: 8px;
+                right: 8px;
+            }
+            .bottom-nav .nav-tab .nav-lbl {
+                font-size: 9.5px;
+                letter-spacing: -0.2px;
+                white-space: nowrap;
+            }
+            .bottom-nav .nav-tab .nav-icon svg {
+                width: 20px;
+                height: 20px;
+            }
         }
 
-        .geofence-widget.active {
-            border-color: rgba(34, 197, 94, 0.45);
-            background: linear-gradient(135deg, rgba(34, 197, 94, 0.06), rgba(2, 132, 199, 0.04));
-            box-shadow: 0 4px 20px rgba(34, 197, 94, 0.12);
-        }
-
-        .geofence-widget-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .geofence-icon-wrap {
-            position: relative;
-            width: 40px;
-            height: 40px;
-            border-radius: var(--radius-full);
-            background: rgba(148, 163, 184, 0.15);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--muted);
-            flex-shrink: 0;
-            transition: all var(--transition-fast);
-        }
-
-        .geofence-widget.active .geofence-icon-wrap {
-            background: rgba(34, 197, 94, 0.18);
-            color: #22c55e;
-        }
-
-        .geofence-radar-pulse {
-            display: none;
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 2px solid #22c55e;
-            animation: radarPulse 2s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
-        }
-
-        .geofence-widget.active .geofence-radar-pulse {
-            display: block;
-        }
-
-        @keyframes radarPulse {
-            0% { transform: scale(1); opacity: 0.9; }
-            100% { transform: scale(1.75); opacity: 0; }
-        }
-
-        .geofence-title-col {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .geofence-title-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .geofence-title {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--ink);
-            line-height: 1.3;
-        }
-
-        .geofence-badge {
-            font-size: 11px;
-            font-weight: 600;
-            padding: 2px 8px;
-            border-radius: var(--radius-full);
-            background: rgba(148, 163, 184, 0.18);
-            color: var(--muted);
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            transition: all var(--transition-fast);
-        }
-
-        .geofence-badge.active {
-            background: rgba(34, 197, 94, 0.2);
-            color: #22c55e;
-            box-shadow: 0 0 8px rgba(34, 197, 94, 0.25);
-        }
-
-        .geofence-sub {
-            font-size: 11.5px;
-            color: var(--muted);
-            margin-top: 2px;
-            line-height: 1.35;
-        }
-
-        /* Toggle Switch */
-        .geofence-switch {
-            position: relative;
-            display: inline-block;
-            width: 48px;
-            height: 28px;
-            flex-shrink: 0;
-            cursor: pointer;
-        }
-
-        .geofence-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .geofence-slider {
-            position: absolute;
-            inset: 0;
-            background-color: rgba(148, 163, 184, 0.35);
-            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-            border-radius: 34px;
-            border: 1px solid var(--line);
-        }
-
-        .geofence-slider:before {
-            position: absolute;
-            content: "";
-            height: 20px;
-            width: 20px;
-            left: 3px;
-            bottom: 3px;
-            background-color: #fff;
-            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
-            border-radius: 50%;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-        }
-
-        .geofence-switch input:checked + .geofence-slider {
-            background-color: #22c55e;
-            border-color: #16a34a;
-            box-shadow: 0 0 12px rgba(34, 197, 94, 0.4);
-        }
-
-        .geofence-switch input:checked + .geofence-slider:before {
-            transform: translateX(20px);
-            background-color: #fff;
-        }
-
-        /* Details section (expanded when active) */
-        .geofence-details {
-            margin-top: 14px;
-            padding-top: 12px;
-            border-top: 1px solid var(--line);
-            display: none;
-            animation: viewFadeIn 0.2s ease-out;
-        }
-
-        .geofence-widget.active .geofence-details {
-            display: block;
-        }
-
-        .geofence-setting-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            margin-bottom: 10px;
-            flex-wrap: wrap;
-        }
-
-        .geofence-label {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--ink);
-        }
-
-        .geofence-pills {
-            display: flex;
-            gap: 6px;
-        }
-
-        .geofence-pill {
-            background: var(--bg);
-            border: 1px solid var(--line);
-            border-radius: var(--radius-full);
-            padding: 4px 10px;
-            font-size: 11px;
-            font-weight: 600;
-            color: var(--muted);
-            cursor: pointer;
-            transition: all var(--transition-fast);
-        }
-
-        .geofence-pill.active {
-            background: var(--accent);
-            border-color: var(--accent);
-            color: #fff;
-            box-shadow: 0 2px 8px rgba(34, 197, 94, 0.35);
-        }
-
-        .geofence-actions-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-top: 8px;
-        }
-
-        .geofence-status-text {
-            font-size: 11px;
-            color: var(--muted);
-        }
-
-        /* Top bar indicator */
-        .header-notif-dot {
-            position: absolute;
-            top: 4px;
-            right: 4px;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #22c55e;
-            box-shadow: 0 0 6px #22c55e;
-        }
 
         /* ===== App Views Display ===== */
         .app-view {
@@ -2742,8 +2834,8 @@
 
         .picker {
             width: 100%;
-            max-width: 560px;
-            max-height: 85vh;
+            max-width: 600px;
+            max-height: 88vh;
             background: var(--card);
             border-radius: 24px 24px 0 0;
             display: flex;
@@ -2751,11 +2843,22 @@
             overflow: hidden;
             box-shadow: var(--shadow-lg);
             animation: sheetSlideUp 0.25s cubic-bezier(0.2, 0.9, 0.3, 1);
+            box-sizing: border-box;
+            position: relative;
+            z-index: 10;
+        }
+
+        .picker-bg {
+            position: absolute;
+            inset: 0;
+            cursor: pointer;
+            z-index: 1;
         }
 
         .picker-head {
             padding: 14px 18px 10px;
             border-bottom: 1px solid var(--line);
+            flex-shrink: 0;
         }
 
         .picker-head input {
@@ -2774,9 +2877,18 @@
             border-color: var(--accent);
         }
 
+        .picker-tabs {
+            padding: 8px 14px 4px;
+            margin-bottom: 2px;
+            flex-shrink: 0;
+        }
+
         .picker-list {
             overflow-y: auto;
-            padding: 10px 14px;
+            padding: 8px 14px 28px;
+            box-sizing: border-box;
+            -webkit-overflow-scrolling: touch;
+            flex: 1;
         }
 
         .picker-row {
@@ -3036,33 +3148,6 @@
             color: var(--muted);
         }
 
-        .def-star-btn {
-            background: var(--bg-subtle);
-            border: 1px solid var(--line);
-            color: var(--muted);
-            font-size: 11px;
-            font-weight: 700;
-            padding: 4px 8px;
-            border-radius: var(--radius-full);
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            transition: all var(--transition-fast);
-            margin-top: 4px;
-        }
-
-        .def-star-btn:hover {
-            color: var(--ink);
-            border-color: #f59e0b;
-        }
-
-        .def-star-btn.is-default {
-            color: #d97706;
-            background: rgba(245, 158, 11, 0.12);
-            border-color: rgba(245, 158, 11, 0.35);
-        }
-
         .app-toast {
             position: fixed;
             bottom: 84px;
@@ -3127,10 +3212,6 @@
             </div>
         </div>
         <div class="header-controls">
-            <button class="header-pill-btn" id="headerGeofenceBtn" onclick="App.scrollToGeofenceWidget()" aria-label="สถานะแจ้งเตือนเบื้องหลัง" title="แจ้งเตือนสถานีเบื้องหลัง (Background Geofencing)" style="position:relative;">
-                <span id="headerGeofenceIcon">🔔</span>
-                <span class="header-notif-dot" id="headerNotifDot" style="display:none;"></span>
-            </button>
             <button class="header-pill-btn" id="themeBtn" onclick="App.setTheme()" aria-label="Toggle dark mode">🌙</button>
             <button class="header-pill-btn" id="langBtn" onclick="App.setLang()">EN</button>
             <div class="clock">
@@ -3148,8 +3229,7 @@
                 <div class="card-head">
                     <div class="card-title">📍 <span id="nearestTitle">สถานีใกล้คุณที่สุด</span></div>
                     <div style="display:flex;gap:6px;align-items:center;">
-                        <button class="btn btn-ghost" id="chooseDefaultBtn" onclick="App.openDefaultStationPicker()" title="เลือกหรือเปลี่ยนสถานีตั้งต้น">⭐ สถานีตั้งต้น</button>
-                        <button class="btn btn-ghost" id="relocateBtn" onclick="App.locate(true)">🧭 หาใหม่</button>
+                        <button class="btn btn-ghost" id="relocateBtn" onclick="App.locate(true)">🧭 หาตำแหน่งปัจจุบัน</button>
                     </div>
                 </div>
                 <div class="nearest-body" id="nearestBody">
@@ -3157,45 +3237,6 @@
                 </div>
             </section>
 
-            <!-- ===== Background Geofencing Notification Widget ===== -->
-            <div class="geofence-widget" id="geofenceWidget">
-                <div class="geofence-widget-header">
-                    <div class="geofence-icon-wrap" id="geofenceIconWrap">
-                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
-                            <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
-                        </svg>
-                        <span class="geofence-radar-pulse" id="geofencePulse"></span>
-                    </div>
-                    <div class="geofence-title-col">
-                        <div class="geofence-title-row">
-                            <span class="geofence-title" id="geofenceTitle">แจ้งเตือนสถานีใกล้ฉันเบื้องหลัง</span>
-                            <span class="geofence-badge" id="geofenceBadge">ปิดอยู่</span>
-                        </div>
-                        <div class="geofence-sub" id="geofenceSub">เตือนอัตโนมัติแม้ปิดแอปหรือล็อกหน้าจอ (True Background Geofencing)</div>
-                    </div>
-                    <label class="geofence-switch" aria-label="เปิด/ปิดแจ้งเตือนสถานีเบื้องหลัง">
-                        <input type="checkbox" id="geofenceToggle" onchange="App.toggleBackgroundGeofence(this.checked)">
-                        <span class="geofence-slider"></span>
-                    </label>
-                </div>
-                <div class="geofence-details" id="geofenceDetails">
-                    <div class="geofence-setting-row">
-                        <span class="geofence-label" id="geofenceRadiusLbl">รัศมีตรวจจับ:</span>
-                        <div class="geofence-pills">
-                            <button type="button" class="geofence-pill" onclick="App.setGeofenceRadius(500)" data-radius="500">500 ม.</button>
-                            <button type="button" class="geofence-pill active" onclick="App.setGeofenceRadius(1000)" data-radius="1000">1 กม.</button>
-                            <button type="button" class="geofence-pill" onclick="App.setGeofenceRadius(2000)" data-radius="2000">2 กม.</button>
-                        </div>
-                    </div>
-                    <div class="geofence-actions-row">
-                        <button type="button" class="btn btn-ghost btn-sm" onclick="App.testGeofenceNotification()">
-                            🔔 <span id="geofenceTestBtnLbl">ทดสอบแจ้งเตือนล็อกหน้าจอ</span>
-                        </button>
-                        <span class="geofence-status-text" id="geofenceStatusText">พร้อมเตือนทุกสถานี</span>
-                    </div>
-                </div>
-            </div>
 
             <!-- Quick Trip Planner Banner / Link to Tab 3 -->
             <div class="card" style="padding:13px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;background:linear-gradient(135deg,rgba(2,132,199,0.08),rgba(16,185,129,0.08));border:1px solid rgba(2,132,199,0.22);margin-bottom:12px;" onclick="App.switchView('planner')">
@@ -3269,7 +3310,7 @@
             <section class="card" id="nearestExitCard" style="margin-bottom:14px;">
                 <div class="card-head">
                     <div class="card-title">📍 <span id="nearestExitTitle">ทางออกใกล้คุณที่สุด</span></div>
-                    <button class="btn btn-ghost" id="exitRelocateBtn" onclick="App.locateExitGps(true)">🧭 หาใหม่</button>
+                    <button class="btn btn-ghost" id="exitRelocateBtn" onclick="App.locateExitGps(true)">🧭 หาตำแหน่งปัจจุบัน</button>
                 </div>
                 <div class="nearest-body" id="nearestExitBody">
                     <button class="btn btn-big" onclick="App.locateExitGps(true)">📍 ระบุทางออกที่คุณยืนอยู่ด้วย GPS</button>
@@ -3310,9 +3351,14 @@
             <div class="exit-list" id="exitListContainer"></div>
         </div>
 
-        <!-- ===== VIEW 5: FARES & TIMETABLES (โครงสร้างราคา & เวลาเดินรถ) ===== -->
+        <!-- ===== VIEW 5: FARES (อัตราค่าโดยสารตามสาย) ===== -->
         <div id="viewFares" class="app-view">
             <div id="faresViewContent"></div>
+        </div>
+
+        <!-- ===== VIEW 6: TIMETABLES (เวลาเดินรถ & ความถี่ตามสาย) ===== -->
+        <div id="viewTimetables" class="app-view">
+            <div id="timetablesViewContent"></div>
         </div>
 
         <footer id="footerNote">
@@ -3357,13 +3403,6 @@
                     <div style="font-size:11px;color:var(--muted);font-weight:normal" id="sheetLiveSub">เวลานับถอยหลังจริงจากชานชาลา</div>
                 </div>
             </button>
-            <button class="sheet-btn" onclick="App.setDefaultStationFromActionSheet()">
-                <span class="btn-icon">⭐</span>
-                <div>
-                    <div id="sheetDefaultTitle">ตั้งเป็นสถานีตั้งต้น (Set Default Station)</div>
-                    <div style="font-size:11px;color:var(--muted);font-weight:normal" id="sheetDefaultSub">ใช้เป็นสถานีเริ่มต้นเมื่อเปิดแอปหรืออยู่นอกพื้นที่</div>
-                </div>
-            </button>
         </div>
     </div>
 
@@ -3397,16 +3436,7 @@
             </span>
             <span class="nav-lbl" id="navLblPlanner">วางแผน</span>
         </button>
-        <button class="nav-tab" id="tab-exits" onclick="App.switchView('exits')" aria-label="ทางออก">
-            <span class="nav-icon">
-                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                    <polyline points="16 17 21 12 16 7"/>
-                    <line x1="21" y1="12" x2="9" y2="12"/>
-                </svg>
-            </span>
-            <span class="nav-lbl" id="navLblExits">ทางออก</span>
-        </button>
+
         <button class="nav-tab" id="tab-fares" onclick="App.switchView('fares')" aria-label="ค่าโดยสาร">
             <span class="nav-icon">
                 <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -3417,6 +3447,15 @@
                 </svg>
             </span>
             <span class="nav-lbl" id="navLblFares">ค่าโดยสาร</span>
+        </button>
+        <button class="nav-tab" id="tab-timetables" onclick="App.switchView('timetables')" aria-label="เวลาเดินรถ">
+            <span class="nav-icon">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                </svg>
+            </span>
+            <span class="nav-lbl" id="navLblTimetables">เวลาเดินรถ</span>
         </button>
     </nav>
 
@@ -3441,7 +3480,7 @@
                         <div class="en" id="nearestPopupNameEN" style="font-size:12px;color:var(--muted)">Asok</div>
                     </div>
                     <div class="dist-chip" id="nearestPopupDistanceChip" style="margin-left:auto;flex-shrink:0;">
-                        <div class="v" id="nearestPopupDistance">~120 ม.</div>
+                        <div class="v" id="nearestPopupDistance">--</div>
                         <div class="l" id="nearestPopupDistLbl">จากตำแหน่งคุณ</div>
                     </div>
                 </div>

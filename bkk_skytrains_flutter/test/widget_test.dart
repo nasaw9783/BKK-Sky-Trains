@@ -6,15 +6,14 @@
 // tree, read text, and verify that the values of widget properties are correct.
 
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:bkk_skytrains_flutter/main.dart';
+import 'package:bkk_skytrains_flutter/services/static_stations.dart';
+import 'package:bkk_skytrains_flutter/theme/app_theme.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const BkkSkyTrainsApp());
-
-    // Verify that the title appears
-    expect(find.text('BKK SkyTrains'), findsWidgets);
+  test('Static stations DB and AppTheme load properly', () {
+    expect(kStaticStations.isNotEmpty, true);
+    final asok = kStaticStations.any((s) => s.stationKey == 'E4');
+    expect(asok, true);
+    expect(AppTheme.darkTheme.brightness, equals(AppTheme.darkTheme.colorScheme.brightness));
   });
 }

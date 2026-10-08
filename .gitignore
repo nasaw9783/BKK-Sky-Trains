@@ -5,6 +5,7 @@
 **/.flutter-plugins-dependencies
 **/.pub-cache/
 **/.pub/
+**/.kotlin/
 
 # IDE files
 .idea/
@@ -16,9 +17,16 @@
 # OS files
 .DS_Store
 Thumbs.db
+Desktop.ini
 
 # Log files
 *.log
+
+# Gradle build cache
+**/.gradle/
+
+# Gemini / Antigravity AI temp
+.gemini/
 
 # Release packages / binaries
 releases/*.apk

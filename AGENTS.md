@@ -12,12 +12,14 @@ Directives and mandatory standards for AI Agents working within `C:\Users\Admini
    - `sw.js`: Service worker for offline caching and PWA support.
    - `manifest.json`: Web App Manifest for mobile installation.
    - `icon-192.png`, `icon-512.png`, `icon.svg`, `favicon.*`, `apple-touch-icon.png`: Application branding and icons.
+   - `robots.txt`, `sitemap.xml`: Web SEO metadata.
    - `Start-BKK-Transit.ps1`: Local development server and reverse-proxy runner (UTF-8 with BOM).
 
 2. **Mobile App (Flutter Multi-platform in `bkk_skytrains_flutter/`)**:
    - `android/`: Android native project configuration, launcher icons, manifest, and Gradle build files.
    - `ios/`: iOS native project configuration, AppIcon.appiconset, LaunchScreen storyboard, and Info.plist.
-   - `lib/`: Flutter Dart codebase (`bkk_web_view_screen.dart`, theme, services).
+   - `lib/`: Flutter Dart codebase (`bkk_web_view_screen.dart`, theme, services, screens, models).
+   - `test/`: Flutter widget test suite.
    - `assets/www/`: Embedded offline web assets (automatically synchronized with root web files).
    - Targeted platforms: **Android & iOS only**. Do not introduce unused desktop boilerplate (Linux/Windows/macOS).
 
@@ -33,16 +35,26 @@ Directives and mandatory standards for AI Agents working within `C:\Users\Admini
 
 1. **Dual-Asset Synchronization (ซิงค์ไฟล์อัตโนมัติ)**:
    - หากมีการแก้ไข `index.html` หรือ `js/app.js` ที่โฟลเดอร์ Root ให้คัดลอกและซิงค์ไปยัง `bkk_skytrains_flutter/assets/www/` ให้ตรงกัน 100% เสมอ
+   - โค้ดของทั้งสองจุดต้องเหมือนกัน เพื่อให้ทั้งเว็บ PWA และแอปมือถือแสดงผลและทำงานได้เหมือนกันทุกประการ
 
 2. **Code Validation (ตรวจสอบความถูกต้อง)**:
    - สำหรับ JavaScript: รัน `node --check js/app.js` ทุกครั้งหลังแก้ไข
-   - สำหรับ Flutter/Dart: รัน `flutter analyze` เพื่อให้มั่นใจว่าไม่มี Error หรือ Warning
-   - สำหรับ PowerShell: บันทึกไฟล์ `.ps1` ทุกไฟล์ด้วยรูปแบบ **UTF-8 with BOM**
+   - สำหรับ Flutter/Dart: รัน `flutter analyze` เพื่อให้มั่นใจว่าไม่มี Error หรือ Warning (0 issues)
+   - สำหรับ PowerShell: บันทึกไฟล์ `.ps1` ทุกไฟล์ด้วยรูปแบบ **UTF-8 with BOM** เสมอ
 
-3. **File Hygiene & Cleanliness (ความสะอาดและการจัดระเบียบ)**:
-   - ห้ามทิ้งไฟล์ขยะ เช่น `.tmp`, `.bak`, `.old`, หรือไฟล์ทดสอบที่ไม่ได้ใช้งานไว้ใน Workspace
+3. **Zero-Waste Pruning & Workspace Cleanliness (ลบไฟล์ที่ไม่สำคัญทิ้งทันที)**:
+   - **ถ้าไฟล์ไหนไม่สำคัญต่อระบบ และไม่ทำลายระบบให้เสียหาย ให้ลบทิ้งได้ทันที** หลังแก้ไขหรือทดสอบไฟล์ทุกครั้ง:
+     - แคช Intermediate build: `build/`, `.dart_tool/` (รัน `flutter clean` เสมอเมื่อทดสอบเสร็จ)
+     - แคช Android & Compiler: `android/.gradle/`, `android/.kotlin/`
+     - แคช IDE & OS: `.idea/`, `*.iml`, `Thumbs.db`, `Desktop.ini`, `.DS_Store`
+     - ไฟล์ขยะชั่วคราว: `.tmp`, `.bak`, `.old`, `.log`, `.swp`, `*~`
+     - ไฟล์ assets ซ้ำซ้อนหรือไม่จำเป็น ที่ไม่ได้ถูกอ้างอิงในระบบ
    - จัดระเบียบไฟล์เอกสาร (`.md`) และสคริปต์ (`.ps1`) ให้อยู่เฉพาะในขอบเขต Workspace นี้เท่านั้น
-   - หลีกเลี่ยงการสะสมแคชชั่วคราวที่ไม่จำเป็น เช่น แคช intermediate build ขนาดยักษ์ (หากต้องการบิลด์ ให้เก็บเฉพาะไฟล์ผลลัพธ์ `.apk`/`.ipa` ไว้ในโฟลเดอร์ `releases/`)
+   - ไฟล์ตัวติดตั้งที่เสร็จสมบูรณ์ให้จัดเก็บไว้ในโฟลเดอร์ `releases/` เท่านั้น
 
 4. **Strict Isolation Rule (ข้อห้ามเด็ดขาด)**:
    - ห้ามกระทำการใดๆ ข้าม Workspace หรือแตะต้อง `D:\Exclusions\Programs` และ `C:\Users\Administrator\Downloads\Programs` โดยเด็ดขาด
+
+5. **Project Train Icon Standard (มาตรฐานสัญลักษณ์รูปรถไฟประจำสายสี)**:
+   - สัญลักษณ์ระบุสายสี/ไลน์ของรถไฟฟ้าทั้งหมดในโปรเจกต์นี้ จะต้องใช้ไอคอนรูปรถไฟเฉพาะตามสายสีจากฟังก์ชัน `getLineIconSvg(lineId)` เสมอ (ห้ามใช้จุดกลม ● หรือไอคอนรถไฟทั่วไปที่ไม่ตรงกับสาย)
+

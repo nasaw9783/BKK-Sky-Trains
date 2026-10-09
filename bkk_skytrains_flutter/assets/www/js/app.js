@@ -515,13 +515,30 @@ Xud2jDkJg+22IHgOZyuQ85VNSnvBWm6PM0LXL1GiMHdBbqqUryyUImkSmB7q6YKC
 gQIDAQAB
 -----END PUBLIC KEY-----`;
 
+        /* ================= LINE BRAND COLORS & VEHICLE ICONS ================= */
+        const LINE_BRAND_COLORS = {
+            1: '#7AB420',    // Sukhumvit (Green)
+            2: '#00807D',    // Silom (Teal)
+            3: '#C9A038',    // Gold (APM)
+            4: '#FFD100',    // Yellow (Monorail)
+            5: '#EC4899',    // Pink (Monorail)
+            101: '#0284C7',  // Blue (MRT Subway)
+            102: '#8A2C9B',  // Purple (MRT Elevated)
+            103: '#B91C1C',  // Dark Red (SRT Commuter - Dark Red / ธานีรัถยา)
+            105: '#F87171',  // Light Red (SRT Commuter - Light Red / นครวิถี)
+            104: '#8A1538',  // ARL (Airport Express)
+            0: '#64748B'     // All lines
+        };
+
+
+
         /* ================= I18N (สลับภาษาได้ทั้งเว็บ — แสดงทีละภาษาเพื่อประหยัดพื้นที่) ================= */
         let lang = localStorage.getItem('bts_lang') || 'th';
 
         const I18N = {
             th: {
                 appName: 'BKK SKYTRAINs',
-                sub: 'สถานะรถไฟฟ้า BTS ณ ขณะนี้',
+                sub: 'สถานะรถไฟฟ้า BTS / MRT / SRT / ARL ณ ขณะนี้',
                 affiliation: 'ไม่เกี่ยวข้องกับทาง BTS/MRT/SRT/ARL',
                 nearestTitle: 'สถานีใกล้คุณที่สุด',
                 nearestExitTitle: 'ทางออกใกล้คุณที่สุด',
@@ -566,10 +583,98 @@ gQIDAQAB
                 geoDenied: 'ไม่ได้รับอนุญาตให้ใช้ตำแหน่ง — เปิดสิทธิ์ Location ให้เว็บนี้แล้วลองใหม่',
                 geoFail: 'หาตำแหน่งไม่สำเร็จ ลองใหม่อีกครั้ง',
                 connectFail: s => `เชื่อมต่อไม่สำเร็จ (HTTP ${s})`,
-                footer: 'ข้อมูลเรียลไทม์จากระบบ BTS (EBM) · รีเฟรชอัตโนมัติทุก 20 วินาที<br>Unofficial app — เวลาโดยประมาณ โปรดเผื่อเวลาเดินทาง',
+                footer: `<div class="footer-systems-title">🚆 โครงข่ายระบบรถไฟฟ้า 10 สายที่เชื่อมต่อข้อมูลในระบบ</div>
+<div class="footer-systems-grid">
+    <button type="button" class="footer-line-card" onclick="App.jumpToLine(1)" title="BTS สายสุขุมวิท (คูคต ↔ เคหะฯ)" aria-label="BTS สายสุขุมวิท">
+        <div class="footer-card-icon" style="background:rgba(122,180,32,0.12);border-color:rgba(122,180,32,0.3)">${getLineIconSvg(1, false, 20)}</div>
+        <div class="footer-card-info">
+            <div class="footer-card-name">BTS สายสุขุมวิท</div>
+            <div class="footer-card-route">คูคต ↔ เคหะฯ</div>
+        </div>
+        <div class="footer-card-arrow">›</div>
+    </button>
+    <button type="button" class="footer-line-card" onclick="App.jumpToLine(2)" title="BTS สายสีลม (สนามกีฬาฯ ↔ บางหว้า)" aria-label="BTS สายสีลม">
+        <div class="footer-card-icon" style="background:rgba(0,128,125,0.12);border-color:rgba(0,128,125,0.3)">${getLineIconSvg(2, false, 20)}</div>
+        <div class="footer-card-info">
+            <div class="footer-card-name">BTS สายสีลม</div>
+            <div class="footer-card-route">สนามกีฬาฯ ↔ บางหว้า</div>
+        </div>
+        <div class="footer-card-arrow">›</div>
+    </button>
+    <button type="button" class="footer-line-card" onclick="App.jumpToLine(3)" title="สายสีทอง APM (กรุงธนบุรี ↔ คลองสาน)" aria-label="สายสีทอง">
+        <div class="footer-card-icon" style="background:rgba(201,160,56,0.12);border-color:rgba(201,160,56,0.3)">${getLineIconSvg(3, false, 20)}</div>
+        <div class="footer-card-info">
+            <div class="footer-card-name">สายสีทอง (APM)</div>
+            <div class="footer-card-route">กรุงธนบุรี ↔ คลองสาน</div>
+        </div>
+        <div class="footer-card-arrow">›</div>
+    </button>
+    <button type="button" class="footer-line-card" onclick="App.jumpToLine(101)" title="MRT สายสีน้ำเงิน (ท่าพระ ↔ หลักสอง)" aria-label="MRT สายสีน้ำเงิน">
+        <div class="footer-card-icon" style="background:rgba(2,132,199,0.12);border-color:rgba(2,132,199,0.3)">${getLineIconSvg(101, false, 20)}</div>
+        <div class="footer-card-info">
+            <div class="footer-card-name">MRT สายสีน้ำเงิน</div>
+            <div class="footer-card-route">ท่าพระ ↔ หลักสอง</div>
+        </div>
+        <div class="footer-card-arrow">›</div>
+    </button>
+    <button type="button" class="footer-line-card" onclick="App.jumpToLine(102)" title="MRT สายสีม่วง (คลองบางไผ่ ↔ เตาปูน)" aria-label="MRT สายสีม่วง">
+        <div class="footer-card-icon" style="background:rgba(138,44,155,0.12);border-color:rgba(138,44,155,0.3)">${getLineIconSvg(102, false, 20)}</div>
+        <div class="footer-card-info">
+            <div class="footer-card-name">MRT สายสีม่วง</div>
+            <div class="footer-card-route">คลองบางไผ่ ↔ เตาปูน</div>
+        </div>
+        <div class="footer-card-arrow">›</div>
+    </button>
+    <button type="button" class="footer-line-card" onclick="App.jumpToLine(4)" title="MRT สายสีเหลือง (ลาดพร้าว ↔ สำโรง)" aria-label="MRT สายสีเหลือง">
+        <div class="footer-card-icon" style="background:rgba(255,209,0,0.15);border-color:rgba(255,209,0,0.35)">${getLineIconSvg(4, false, 20)}</div>
+        <div class="footer-card-info">
+            <div class="footer-card-name">MRT สายสีเหลือง</div>
+            <div class="footer-card-route">ลาดพร้าว ↔ สำโรง</div>
+        </div>
+        <div class="footer-card-arrow">›</div>
+    </button>
+    <button type="button" class="footer-line-card" onclick="App.jumpToLine(5)" title="MRT สายสีชมพู (ศูนย์ราชการฯ ↔ มีนบุรี)" aria-label="MRT สายสีชมพู">
+        <div class="footer-card-icon" style="background:rgba(236,72,153,0.12);border-color:rgba(236,72,153,0.3)">${getLineIconSvg(5, false, 20)}</div>
+        <div class="footer-card-info">
+            <div class="footer-card-name">MRT สายสีชมพู</div>
+            <div class="footer-card-route">ศูนย์ราชการฯ ↔ มีนบุรี</div>
+        </div>
+        <div class="footer-card-arrow">›</div>
+    </button>
+    <button type="button" class="footer-line-card" onclick="App.jumpToLine(103)" title="SRT สายสีแดงเข้ม (กรุงเทพอภิวัฒน์ ↔ รังสิต)" aria-label="SRT สายสีแดงเข้ม">
+        <div class="footer-card-icon" style="background:rgba(185,28,28,0.12);border-color:rgba(185,28,28,0.3)">${getLineIconSvg(103, false, 20)}</div>
+        <div class="footer-card-info">
+            <div class="footer-card-name">SRT สายสีแดงเข้ม</div>
+            <div class="footer-card-route">กรุงเทพอภิวัฒน์ ↔ รังสิต</div>
+        </div>
+        <div class="footer-card-arrow">›</div>
+    </button>
+    <button type="button" class="footer-line-card" onclick="App.jumpToLine(105)" title="SRT สายสีแดงอ่อน (กรุงเทพอภิวัฒน์ ↔ ตลิ่งชัน)" aria-label="SRT สายสีแดงอ่อน">
+        <div class="footer-card-icon" style="background:rgba(248,113,113,0.15);border-color:rgba(248,113,113,0.35)">${getLineIconSvg(105, false, 20)}</div>
+        <div class="footer-card-info">
+            <div class="footer-card-name">SRT สายสีแดงอ่อน</div>
+            <div class="footer-card-route">กรุงเทพอภิวัฒน์ ↔ ตลิ่งชัน</div>
+        </div>
+        <div class="footer-card-arrow">›</div>
+    </button>
+    <button type="button" class="footer-line-card" onclick="App.jumpToLine(104)" title="ARL แอร์พอร์ต ลิงก์ (พญาไท ↔ สุวรรณภูมิ)" aria-label="ARL แอร์พอร์ต ลิงก์">
+        <div class="footer-card-icon" style="background:rgba(138,21,56,0.12);border-color:rgba(138,21,56,0.3)">${getLineIconSvg(104, false, 20)}</div>
+        <div class="footer-card-info">
+            <div class="footer-card-name">ARL แอร์พอร์ตลิงก์</div>
+            <div class="footer-card-route">พญาไท ↔ สุวรรณภูมิ</div>
+        </div>
+        <div class="footer-card-arrow">›</div>
+    </button>
+</div>
+<div class="footer-refresh-note">
+    🔄 ข้อมูลเรียลไทม์ · รีเฟรชอัตโนมัติทุก 20 วินาที · ครอบคลุมทั้ง 10 สายทั่วกรุงเทพฯ และปริมณฑล
+</div>
+<div class="footer-disclaimer-note">
+    Unofficial app — พัฒนาเพื่ออำนวยความสะดวกในการเดินทาง ข้อมูลเวลาขบวนรถเป็นไปตามมาตรฐานการเดินรถ โปรดเผื่อเวลาเดินทาง
+</div>`,
                 langBtn: 'EN',
                 clockLocale: 'th-TH',
-                lines: { 1: 'สุขุมวิท', 2: 'สีลม', 3: 'สีทอง', 4: 'สีเหลือง', 5: 'สีชมพู', 101: 'สีน้ำเงิน', 102: 'สีม่วง', 103: 'สีแดง', 104: 'แอร์พอร์ต ลิงก์' },
+                lines: { 1: 'สุขุมวิท', 2: 'สีลม', 3: 'สีทอง', 4: 'สีเหลือง', 5: 'สีชมพู', 101: 'สีน้ำเงิน', 102: 'สีม่วง', 103: 'สีแดงเข้ม', 105: 'สีแดงอ่อน', 104: 'แอร์พอร์ต ลิงก์' },
                 timetableBadge: 'ตามตารางเวลา',
                 timetableSchedule: 'ดูตารางความถี่การเดินรถทางการ',
                 mrtFreqTitle: 'ความถี่ขบวนรถ',
@@ -605,6 +710,9 @@ gQIDAQAB
                 jSrtRedFare: 'ค่าโดยสาร SRT สายสีแดง',
                 jArlFare: 'ค่าโดยสาร ARL',
                 jMap: 'ดูแผนที่เส้นทาง',
+                jSameStation: 'สถานีเดียวกัน',
+                jAlreadyAtStation: 'อยู่ที่สถานีปลายทางแล้ว',
+                jSameStationDesc: 'สถานีต้นทางและปลายทางเป็นสถานีเดียวกัน ไม่ต้องเดินทางข้ามสถานี และไม่มีค่าโดยสาร',
                 jFail: 'ค้นหาเส้นทางไม่สำเร็จ ลองใหม่อีกครั้ง',
                 jSearching: 'กำลังค้นหาเส้นทาง…',
                 homeJourneyTitle: 'วางแผนการเดินทาง & เช็คค่าโดยสาร',
@@ -645,7 +753,7 @@ gQIDAQAB
             },
             en: {
                 appName: 'BKK SKYTRAINs',
-                sub: 'Real-time BTS trains status',
+                sub: 'Real-time BTS / MRT / SRT / ARL trains status',
                 affiliation: 'Not affiliated with BTS/MRT/SRT/ARL.',
                 nearestTitle: 'Nearest station',
                 nearestExitTitle: 'Nearest Exit to You',
@@ -690,10 +798,98 @@ gQIDAQAB
                 geoDenied: 'Location permission denied — allow Location for this site and retry',
                 geoFail: 'Could not get your location, please retry',
                 connectFail: s => `Connection failed (HTTP ${s})`,
-                footer: 'Real-time data from the BTS (EBM) system · Auto-refresh every 20 s<br>Unofficial app — times are estimates, please allow extra travel time',
+                footer: `<div class="footer-systems-title">🚆 Connected Transit Network (All 10 Lines)</div>
+<div class="footer-systems-grid">
+    <button type="button" class="footer-line-card" onclick="App.jumpToLine(1)" title="BTS Sukhumvit Line (Khu Khot ↔ Kheha)" aria-label="BTS Sukhumvit Line">
+        <div class="footer-card-icon" style="background:rgba(122,180,32,0.12);border-color:rgba(122,180,32,0.3)">${getLineIconSvg(1, false, 20)}</div>
+        <div class="footer-card-info">
+            <div class="footer-card-name">BTS Sukhumvit</div>
+            <div class="footer-card-route">Khu Khot ↔ Kheha</div>
+        </div>
+        <div class="footer-card-arrow">›</div>
+    </button>
+    <button type="button" class="footer-line-card" onclick="App.jumpToLine(2)" title="BTS Silom Line (National Stadium ↔ Bang Wa)" aria-label="BTS Silom Line">
+        <div class="footer-card-icon" style="background:rgba(0,128,125,0.12);border-color:rgba(0,128,125,0.3)">${getLineIconSvg(2, false, 20)}</div>
+        <div class="footer-card-info">
+            <div class="footer-card-name">BTS Silom</div>
+            <div class="footer-card-route">National Stadium ↔ Bang Wa</div>
+        </div>
+        <div class="footer-card-arrow">›</div>
+    </button>
+    <button type="button" class="footer-line-card" onclick="App.jumpToLine(3)" title="Gold Line APM (Krung Thon Buri ↔ Khlong San)" aria-label="Gold Line APM">
+        <div class="footer-card-icon" style="background:rgba(201,160,56,0.12);border-color:rgba(201,160,56,0.3)">${getLineIconSvg(3, false, 20)}</div>
+        <div class="footer-card-info">
+            <div class="footer-card-name">Gold Line (APM)</div>
+            <div class="footer-card-route">Krung Thon Buri ↔ Khlong San</div>
+        </div>
+        <div class="footer-card-arrow">›</div>
+    </button>
+    <button type="button" class="footer-line-card" onclick="App.jumpToLine(101)" title="MRT Blue Line (Tha Phra ↔ Lak Song)" aria-label="MRT Blue Line">
+        <div class="footer-card-icon" style="background:rgba(2,132,199,0.12);border-color:rgba(2,132,199,0.3)">${getLineIconSvg(101, false, 20)}</div>
+        <div class="footer-card-info">
+            <div class="footer-card-name">MRT Blue Line</div>
+            <div class="footer-card-route">Tha Phra ↔ Lak Song</div>
+        </div>
+        <div class="footer-card-arrow">›</div>
+    </button>
+    <button type="button" class="footer-line-card" onclick="App.jumpToLine(102)" title="MRT Purple Line (Khlong Bang Phai ↔ Tao Poon)" aria-label="MRT Purple Line">
+        <div class="footer-card-icon" style="background:rgba(138,44,155,0.12);border-color:rgba(138,44,155,0.3)">${getLineIconSvg(102, false, 20)}</div>
+        <div class="footer-card-info">
+            <div class="footer-card-name">MRT Purple Line</div>
+            <div class="footer-card-route">Khlong Bang Phai ↔ Tao Poon</div>
+        </div>
+        <div class="footer-card-arrow">›</div>
+    </button>
+    <button type="button" class="footer-line-card" onclick="App.jumpToLine(4)" title="MRT Yellow Line (Lat Phrao ↔ Samrong)" aria-label="MRT Yellow Line">
+        <div class="footer-card-icon" style="background:rgba(255,209,0,0.15);border-color:rgba(255,209,0,0.35)">${getLineIconSvg(4, false, 20)}</div>
+        <div class="footer-card-info">
+            <div class="footer-card-name">MRT Yellow Line</div>
+            <div class="footer-card-route">Lat Phrao ↔ Samrong</div>
+        </div>
+        <div class="footer-card-arrow">›</div>
+    </button>
+    <button type="button" class="footer-line-card" onclick="App.jumpToLine(5)" title="MRT Pink Line (Nonthaburi Civic Center ↔ Min Buri)" aria-label="MRT Pink Line">
+        <div class="footer-card-icon" style="background:rgba(236,72,153,0.12);border-color:rgba(236,72,153,0.3)">${getLineIconSvg(5, false, 20)}</div>
+        <div class="footer-card-info">
+            <div class="footer-card-name">MRT Pink Line</div>
+            <div class="footer-card-route">Nonthaburi CC ↔ Min Buri</div>
+        </div>
+        <div class="footer-card-arrow">›</div>
+    </button>
+    <button type="button" class="footer-line-card" onclick="App.jumpToLine(103)" title="SRT Dark Red Line (Krung Thep Aphiwat ↔ Rangsit)" aria-label="SRT Dark Red Line">
+        <div class="footer-card-icon" style="background:rgba(185,28,28,0.12);border-color:rgba(185,28,28,0.3)">${getLineIconSvg(103, false, 20)}</div>
+        <div class="footer-card-info">
+            <div class="footer-card-name">SRT Dark Red</div>
+            <div class="footer-card-route">Krung Thep Aphiwat ↔ Rangsit</div>
+        </div>
+        <div class="footer-card-arrow">›</div>
+    </button>
+    <button type="button" class="footer-line-card" onclick="App.jumpToLine(105)" title="SRT Light Red Line (Krung Thep Aphiwat ↔ Taling Chan)" aria-label="SRT Light Red Line">
+        <div class="footer-card-icon" style="background:rgba(248,113,113,0.15);border-color:rgba(248,113,113,0.35)">${getLineIconSvg(105, false, 20)}</div>
+        <div class="footer-card-info">
+            <div class="footer-card-name">SRT Light Red</div>
+            <div class="footer-card-route">Aphiwat ↔ Taling Chan</div>
+        </div>
+        <div class="footer-card-arrow">›</div>
+    </button>
+    <button type="button" class="footer-line-card" onclick="App.jumpToLine(104)" title="ARL Airport Rail Link (Phaya Thai ↔ Suvarnabhumi)" aria-label="ARL Airport Rail Link">
+        <div class="footer-card-icon" style="background:rgba(138,21,56,0.12);border-color:rgba(138,21,56,0.3)">${getLineIconSvg(104, false, 20)}</div>
+        <div class="footer-card-info">
+            <div class="footer-card-name">Airport Rail Link</div>
+            <div class="footer-card-route">Phaya Thai ↔ Suvarnabhumi</div>
+        </div>
+        <div class="footer-card-arrow">›</div>
+    </button>
+</div>
+<div class="footer-refresh-note">
+    🔄 Real-time data · Auto-refresh every 20 seconds · Covering all 10 transit lines across BKK & Vicinity
+</div>
+<div class="footer-disclaimer-note">
+    Unofficial app — Built for daily commuters. Timetables & arrival estimates follow official headway schedules. Please allow extra travel time.
+</div>`,
                 langBtn: 'ไทย',
                 clockLocale: 'en-GB',
-                lines: { 1: 'Sukhumvit', 2: 'Silom', 3: 'Gold', 4: 'Yellow', 5: 'Pink', 101: 'Blue', 102: 'Purple', 103: 'Red', 104: 'Airport Link' },
+                lines: { 1: 'Sukhumvit', 2: 'Silom', 3: 'Gold', 4: 'Yellow', 5: 'Pink', 101: 'Blue', 102: 'Purple', 103: 'Dark Red', 105: 'Light Red', 104: 'Airport Link' },
                 timetableBadge: 'Timetable',
                 timetableSchedule: 'View Official Frequency Schedule',
                 mrtFreqTitle: 'Train frequency',
@@ -729,6 +925,9 @@ gQIDAQAB
                 jSrtRedFare: 'SRT Red Line fare',
                 jArlFare: 'ARL fare',
                 jMap: 'View route map',
+                jSameStation: 'Same Station',
+                jAlreadyAtStation: 'Already at destination',
+                jSameStationDesc: 'Origin and destination are the same station. No transit or ticket required.',
                 jFail: 'Could not find a route, please retry',
                 jSearching: 'Finding routes…',
                 homeJourneyTitle: 'Journey Planner & Fare Guide',
@@ -1335,6 +1534,9 @@ gQIDAQAB
         }
 
         async function buildHybridJourney(originKey, destKey) {
+            if (originKey && destKey && originKey === destKey) {
+                return await buildSameStationJourney(originKey);
+            }
             // 1. ค้นหาแบบเร็วที่สุด (time)
             const pathTime = shortestJourneyPath(originKey, destKey, 'time');
             if (!pathTime) throw new Error(T('jFail'));
@@ -1405,6 +1607,97 @@ gQIDAQAB
 
             return {
                 RoutesMap: routes
+            };
+        }
+
+        async function getSameStationFare(stationKey) {
+            const st = App.findStation(stationKey);
+            if (!st) return { fare: 0, lineName: '' };
+            const entries = App.keyLines[st.StationKey] || [];
+            const lineId = st.StationLineId || entries[0]?.lineId || 1;
+            const line = App.lineById[lineId] || MRT_LINE_BY_ID[lineId];
+            const lineName = line ? (lang === 'en' ? (line.LineNameEN || line.LineName) : (line.LineNameTH || line.LineName)) : '';
+
+            // 1. MRT Lines
+            if (lineId === MRT_LINE_IDS.BLUE) {
+                return { fare: mrtBlueFare(1), lineName };
+            }
+            if (lineId === MRT_LINE_IDS.PURPLE) {
+                return { fare: mrtPurpleFare(1), lineName };
+            }
+            if (lineId === MRT_LINE_IDS.RED) {
+                return { fare: 12, lineName };
+            }
+            if (lineId === MRT_LINE_IDS.ARL) {
+                return { fare: 15, lineName };
+            }
+            if (lineId === GOLD_LINE_ID) {
+                return { fare: 16, lineName };
+            }
+            if (lineId === 4) {
+                return { fare: 15, lineName }; // สายสีเหลือง เริ่มต้น 15 บาท
+            }
+            if (lineId === 5) {
+                return { fare: 15, lineName }; // สายสีชมพู เริ่มต้น 15 บาท
+            }
+
+            // 2. BTS Green Lines (Sukhumvit Line 1 / Silom Line 2)
+            const list = line?.StationList || [];
+            const idx = list.findIndex(s => s.StationKey === stationKey);
+            const neighbor = idx >= 0 ? (idx < list.length - 1 ? list[idx + 1] : (idx > 0 ? list[idx - 1] : null)) : null;
+            if (neighbor) {
+                try {
+                    const live = await liveSegmentFare(stationKey, neighbor.StationKey);
+                    if (live > 0) return { fare: live, lineName };
+                } catch (_) {}
+            }
+
+            // ส่วนต่อขยาย (คูคต N9-N24, เคหะฯ E15-E23, บางหว้า S9-S12) อัตรา 15 บาท, สายหลัก 17 บาท
+            const isExtension = /^(N9|N1[0-9]|N2[0-4]|E1[5-9]|E2[0-3]|S9|S1[0-2])$/.test(stationKey);
+            return { fare: isExtension ? 15 : 17, lineName };
+        }
+
+        async function buildSameStationJourney(stationKey) {
+            const st = App.findStation(stationKey);
+            if (!st) throw new Error(T('jFail'));
+            const thName = st.StationNameTH || stName(st);
+            const enName = st.StationNameEN || stName(st);
+            const title = `${thName}|${enName}`;
+            const entries = App.keyLines[st.StationKey] || [];
+            const primaryLineId = st.StationLineId || entries[0]?.lineId || 1;
+
+            const { fare: oneStationFare, lineName } = await getSameStationFare(stationKey);
+
+            return {
+                RoutesMap: [
+                    {
+                        Count_Station: 1,
+                        Count_InterChange: 0,
+                        TotalTime: 0,
+                        TotalKm: '0.0',
+                        FareRate_Total: oneStationFare,
+                        LabelTag: T('jSameStation'),
+                        RoutesJorney: [
+                            {
+                                StationCode: st.StationKey,
+                                Title: title,
+                                TimeRoute: lang === 'en' ? '0 min' : '0 นาที',
+                                LineId: primaryLineId
+                            }
+                        ],
+                        FareRateInfo: [{
+                            FareRate_List: [
+                                {
+                                    FareDetail: lang === 'en'
+                                        ? `Same-station fare (1-station rate · ${lineName || 'Current line'})`
+                                        : `ค่าโดยสารสถานีเดียวกัน (คิดอัตรา 1 สถานี · ${lineName || 'สายนี้'})`,
+                                    FareDetail_ENG: `Same-station fare (1-station rate · ${lineName || 'Current line'})`,
+                                    FarePrice: oneStationFare
+                                }
+                            ]
+                        }]
+                    }
+                ]
             };
         }
 
@@ -1660,10 +1953,10 @@ gQIDAQAB
                 terminusEN: 'Lat Phrao ↔ Samrong (23 Stations)',
                 minFare: 15,
                 maxFare: 45,
-                pricingModelTH: 'คำนวณตามระยะทาง (฿15 - ฿45)',
-                pricingModelEN: 'Distance-based tariff (฿15 - ฿45)',
-                ticketsTH: 'บัตร Rabbit, บัตร EMV Contactless, บัตรเที่ยวเดียว',
-                ticketsEN: 'Rabbit Card, EMV Contactless, Single Journey Ticket',
+                pricingModelTH: 'ตามระยะทาง (บุคคล ฿15-฿45 / ผู้สูงอายุ ฿8-฿23 / นักเรียนมีเหมา ฿20)',
+                pricingModelEN: 'By distance (Adult ฿15-฿45 / Senior ฿8-฿23 / Student Pass ฿20)',
+                ticketsTH: 'บัตร Rabbit, บัตร EMV Contactless, บัตรเที่ยวเดียว (ผู้สูงอายุลด 50%)',
+                ticketsEN: 'Rabbit Card, EMV Contactless, Single Journey (Senior 50% off)',
                 firstTrainTH: '06:00 น.',
                 firstTrainEN: '06:00',
                 lastTrainTH: '24:00 น.',
@@ -1686,10 +1979,10 @@ gQIDAQAB
                 terminusEN: 'Nonthaburi Civic Center ↔ Min Buri (30 Stations)',
                 minFare: 15,
                 maxFare: 45,
-                pricingModelTH: 'คำนวณตามระยะทาง (฿15 - ฿45)',
-                pricingModelEN: 'Distance-based tariff (฿15 - ฿45)',
-                ticketsTH: 'บัตร Rabbit, บัตร EMV Contactless, บัตรเที่ยวเดียว',
-                ticketsEN: 'Rabbit Card, EMV Contactless, Single Journey Ticket',
+                pricingModelTH: 'ตามระยะทาง (บุคคล ฿15-฿45 / ผู้สูงอายุ ฿8-฿23 / นักเรียนมีเหมา ฿20)',
+                pricingModelEN: 'By distance (Adult ฿15-฿45 / Senior ฿8-฿23 / Student Pass ฿20)',
+                ticketsTH: 'บัตร Rabbit, บัตร EMV Contactless, บัตรเที่ยวเดียว (ผู้สูงอายุลด 50%)',
+                ticketsEN: 'Rabbit Card, EMV Contactless, Single Journey (Senior 50% off)',
                 firstTrainTH: '06:00 น.',
                 firstTrainEN: '06:00',
                 lastTrainTH: '24:00 น.',
@@ -1828,10 +2121,10 @@ gQIDAQAB
         ];
 
         const MONORAIL_FARES = [
-            { stnTH: '1 สถานี', stnEN: '1 Station', price: '฿15 - ฿18' },
-            { stnTH: '2 - 4 สถานี', stnEN: '2 - 4 Stations', price: '฿21 - ฿28' },
-            { stnTH: '5 - 8 สถานี', stnEN: '5 - 8 Stations', price: '฿31 - ฿37' },
-            { stnTH: '9 สถานีขึ้นไป', stnEN: '9+ Stations', price: '฿40 - ฿45' }
+            { stnTH: '1 สถานี', stnEN: '1 Station', price: '฿15 - ฿18', adult: '15 - 18', student: '15 - 18', senior: '8 - 9' },
+            { stnTH: '2 - 4 สถานี', stnEN: '2 - 4 Stations', price: '฿21 - ฿28', adult: '21 - 28', student: '21 - 28', senior: '11 - 14' },
+            { stnTH: '5 - 8 สถานี', stnEN: '5 - 8 Stations', price: '฿31 - ฿37', adult: '31 - 37', student: '31 - 37', senior: '16 - 19' },
+            { stnTH: '9 สถานีขึ้นไป', stnEN: '9+ Stations', price: '฿40 - ฿45', adult: '40 - 45', student: '40 - 45', senior: '20 - 23' }
         ];
 
         const ARL_STATION_FARES = [
@@ -1889,33 +2182,141 @@ gQIDAQAB
             };
         }
 
-        function renderFrequencyTablesHtml(sched) {
+        function renderFrequencyTablesHtml(sched, activeLine, activeTab) {
             if (!sched || (!sched.weekday.length && !sched.weekend.length)) return '';
-            const tbl = rows => `<table class="mrt-freq-table">
-                <thead><tr><th>${lang === 'en' ? 'Time Window' : 'ช่วงเวลา'}</th><th>${lang === 'en' ? 'Frequency' : 'ความถี่'}</th></tr></thead>
-                <tbody>${rows.map(r => {
-                    const lbl = String(r.freqLabel || '').startsWith('~') ? r.freqLabel : `~${r.freqLabel}`;
-                    return `<tr class="${r.isCurrent ? 'now' : ''}">
-                        <td>${esc(r.timeStr)}</td><td>${esc(lbl)} ${T('minUnit').trim()}</td></tr>`;
-                }).join('')}</tbody>
-            </table>`;
+            const isEn = lang === 'en';
+            const we = isWeekend();
+            const line = activeLine || (App && App.timetablesActiveLine ? TRANSIT_LINES_CATALOG.find(l => l.id === App.timetablesActiveLine) : null) || { color: '#16a34a', id: 1 };
+            const lineColor = line.color || '#16a34a';
+            const curTab = activeTab || (App && App.freqTab) || (we ? 'weekend' : 'weekday');
+
+            const formatTimeCell = (r) => {
+                const parts = String(r.timeStr || '').split('–');
+                const t1 = parts[0] ? parts[0].trim() : '';
+                const t2 = parts[1] ? parts[1].trim() : '';
+                return `
+                    <div class="freq-time-cell">
+                        <span class="freq-time-range">
+                            <span>${esc(t1)}</span>
+                            ${t2 ? `<span style="color:var(--muted);margin:0 2px;">–</span><span>${esc(t2)}</span>` : ''}
+                        </span>
+                        ${r.isCurrent ? `
+                            <span class="freq-live-now-tag">
+                                <span class="freq-pulse-dot"></span>
+                                <span>${isEn ? 'NOW' : 'ขณะนี้'}</span>
+                            </span>
+                        ` : ''}
+                    </div>
+                `;
+            };
+
+            const formatFreqCell = (r) => {
+                const raw = String(r.freqLabel || '').trim();
+                // BTS Sukhumvit peak hours with dual segments (* and **)
+                if (raw.includes('*') && raw.includes('/')) {
+                    const splitted = raw.split('/').map(s => s.trim());
+                    const p1 = splitted[0].replace(/\*/g, '').trim();
+                    const p2 = splitted[1].replace(/\*/g, '').trim();
+                    return `
+                        <div class="freq-dual-box">
+                            <div class="freq-dual-row">
+                                <span class="freq-dual-tag core" style="background:${lineColor}22;color:${lineColor}">
+                                    ${isEn ? 'Core (Mo Chit–Samrong)' : 'สายหลัก (หมอชิต–สำโรง)'}
+                                </span>
+                                <b class="freq-dual-val">~${esc(p1)} ${isEn ? 'min' : 'นาที'}</b>
+                            </div>
+                            <div class="freq-dual-row">
+                                <span class="freq-dual-tag ext">
+                                    ${isEn ? 'Ext. (Khu Khot / Kheha)' : 'ส่วนต่อขยาย (คูคต/เคหะฯ)'}
+                                </span>
+                                <b class="freq-dual-val">~${esc(p2)} ${isEn ? 'min' : 'นาที'}</b>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                const clean = raw.replace(/^~/, '').trim();
+                return `
+                    <div class="freq-single-pill">
+                        <span class="freq-prefix">${isEn ? 'Every ~' : 'ทุก ~'}</span>
+                        <b style="font-size:13.5px;color:var(--ink);letter-spacing:-0.2px;">${esc(clean)}</b>
+                        <span class="freq-unit">${isEn ? 'min' : 'นาที'}</span>
+                    </div>
+                `;
+            };
+
+            const buildTable = (rows, title, isToday) => {
+                if (!rows || !rows.length) return '';
+                return `
+                    <div style="margin-bottom:12px;">
+                        <div class="mrt-freq-daytype">
+                            <span>${title}</span>
+                            ${isToday ? `<span class="freq-today-badge">🟢 ${isEn ? 'Today' : 'วันนี้'}</span>` : ''}
+                        </div>
+                        <div class="mrt-freq-table-container">
+                            <table class="mrt-freq-table">
+                                <thead>
+                                    <tr>
+                                        <th>🕒 ${isEn ? 'Service Hours' : 'ช่วงเวลาให้บริการ'}</th>
+                                        <th>⏱️ ${isEn ? 'Train Frequency' : 'ความถี่ขบวนรถ'}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${rows.map(r => `
+                                        <tr class="${r.isCurrent ? 'now' : ''}">
+                                            <td>${formatTimeCell(r)}</td>
+                                            <td>${formatFreqCell(r)}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `;
+            };
+
+            const weekdayTitle = `💼 ${isEn ? 'Monday – Friday (Weekday)' : 'วันจันทร์ – ศุกร์ (วันธรรมดา)'}`;
+            const weekendTitle = `🏖️ ${isEn ? 'Saturday – Sunday & Public Holidays' : 'วันเสาร์ – อาทิตย์ และวันหยุดนักขัตฤกษ์'}`;
+
+            let tablesContentHtml = '';
+            if (curTab === 'weekday') {
+                tablesContentHtml = buildTable(sched.weekday, weekdayTitle, !we);
+            } else if (curTab === 'weekend') {
+                tablesContentHtml = buildTable(sched.weekend, weekendTitle, we);
+            } else {
+                tablesContentHtml = `
+                    ${buildTable(sched.weekday, weekdayTitle, !we)}
+                    ${buildTable(sched.weekend, weekendTitle, we)}
+                `;
+            }
 
             return `
-                <div style="margin-top:10px">
-                    <div style="font-weight:700;font-size:13px;color:var(--ink);margin:0 0 8px;display:flex;align-items:center;gap:6px">
-                        <span>🗓️ ${lang === 'en' ? 'Monday - Friday (Weekday)' : 'วันจันทร์ – ศุกร์ (วันธรรมดา)'}</span>
-                        ${!isWeekend() ? '<span style="font-size:10px;background:#22c55e22;color:#16a34a;font-weight:800;padding:2px 6px;border-radius:6px">วันนี้ (Today)</span>' : ''}
-                    </div>
-                    ${tbl(sched.weekday)}
+                <!-- Day Type Segmented Tab Switcher -->
+                <div class="freq-tab-bar">
+                    <button type="button" class="freq-tab-btn ${curTab === 'weekday' ? 'active' : ''}" onclick="App.setFreqTab('weekday')">
+                        <span>💼 ${isEn ? 'Weekday' : 'วันธรรมดา (จ.-ศ.)'}</span>
+                        ${!we ? `<span class="freq-today-badge">${isEn ? 'Today' : 'วันนี้'}</span>` : ''}
+                    </button>
+                    <button type="button" class="freq-tab-btn ${curTab === 'weekend' ? 'active' : ''}" onclick="App.setFreqTab('weekend')">
+                        <span>🏖️ ${isEn ? 'Weekend' : 'วันหยุด (ส.-อา.)'}</span>
+                        ${we ? `<span class="freq-today-badge">${isEn ? 'Today' : 'วันนี้'}</span>` : ''}
+                    </button>
+                    <button type="button" class="freq-tab-btn ${curTab === 'all' ? 'active' : ''}" onclick="App.setFreqTab('all')">
+                        <span>📋 ${isEn ? 'Show Both' : 'แสดงทั้งหมด'}</span>
+                    </button>
                 </div>
-                <div style="margin-top:14px">
-                    <div style="font-weight:700;font-size:13px;color:var(--ink);margin:0 0 8px;display:flex;align-items:center;gap:6px">
-                        <span>🗓️ ${lang === 'en' ? 'Saturday - Sunday & Public Holidays' : 'วันเสาร์ – อาทิตย์ และวันหยุดนักขัตฤกษ์'}</span>
-                        ${isWeekend() ? '<span style="font-size:10px;background:#22c55e22;color:#16a34a;font-weight:800;padding:2px 6px;border-radius:6px">วันนี้ (Today)</span>' : ''}
+
+                ${tablesContentHtml}
+
+                ${sched.note ? `
+                    <div class="mrt-freq-note-card" style="border-left:3px solid ${lineColor};">
+                        <span class="note-icon">💡</span>
+                        <div>
+                            <b style="color:var(--ink);">${isEn ? 'Operating Note:' : 'หมายเหตุการเดินรถ:'}</b>
+                            <span style="color:var(--muted);margin-left:4px;">${esc(sched.note)}</span>
+                        </div>
                     </div>
-                    ${tbl(sched.weekend)}
-                </div>
-                ${sched.note ? `<div class="mrt-freq-note" style="margin-top:10px;text-align:left;">${esc(sched.note)}</div>` : ''}
+                ` : ''}
             `;
         }
 
@@ -1971,6 +2372,7 @@ gQIDAQAB
             mapZoom: 1.0,
             faresActiveLine: 0,
             timetablesActiveLine: 0,
+            freqTab: null,
 
             switchView(viewName) {
                 const validViews = ['home', 'map', 'planner', 'exits', 'fares', 'timetables'];
@@ -2016,6 +2418,11 @@ gQIDAQAB
 
             setTimetablesLine(lineId) {
                 this.timetablesActiveLine = Number(lineId) || 0;
+                this.renderTimetablesView();
+            },
+
+            setFreqTab(tab) {
+                this.freqTab = tab;
                 this.renderTimetablesView();
             },
 
@@ -2960,7 +3367,10 @@ gQIDAQAB
                                 </div>
                                 <div style="margin-bottom:10px">
                                     <b style="color:#f59e0b">🐇 บัตรแรบบิท (Rabbit Card)</b>:
-                                    ${isEn ? 'Accepted on BTS Sukhumvit, Silom, Gold lines, and MRT Yellow, Pink lines. Stored-value and 30-day passes available.' : 'บัตรแตะเดินทางยอดนิยม ใช้ได้กับ BTS สายสุขุมวิท, สายสีลม, สายสีทอง, MRT สายสีเหลือง และสายสีชมพู รองรับทั้งการเติมเงินและแพ็กเกจเที่ยวเดินทาง 30 วัน'}
+                                    ${isEn
+                                        ? 'Accepted on BTS Sukhumvit, Silom, Gold lines, and MRT Yellow, Pink lines. Stored-value and 30-day passes available.<br>• <b>Senior Card (Purple):</b> 50% discount for Thai seniors 60+.<br>• <b>Student Card (Green):</b> Eligible for discount trip pass packages (averaging ฿20/trip on Yellow/Pink lines) via Rabbit Rewards.'
+                                        : 'บัตรแตะเดินทางยอดนิยม ใช้ได้กับ BTS สายสุขุมวิท, สายสีลม, สายสีทอง, MRT สายสีเหลือง และสายสีชมพู รองรับทั้งการเติมเงินและแพ็กเกจเที่ยวเดินทาง 30 วัน<br>• <b>บัตรผู้สูงอายุ (สีม่วง):</b> ลด 50% สำหรับผู้สูงอายุ 60 ปีขึ้นไป<br>• <b>บัตรนักเรียน/นักศึกษา (สีเขียว):</b> อายุไม่เกิน 23 ปี รับสิทธิ์ซื้อแพ็กเกจเที่ยวเดินทางเหมาเที่ยวสุดคุ้ม (สายสีเหลือง/ชมพู เฉลี่ยเริ่มต้น ฿20/เที่ยว) ผ่าน Rabbit Rewards'
+                                    }
                                 </div>
                                 <div>
                                     <b style="color:var(--muted)">🪙 เหรียญ / ตั๋วเที่ยวเดียว (Single Journey Token & Card)</b>:
@@ -3046,25 +3456,72 @@ gQIDAQAB
                                         <thead>
                                             <tr>
                                                 <th style="white-space:nowrap;">${isEn ? 'Distance Traveled' : 'ระยะทาง / สถานีที่เดินทาง'}</th>
-                                                <th style="white-space:nowrap;">${isEn ? 'Fare Rate' : 'อัตราค่าโดยสาร'}</th>
+                                                <th style="white-space:nowrap;">${isEn ? 'Adult' : 'บุคคลทั่วไป'}</th>
+                                                <th style="white-space:nowrap;">${isEn ? 'Student' : 'นักเรียน/นักศึกษา'}</th>
+                                                <th style="white-space:nowrap;">${isEn ? 'Senior (-50%)' : 'ผู้สูงอายุ (-50%)'}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             ${MONORAIL_FARES.map(r => `
                                                 <tr>
                                                     <td style="white-space:nowrap;"><b>${esc(isEn ? r.stnEN : r.stnTH)}</b></td>
-                                                    <td style="white-space:nowrap;color:${activeLine.color}"><b>${r.price}</b></td>
+                                                    <td style="white-space:nowrap;color:${activeLine.color}"><b>฿${r.adult}</b></td>
+                                                    <td style="white-space:nowrap;">฿${r.student}</td>
+                                                    <td style="white-space:nowrap;color:#10b981;"><b>฿${r.senior}</b></td>
                                                 </tr>
                                             `).join('')}
                                         </tbody>
                                     </table>
                                 </div>
-                                <div style="font-size:12px;color:var(--muted);margin-top:8px;line-height:1.5;">
-                                    💡 <b>${isEn ? 'EMV Transfer Waiver:' : 'สิทธิประโยชน์การเปลี่ยนสาย (EMV):'}</b>
-                                    ${isEn
-                                        ? 'When transferring with connecting MRT or SRT lines via the same EMV Contactless card within 30 minutes, the second entry fee is waived automatically.'
-                                        : 'เมื่อเดินทางเปลี่ยนสายไปยังระบบรถไฟฟ้าที่เชื่อมต่อกัน (เช่น สายสีน้ำเงิน, สายสีม่วง, สายสีแดง, ARL) ด้วยบัตร EMV ใบเดิมภายใน 30 นาที จะได้รับยกเว้นค่าแรกเข้าของสายที่สองทันที'
-                                    }
+                                <div style="margin-top:12px;display:flex;flex-direction:column;gap:8px;">
+                                    <div style="background:rgba(255,255,255,0.03);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:12px;line-height:1.6;">
+                                        <div style="font-weight:700;color:#10b981;display:flex;align-items:center;gap:6px;margin-bottom:2px;">
+                                            <span>👵</span>
+                                            <span>${isEn ? 'Senior Citizen Discount (50% Off):' : 'อัตราค่าโดยสารผู้สูงอายุ (ส่วนลด 50%):'}</span>
+                                        </div>
+                                        <div style="color:var(--ink);">
+                                            ${isEn
+                                                ? 'Thai seniors aged 60+ receive a <b>50% discount</b> on standard fare (approx. <b>฿8 - ฿23</b>). Valid using <b>Rabbit Senior Card</b> (Purple) or by presenting Thai National ID card at the ticket office.'
+                                                : 'ผู้สูงอายุสัญชาติไทย (อายุ 60 ปีขึ้นไป) ได้รับส่วนลด <b>50%</b> จากอัตราปกติ (เหลือประมาณ <b>8 – 23 บาท</b>) เมื่อใช้ <b>บัตรแรบบิทผู้สูงอายุ (สีม่วง)</b> แตะผ่านประตู หรือแสดงบัตรประชาชนซื้อตั๋วเที่ยวเดียวที่ห้องจำหน่ายตั๋ว'
+                                            }
+                                        </div>
+                                    </div>
+                                    <div style="background:rgba(255,255,255,0.03);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:12px;line-height:1.6;">
+                                        <div style="font-weight:700;color:var(--accent);display:flex;align-items:center;gap:6px;margin-bottom:2px;">
+                                            <span>🎓</span>
+                                            <span>${isEn ? 'Student Fares & Special Trip Pass:' : 'อัตราค่าโดยสารนักเรียน / นักศึกษา:'}</span>
+                                        </div>
+                                        <div style="color:var(--ink);">
+                                            ${isEn
+                                                ? '<b>Single Journey:</b> Charged at regular adult fare (<b>฿15 - ฿45</b>).<br><b>Discount Pass:</b> Students (under 23) can purchase special trip packages averaging <b>฿20 per trip</b> via <b>Rabbit Rewards</b> (paired with Rabbit Student Card) or at station ticket offices.'
+                                                : '<b>รายเที่ยว:</b> คิดตามอัตราค่าโดยสารปกติ (<b>15 – 45 บาท</b> ไม่มีส่วนลดเปอร์เซ็นต์รายเที่ยว)<br><b>แพ็กเกจเหมาเที่ยว:</b> นักเรียน/นักศึกษา (อายุไม่เกิน 23 ปี) สามารถซื้อ <b>"แพ็กเกจเที่ยวเดินทางเหมาเที่ยว"</b> ราคาพิเศษเฉลี่ยเริ่มต้นเพียง <b>20 บาทต่อเที่ยว</b> ผ่านแอป <b>Rabbit Rewards</b> (ผูกบัตร Rabbit Student สีเขียว) หรือห้องจำหน่ายตั๋ว'
+                                            }
+                                        </div>
+                                    </div>
+                                    <div style="background:rgba(255,255,255,0.03);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:12px;line-height:1.6;">
+                                        <div style="font-weight:700;color:#38bdf8;display:flex;align-items:center;gap:6px;margin-bottom:2px;">
+                                            <span>👶</span>
+                                            <span>${isEn ? 'Children & Persons with Disabilities:' : 'เด็กเล็กและผู้พิการ:'}</span>
+                                        </div>
+                                        <div style="color:var(--ink);">
+                                            ${isEn
+                                                ? 'Children under 90 cm in height and persons with disabilities travel <b>FREE</b>.'
+                                                : 'เด็กส่วนสูงไม่เกิน 90 ซม. และผู้พิการ (แสดงบัตรคนพิการ) เดินทาง <b>ฟรี</b>'
+                                            }
+                                        </div>
+                                    </div>
+                                    <div style="background:rgba(255,255,255,0.03);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:12px;line-height:1.6;">
+                                        <div style="font-weight:700;color:#fbbf24;display:flex;align-items:center;gap:6px;margin-bottom:2px;">
+                                            <span>💡</span>
+                                            <span>${isEn ? 'EMV Transfer Waiver:' : 'สิทธิประโยชน์การเปลี่ยนสาย (EMV Transfer):'}</span>
+                                        </div>
+                                        <div style="color:var(--ink);">
+                                            ${isEn
+                                                ? 'When transferring with connecting MRT or SRT lines via the same EMV Contactless card within 30 minutes, the second entry fee (฿14 - ฿15) is waived automatically.'
+                                                : 'เมื่อเดินทางเปลี่ยนสายไปยังระบบรถไฟฟ้าที่เชื่อมต่อกัน (เช่น สายสีน้ำเงิน, สายสีม่วง, สายสีแดง) ด้วยบัตร EMV ใบเดิมภายใน 30 นาที จะได้รับยกเว้นค่าแรกเข้าของสายที่สองทันที (ประหยัดได้ 14 – 15 บาท)'
+                                            }
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         `;
@@ -3374,7 +3831,7 @@ gQIDAQAB
 
                     // ตารางความถี่ทางการ
                     const sched = getLineScheduleTables(activeLine.id);
-                    const schedTablesHtml = renderFrequencyTablesHtml(sched);
+                    const schedTablesHtml = renderFrequencyTablesHtml(sched, activeLine, this.freqTab);
 
                     // รายชื่อสถานีประจำสายพร้อมป้ายรหัสสถานีขนาดกะทัดรัด
                     const lineStations = getLineStationsList(activeLine.id);
@@ -3457,10 +3914,19 @@ gQIDAQAB
                         </div>
 
                         <!-- Official Frequency Schedule Tables -->
-                        <div class="info-card">
-                            <h3>🗓️ ${isEn ? 'Official Headway Frequency Schedule' : 'ตารางความถี่การเดินรถอย่างเป็นทางการ'}</h3>
-                            <div style="font-size:12px;color:var(--muted);margin-bottom:6px">
-                                ${isEn ? 'Row highlighted in green indicates current operational time slot' : 'แถบสีเขียวแสดงช่วงเวลาเดินรถที่กำลังให้บริการอยู่ ณ ขณะนี้'}
+                        <div class="info-card sched-freq-card" style="border-top:3px solid ${activeLine.color};">
+                            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:6px;">
+                                <h3 style="margin:0;display:flex;align-items:center;gap:8px;">
+                                    <span>🗓️</span>
+                                    <span>${isEn ? 'Official Headway Frequency Schedule' : 'ตารางความถี่การเดินรถอย่างเป็นทางการ'}</span>
+                                </h3>
+                                <span style="background:${activeLine.color}18;color:${activeLine.color};border:1px solid ${activeLine.color}35;padding:3px 10px;border-radius:12px;font-size:11.5px;font-weight:700;">
+                                    ${esc(isEn ? activeLine.nameEN : activeLine.nameTH)}
+                                </span>
+                            </div>
+                            <div style="font-size:12px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:6px;">
+                                <span class="freq-pulse-dot" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#22c55e;animation:pulse 1.4s infinite;flex-shrink:0;"></span>
+                                <span>${isEn ? 'Highlighted row indicates active operational headway right now' : 'แถบไฮไลต์สีเขียวพร้อมป้าย 🟢 ขณะนี้ แสดงช่วงเวลาเดินรถที่กำลังให้บริการอยู่ ณ ปัจจุบัน'}</span>
                             </div>
                             ${schedTablesHtml}
                         </div>
@@ -3884,6 +4350,14 @@ gQIDAQAB
                 });
             },
 
+            // แตะชิปสายใน Footer → สลับไปยังสายนั้นในหน้าแรกทันที
+            jumpToLine(lineId) {
+                const id = Number(lineId) || 1;
+                this.switchView('home');
+                this.setLine(id === 105 ? 103 : id);
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            },
+
             /* ---------- deep link (จำ state ใน URL hash) ----------
                รูปแบบ: #line=2&st=S2&from=CEN&to=E4
                - line = สายที่เลือก (ละไว้ถ้าเป็นสายแรก), st = สถานีที่กางอยู่
@@ -3998,9 +4472,13 @@ gQIDAQAB
                 j.error = null;
                 this.renderJourney();
                 try {
-                    j.result = (isMrtStationKey(j.from) || isMrtStationKey(j.to))
-                        ? await buildHybridJourney(j.from, j.to)
-                        : await fetchJourney(j.from, j.to);
+                    if (j.from === j.to) {
+                        j.result = await buildSameStationJourney(j.from);
+                    } else {
+                        j.result = (isMrtStationKey(j.from) || isMrtStationKey(j.to))
+                            ? await buildHybridJourney(j.from, j.to)
+                            : await fetchJourney(j.from, j.to);
+                    }
                     j.openRoute = 0;
                 } catch (e) {
                     j.result = null;
@@ -4022,9 +4500,9 @@ gQIDAQAB
                 const field = (which, key) => {
                     const st = key ? this.findStation(key) : null;
                     const val = st
-                        ? `<span class="val"><span class="st-key" style="background:${st.StationLineColor}">${esc(st.StationKey)}</span><span class="nm">${esc(stName(st))}</span></span>`
+                        ? `<span class="val"><span class="st-key" style="background:${st.StationLineColor}">${esc(st.StationKey)}</span><span class="nm" title="${esc(stName(st))}">${esc(stName(st))}</span></span>`
                         : `<span class="val ph">${T('jSelect')}</span>`;
-                    return `<button class="j-field" onclick="App.openPicker('${which}')">
+                    return `<button class="j-field" onclick="App.openPicker('${which}')" title="${st ? esc(stName(st)) : T(which === 'from' ? 'jFrom' : 'jTo')}">
                         <span class="lbl">${T(which === 'from' ? 'jFrom' : 'jTo')}</span>${val}</button>`;
                 };
                 el.innerHTML = `
@@ -4049,26 +4527,51 @@ gQIDAQAB
                 const el = document.getElementById('quickHubChips');
                 if (!el) return;
                 const hubs = [
-                    { key: 'CEN', lineId: 1, nameTh: 'CEN สยาม', nameEn: 'CEN Siam' },
-                    { key: 'E4', lineId: 1, nameTh: 'E4 อโศก', nameEn: 'E4 Asok' },
-                    { key: 'N8', lineId: 1, nameTh: 'N8 หมอชิต', nameEn: 'N8 Mo Chit' },
-                    { key: 'S2', lineId: 2, nameTh: 'S2 ศาลาแดง', nameEn: 'S2 Sala Daeng' },
-                    { key: 'N2', lineId: 1, nameTh: 'N2 พญาไท (ARL)', nameEn: 'N2 Phaya Thai (ARL)' },
-                    { key: 'BL11', lineId: 101, nameTh: 'BL11 บางซื่อ', nameEn: 'BL11 Bang Sue' },
-                    { key: 'BL15', lineId: 101, nameTh: 'BL15 ลาดพร้าว', nameEn: 'BL15 Lat Phrao' },
-                    { key: 'YL23', lineId: 4, nameTh: 'YL23 สำโรง', nameEn: 'YL23 Samrong' },
-                    { key: 'A1', lineId: 104, nameTh: 'A1 สุวรรณภูมิ (ARL)', nameEn: 'A1 Suvarnabhumi (ARL)' }
+                    { key: 'CEN', lineId: 1, nameTh: 'สยาม', nameEn: 'Siam', subTh: 'BTS สุขุมวิท ⇄ สีลม', subEn: 'BTS Sukhumvit ⇄ Silom' },
+                    { key: 'E4', lineId: 1, nameTh: 'อโศก', nameEn: 'Asok', subTh: 'เชื่อม MRT สุขุมวิท', subEn: 'Connect MRT Sukhumvit' },
+                    { key: 'N8', lineId: 1, nameTh: 'หมอชิต', nameEn: 'Mo Chit', subTh: 'เชื่อม MRT จตุจักร', subEn: 'Connect MRT Chatuchak' },
+                    { key: 'S2', lineId: 2, nameTh: 'ศาลาแดง', nameEn: 'Sala Daeng', subTh: 'เชื่อม MRT สีลม', subEn: 'Connect MRT Si Lom' },
+                    { key: 'N2', lineId: 1, nameTh: 'พญาไท', nameEn: 'Phaya Thai', subTh: 'เชื่อม แอร์พอร์ตลิงก์', subEn: 'Connect Airport Link' },
+                    { key: 'BL11', lineId: 101, nameTh: 'บางซื่อ', nameEn: 'Bang Sue', subTh: 'เชื่อม SRT สายสีแดง', subEn: 'Connect SRT Red Line' },
+                    { key: 'BL15', lineId: 101, nameTh: 'ลาดพร้าว', nameEn: 'Lat Phrao', subTh: 'เชื่อม MRT สายสีเหลือง', subEn: 'Connect Yellow Line' },
+                    { key: 'YL23', lineId: 4, nameTh: 'สำโรง', nameEn: 'Samrong', subTh: 'เชื่อม BTS สุขุมวิท', subEn: 'Connect BTS Sukhumvit' },
+                    { key: 'PP11', lineId: 102, nameTh: 'ศูนย์ราชการฯ', nameEn: 'Nonthaburi CC', subTh: 'สายสีม่วง ⇄ ชมพู', subEn: 'Purple ⇄ Pink Line' },
+                    { key: 'A1', lineId: 104, nameTh: 'สุวรรณภูมิ', nameEn: 'Suvarnabhumi', subTh: 'ท่าอากาศยานสุวรรณภูมิ', subEn: 'Suvarnabhumi Airport' }
                 ];
+                const theme = {
+                    1: { bg: 'rgba(122,180,32,0.12)', border: 'rgba(122,180,32,0.3)', pillBg: '#7AB420', pillText: '#ffffff' },
+                    2: { bg: 'rgba(0,128,125,0.12)', border: 'rgba(0,128,125,0.3)', pillBg: '#00807D', pillText: '#ffffff' },
+                    3: { bg: 'rgba(201,160,56,0.12)', border: 'rgba(201,160,56,0.3)', pillBg: '#C9A038', pillText: '#ffffff' },
+                    101: { bg: 'rgba(2,132,199,0.12)', border: 'rgba(2,132,199,0.3)', pillBg: '#0284C7', pillText: '#ffffff' },
+                    102: { bg: 'rgba(138,44,155,0.12)', border: 'rgba(138,44,155,0.3)', pillBg: '#8A2C9B', pillText: '#ffffff' },
+                    4: { bg: 'rgba(255,209,0,0.15)', border: 'rgba(255,209,0,0.35)', pillBg: '#FFD100', pillText: '#0f172a' },
+                    5: { bg: 'rgba(236,72,153,0.12)', border: 'rgba(236,72,153,0.3)', pillBg: '#EC4899', pillText: '#ffffff' },
+                    103: { bg: 'rgba(185,28,28,0.12)', border: 'rgba(185,28,28,0.3)', pillBg: '#B91C1C', pillText: '#ffffff' },
+                    105: { bg: 'rgba(248,113,113,0.15)', border: 'rgba(248,113,113,0.35)', pillBg: '#F87171', pillText: '#0f172a' },
+                    104: { bg: 'rgba(138,21,56,0.12)', border: 'rgba(138,21,56,0.3)', pillBg: '#8A1538', pillText: '#ffffff' }
+                };
                 el.innerHTML = hubs.map(h => {
                     const s = this.findStation(h.key);
-                    const label = s ? `${h.key} ${stName(s)}` : (lang === 'en' ? h.nameEn : h.nameTh);
+                    const name = s ? stName(s) : (lang === 'en' ? h.nameEn : h.nameTh);
+                    const sub = lang === 'en' ? h.subEn : h.subTh;
                     const isFrom = this.journey.from === h.key;
                     const isTo = this.journey.to === h.key;
                     const isSel = isFrom || isTo;
-                    const tag = isFrom ? ` (${lang === 'th' ? 'ต้นทาง' : 'From'})` : isTo ? ` (${lang === 'th' ? 'ปลายทาง' : 'To'})` : '';
-                    return `<button class="alt-chip ${isSel ? 'on' : ''}" onclick="App.quickSelectHub('${h.key}')">
-                        ${getLineIconSvg(h.lineId, isSel, 15)}
-                        <span>${esc(label)}${tag}</span>
+                    const tag = isFrom ? (lang === 'th' ? 'ต้นทาง' : 'From') : isTo ? (lang === 'th' ? 'ปลายทาง' : 'To') : '';
+                    const tagCls = isFrom ? 'from' : 'to';
+                    const t = theme[h.lineId] || { bg: 'rgba(100,116,139,0.12)', border: 'rgba(100,116,139,0.3)', pillBg: '#64748B', pillText: '#ffffff' };
+                    return `<button type="button" class="quick-hub-card ${isSel ? 'on' : ''}" onclick="App.quickSelectHub('${h.key}')" title="${esc(name)} (${esc(sub)})" aria-label="${esc(name)}">
+                        <div class="quick-hub-icon-box" style="background:${t.bg};border-color:${t.border}">
+                            ${getLineIconSvg(h.lineId, false, 18)}
+                        </div>
+                        <div class="quick-hub-info">
+                            <div class="quick-hub-title-row">
+                                <span class="quick-hub-code-pill" style="background:${t.pillBg};color:${t.pillText}">${esc(h.key)}</span>
+                                <span class="quick-hub-name">${esc(name)}</span>
+                            </div>
+                            <div class="quick-hub-sub">${esc(sub)}</div>
+                        </div>
+                        ${tag ? `<span class="quick-hub-tag ${tagCls}">${esc(tag)}</span>` : ''}
                     </button>`;
                 }).join('');
             },
@@ -4886,11 +5389,24 @@ gQIDAQAB
             // จะได้แสดงเวลานับถอยหลังจากค่าเดิมแทน ไม่ให้ตัวเลขวูบหายจนผู้ใช้งง
             storeArrivals(key, data) {
                 const fetchedAt = data.fetchedAt || Date.now();
+                // พิเศษสำหรับ YL23: ขบวนรถวิ่งไป-กลับแค่ P2 ไม่เข้า P1 (เคลียร์ข้อมูลไม่ให้จำขบวนค้าง)
+                if (key === 'YL23' && Array.isArray(data.platform_list)) {
+                    for (const p of data.platform_list) {
+                        if (String(p.platform) === '1') {
+                            p.train_list = [];
+                            p.isDropOffOnly = true;
+                            p.DestinationStation = (typeof lang !== 'undefined' && lang === 'en') ? 'Terminus' : 'สิ้นสุดสาย';
+                            p.DestinationStation_key = 'YL23';
+                        }
+                    }
+                }
                 for (const p of data.platform_list || []) {
                     for (const t of p.train_list || []) {
-                        if (t.time_come !== '--' && t.time_come_double != null)
+                        const num = (t.time_come !== '--' && t.time_come != null) ? parseFloat(t.time_come) : NaN;
+                        const base = (!isNaN(num) && num >= 0) ? num : (t.time_come_double != null ? t.time_come_double : null);
+                        if (base != null)
                             this.etaMem[key + '|' + p.platform + '|' + t.trainNo] =
-                                { base: t.time_come_double, at: fetchedAt };
+                                { base, at: fetchedAt };
                     }
                 }
                 for (const k in this.etaMem)
@@ -5010,7 +5526,17 @@ gQIDAQAB
                     const base = parseFloat(el.dataset.etaBase);
                     const at = parseInt(el.dataset.etaAt, 10);
                     if (isNaN(base) || isNaN(at)) return;
-                    const { text, now } = etaText(base - (Date.now() - at) / 60000, el.dataset.etaApprox === '1');
+                    const approx = el.dataset.etaApprox === '1';
+                    const remaining = base - (Date.now() - at) / 60000;
+                    if (el.dataset.etaFormat === 'chip') {
+                        const isNow = remaining <= 0.5;
+                        const disp = isNow ? '0m' : `${approx ? '~' : ''}${Math.max(0, Math.round(remaining))}m`;
+                        el.textContent = disp;
+                        const chipEl = el.closest('.rt-chip');
+                        if (chipEl) chipEl.classList.toggle('at', isNow);
+                        return;
+                    }
+                    const { text, now } = etaText(remaining, approx);
                     el.innerHTML = text;
                     el.classList.toggle('now', now);
                     const btn = el.closest('.train');
@@ -5042,7 +5568,7 @@ gQIDAQAB
                     const lineId = r.station.StationLineId || 1;
                     return `<button class="alt-chip ${isSel ? 'on' : ''}"
                         onclick="App.pinStation('${r.station.StationKey}')">
-                        ${getLineIconSvg(lineId, isSel, 15)}
+                        ${getLineIconSvg(lineId, !isSel, 15)}
                         <span><b>${esc(r.station.StationKey)}</b> ${esc(stName(r.station))}</span> <span class="km">${fmtDist(r.km)}</span></button>`;
                 }).join('');
 
@@ -5564,15 +6090,27 @@ gQIDAQAB
             // สร้างตาราง
             const buildTable = (rows) => {
                 if (!rows.length) return '';
-                return `<table class="mrt-freq-table">
-                    <thead><tr><th>${T('mrtTimeRange')}</th><th>${T('mrtFreqCol')}</th></tr></thead>
+                return `<div class="mrt-freq-table-container"><table class="mrt-freq-table">
+                    <thead><tr><th>🕒 ${T('mrtTimeRange')}</th><th>⏱️ ${T('mrtFreqCol')}</th></tr></thead>
                     <tbody>${rows.map(r => {
                         const lbl = String(r.freqLabel || '').startsWith('~') ? r.freqLabel : `~${r.freqLabel}`;
                         return `<tr class="${r.isCurrent ? 'now' : ''}">
-                            <td>${esc(r.timeStr)}</td><td>${esc(lbl)} ${T('minUnit').trim()}</td>
+                            <td>
+                                <div class="freq-time-cell">
+                                    <span class="freq-time-range">${esc(r.timeStr)}</span>
+                                    ${r.isCurrent ? `<span class="freq-live-now-tag"><span class="freq-pulse-dot"></span> ${lang === 'en' ? 'NOW' : 'ขณะนี้'}</span>` : ''}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="freq-single-pill">
+                                    <span class="freq-prefix">${lang === 'en' ? 'Every ~' : 'ทุก ~'}</span>
+                                    <b>${esc(String(lbl).replace(/^~/, ''))}</b>
+                                    <span class="freq-unit">${T('minUnit').trim()}</span>
+                                </div>
+                            </td>
                         </tr>`;
                     }).join('')}</tbody>
-                </table>`;
+                </table></div>`;
             };
 
             // segment note สำหรับ Blue outer stations
@@ -5617,14 +6155,27 @@ gQIDAQAB
                 && !ids.includes(station.StationLineId)) ids.push(station.StationLineId);
             if (!ids.length) return '';
             const we = isWeekend();
-            const tbl = rows => `<table class="mrt-freq-table">
-                <thead><tr><th>${T('mrtTimeRange')}</th><th>${T('mrtFreqCol')}</th></tr></thead>
+            const tbl = rows => `<div class="mrt-freq-table-container"><table class="mrt-freq-table">
+                <thead><tr><th>🕒 ${T('mrtTimeRange')}</th><th>⏱️ ${T('mrtFreqCol')}</th></tr></thead>
                 <tbody>${rows.map(r => {
                     const lbl = String(r.freqLabel || '').startsWith('~') ? r.freqLabel : `~${r.freqLabel}`;
                     return `<tr class="${r.isCurrent ? 'now' : ''}">
-                        <td>${esc(r.timeStr)}</td><td>${esc(lbl)} ${T('minUnit').trim()}</td></tr>`;
+                        <td>
+                            <div class="freq-time-cell">
+                                <span class="freq-time-range">${esc(r.timeStr)}</span>
+                                ${r.isCurrent ? `<span class="freq-live-now-tag"><span class="freq-pulse-dot"></span> ${lang === 'en' ? 'NOW' : 'ขณะนี้'}</span>` : ''}
+                            </div>
+                        </td>
+                        <td>
+                            <div class="freq-single-pill">
+                                <span class="freq-prefix">${lang === 'en' ? 'Every ~' : 'ทุก ~'}</span>
+                                <b>${esc(String(lbl).replace(/^~/, ''))}</b>
+                                <span class="freq-unit">${T('minUnit').trim()}</span>
+                            </div>
+                        </td>
+                    </tr>`;
                 }).join('')}</tbody>
-            </table>`;
+            </table></div>`;
             return ids.map(lineId => {
                 const data = getBtsFreqData(lineId);
                 if (!data) return '';
@@ -5656,20 +6207,7 @@ gQIDAQAB
                 </div>`;
             }).join('');
         }
-
         /* ================= SHARED RENDER HELPERS ================= */
-        const LINE_BRAND_COLORS = {
-            1: '#7AB420',    // Sukhumvit (Green)
-            2: '#00807D',    // Silom (Teal)
-            3: '#C9A038',    // Gold (APM)
-            4: '#FFD100',    // Yellow (Monorail)
-            5: '#EC4899',    // Pink (Monorail)
-            101: '#0284C7',  // Blue (MRT Subway)
-            102: '#8A2C9B',  // Purple (MRT Elevated)
-            103: '#DC2626',  // Red (SRT Commuter)
-            104: '#8A1538',  // ARL (Airport Express)
-            0: '#64748B'     // All lines
-        };
 
         function getLineIconSvg(lineId, active = false, size = 18) {
             const id = Number(lineId) || 0;
@@ -5733,11 +6271,23 @@ gQIDAQAB
                     <line x1="10.5" y1="15" x2="13.5" y2="15" stroke-width="1.5"/>
                 </svg>`;
             } else if (id === 103) {
-                // SRT Red Line: State Railway Commuter EMU (Hitachi) with overhead Catenary Pantograph
+                // SRT Dark Red Line: State Railway Commuter EMU (Hitachi) with overhead Catenary Pantograph
                 inner = `<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="${c}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <path d="M12 2l-3.5 3.5h7L12 2m0 3.5v2" stroke-width="1.5"/>
                     <path d="M5 7.5h14c1 0 1.5.5 1.5 1.8v7.4c0 1-.5 1.5-1.5 1.5H5c-1 0-1.5-.5-1.5-1.5V9.3c0-1.3.5-1.8 1.5-1.8z" fill="${c}" fill-opacity="0.22"/>
                     <rect x="6.5" y="9.5" width="11" height="4" rx="1" fill="${c}"/>
+                    <circle cx="8" cy="15.2" r="1.3" fill="${c}"/>
+                    <circle cx="16" cy="15.2" r="1.3" fill="${c}"/>
+                    <line x1="2" y1="21" x2="22" y2="21" stroke-width="2"/>
+                    <line x1="6" y1="18.2" x2="18" y2="18.2" stroke-width="1.5" opacity="0.6"/>
+                </svg>`;
+            } else if (id === 105) {
+                // SRT Light Red Line: Light Commuter EMU with single-arm pantograph & distinct light red profile
+                inner = `<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="${c}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M8 2.5l5 2.5h-5" stroke-width="1.5" stroke-linecap="round"/>
+                    <line x1="10.5" y1="5" x2="10.5" y2="7.5" stroke-width="1.5"/>
+                    <path d="M5 7.5h14c1 0 1.5.5 1.5 1.8v7.4c0 1-.5 1.5-1.5 1.5H5c-1 0-1.5-.5-1.5-1.5V9.3c0-1.3.5-1.8 1.5-1.8z" fill="${c}" fill-opacity="0.28"/>
+                    <path d="M7 9.5h10v4H7z" rx="1" fill="${c}"/>
                     <circle cx="8" cy="15.2" r="1.3" fill="${c}"/>
                     <circle cx="16" cy="15.2" r="1.3" fill="${c}"/>
                     <line x1="2" y1="21" x2="22" y2="21" stroke-width="2"/>
@@ -5809,7 +6359,12 @@ gQIDAQAB
         // เวลา "ที่ดีที่สุดที่รู้" ของขบวน: ใช้ค่าจาก API ถ้ามี — ถ้าตอบ "--" ใช้ค่าเลขรอบก่อน
         // จาก etaMem (นับถอยหลังต่อเนื่อง) จนกว่าจะได้เลขใหม่ ผู้ใช้จะไม่เห็นเวลาวูบหาย
         function bestEta(stationKey, platform, t, fetchedAt) {
-            if (t.time_come !== '--' && t.time_come_double != null)
+            if (t.time_come !== '--' && t.time_come != null) {
+                const num = parseFloat(t.time_come);
+                const base = (!isNaN(num) && num >= 0) ? num : (t.time_come_double != null ? t.time_come_double : null);
+                if (base != null) return { base, at: fetchedAt, approx: false };
+            }
+            if (t.time_come_double != null)
                 return { base: t.time_come_double, at: fetchedAt, approx: false };
             const m = App.etaMem[stationKey + '|' + platform + '|' + t.trainNo];
             if (m && (m.base - (Date.now() - m.at) / 60000) > -0.5)
@@ -5902,6 +6457,24 @@ gQIDAQAB
                         isDropOffOnly: isDropOff,
                         train_list: []
                     });
+                }
+            }
+
+            // กฎเฉพาะสำหรับสถานี YL23 (สำโรง สายสีเหลือง):
+            // มี 2 ชานชาลา แต่รถไฟวิ่งไป-กลับแค่ P2 ไม่เข้า P1 (แต่ยังคงให้มี P1 เป็นสถานีปลายทาง ส่งผู้โดยสารเท่านั้น)
+            if (station && station.StationKey === 'YL23') {
+                const p1 = result.find(p => p.LineId === 4 && String(p.platform) === '1');
+                const p2 = result.find(p => p.LineId === 4 && String(p.platform) === '2');
+                if (p1) {
+                    p1.isDropOffOnly = true;
+                    p1.DestinationStation = (typeof lang !== 'undefined' && lang === 'en') ? 'Terminus' : 'สิ้นสุดสาย';
+                    p1.DestinationStation_key = 'YL23';
+                    p1.train_list = []; // ไม่เข้า P1 เด็ดขาด
+                }
+                if (p2) {
+                    p2.isDropOffOnly = false;
+                    p2.DestinationStation = (typeof lang !== 'undefined' && lang === 'en') ? 'Lat Phrao' : 'ลาดพร้าว';
+                    p2.DestinationStation_key = 'YL01';
                 }
             }
 
@@ -6095,7 +6668,7 @@ gQIDAQAB
 
                 rows.push(`<div class="${stepClasses}" style="color:${pick.color}">
                     <span class="ndw"><span class="nd"></span></span>
-                    <span class="nm" style="color:var(--ink)"><span style="color:${pick.color};font-size:10.5px;font-weight:800;margin-right:4px">${esc(st.StationCode)}</span>${esc(shortDest(destName(st.Title)))}</span>
+                    <span class="nm" style="color:var(--ink)"><span style="color:${pick.color};font-size:10.5px;font-weight:800;margin-right:4px">${esc(st.StationCode)}</span>${esc(destName(st.Title))}</span>
                     <span class="tm">${esc(st.TimeRoute || '')}</span></div>`);
             });
 
@@ -6105,16 +6678,32 @@ gQIDAQAB
                 `<div class="j-fare-row"><span>${esc(lang === 'en' ? (f.FareDetail_ENG || f.FareDetail) : f.FareDetail)}</span>
                  <b>฿${esc(f.FarePrice)}</b></div>`).join('');
 
-            const badgeLabel = rm.LabelTag || (i === 0 ? T('jRecommended') : '');
+            const isSameStation = steps.length === 1 || (rm.TotalTime === 0 && (rm.Count_Station ?? steps.length) <= 1);
+            const badgeLabel = rm.LabelTag || (isSameStation ? T('jSameStation') : (i === 0 ? T('jRecommended') : ''));
+            const fareDisplay = rm.FareRate_Total != null ? rm.FareRate_Total : '-';
+            const timeDisplay = rm.TotalTime != null ? rm.TotalTime : '?';
+            const kmDisplay = rm.TotalKm != null ? rm.TotalKm : '?';
             return `<div class="j-route ${open ? 'open' : ''}">
                 <button class="j-route-head" onclick="App.toggleRoute(${i})">
                     <span class="rname">${T('jRoute', i + 1)}</span>
-                    ${badgeLabel ? `<span class="j-badge">${esc(badgeLabel)}</span>` : ''}
-                    <span class="j-fare">฿${esc(rm.FareRate_Total ?? '-')}</span>
-                    <span class="j-sum">⏱ <b>${T('jMin', rm.TotalTime || '?')}</b> · ${T('jStations', rm.Count_Station ?? steps.length)}
-                        · ${rm.TotalKm || '?'} ${T('kmUnit').trim()}${rm.Count_InterChange ? ' · ' + T('jTransfer').replace('🚶 ', '') + ' ×' + rm.Count_InterChange : ''}</span>
+                    ${badgeLabel ? `<span class="j-badge" style="${isSameStation ? 'background:rgba(2,132,199,0.15);color:#0284c7;border:1px solid rgba(2,132,199,0.3);' : ''}">${esc(badgeLabel)}</span>` : ''}
+                    <span class="j-fare">฿${esc(fareDisplay)}</span>
+                    <span class="j-sum">⏱ <b>${T('jMin', timeDisplay)}</b> · ${T('jStations', rm.Count_Station ?? steps.length)}
+                        · ${kmDisplay} ${T('kmUnit').trim()}${rm.Count_InterChange ? ' · ' + T('jTransfer').replace('🚶 ', '') + ' ×' + rm.Count_InterChange : ''}</span>
                 </button>
-                ${open ? `<div class="j-steps">${rows.join('')}</div>
+                ${open ? `<div class="j-steps">
+                    ${isSameStation ? `<div class="same-station-banner" style="margin-bottom:10px;padding:9px 12px;background:rgba(2,132,199,0.08);border-left:3px solid #0284c7;border-radius:6px;font-size:12px;line-height:1.45;color:var(--ink);">
+                        <div style="font-weight:700;display:flex;align-items:center;gap:5px;margin-bottom:2px;">
+                            <span>📍</span> <span>${esc(T('jAlreadyAtStation'))}</span>
+                        </div>
+                        <div style="color:var(--muted);font-size:11.5px;">
+                            ${esc(lang === 'en'
+                                ? `Origin and destination are the same station. Fare is charged at the 1-station rate (฿${fareDisplay}) for this line.`
+                                : `สถานีต้นทางและปลายทางเป็นสถานีเดียวกัน คิดค่าโดยสารเท่ากับ 1 สถานีตามอัตราของสายนี้ (฿${fareDisplay})`)}
+                        </div>
+                    </div>` : ''}
+                    ${rows.join('')}
+                </div>
                 ${fares ? `<div class="j-fares"><div class="ft">${T('jFareTypes')}</div>${fares}</div>` : ''}
                 ${rm.StaticMapSrc ? `<a class="j-map-link" href="${esc(rm.StaticMapSrc)}" target="_blank" rel="noopener">🗺️ ${T('jMap')}</a>` : ''}` : ''}
             </div>`;
@@ -6139,131 +6728,75 @@ gQIDAQAB
             );
             if (!plats.length) return '';
 
-            const isTerminalStart = !prev && !!next;
-            const isTerminalEnd = !!prev && !next;
-            if (isTerminalStart || isTerminalEnd) {
-                const tChip = (e, at) => `<span class="rt-chip ${at ? 'at' : ''}" style="border-color:${color};color:${color}">
-                        <i>${at ? '0' : (e.approx ? '~' : '') + Math.max(0, Math.round(e.m))}m</i></span>`;
-                const tSlot = (e) => e ? tChip(e, e.at) : '';
-                const tMid = (st, l, r, cur) => `<div class="rt-mid">
-                    ${l ? `<span class="tl l" style="background:${color}"></span>` : ''}
-                    ${r ? `<span class="tl r" style="background:${color}"></span>` : ''}
-                    ${st ? `<span class="nd ${cur ? 'cur near' : ''}" style="${cur ? '' : 'border-color:' + color}"></span>
-                    <span class="lbl"><b style="${cur ? 'color:' + color : ''}">${esc(st.StationKey)}</b><i>${esc(shortDest(stName(st)))}</i></span>` : ''}
-                </div>`;
-                const trains = [];
-                for (const p of plats) {
-                    for (const t of displayTrains(station.StationKey, p.platform, p.train_list, arr.fetchedAt)) {
-                        if (t.status !== 'pending') {
-                            trains.push({ t, m: 0, approx: false, at: true });
-                            continue;
-                        }
-                        const eta = bestEta(station.StationKey, p.platform, t, arr.fetchedAt);
-                        if (!eta) continue;
-                        const m = eta.base - (Date.now() - eta.at) / 60000;
-                        if (m < -1 || m > 200) continue;
-                        trains.push({ t, m, approx: eta.approx, at: m <= 0.5 });
-                    }
-                }
-                trains.sort((a, b) => a.m - b.m);
-                const closest = trains.slice(0, 3);
-                const lineName = App.lineById[block.lineId] ? shortLineName(App.lineById[block.lineId]) : '';
-                const terminalMid = isTerminalStart
-                    ? `${tMid(null)}
-                    ${tMid(null)}
-                    ${tMid(null)}
-                    ${tMid(station, false, true, true)}
-                    ${tMid(null, true, true)}
-                    ${tMid(next, true, false)}
-                    ${tMid(null)}`
-                    : `${tMid(null)}
-                    ${tMid(prev, false, true)}
-                    ${tMid(null, true, true)}
-                    ${tMid(station, true, false, true)}
-                    ${tMid(null)}
-                    ${tMid(null)}
-                    ${tMid(null)}`;
-                const terminalLanes = isTerminalStart
-                    ? `<div class="rt-lane rail je">${tSlot(closest[2])}</div>
-                    <div class="rt-lane rail je">${tSlot(closest[1])}</div>
-                    <div class="rt-lane rail je">${tSlot(closest[0])}</div>
-                    <div class="rt-lane rail"></div>
-                    <div class="rt-lane rail arrow-lane"><span class="rt-arrow">→</span></div>
-                    <div class="rt-lane rail"></div>
-                    <div class="rt-lane rail"></div>`
-                    : `<div class="rt-lane rail"></div>
-                    <div class="rt-lane rail"></div>
-                    <div class="rt-lane rail arrow-lane"><span class="rt-arrow">←</span></div>
-                    <div class="rt-lane rail"></div>
-                    <div class="rt-lane rail jc">${tSlot(closest[0])}</div>
-                    <div class="rt-lane rail">${tSlot(closest[1])}</div>
-                    <div class="rt-lane rail">${tSlot(closest[2])}</div>`;
-
-                return `<div class="route-box">
-                    <div class="route-title" style="display:flex;align-items:center;gap:6px;">
-                        ${getLineIconSvg(block.lineId, false, 16)}
-                        <span class="bar" style="background:${color}"></span>
-                        ${T('routeTitle')}${lineName ? T('routeLine', esc(lineName)) : ''}</div>
-                    <div class="rt-grid" style="--rt-color:${color}">
-                        ${terminalLanes}
-                        ${terminalMid}
-                        <div class="rt-lane"></div>
-                        <div class="rt-lane"></div>
-                        <div class="rt-lane"></div>
-                        <div class="rt-lane"></div>
-                        <div class="rt-lane"></div>
-                        <div class="rt-lane"></div>
-                        <div class="rt-lane"></div>
-                    </div>
-                </div>`;
-            }
-
-            // ทิศทางของแต่ละชานชาลา = ขบวนวิ่งมาจากเพื่อนบ้านฝั่งไหน
-            // ปลายทางอยู่ "ก่อนหน้า" สถานีนี้ในรายการ → ขบวนวิ่งจากท้ายรายการมา = มาจากฝั่ง next
+            // ทิศทางของแต่ละชานชาลา:
+            // 'prev' = วิ่งไปทางเลขสถานีมากขึ้น (→ รางบน)
+            // 'next' = วิ่งไปทางเลขสถานีน้อยลง (← รางล่าง)
             const fromOf = (p) => {
                 const dIdx = list.findIndex(s => s.StationKey === (p.DestinationStation_key || ''));
-                let from = (dIdx >= 0 && dIdx < idx) ? 'next' : (dIdx > idx) ? 'prev' : (prev ? 'prev' : 'next');
-                // สถานีปลายทางของสาย: ฝั่งที่คำนวณได้ไม่มีเพื่อนบ้านจริง → ขบวนวิ่งมาจากฝั่งที่มีรางเท่านั้น
-                if (from === 'prev' && !prev) from = 'next';
-                if (from === 'next' && !next) from = 'prev';
-                return from;
+                if (dIdx >= 0 && dIdx !== idx) {
+                    return dIdx > idx ? 'prev' : 'next';
+                }
+                const isDropOff = p.isDropOffOnly || (p.DestinationStation_key && p.DestinationStation_key === station.StationKey);
+                if (isDropOff) {
+                    if (!prev) return 'next';
+                    if (!next) return 'prev';
+                }
+                const pNum = parseInt(p.platform, 10);
+                if (pNum === 1) return 'prev';
+                if (pNum === 2) return 'next';
+                return prev ? 'prev' : 'next';
             };
 
-            // ขบวน "ไกล" = ยังโผล่อยู่ในรายการของสถานีเพื่อนบ้านฝั่งเดียวกัน (ยังมาไม่ถึงเพื่อนบ้าน)
-            const isFar = (t, p, from) => {
-                const nb = from === 'next' ? next : prev;
-                if (!nb) return false;
-                const aps = adj[nb.StationKey] || [];
-                const ap = aps.find(x => x.DestinationStation_key === p.DestinationStation_key)
-                    || aps.find(x => x.platform === p.platform);
-                if (!ap) return false;
-                return (ap.train_list || []).some(at =>
-                    at.station !== at.station_key && at.trainNo === t.trainNo);
+            const formatPlatLabel = (p, dirStation) => {
+                if (!p) {
+                    const fallbackName = dirStation ? stName(dirStation) : '';
+                    return fallbackName ? (lang === 'en' ? `Towards ${fallbackName}` : `ไปทาง ${fallbackName}`) : '';
+                }
+                const pNum = p.platform != null ? p.platform : '';
+                const pText = pNum ? (lang === 'en' ? `Platform ${pNum}` : `ชานชาลา ${pNum}`) : '';
+                const isTerminating = p.isDropOffOnly || (p.DestinationStation_key && p.DestinationStation_key === station.StationKey);
+                let dest = isTerminating
+                    ? (lang === 'en' ? 'Terminus · Drop-off only' : 'สิ้นสุดสาย ส่งผู้โดยสารเท่านั้น')
+                    : (destName(p.DestinationStation) || (dirStation ? stName(dirStation) : ''));
+                if (dest) {
+                    const toPrefix = isTerminating ? '' : (lang === 'en' ? 'To ' : 'ไปทาง ');
+                    return pText ? `${pText} · ${toPrefix}${dest}` : `${toPrefix}${dest}`;
+                }
+                return pText;
             };
 
-            const Z = { prev: { at: [], near: [], far: [] }, next: { at: [], near: [], far: [] } };
+            const Z = { prev: [], next: [] };
             for (const p of plats) {
                 const from = fromOf(p);
                 for (const t of displayTrains(station.StationKey, p.platform, p.train_list, arr.fetchedAt)) {
-                    if (t.status !== 'pending') { Z[from].at.push({ t, m: 0 }); continue; }
+                    if (t.status !== 'pending') {
+                        Z[from].push({ t, m: 0, approx: false, eta: null });
+                        continue;
+                    }
                     // ใช้เวลาเลขล่าสุดที่รู้ (รวมค่าจำจากรอบก่อนเมื่อ API ตอบ --)
                     // ขบวนที่ไม่รู้เวลาเลย → ไม่วาดบน map (ตำแหน่งระบุไม่ได้)
                     const eta = bestEta(station.StationKey, p.platform, t, arr.fetchedAt);
                     if (!eta) continue;
                     const m = eta.base - (Date.now() - eta.at) / 60000;
                     if (m < -1 || m > 200) continue;
-                    (isFar(t, p, from) ? Z[from].far : Z[from].near)
-                        .push({ t, m, approx: eta.approx });
+                    Z[from].push({ t, m, approx: eta.approx, eta });
                 }
             }
             const asc = (a, b) => a.m - b.m;
-            const desc = (a, b) => b.m - a.m;
-            Z.next.near.sort(asc); Z.next.far.sort(asc);
-            Z.prev.near.sort(desc); Z.prev.far.sort(desc);
+            Z.prev.sort(asc);
+            Z.next.sort(asc);
 
-            const chip = (e, at) => `<span class="rt-chip ${at ? 'at' : ''}" style="border-color:${color};color:${color}">
-                <i>${at ? '0' : (e.approx ? '~' : '') + Math.max(0, Math.round(e.m))}m</i></span>`;
-            const chips = (arr2, at) => arr2.map(e => chip(e, at)).join('');
+            const chip = (e, at) => {
+                if (!e) return '';
+                const isAt = at || e.m <= 0.5 || (e.t && e.t.status === 'arriving');
+                const dispM = isAt ? 0 : Math.max(0, Math.round(e.m));
+                const approx = e.approx ? '~' : '';
+                const etaAttr = (!isAt && e.eta)
+                    ? ` data-eta-base="${e.eta.base}" data-eta-at="${e.eta.at}" data-eta-approx="${e.approx ? '1' : ''}" data-eta-format="chip"`
+                    : '';
+                return `<span class="rt-chip ${isAt ? 'at' : ''}" style="border-color:${color};color:${color}"><i${etaAttr}>${isAt ? '0' : `${approx}${dispM}`}m</i></span>`;
+            };
+            const chips = (arr2, at) => (arr2 || []).map(e => chip(e, at)).join('');
 
             // แถวกลาง: ราง + จุดสถานี (เส้นครึ่งซ้าย/ขวาตามว่ามีเพื่อนบ้านฝั่งนั้นไหม)
             const mid = (st, l, r, cur) => `<div class="rt-mid">
@@ -6273,9 +6806,130 @@ gQIDAQAB
                 <span class="lbl"><b style="${cur ? 'color:' + color : ''}">${esc(st.StationKey)}</b><i>${esc(shortDest(stName(st)))}</i></span>` : ''}
             </div>`;
 
-            const hasNextSide = Z.next.at.length + Z.next.near.length + Z.next.far.length > 0;
-            const hasPrevSide = Z.prev.at.length + Z.prev.near.length + Z.prev.far.length > 0;
+            let pTop = plats.find(p => fromOf(p) === 'prev');
+            let pBtm = plats.find(p => fromOf(p) === 'next');
+            if (plats.length > 1) {
+                if (!pTop && pBtm) pTop = plats.find(p => p !== pBtm);
+                if (!pBtm && pTop) pBtm = plats.find(p => p !== pTop);
+                if (pTop === pBtm) {
+                    pTop = plats[0];
+                    pBtm = plats[1];
+                }
+            } else {
+                if (!pTop && plats.length > 0) pTop = plats[0];
+            }
+
+            const topLabel = pTop ? formatPlatLabel(pTop, next || list[list.length - 1]) : '';
+            const btmLabel = pBtm ? formatPlatLabel(pBtm, prev || list[0]) : '';
+
+            const topPlatHdr = topLabel ? `
+                <div class="rt-plat-hdr top" style="justify-self: end; width: fit-content;">
+                    <span class="p-tag">
+                        <span class="p-badge" style="background:${color}">${pTop?.platform != null ? 'P' + pTop.platform : 'P'}</span>
+                        <span>${esc(topLabel)}</span>
+                    </span>
+                </div>` : '';
+
+            const btmPlatHdr = btmLabel ? `
+                <div class="rt-plat-hdr btm" style="justify-self: start; width: fit-content;">
+                    <span class="p-tag">
+                        <span class="p-badge" style="background:${color}">${pBtm?.platform != null ? 'P' + pBtm.platform : 'P'}</span>
+                        <span>${esc(btmLabel)}</span>
+                    </span>
+                </div>` : '';
+
             const lineName = App.lineById[block.lineId] ? shortLineName(App.lineById[block.lineId]) : '';
+
+            // รางบน (วิ่ง →):
+            const allP1 = Z.prev;
+            const atP1 = allP1.find(x => x.m <= 0.5 || (x.t && x.t.status === 'arriving'));
+            const incP1 = allP1.filter(x => x !== atP1);
+
+            let topLanes;
+            if (!prev) {
+                // สถานีต้นทาง (เช่น YL01): ขบวนเริ่มออกจากสถานีนี้
+                // คิวขบวนที่รอออกอยู่ในช่อง Col 1 เรียงลำดับใกล้ถึงเวลาที่สุดอยู่หน้าสุด (ขวา)
+                const queueP1 = [...incP1].sort((a, b) => b.m - a.m);
+                topLanes = `
+                    <div class="rt-lane rail je">${chips(queueP1)}</div>
+                    <div class="rt-lane rail"></div>
+                    <div class="rt-lane rail"></div>
+                    <div class="rt-lane rail jc">${atP1 ? chip(atP1, true) : ''}</div>
+                    <div class="rt-lane rail arrow-lane"><span class="rt-arrow">→</span></div>
+                    <div class="rt-lane rail"></div>
+                    <div class="rt-lane rail"></div>`;
+            } else if (!next) {
+                // สถานีปลายทาง (เช่น YL23): ขบวนวิ่งมาจากฝั่ง prev เข้าสู่สถานีปลายทาง
+                const nearP1 = incP1.find(x => x.m <= 2.5);
+                const farP1 = incP1.filter(x => x !== nearP1);
+                const queueP1 = [...farP1].sort((a, b) => b.m - a.m);
+                topLanes = `
+                    <div class="rt-lane rail je">${chips(queueP1)}</div>
+                    <div class="rt-lane rail"></div>
+                    <div class="rt-lane rail je">${nearP1 ? chip(nearP1) : (allP1.length ? '<span class="rt-arrow">→</span>' : '')}</div>
+                    <div class="rt-lane rail jc">${atP1 ? chip(atP1, true) : ''}</div>
+                    <div class="rt-lane rail"></div>
+                    <div class="rt-lane rail"></div>
+                    <div class="rt-lane rail"></div>`;
+            } else {
+                // สถานีระหว่างทาง:
+                const nearP1 = incP1.find(x => x.m <= 2.5);
+                const farP1 = incP1.filter(x => x !== nearP1);
+                const queueP1 = [...farP1].sort((a, b) => b.m - a.m);
+                topLanes = `
+                    <div class="rt-lane rail je">${chips(queueP1)}</div>
+                    <div class="rt-lane rail"></div>
+                    <div class="rt-lane rail je">${nearP1 ? chip(nearP1) : ''}</div>
+                    <div class="rt-lane rail jc">${atP1 ? chip(atP1, true) : ''}</div>
+                    <div class="rt-lane rail arrow-lane">${allP1.length ? '<span class="rt-arrow">→</span>' : ''}</div>
+                    <div class="rt-lane rail"></div>
+                    <div class="rt-lane rail"></div>`;
+            }
+
+            // รางล่าง (วิ่ง ←):
+            const allP2 = Z.next;
+            const atP2 = allP2.find(x => x.m <= 0.5 || (x.t && x.t.status === 'arriving'));
+            const incP2 = allP2.filter(x => x !== atP2);
+
+            let btmLanes;
+            if (!prev) {
+                // สถานีต้นทาง (เช่น YL01): ขบวนวิ่งมาจากฝั่ง next สิ้นสุดที่สถานีนี้
+                const nearP2 = incP2.find(x => x.m <= 2.5);
+                const farP2 = incP2.filter(x => x !== nearP2);
+                const queueP2 = [...farP2].sort((a, b) => a.m - b.m);
+                btmLanes = `
+                    <div class="rt-lane rail"></div>
+                    <div class="rt-lane rail"></div>
+                    <div class="rt-lane rail"></div>
+                    <div class="rt-lane rail jc">${atP2 ? chip(atP2, true) : ''}</div>
+                    <div class="rt-lane rail arrow-lane">${nearP2 ? chip(nearP2) : (allP2.length ? '<span class="rt-arrow">←</span>' : '')}</div>
+                    <div class="rt-lane rail"></div>
+                    <div class="rt-lane rail js">${chips(queueP2)}</div>`;
+            } else if (!next) {
+                // สถานีปลายทาง (เช่น YL23): ขบวนเริ่มออกจากสถานีปลายทางวิ่งกลับไปทาง prev
+                const queueP2 = [...incP2].sort((a, b) => a.m - b.m);
+                btmLanes = `
+                    <div class="rt-lane rail"></div>
+                    <div class="rt-lane rail"></div>
+                    <div class="rt-lane rail arrow-lane"><span class="rt-arrow">←</span></div>
+                    <div class="rt-lane rail jc">${atP2 ? chip(atP2, true) : ''}</div>
+                    <div class="rt-lane rail"></div>
+                    <div class="rt-lane rail"></div>
+                    <div class="rt-lane rail js">${chips(queueP2)}</div>`;
+            } else {
+                // สถานีระหว่างทาง:
+                const nearP2 = incP2.find(x => x.m <= 2.5);
+                const farP2 = incP2.filter(x => x !== nearP2);
+                const queueP2 = [...farP2].sort((a, b) => a.m - b.m);
+                btmLanes = `
+                    <div class="rt-lane rail"></div>
+                    <div class="rt-lane rail"></div>
+                    <div class="rt-lane rail arrow-lane">${allP2.length ? '<span class="rt-arrow">←</span>' : ''}</div>
+                    <div class="rt-lane rail jc">${atP2 ? chip(atP2, true) : ''}</div>
+                    <div class="rt-lane rail">${nearP2 ? chip(nearP2) : ''}</div>
+                    <div class="rt-lane rail"></div>
+                    <div class="rt-lane rail js">${chips(queueP2)}</div>`;
+            }
 
             return `<div class="route-box">
                 <div class="route-title" style="display:flex;align-items:center;gap:6px;">
@@ -6283,36 +6937,26 @@ gQIDAQAB
                     <span class="bar" style="background:${color}"></span>
                     ${T('routeTitle')}${lineName ? T('routeLine', esc(lineName)) : ''}</div>
                 <div class="rt-grid" style="--rt-color:${color}">
+                    ${topPlatHdr}
                     <!-- บน: ขบวนที่มาจากฝั่ง prev (วิ่ง → ไปทางเลขสถานีมากขึ้น) -->
-                    <div class="rt-lane rail je">${chips(Z.prev.far)}</div>
-                    <div class="rt-lane rail"></div>
-                    <div class="rt-lane rail je">${chips(Z.prev.near)}</div>
-                    <div class="rt-lane rail jc">${chips(Z.prev.at, true)}</div>
-                    <div class="rt-lane rail arrow-lane">${hasPrevSide ? '<span class="rt-arrow">→</span>' : ''}</div>
-                    <div class="rt-lane rail"></div>
-                    <div class="rt-lane rail"></div>
+                    ${topLanes}
                     <!-- กลาง: ราง + สถานี -->
-                    ${mid(null)}
-                    ${mid(prev, false, !!prev)}
+                    ${mid(null, false, !!prev)}
+                    ${mid(prev, !!prev, !!prev)}
                     ${mid(null, !!prev, !!prev)}
                     ${mid(station, !!prev, !!next, true)}
                     ${mid(null, !!next, !!next)}
-                    ${mid(next, !!next, false)}
-                    ${mid(null)}
+                    ${mid(next, !!next, !!next)}
+                    ${mid(null, !!next, false)}
                     <!-- ล่าง: ขบวนที่มาจากฝั่ง next (วิ่ง ← ไปทางเลขสถานีน้อยลง) -->
-                    <div class="rt-lane rail"></div>
-                    <div class="rt-lane rail"></div>
-                    <div class="rt-lane rail arrow-lane">${hasNextSide ? '<span class="rt-arrow">←</span>' : ''}</div>
-                    <div class="rt-lane rail jc">${chips(Z.next.at, true)}</div>
-                    <div class="rt-lane rail">${chips(Z.next.near)}</div>
-                    <div class="rt-lane rail"></div>
-                    <div class="rt-lane rail">${chips(Z.next.far)}</div>
+                    ${btmLanes}
+                    ${btmPlatHdr}
                 </div>
             </div>`;
         }
 
         /* ================= START ================= */
         window.App = App;
-        window.__test = { bestEta, etaText, shortDest, mrtBlueFare, buildHybridJourney, displayTrains, generateTimetableArrivals, renderPlatformSection, renderRouteSection, TRANSIT_LINES_CATALOG, getLineScheduleTables };   // hook สำหรับ test-app.mjs
+        window.__test = { bestEta, etaText, shortDest, mrtBlueFare, buildHybridJourney, displayTrains, generateTimetableArrivals, renderPlatformSection, renderRouteSection, TRANSIT_LINES_CATALOG, getLineScheduleTables, buildSameStationJourney };   // hook สำหรับ test-app.mjs
         App.init();
     

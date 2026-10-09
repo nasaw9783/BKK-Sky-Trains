@@ -18,13 +18,13 @@
     <meta property="og:url" content="https://bkkskytrain.online/">
     <meta property="og:locale" content="th_TH">
     <meta property="og:locale:alternate" content="en_US">
-    <meta property="og:image" content="https://bkkskytrain.online/shot-mobile.png">
+    <meta property="og:image" content="https://bkkskytrain.online/icon-512.png">
     <meta property="og:image:alt" content="หน้าจอ BKK SKYTRAINs แผนที่สถานีและเวลารถไฟฟ้า BTS แบบเรียลไทม์">
-    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="BKK SKYTRAINs | เช็คเวลารถไฟฟ้า BTS & แผนที่สถานี Real Time">
     <meta name="twitter:description"
         content="ดูสถานีใกล้คุณ เวลาขบวนถัดไป ทางออกสถานี สถานะการเดินรถ และวางแผนเส้นทางรถไฟฟ้าพร้อมค่าโดยสารในกรุงเทพฯ">
-    <meta name="twitter:image" content="https://bkkskytrain.online/shot-mobile.png">
+    <meta name="twitter:image" content="https://bkkskytrain.online/icon-512.png">
     <meta http-equiv="Content-Language" content="en, th">
     <meta name="google-site-verification" content="7ScgnHdeVnRxmI2umJW7gYA5arry2qMg0wfVdH3qM8w" />
     <script type="application/ld+json">
@@ -270,6 +270,8 @@
             -webkit-backdrop-filter: blur(20px) saturate(160%);
             color: #fff;
             padding: 10px 16px;
+            padding-left: max(16px, env(safe-area-inset-left));
+            padding-right: max(16px, env(safe-area-inset-right));
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -310,7 +312,6 @@
             gap: 10px;
             min-width: 0;
             flex: 1;
-            overflow: hidden;
         }
 
         .brand-copy {
@@ -320,26 +321,22 @@
         }
 
         header.app .logo {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
-            background: #10213a url('icon.svg') center / cover no-repeat;
-            display: grid;
-            place-items: center;
-            font-size: 0;
-            flex: none;
-            box-shadow:
-                0 0 0 1.5px rgba(255, 255, 255, 0.5),
-                0 0 16px rgba(16, 185, 129, 0.3),
-                0 4px 12px rgba(0, 0, 0, 0.25);
-            transition: transform 0.25s ease, box-shadow 0.25s ease;
+            width: 38px;
+            height: 38px;
+            object-fit: contain;
+            display: block;
+            flex-shrink: 0;
+            border: none;
+            border-radius: 0;
+            box-shadow: none;
+            background: transparent;
+            filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35));
+            transition: transform 0.25s ease, filter 0.25s ease;
         }
 
         header.app .logo:hover {
             transform: scale(1.05);
-            box-shadow:
-                0 0 0 2px rgba(255, 255, 255, 0.8),
-                0 0 22px rgba(16, 185, 129, 0.45);
+            filter: drop-shadow(0 3px 10px rgba(16, 185, 129, 0.5));
         }
 
         .brand-title-wrap {
@@ -464,15 +461,17 @@
 
         @media (max-width: 480px) {
             header.app {
-                padding: 8px 10px;
-                gap: 6px;
+                padding: 8px 12px;
+                padding-left: max(12px, env(safe-area-inset-left));
+                padding-right: max(12px, env(safe-area-inset-right));
+                gap: 8px;
             }
             header.app h1 {
                 font-size: 13px;
             }
             header.app .logo {
-                width: 32px;
-                height: 32px;
+                width: 34px;
+                height: 34px;
             }
             .header-controls {
                 gap: 4px;
@@ -486,6 +485,21 @@
             }
             .clock .d {
                 font-size: 8px;
+            }
+            .j-fields {
+                gap: 6px;
+            }
+            .j-field {
+                padding: 8px 10px;
+            }
+            .j-field .val {
+                font-size: 12.5px;
+                gap: 4px;
+            }
+            .j-swap {
+                width: 32px;
+                height: 32px;
+                font-size: 14px;
             }
         }
 
@@ -698,6 +712,12 @@
 
         .alt-chip:active {
             transform: scale(0.95);
+        }
+
+        .alt-chip.on {
+            border-color: var(--accent);
+            background: var(--accent-bg, rgba(16, 185, 129, 0.08));
+            box-shadow: 0 0 0 1px var(--accent);
         }
 
         /* ===== Platform Cards & Real-Time Arrivals ===== */
@@ -1284,94 +1304,348 @@
         }
 
         .mrt-freq-daytype {
-            font-size: 12.5px;
+            font-size: 13px;
             font-weight: 700;
             color: var(--ink);
-            margin: 12px 0 6px;
+            margin: 12px 0 8px;
             display: flex;
             align-items: center;
+            gap: 8px;
+        }
+
+        /* ===== Transit Frequency Segmented Day Tabs ===== */
+        .freq-tab-bar {
+            display: flex;
+            gap: 4px;
+            background: var(--bg-subtle);
+            padding: 4px;
+            border-radius: 12px;
+            border: 1px solid var(--line);
+            margin: 6px 0 14px;
+        }
+
+        .freq-tab-btn {
+            flex: 1;
+            min-width: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             gap: 6px;
+            padding: 8px 10px;
+            font-size: 12.5px;
+            font-weight: 700;
+            color: var(--muted);
+            background: transparent;
+            border: none;
+            border-radius: 9px;
+            cursor: pointer;
+            transition: all .2s ease;
+            white-space: nowrap;
+        }
+
+        .freq-tab-btn:hover {
+            color: var(--ink);
+        }
+
+        .freq-tab-btn.active {
+            background: #ffffff;
+            color: #0f172a;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+        }
+
+        html.dark .freq-tab-btn.active {
+            background: #1e293b;
+            color: #f8fafc;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+        }
+
+        .freq-today-badge {
+            font-size: 10px;
+            font-weight: 800;
+            background: rgba(34, 197, 94, 0.18);
+            color: #16a34a;
+            padding: 1.5px 6px;
+            border-radius: 6px;
+            line-height: 1.2;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        html.dark .freq-today-badge {
+            background: rgba(34, 197, 94, 0.25);
+            color: #4ade80;
+        }
+
+        /* ===== Modern Frequency Table Container ===== */
+        .mrt-freq-table-container {
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            overflow: hidden;
+            background: var(--card);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+            margin-bottom: 10px;
         }
 
         .mrt-freq-table {
             width: 100%;
             border-collapse: separate;
             border-spacing: 0;
-            font-size: 12.5px;
-            margin-bottom: 6px;
+            font-size: 13px;
+            margin-bottom: 0;
             table-layout: fixed;
         }
 
-        .mrt-freq-table th {
-            font-weight: 600;
+        .mrt-freq-table thead th {
+            font-weight: 700;
             color: var(--muted);
-            font-size: 11px;
-            padding: 6px 10px;
+            font-size: 11.5px;
+            padding: 9px 12px;
+            background: var(--bg-subtle);
             border-bottom: 1px solid var(--line);
             text-align: left;
+            letter-spacing: 0.3px;
         }
 
         .mrt-freq-table th:first-child,
         .mrt-freq-table td:first-child {
-            width: 46%;
+            width: 44%;
             text-align: left;
-            font-variant-numeric: tabular-nums;
         }
 
         .mrt-freq-table th:last-child,
         .mrt-freq-table td:last-child {
-            width: 54%;
+            width: 56%;
             text-align: left;
-            font-variant-numeric: tabular-nums;
+        }
+
+        .mrt-freq-table tbody tr {
+            transition: background .15s ease;
+        }
+
+        .mrt-freq-table tbody tr:nth-child(even):not(.now) {
+            background: rgba(0, 0, 0, 0.015);
+        }
+
+        html.dark .mrt-freq-table tbody tr:nth-child(even):not(.now) {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .mrt-freq-table tbody tr:not(.now):hover {
+            background: rgba(0, 0, 0, 0.03);
+        }
+
+        html.dark .mrt-freq-table tbody tr:not(.now):hover {
+            background: rgba(255, 255, 255, 0.04);
         }
 
         .mrt-freq-table td {
-            padding: 7px 10px;
+            padding: 9px 12px;
             border-bottom: 1px solid var(--line-subtle, rgba(226, 232, 240, 0.6));
             color: var(--ink);
             font-weight: 500;
+            vertical-align: middle;
         }
 
         .mrt-freq-table tr:last-child td {
             border-bottom: none;
         }
 
+        /* ===== Current Active Time Slot (tr.now) ===== */
         .mrt-freq-table tr.now {
-            background: #f0fdf4;
+            background: linear-gradient(90deg, #ecfdf5 0%, #f0fdf4 100%) !important;
+            position: relative;
         }
 
         html.dark .mrt-freq-table tr.now {
-            background: rgba(34, 197, 94, 0.14);
+            background: linear-gradient(90deg, rgba(34, 197, 94, 0.22) 0%, rgba(34, 197, 94, 0.08) 100%) !important;
         }
 
         .mrt-freq-table tr.now td {
-            border-bottom-color: transparent;
+            border-bottom: 1px solid rgba(34, 197, 94, 0.25);
         }
 
         .mrt-freq-table tr.now td:first-child {
+            border-left: 4px solid #16a34a;
             font-weight: 800;
             color: var(--ink);
-            border-top-left-radius: 6px;
-            border-bottom-left-radius: 6px;
+        }
+
+        html.dark .mrt-freq-table tr.now td:first-child {
+            border-left: 4px solid #4ade80;
         }
 
         .mrt-freq-table tr.now td:last-child {
             font-weight: 800;
             color: #16a34a;
-            border-top-right-radius: 6px;
-            border-bottom-right-radius: 6px;
         }
 
         html.dark .mrt-freq-table tr.now td:last-child {
             color: #4ade80;
         }
 
-        .mrt-freq-note {
+        /* Time Cell */
+        .freq-time-cell {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .freq-time-range {
+            font-family: ui-monospace, SFMono-Regular, "Roboto Mono", Menlo, Consolas, monospace;
+            font-size: 13.5px;
+            font-weight: 700;
+            letter-spacing: -0.2px;
+            font-variant-numeric: tabular-nums;
+            color: var(--ink);
+            white-space: nowrap;
+        }
+
+        .freq-live-now-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            font-weight: 800;
+            background: #16a34a;
+            color: #ffffff;
+            padding: 1.5px 6px;
+            border-radius: 10px;
+            letter-spacing: 0.3px;
+            box-shadow: 0 1px 4px rgba(22, 163, 74, 0.3);
+            white-space: nowrap;
+        }
+
+        html.dark .freq-live-now-tag {
+            background: #22c55e;
+            color: #052e16;
+        }
+
+        .freq-pulse-dot {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: currentColor;
+            animation: pulse 1.4s infinite;
+        }
+
+        /* Frequency Cells */
+        .freq-single-pill {
+            display: inline-flex;
+            align-items: baseline;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 8px;
+            background: var(--bg-subtle);
+            border: 1px solid var(--line);
+            font-variant-numeric: tabular-nums;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--ink);
+            white-space: nowrap;
+        }
+
+        .mrt-freq-table tr.now .freq-single-pill {
+            background: rgba(34, 197, 94, 0.15);
+            border-color: rgba(34, 197, 94, 0.4);
+            color: #16a34a;
+        }
+
+        html.dark .mrt-freq-table tr.now .freq-single-pill {
+            color: #4ade80;
+        }
+
+        .freq-single-pill .freq-prefix {
             font-size: 11px;
+            font-weight: 600;
             color: var(--muted);
-            margin-top: 14px;
-            text-align: center;
-            font-style: italic;
+        }
+
+        .mrt-freq-table tr.now .freq-single-pill .freq-prefix {
+            color: #16a34a;
+        }
+
+        html.dark .mrt-freq-table tr.now .freq-single-pill .freq-prefix {
+            color: #4ade80;
+        }
+
+        .freq-single-pill .freq-unit {
+            font-size: 11.5px;
+            font-weight: 600;
+            color: var(--muted);
+        }
+
+        /* Dual Frequency Box (Sukhumvit Line Peak) */
+        .freq-dual-box {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .freq-dual-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .freq-dual-tag {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 1.5px 6px;
+            border-radius: 5px;
+            white-space: nowrap;
+        }
+
+        .freq-dual-tag.core {
+            background: rgba(122, 180, 32, 0.18);
+            color: #5c8e14;
+        }
+
+        html.dark .freq-dual-tag.core {
+            color: #9bd63e;
+        }
+
+        .freq-dual-tag.ext {
+            background: var(--line);
+            color: var(--muted);
+        }
+
+        .freq-dual-val {
+            font-size: 12.5px;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            color: var(--ink);
+        }
+
+        /* Frequency Note Callout Card */
+        .mrt-freq-note-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            background: var(--bg-subtle);
+            border: 1px solid var(--line);
+            margin-top: 10px;
+            font-size: 12px;
+            color: var(--ink);
+            line-height: 1.5;
+        }
+
+        .mrt-freq-note-card .note-icon {
+            font-size: 14px;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        .mrt-freq-note {
+            font-size: 11.5px;
+            color: var(--muted);
+            margin-top: 10px;
+            text-align: left;
         }
 
         .mrt-freq-oos {
@@ -1413,10 +1687,25 @@
             align-items: center;
             justify-content: center;
             font-size: 10px;
+            gap: 2px;
         }
 
         .rt-lane.rail {
             background: var(--line);
+        }
+
+        .rt-lane.je {
+            justify-content: flex-end;
+            padding-right: 2px;
+        }
+
+        .rt-lane.js {
+            justify-content: flex-start;
+            padding-left: 2px;
+        }
+
+        .rt-lane.jc {
+            justify-content: center;
         }
 
         .rt-chip {
@@ -1429,6 +1718,60 @@
             display: inline-flex;
             align-items: center;
             gap: 2px;
+        }
+
+        .rt-plat-hdr {
+            grid-column: 1 / -1;
+            display: inline-flex;
+            align-items: center;
+            width: fit-content;
+            max-width: 100%;
+            padding: 3px 8px;
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--ink);
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--line);
+            border-radius: 6px;
+            margin: 2px 0;
+            box-sizing: border-box;
+        }
+
+        .rt-plat-hdr.top {
+            margin-bottom: 3px;
+            justify-self: end;
+        }
+
+        .rt-plat-hdr.btm {
+            margin-top: 3px;
+            justify-self: start;
+        }
+
+        .rt-plat-hdr .p-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .rt-plat-hdr .p-badge {
+            font-size: 9px;
+            font-weight: 800;
+            padding: 1.5px 5px;
+            border-radius: 4px;
+            color: #fff;
+            flex-shrink: 0;
+            letter-spacing: 0.3px;
+        }
+
+        .rt-plat-hdr .p-arrow {
+            font-size: 12px;
+            font-weight: 800;
+            opacity: 0.9;
+            flex-shrink: 0;
         }
 
         .rt-mid {
@@ -1764,14 +2107,18 @@
             align-items: center;
             gap: 8px;
             margin-bottom: 12px;
+            width: 100%;
+            min-width: 0;
         }
 
         .j-field {
             flex: 1;
+            min-width: 0;
+            width: 0;
             background: var(--bg-subtle);
             border: 1.5px solid var(--line);
             border-radius: var(--radius-md);
-            padding: 10px 14px;
+            padding: 9px 12px;
             cursor: pointer;
             text-align: left;
             font-family: inherit;
@@ -1779,6 +2126,8 @@
             display: flex;
             flex-direction: column;
             gap: 2px;
+            overflow: hidden;
+            box-sizing: border-box;
         }
 
         .j-field:hover {
@@ -1791,23 +2140,46 @@
             font-weight: 700;
             color: var(--muted);
             text-transform: uppercase;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .j-field .val {
             font-size: 13.5px;
             font-weight: 700;
             color: var(--ink);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 6px;
+            width: 100%;
+            min-width: 0;
+        }
+
+        .j-field .val .st-key {
+            flex-shrink: 0;
+            font-size: 10.5px;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 5px;
+            white-space: nowrap;
+            margin-top: 1px;
+        }
+
+        .j-field .val .nm {
+            flex: 1;
+            min-width: 0;
+            white-space: normal;
+            word-break: break-word;
+            line-height: 1.25;
         }
 
         .j-field .val.ph {
             color: var(--faint);
             font-weight: 500;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .j-swap {
@@ -1983,6 +2355,8 @@
             flex: 1;
             min-width: 0;
             line-height: 1.4;
+            white-space: normal;
+            word-break: break-word;
         }
 
         .j-step .tm {
@@ -2322,17 +2696,18 @@
             box-sizing: border-box;
         }
 
-        @media (max-width: 340px) {
+        @media (max-width: 600px) {
             .line-stations-grid {
                 grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 6px 8px;
             }
         }
 
         .station-picker-chip {
             display: flex;
             align-items: center;
-            gap: 5px;
-            padding: 6px 6px;
+            gap: 6px;
+            padding: 6px 8px;
             background: var(--card);
             border: 1px solid var(--line);
             border-radius: 8px;
@@ -2343,6 +2718,7 @@
             outline: none;
             min-width: 0;
             width: 100%;
+            min-height: 40px;
             box-sizing: border-box;
             overflow: hidden;
         }
@@ -2363,10 +2739,10 @@
             font-size: 9.5px;
             font-weight: 800;
             color: #fff;
-            padding: 2px 4px;
+            padding: 2px 5px;
             border-radius: 4px;
-            min-width: 26px;
-            max-width: 38px;
+            min-width: 28px;
+            max-width: 42px;
             text-align: center;
             flex-shrink: 0;
             line-height: 1.2;
@@ -2378,12 +2754,11 @@
         .station-picker-chip .chip-name {
             font-size: 11px;
             color: var(--ink);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            white-space: normal;
+            word-break: break-word;
             min-width: 0;
             flex: 1;
-            line-height: 1.3;
+            line-height: 1.25;
         }
 
         /* ===== Fares & Timetables View ===== */
@@ -2907,10 +3282,297 @@
 
         footer {
             text-align: center;
-            padding: 24px 14px 14px;
+            padding: 24px 16px 28px;
             font-size: 11px;
-            color: var(--faint);
+            color: var(--muted);
             line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            max-width: 860px;
+            margin: 0 auto;
+        }
+
+        .footer-systems-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--ink-secondary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            letter-spacing: 0.2px;
+        }
+
+        /* ===== Footer 10 Transit Systems Network Grid ===== */
+        .footer-systems-title {
+            font-size: 13.5px;
+            font-weight: 800;
+            color: var(--ink);
+            text-align: center;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .footer-systems-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+            width: 100%;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
+
+        .footer-line-card {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 8px 10px;
+            border-radius: var(--radius-sm, 10px);
+            background: var(--card);
+            border: 1px solid var(--line);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            cursor: pointer;
+            transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+            text-align: left;
+            min-width: 0;
+            width: 100%;
+            box-sizing: border-box;
+            font-family: inherit;
+        }
+
+        .footer-line-card:hover {
+            border-color: var(--line-active, rgba(255, 255, 255, 0.28));
+            background: var(--card-hover, rgba(255, 255, 255, 0.06));
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+        }
+
+        .footer-line-card:active {
+            transform: scale(0.97);
+        }
+
+        .footer-card-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: 1px solid transparent;
+        }
+
+        .footer-card-info {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5px;
+        }
+
+        .footer-card-name {
+            font-size: 11.5px;
+            font-weight: 700;
+            color: var(--ink);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.25;
+        }
+
+        .footer-card-route {
+            font-size: 9.5px;
+            font-weight: 500;
+            color: var(--muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.2;
+        }
+
+        .footer-card-arrow {
+            flex-shrink: 0;
+            font-size: 14px;
+            color: var(--muted);
+            opacity: 0.55;
+            margin-left: auto;
+            font-weight: 600;
+        }
+
+        /* ===== Journey Planner Quick Hubs Grid ===== */
+        .quick-hub-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .quick-hub-card {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 8px 10px;
+            border-radius: var(--radius-sm, 10px);
+            background: var(--card);
+            border: 1px solid var(--line);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+            cursor: pointer;
+            transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+            font-family: inherit;
+            color: var(--ink);
+            text-align: left;
+            min-width: 0;
+            width: 100%;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        .quick-hub-card:hover {
+            border-color: var(--accent);
+            background: var(--card-hover, rgba(255, 255, 255, 0.06));
+            transform: translateY(-1px);
+        }
+
+        .quick-hub-card.on {
+            border-color: var(--accent);
+            background: var(--accent-bg, rgba(16, 185, 129, 0.08));
+            box-shadow: 0 0 0 1.5px var(--accent);
+        }
+
+        .quick-hub-icon-box {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: 1px solid transparent;
+        }
+
+        .quick-hub-info {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .quick-hub-title-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            min-width: 0;
+        }
+
+        .quick-hub-code-pill {
+            flex-shrink: 0;
+            font-size: 10.5px;
+            font-weight: 800;
+            padding: 1.5px 5.5px;
+            border-radius: 5px;
+            line-height: 1.15;
+            letter-spacing: -0.2px;
+        }
+
+        .quick-hub-name {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--ink);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.2;
+        }
+
+        .quick-hub-sub {
+            font-size: 9.5px;
+            font-weight: 500;
+            color: var(--muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.2;
+        }
+
+        .quick-hub-tag {
+            flex-shrink: 0;
+            font-size: 9.5px;
+            font-weight: 700;
+            padding: 2px 5px;
+            border-radius: 5px;
+            line-height: 1.2;
+        }
+
+        .quick-hub-tag.from {
+            background: var(--accent, #10b981);
+            color: #ffffff;
+        }
+
+        .quick-hub-tag.to {
+            background: #0284c7;
+            color: #ffffff;
+        }
+
+        .line-icon-wrap {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            line-height: 0;
+            vertical-align: middle;
+        }
+
+        .line-icon-wrap svg {
+            display: block;
+        }
+
+        .footer-train-icon {
+            width: 14px;
+            height: 14px;
+            display: inline-block;
+            flex-shrink: 0;
+            vertical-align: middle;
+            filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
+        }
+
+        .footer-train-bts { color: #7AB420; }
+        .footer-train-mrt { color: #0284C7; }
+        .footer-train-monorail { color: #FFD100; }
+        .footer-train-srt { color: #DC2626; }
+        .footer-train-arl { color: #8A1538; }
+
+        html:not(.dark) .footer-train-monorail {
+            color: #D97706;
+        }
+
+        html.dark .footer-train-arl {
+            color: #B91C4A;
+        }
+
+        .footer-refresh-note {
+            font-size: 11px;
+            color: var(--muted);
+            line-height: 1.5;
+            margin-top: 2px;
+        }
+
+        .footer-disclaimer-note {
+            font-size: 10.5px;
+            color: var(--faint);
+            line-height: 1.45;
+            max-width: 650px;
         }
 
         /* ===== Pull to Refresh Indicator (Top) ===== */
@@ -3129,23 +3791,44 @@
             margin-top: 2px;
         }
 
-        .nearest-popup-action-btn {
-            display: flex;
+        .nearest-popup-dismiss-btn {
+            width: 100%;
+            padding: 12px 20px;
+            font-size: 15px;
+            font-weight: 700;
+            color: #ffffff;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            border-radius: var(--radius-md, 14px);
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35), 0 2px 4px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
-            padding: 12px 16px;
-            font-size: 14px;
-            font-weight: 800;
-            width: 100%;
+            letter-spacing: 0.3px;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            outline: none;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            -webkit-tap-highlight-color: transparent;
         }
 
-        .nearest-popup-dismiss-btn {
-            width: 100%;
-            padding: 9px;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--muted);
+        .nearest-popup-dismiss-btn:hover {
+            background: linear-gradient(135deg, #34d399 0%, #059669 100%);
+            box-shadow: 0 6px 22px rgba(16, 185, 129, 0.5), 0 2px 8px rgba(0, 0, 0, 0.2);
+            transform: translateY(-1px);
+            color: #ffffff;
+        }
+
+        .nearest-popup-dismiss-btn:active {
+            transform: scale(0.98) translateY(0);
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+        }
+
+        .nearest-popup-dismiss-btn svg {
+            display: block;
+            flex-shrink: 0;
+            filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.25));
         }
 
         .app-toast {
@@ -3201,13 +3884,13 @@
     <!-- ===== Modern App Header ===== -->
     <header class="app">
         <div class="brand">
-            <div class="logo" aria-hidden="true"></div>
+            <img class="logo" src="icon.svg" alt="BKK SKYTRAINs" width="38" height="38" aria-hidden="true">
             <div class="brand-copy">
                 <div class="brand-title-wrap">
                     <h1 id="appTitle">BKK SKYTRAINs</h1>
                     <span class="live-pill"><span class="beacon-pulse"></span>LIVE</span>
                 </div>
-                <div class="sub" id="subTitle">สถานะรถไฟฟ้า BTS ณ ขณะนี้</div>
+                <div class="sub" id="subTitle">สถานะรถไฟฟ้า BTS / MRT / SRT / ARL ณ ขณะนี้</div>
                 <div class="disclaimer" id="affiliationNote">เว็บไซต์นี้ไม่มีส่วนเกี่ยวข้องกับ BTS/MRT/SRT/ARL แต่อย่างใด</div>
             </div>
         </div>
@@ -3300,7 +3983,7 @@
             
             <div class="card" style="padding:16px;margin-bottom:14px">
                 <div style="font-weight:800;font-size:13.5px;margin-bottom:10px;color:var(--ink)" id="plannerHubTitle">🌟 สถานีชุมทางยอดนิยม (แตะเพื่อเลือกด่วน)</div>
-                <div style="display:flex;flex-wrap:wrap;gap:8px" id="quickHubChips"></div>
+                <div class="quick-hub-grid" id="quickHubChips"></div>
             </div>
         </div>
 
@@ -3362,8 +4045,115 @@
         </div>
 
         <footer id="footerNote">
-            ข้อมูลเรียลไทม์จากระบบ BTS (EBM) · รีเฟรชอัตโนมัติทุก 20 วินาที<br>
-            Unofficial app — BKK SKYTRAINs สไตล์โมเดิร์น สำหรับคนเดินทาง
+            <div class="footer-systems-title">🚆 โครงข่ายระบบรถไฟฟ้า 10 สายที่เชื่อมต่อข้อมูลในระบบ</div>
+            <div class="footer-systems-grid">
+                <button type="button" class="footer-line-card" onclick="App.jumpToLine(1)" title="BTS สายสุขุมวิท (คูคต ↔ เคหะฯ)" aria-label="BTS สายสุขุมวิท">
+                    <div class="footer-card-icon" style="background:rgba(122,180,32,0.12);border-color:rgba(122,180,32,0.3)">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#7AB420" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 21h20M6 21v-3M18 21v-3" stroke-width="2"/><rect x="4" y="3" width="16" height="15" rx="3.5" fill="#7AB420" fill-opacity="0.22"/><path d="M6 7.5h12c0 2.2-1 4.5-6 4.5s-6-2.3-6-4.5z" fill="#7AB420"/><circle cx="7.5" cy="15" r="1.3" fill="#7AB420"/><circle cx="16.5" cy="15" r="1.3" fill="#7AB420"/><line x1="9" y1="5.2" x2="15" y2="5.2" stroke-width="1.6"/></svg>
+                    </div>
+                    <div class="footer-card-info">
+                        <div class="footer-card-name">BTS สายสุขุมวิท</div>
+                        <div class="footer-card-route">คูคต ↔ เคหะฯ</div>
+                    </div>
+                    <div class="footer-card-arrow">›</div>
+                </button>
+                <button type="button" class="footer-line-card" onclick="App.jumpToLine(2)" title="BTS สายสีลม (สนามกีฬาฯ ↔ บางหว้า)" aria-label="BTS สายสีลม">
+                    <div class="footer-card-icon" style="background:rgba(0,128,125,0.12);border-color:rgba(0,128,125,0.3)">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#00807D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 21h20M6 21v-3M18 21v-3" stroke-width="2"/><rect x="4" y="3" width="16" height="15" rx="3.5" fill="#00807D" fill-opacity="0.22"/><path d="M6 7.5h12c0 2.2-1 4.5-6 4.5s-6-2.3-6-4.5z" fill="#00807D"/><circle cx="7.5" cy="15" r="1.3" fill="#00807D"/><circle cx="16.5" cy="15" r="1.3" fill="#00807D"/><line x1="9" y1="5.2" x2="15" y2="5.2" stroke-width="1.6"/></svg>
+                    </div>
+                    <div class="footer-card-info">
+                        <div class="footer-card-name">BTS สายสีลม</div>
+                        <div class="footer-card-route">สนามกีฬาฯ ↔ บางหว้า</div>
+                    </div>
+                    <div class="footer-card-arrow">›</div>
+                </button>
+                <button type="button" class="footer-line-card" onclick="App.jumpToLine(3)" title="สายสีทอง APM (กรุงธนบุรี ↔ คลองสาน)" aria-label="สายสีทอง">
+                    <div class="footer-card-icon" style="background:rgba(201,160,56,0.12);border-color:rgba(201,160,56,0.3)">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#C9A038" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="21" x2="21" y2="21" stroke-width="2"/><rect x="9.5" y="18" width="5" height="3" rx="0.5" fill="#C9A038"/><rect x="4.5" y="3.5" width="15" height="14.5" rx="5" fill="#C9A038" fill-opacity="0.22"/><rect x="6.5" y="6" width="11" height="7.5" rx="3" fill="#C9A038"/><circle cx="7.5" cy="15.5" r="1.3" fill="#C9A038"/><circle cx="16.5" cy="15.5" r="1.3" fill="#C9A038"/></svg>
+                    </div>
+                    <div class="footer-card-info">
+                        <div class="footer-card-name">สายสีทอง (APM)</div>
+                        <div class="footer-card-route">กรุงธนบุรี ↔ คลองสาน</div>
+                    </div>
+                    <div class="footer-card-arrow">›</div>
+                </button>
+                <button type="button" class="footer-line-card" onclick="App.jumpToLine(101)" title="MRT สายสีน้ำเงิน (ท่าพระ ↔ หลักสอง)" aria-label="MRT สายสีน้ำเงิน">
+                    <div class="footer-card-icon" style="background:rgba(2,132,199,0.12);border-color:rgba(2,132,199,0.3)">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#0284C7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 20V11a9.5 9.5 0 0 1 19 0v9" stroke-width="1.6" opacity="0.6"/><line x1="2" y1="20" x2="22" y2="20" stroke-width="2"/><rect x="5.5" y="6" width="13" height="12" rx="3" fill="#0284C7" fill-opacity="0.22"/><rect x="7.2" y="8" width="9.6" height="4.8" rx="1.5" fill="#0284C7"/><line x1="7.5" y1="15" x2="9.5" y2="15" stroke-width="2"/><line x1="14.5" y1="15" x2="16.5" y2="15" stroke-width="2"/></svg>
+                    </div>
+                    <div class="footer-card-info">
+                        <div class="footer-card-name">MRT สายสีน้ำเงิน</div>
+                        <div class="footer-card-route">ท่าพระ ↔ หลักสอง</div>
+                    </div>
+                    <div class="footer-card-arrow">›</div>
+                </button>
+                <button type="button" class="footer-line-card" onclick="App.jumpToLine(102)" title="MRT สายสีม่วง (คลองบางไผ่ ↔ เตาปูน)" aria-label="MRT สายสีม่วง">
+                    <div class="footer-card-icon" style="background:rgba(138,44,155,0.12);border-color:rgba(138,44,155,0.3)">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#8A2C9B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="2" y1="20" x2="22" y2="20" stroke-width="2"/><path d="M6 20l-2 3M18 20l2 3" stroke-width="1.8"/><rect x="5" y="5.5" width="14" height="13" rx="2.5" fill="#8A2C9B" fill-opacity="0.22"/><path d="M8.5 3h7v2.5h-7z" fill="#8A2C9B"/><path d="M7 8h10v4.5H7z" rx="1" fill="#8A2C9B"/><circle cx="8" cy="15" r="1.3" fill="#8A2C9B"/><circle cx="16" cy="15" r="1.3" fill="#8A2C9B"/><line x1="10.5" y1="15" x2="13.5" y2="15" stroke-width="1.5"/></svg>
+                    </div>
+                    <div class="footer-card-info">
+                        <div class="footer-card-name">MRT สายสีม่วง</div>
+                        <div class="footer-card-route">คลองบางไผ่ ↔ เตาปูน</div>
+                    </div>
+                    <div class="footer-card-arrow">›</div>
+                </button>
+                <button type="button" class="footer-line-card" onclick="App.jumpToLine(4)" title="MRT สายสีเหลือง (ลาดพร้าว ↔ สำโรง)" aria-label="MRT สายสีเหลือง">
+                    <div class="footer-card-icon" style="background:rgba(255,209,0,0.15);border-color:rgba(255,209,0,0.35)">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#FFD100" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="18" x2="12" y2="22" stroke-width="3"/><rect x="9" y="14" width="6" height="5" rx="0.5" fill="#FFD100" fill-opacity="0.4"/><path d="M5 16V9c0-4 3.2-6 7-6s7 2 7 6v7c0 1-.8 1.5-2 1.5h-2c-.8 0-1-.5-1.2-1.2l-.6-2.3h-2.4l-.6 2.3c-.2.7-.4 1.2-1.2 1.2H7c-1.2 0-2-.5-2-1.5z" fill="#FFD100" fill-opacity="0.22"/><path d="M7 8c1.2-2.5 2.8-3.5 5-3.5s3.8 1 5 3.5v3.5H7V8z" fill="#FFD100"/><circle cx="7.5" cy="14" r="1.1" fill="#FFD100"/><circle cx="16.5" cy="14" r="1.1" fill="#FFD100"/></svg>
+                    </div>
+                    <div class="footer-card-info">
+                        <div class="footer-card-name">MRT สายสีเหลือง</div>
+                        <div class="footer-card-route">ลาดพร้าว ↔ สำโรง</div>
+                    </div>
+                    <div class="footer-card-arrow">›</div>
+                </button>
+                <button type="button" class="footer-line-card" onclick="App.jumpToLine(5)" title="MRT สายสีชมพู (ศูนย์ราชการฯ ↔ มีนบุรี)" aria-label="MRT สายสีชมพู">
+                    <div class="footer-card-icon" style="background:rgba(236,72,153,0.12);border-color:rgba(236,72,153,0.3)">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#EC4899" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="18" x2="12" y2="22" stroke-width="3"/><rect x="9" y="14" width="6" height="5" rx="0.5" fill="#EC4899" fill-opacity="0.4"/><path d="M5 16V9c0-4 3.2-6 7-6s7 2 7 6v7c0 1-.8 1.5-2 1.5h-2c-.8 0-1-.5-1.2-1.2l-.6-2.3h-2.4l-.6 2.3c-.2.7-.4 1.2-1.2 1.2H7c-1.2 0-2-.5-2-1.5z" fill="#EC4899" fill-opacity="0.22"/><path d="M7 8c1.2-2.5 2.8-3.5 5-3.5s3.8 1 5 3.5v3.5H7V8z" fill="#EC4899"/><circle cx="7.5" cy="14" r="1.1" fill="#EC4899"/><circle cx="16.5" cy="14" r="1.1" fill="#EC4899"/></svg>
+                    </div>
+                    <div class="footer-card-info">
+                        <div class="footer-card-name">MRT สายสีชมพู</div>
+                        <div class="footer-card-route">ศูนย์ราชการฯ ↔ มีนบุรี</div>
+                    </div>
+                    <div class="footer-card-arrow">›</div>
+                </button>
+                <button type="button" class="footer-line-card" onclick="App.jumpToLine(103)" title="SRT สายสีแดงเข้ม (กรุงเทพอภิวัฒน์ ↔ รังสิต)" aria-label="SRT สายสีแดงเข้ม">
+                    <div class="footer-card-icon" style="background:rgba(185,28,28,0.12);border-color:rgba(185,28,28,0.3)">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#B91C1C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l-3.5 3.5h7L12 2m0 3.5v2" stroke-width="1.5"/><path d="M5 7.5h14c1 0 1.5.5 1.5 1.8v7.4c0 1-.5 1.5-1.5 1.5H5c-1 0-1.5-.5-1.5-1.5V9.3c0-1.3.5-1.8 1.5-1.8z" fill="#B91C1C" fill-opacity="0.22"/><rect x="6.5" y="9.5" width="11" height="4" rx="1" fill="#B91C1C"/><circle cx="8" cy="15.2" r="1.3" fill="#B91C1C"/><circle cx="16" cy="15.2" r="1.3" fill="#B91C1C"/><line x1="2" y1="21" x2="22" y2="21" stroke-width="2"/><line x1="6" y1="18.2" x2="18" y2="18.2" stroke-width="1.5" opacity="0.6"/></svg>
+                    </div>
+                    <div class="footer-card-info">
+                        <div class="footer-card-name">SRT สายสีแดงเข้ม</div>
+                        <div class="footer-card-route">กรุงเทพอภิวัฒน์ ↔ รังสิต</div>
+                    </div>
+                    <div class="footer-card-arrow">›</div>
+                </button>
+                <button type="button" class="footer-line-card" onclick="App.jumpToLine(105)" title="SRT สายสีแดงอ่อน (กรุงเทพอภิวัฒน์ ↔ ตลิ่งชัน)" aria-label="SRT สายสีแดงอ่อน">
+                    <div class="footer-card-icon" style="background:rgba(248,113,113,0.15);border-color:rgba(248,113,113,0.35)">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#F87171" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2.5l5 2.5h-5" stroke-width="1.5" stroke-linecap="round"/><line x1="10.5" y1="5" x2="10.5" y2="7.5" stroke-width="1.5"/><path d="M5 7.5h14c1 0 1.5.5 1.5 1.8v7.4c0 1-.5 1.5-1.5 1.5H5c-1 0-1.5-.5-1.5-1.5V9.3c0-1.3.5-1.8 1.5-1.8z" fill="#F87171" fill-opacity="0.28"/><path d="M7 9.5h10v4H7z" rx="1" fill="#F87171"/><circle cx="8" cy="15.2" r="1.3" fill="#F87171"/><circle cx="16" cy="15.2" r="1.3" fill="#F87171"/><line x1="2" y1="21" x2="22" y2="21" stroke-width="2"/><line x1="6" y1="18.2" x2="18" y2="18.2" stroke-width="1.5" opacity="0.6"/></svg>
+                    </div>
+                    <div class="footer-card-info">
+                        <div class="footer-card-name">SRT สายสีแดงอ่อน</div>
+                        <div class="footer-card-route">กรุงเทพอภิวัฒน์ ↔ ตลิ่งชัน</div>
+                    </div>
+                    <div class="footer-card-arrow">›</div>
+                </button>
+                <button type="button" class="footer-line-card" onclick="App.jumpToLine(104)" title="ARL แอร์พอร์ต ลิงก์ (พญาไท ↔ สุวรรณภูมิ)" aria-label="ARL แอร์พอร์ต ลิงก์">
+                    <div class="footer-card-icon" style="background:rgba(138,21,56,0.12);border-color:rgba(138,21,56,0.3)">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#8A1538" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16.5V9.5c0-4 3.5-6.5 8-6.5s8 2.5 8 6.5v7c0 1-.8 1.5-1.8 1.5H5.8C4.8 18 4 17.5 4 16.5z" fill="#8A1538" fill-opacity="0.22"/><path d="M6.5 9c1-2.5 2.5-3.5 5.5-3.5s4.5 1 5.5 3.5v2.8H6.5V9z" fill="#8A1538"/><path d="M12 11.8l1.6 2.6h2.2l-2.4 1.4 1 2.8-2.4-1.4-2.4 1.4 1-2.8-2.4-1.4h2.2z" fill="#8A1538" stroke-width="0.5"/><line x1="2" y1="21" x2="22" y2="21" stroke-width="2"/></svg>
+                    </div>
+                    <div class="footer-card-info">
+                        <div class="footer-card-name">ARL แอร์พอร์ตลิงก์</div>
+                        <div class="footer-card-route">พญาไท ↔ สุวรรณภูมิ</div>
+                    </div>
+                    <div class="footer-card-arrow">›</div>
+                </button>
+            </div>
+            <div class="footer-refresh-note">
+                🔄 ข้อมูลเรียลไทม์ · รีเฟรชอัตโนมัติทุก 20 วินาที · ครอบคลุมทั้ง 10 สายทั่วกรุงเทพฯ และปริมณฑล
+            </div>
+            <div class="footer-disclaimer-note">
+                Unofficial app — พัฒนาเพื่ออำนวยความสะดวกในการเดินทาง ข้อมูลเวลาขบวนรถเป็นไปตามมาตรฐานการเดินรถ โปรดเผื่อเวลาเดินทาง
+            </div>
         </footer>
 
 
@@ -3498,12 +4288,8 @@
                 </div>
             </div>
             <div class="nearest-popup-actions">
-                <button type="button" class="btn btn-primary nearest-popup-action-btn" onclick="App.selectNearestFromPopup();">
-                    <span id="nearestPopupActionLbl">ดูรายละเอียดสถานี & ทางออกเต็มจอ</span>
-                    <span>➔</span>
-                </button>
-                <button type="button" class="btn btn-ghost nearest-popup-dismiss-btn" onclick="App.closeNearestPopup();" id="nearestPopupDismissLbl">
-                    รับทราบ
+                <button type="button" class="nearest-popup-dismiss-btn" onclick="App.closeNearestPopup();" id="nearestPopupDismissBtn">
+                    <span id="nearestPopupDismissLbl">รับทราบ</span>
                 </button>
             </div>
         </div>

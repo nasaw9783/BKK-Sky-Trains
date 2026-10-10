@@ -106,7 +106,7 @@ flutter build apk --release
 ```bash
 flutter build ipa --no-codesign
 ```
-*หรือใช้ระบบ **Automated iOS CI/CD** ผ่าน GitHub Actions ใน `.github/workflows/build_ios.yml` เพื่อให้ GitHub macOS Runner บิลด์ไฟล์ `.ipa` ให้อัตโนมัติในระบบคลาวด์ พร้อมอัปโหลดขึ้น GitHub Releases*
+*หรือใช้ระบบ **Automated iOS CI/CD** ผ่าน GitHub Actions ใน `.github/workflows/build_ios.yml` เพื่อให้ GitHub macOS Runner บิลด์ไฟล์ `.ipa` ให้อัตโนมัติในระบบคลาวด์ พร้อมแพ็กเกจ `BKK_SkyTrains_iOS_latest.ipa` และเวอร์ชันเจาะจง (`BKK_SkyTrains_iOS_v*.ipa`) พร้อมไฟล์ตรวจสอบ SHA-256 Checksum และอัปโหลดขึ้น GitHub Releases โดยตรง*
 
 ---
 

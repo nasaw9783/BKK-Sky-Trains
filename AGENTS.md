@@ -9,6 +9,7 @@ Directives and mandatory standards for AI Agents working within `C:\Users\Admini
 1. **Web App & PWA (Root Directory)**:
    - `index.html`: Main real-time web application frontend.
    - `js/app.js`: Core client-side logic, routing, stations data, real-time countdown, and UI rendering.
+   - `js/jsencrypt.min.js`: RSA cryptographic client library for secure transit API communications.
    - `sw.js`: Service worker for offline caching and PWA support.
    - `manifest.json`: Web App Manifest for mobile installation.
    - `icon-192.png`, `icon-512.png`, `icon.svg`, `favicon.*`, `apple-touch-icon.png`: Application branding and icons.
@@ -20,12 +21,14 @@ Directives and mandatory standards for AI Agents working within `C:\Users\Admini
    - `ios/`: iOS native project configuration, AppIcon.appiconset, LaunchScreen storyboard, and Info.plist.
    - `lib/`: Flutter Dart codebase (`bkk_web_view_screen.dart`, theme, services, screens, models).
    - `test/`: Flutter widget test suite.
-   - `assets/www/`: Embedded offline web assets (automatically synchronized with root web files).
+   - `assets/www/`: Embedded offline web assets (automatically synchronized with root web files 100%).
    - Targeted platforms: **Android & iOS only**. Do not introduce unused desktop boilerplate (Linux/Windows/macOS).
 
 3. **Releases & Deployment**:
-   - `releases/`: Dedicated directory for built installer packages (e.g. `BKK_SkyTrains_Android_latest.apk`, `BKK_SkyTrains_iOS_latest.ipa`, `.sha256`).
-   - `.github/workflows/build_ios.yml`: Cloud CI/CD workflow for automated iOS `.ipa` building on GitHub macOS runners.
+   - `releases/`: Dedicated directory for built installer packages:
+     - `BKK_SkyTrains_Android_latest.apk`, `BKK_SkyTrains_Android_latest.apk.sha256`
+     - `BKK_SkyTrains_iOS_latest.ipa`, `BKK_SkyTrains_iOS_latest.ipa.sha256`
+   - `.github/workflows/build_ios.yml`: Automated Cloud CI/CD workflow for building, packaging, verifying SHA-256 checksums, and releasing iOS `.ipa` versions on GitHub macOS runners.
 
 4. **Documentation & Specifications**:
    - `README.md`: Workspace overview and documentation.
@@ -40,7 +43,7 @@ Directives and mandatory standards for AI Agents working within `C:\Users\Admini
 ทุกครั้งหลังมีการแก้ไขหรือสร้างไฟล์ใดๆ ในระบบ ให้ปฏิบัติตามมาตรฐานต่อไปนี้ทันที:
 
 1. **Dual-Asset Synchronization (ซิงค์ไฟล์อัตโนมัติ)**:
-   - หากมีการแก้ไข `index.html` หรือ `js/app.js` ที่โฟลเดอร์ Root ให้คัดลอกและซิงค์ไปยัง `bkk_skytrains_flutter/assets/www/` ให้ตรงกัน 100% เสมอ
+   - หากมีการแก้ไข `index.html`, `js/app.js`, หรือ `js/jsencrypt.min.js` ที่โฟลเดอร์ Root ให้คัดลอกและซิงค์ไปยัง `bkk_skytrains_flutter/assets/www/` ให้ตรงกัน 100% เสมอ
    - โค้ดของทั้งสองจุดต้องเหมือนกัน เพื่อให้ทั้งเว็บ PWA และแอปมือถือแสดงผลและทำงานได้เหมือนกันทุกประการ
 
 2. **Code Validation (ตรวจสอบความถูกต้อง)**:
@@ -64,4 +67,3 @@ Directives and mandatory standards for AI Agents working within `C:\Users\Admini
 
 5. **Project Train Icon Standard (มาตรฐานสัญลักษณ์รูปรถไฟประจำสายสี)**:
    - สัญลักษณ์ระบุสายสี/ไลน์ของรถไฟฟ้าทั้งหมดในโปรเจกต์นี้ จะต้องใช้ไอคอนรูปรถไฟเฉพาะตามสายสีจากฟังก์ชัน `getLineIconSvg(lineId)` เสมอ (ห้ามใช้จุดกลม ● หรือไอคอนรถไฟทั่วไปที่ไม่ตรงกับสาย)
-

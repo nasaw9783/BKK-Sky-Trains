@@ -111,7 +111,7 @@ node -e "require('child_process').execSync('powershell ./Start-BKK-Transit.ps1',
 
 ### วิธีที่ 4: ติดตั้งแอปพลิเคชัน iOS (.ipa)
 สามารถนำไฟล์ตัวติดตั้ง iOS ล่าสุดจากโฟลเดอร์ `releases/` หรือจากหน้า GitHub Releases ไป Sideload ติดตั้งบน iPhone/iPad:
-- `releases/BKK_SkyTrains_iOS_latest.ipa` (รองรับการติดตั้งผ่าน AltStore, Sideloadly, หรือ TrollStore)
+- `releases/BKK_SkyTrains_iOS_latest.ipa` และ `BKK_SkyTrains_iOS_v*.ipa` (รองรับการติดตั้งผ่าน AltStore, Sideloadly, หรือ TrollStore พร้อมตรวจสอบ SHA-256 Checksum)
 
 ### วิธีที่ 5: รันหรือบิลด์แอปพลิเคชัน Flutter (Android & iOS)
 เข้าไปที่โฟลเดอร์ `bkk_skytrains_flutter/`:
@@ -130,10 +130,10 @@ flutter build apk --release
 ## 🔄 มาตรฐานการพัฒนาและซิงค์ไฟล์ (Development Protocols)
 
 1. **Dual-Asset Synchronization**:
-   - หากมีการแก้ไข `index.html` หรือ `js/app.js` ที่โฟลเดอร์ Root ให้คัดลอกและซิงค์ไปยัง `bkk_skytrains_flutter/assets/www/` ให้ตรงกัน 100% เสมอ
+   - หากมีการแก้ไข `index.html`, `js/app.js`, หรือ `js/jsencrypt.min.js` ที่โฟลเดอร์ Root ให้คัดลอกและซิงค์ไปยัง `bkk_skytrains_flutter/assets/www/` ให้ตรงกัน 100% เสมอ
 2. **Code Quality & Validation**:
    - ตรวจสอบไวยากรณ์ JavaScript: `node --check js/app.js`
    - ตรวจสอบโค้ด Flutter/Dart: `flutter analyze` ในโฟลเดอร์ `bkk_skytrains_flutter` (ต้องได้ 0 issues)
    - สคริปต์ PowerShell ทั้งหมดต้องบันทึกด้วยรูปแบบ **UTF-8 with BOM**
 3. **Automated CI/CD**:
-   - ฝั่ง iOS รองรับการบิลด์ไฟล์ `.ipa` อัตโนมัติผ่าน GitHub Actions (`.github/workflows/build_ios.yml`) บน macOS runner พร้อมสร้าง SHA-256 Checksum และแนบเข้า GitHub Releases อัตโนมัติ
+   - ฝั่ง iOS รองรับการบิลด์ไฟล์ `.ipa` อัตโนมัติผ่าน GitHub Actions (`.github/workflows/build_ios.yml`) บน macOS runner พร้อมดึงเวอร์ชันจาก `pubspec.yaml` อัตโนมัติ, สร้างไฟล์แพ็กเกจ `BKK_SkyTrains_iOS_latest.ipa` และ `BKK_SkyTrains_iOS_v*.ipa`, สร้าง SHA-256 Checksum และเผยแพร่ลง GitHub Releases อัตโนมัติ

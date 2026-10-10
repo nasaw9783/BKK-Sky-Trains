@@ -247,9 +247,12 @@ flowchart LR
 
 ## 8. แผนการพัฒนาในอนาคต (Product Roadmap)
 
-- **v1.3.0 (Upcoming):**
-  - เพิ่มระบบแจ้งเตือนแบบพุช (Push Notifications) แจ้งเตือนเมื่อใกล้ถึงสถานีปลายทาง
-  - ระบบรายงานความหนาแน่นของผู้โดยสารบนชานชาลาแบบ Crowdsourced
-- **v1.4.0 (Future):**
+- **v1.3.0 (Completed / Current Production Release):**
+  - ผสาน JSEncrypt API Security (RSA Encryption) สำหรับเข้ารหัสความปลอดภัยคำขอข้อมูลสด
+  - รองรับมาตรฐานไอคอนรูปรถไฟประจำสายสีเฉพาะ 100% ผ่านฟังก์ชัน `getLineIconSvg(lineId)`
+  - ระบบ Automated iOS CI/CD Workflow (`.github/workflows/build_ios.yml`) สร้างตัวติดตั้ง `.ipa` ทั้ง `BKK_SkyTrains_iOS_latest.ipa` และเวอร์ชัน `BKK_SkyTrains_iOS_v1.3.0.ipa` พร้อม SHA-256 Checksum และเผยแพร่อัตโนมัติบน GitHub Releases
+  - อัปเดตข้อมูลตารางเดินรถ ทางออกสถานี และคำนวณค่าโดยสารแบบข้ามสายครบทุกโครงข่าย
+- **v1.4.0 (Future Roadmap):**
+  - ระบบแจ้งเตือนแบบพุช (Push Notifications) แจ้งเตือนเมื่อใกล้ถึงสถานีปลายทาง
   - แผนที่สามมิติ (3D Station Concourse & Platform Map) สำหรับสถานีขนาดใหญ่ (เช่น สยาม, อโศก, บางซื่อ)
   - บูรณาการระบบเรือโดยสารคลองแสนแสบ และเรือด่วนเจ้าพระยา เข้าสู่ Smart Journey Planner

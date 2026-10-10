@@ -19,7 +19,9 @@ Skill นี้ออกแบบมาเพื่อให้ AI Agent (Antigr
 C:\Users\Administrator\Documents\BKK Sky Trains\
 ├── [1. Web App & PWA] (Root)
 │   ├── index.html                  # Frontend หลักของระบบ (Transit UI)
-│   ├── js/app.js                   # Client Logic, Live TTA, Router, GPS, Fares, Timetables
+│   ├── js/
+│   │   ├── app.js                  # Client Logic, Live TTA, Router, GPS, Fares, Timetables
+│   │   └── jsencrypt.min.js        # RSA cryptographic client library สำหรับ API Security
 │   ├── sw.js                       # Service Worker แคช PWA สำหรับ Offline Support
 │   ├── manifest.json               # Web App Manifest สำหรับติดตั้งบนหน้าจอมือถือ
 │   ├── Start-BKK-Transit.ps1       # สคริปต์เซิร์ฟเวอร์ทดสอบในเครื่อง + BTS Live Reverse Proxy (UTF-8 BOM)
@@ -124,8 +126,13 @@ cd ..
 ### SOP-4: การบิลด์ตัวติดตั้ง iOS (iOS IPA Build)
 เนื่องจากสภาพแวดล้อม Windows ไม่สามารถคอมไพล์ iOS ได้โดยตรง ให้ใช้ GitHub Actions Workflow:
 - ไฟล์ Workflow: `.github/workflows/build_ios.yml`
-- รันบน GitHub Runner `macos-14` อัตโนมัติเมื่อมีการ Push ไปยัง branch `main`
-- เมื่อบิลด์เสร็จ สามารถนำไฟล์ `.ipa` มาวางไว้ในโฟลเดอร์ `releases/BKK_SkyTrains_iOS_latest.ipa` พร้อมไฟล์ `.sha256`
+- รันบน GitHub Runner `macos-14` อัตโนมัติเมื่อมีการ Push ไปยัง branch `main` หรือ Tag `v*`
+- สคริปต์ Workflow จะดึงเวอร์ชันจาก `pubspec.yaml` อัตโนมัติ และสร้างไฟล์แพ็กเกจ:
+  - `BKK_SkyTrains_iOS_latest.ipa` + `.sha256`
+  - `BKK_SkyTrains_iOS_v${VERSION_BASE}.ipa` + `.sha256`
+  - `BKK_SkyTrains_iOS_unsigned.ipa` + `.sha256`
+- เผยแพร่ขึ้น GitHub Releases (Production / Official) พร้อมแนบ APK และ Checksum อัตโนมัติ
+- ในเครื่องพัฒนา สามารถเก็บไฟล์ `.ipa` รุ่นล่าสุดไว้ในโฟลเดอร์ `releases/BKK_SkyTrains_iOS_latest.ipa` พร้อมไฟล์ `.sha256`
 
 ---
 

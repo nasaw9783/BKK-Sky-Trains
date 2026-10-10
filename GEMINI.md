@@ -6,13 +6,15 @@ Directives and mandatory operational standards for Google Gemini and Antigravity
 
 ## 📁 1. Project Structure & Directory Organization
 
-The workspace is structured into three clean, dedicated categories:
+The workspace is structured into four clean, dedicated categories:
 
 ```text
 C:\Users\Administrator\Documents\BKK Sky Trains\
 ├── [Web App & PWA]
 │   ├── index.html                  # Main web application frontend
-│   ├── js/app.js                   # Client-side routing, logic, real-time countdown, and UI
+│   ├── js/
+│   │   ├── app.js                  # Client-side routing, logic, real-time countdown, and UI
+│   │   └── jsencrypt.min.js        # RSA cryptographic client library for secure transit API communications
 │   ├── sw.js                       # Offline service worker
 │   ├── manifest.json               # Web App Manifest
 │   ├── Start-BKK-Transit.ps1       # Local test server & reverse-proxy runner (UTF-8 with BOM)
@@ -24,12 +26,14 @@ C:\Users\Administrator\Documents\BKK Sky Trains\
 │   ├── ios/                        # iOS native configuration, AppIcon, storyboard, and Info.plist
 │   ├── lib/                        # Flutter Dart source code (screens, models, services, main.dart)
 │   ├── test/                       # Flutter widget test suite
-│   ├── assets/www/                 # Embedded offline web assets (synced with root web files)
+│   ├── assets/www/                 # Embedded offline web assets (synced with root web files 100%)
 │   └── pubspec.yaml                # Flutter project configuration (Android & iOS targets only)
 │
 ├── [Releases & CI/CD]
-│   ├── releases/                   # Distribution packages (e.g., BKK_SkyTrains_Android_latest.apk, .ipa)
-│   └── .github/workflows/          # GitHub Actions workflows (build_ios.yml for automated iOS builds)
+│   ├── releases/                   # Distribution packages:
+│   │   ├── BKK_SkyTrains_Android_latest.apk, .sha256
+│   │   └── BKK_SkyTrains_iOS_latest.ipa, .sha256
+│   └── .github/workflows/          # GitHub Actions workflows (build_ios.yml for automated iOS builds & releases)
 │
 └── [Documentation & Specifications]
     ├── README.md                   # Workspace overview and documentation
@@ -46,7 +50,7 @@ C:\Users\Administrator\Documents\BKK Sky Trains\
 ทุกครั้งหลังมีการแก้ไขหรือสร้างไฟล์ใดๆ ในระบบ Agent จะต้องปฏิบัติตามคำสั่งจัดระเบียบและตรวจสอบต่อไปนี้ทันที:
 
 1. **Dual-Asset Synchronization (ซิงค์ไฟล์อัตโนมัติ)**:
-   - หากมีการแก้ไข `index.html` หรือ `js/app.js` ที่โฟลเดอร์ Root ต้องคัดลอกและซิงค์ไปยัง `bkk_skytrains_flutter/assets/www/` ให้ตรงกัน 100% เสมอ
+   - หากมีการแก้ไข `index.html`, `js/app.js`, หรือ `js/jsencrypt.min.js` ที่โฟลเดอร์ Root ต้องคัดลอกและซิงค์ไปยัง `bkk_skytrains_flutter/assets/www/` ให้ตรงกัน 100% เสมอ
    - โค้ดของทั้งสองจุดต้องเหมือนกัน เพื่อให้ทั้งเว็บ PWA และแอปมือถือแสดงผลและทำงานได้เหมือนกันทุกประการ
 
 2. **Validation & Code Quality (ตรวจสอบความถูกต้อง)**:
@@ -71,4 +75,3 @@ C:\Users\Administrator\Documents\BKK Sky Trains\
 
 5. **Project Train Icon Standard (มาตรฐานสัญลักษณ์รูปรถไฟประจำสายสี)**:
    - สัญลักษณ์ระบุสายสี/ไลน์ของรถไฟฟ้าทั้งหมดในโปรเจกต์นี้ จะต้องใช้ไอคอนรูปรถไฟเฉพาะตามสายสีจากฟังก์ชัน `getLineIconSvg(lineId)` เสมอ (ห้ามใช้จุดกลม ● หรือไอคอนรถไฟทั่วไปที่ไม่ตรงกับสาย)
-

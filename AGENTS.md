@@ -24,8 +24,14 @@ Directives and mandatory standards for AI Agents working within `C:\Users\Admini
    - Targeted platforms: **Android & iOS only**. Do not introduce unused desktop boilerplate (Linux/Windows/macOS).
 
 3. **Releases & Deployment**:
-   - `releases/`: Dedicated directory for built installer packages (e.g. `BKK_SkyTrains_Android_latest.apk`).
+   - `releases/`: Dedicated directory for built installer packages (e.g. `BKK_SkyTrains_Android_latest.apk`, `BKK_SkyTrains_iOS_latest.ipa`, `.sha256`).
    - `.github/workflows/build_ios.yml`: Cloud CI/CD workflow for automated iOS `.ipa` building on GitHub macOS runners.
+
+4. **Documentation & Specifications**:
+   - `README.md`: Workspace overview and documentation.
+   - `PRD.md`: Product Requirements Document detailing product vision, personas, features, live TTA, routing, fares, and roadmap.
+   - `Skill.md`: Antigravity / Gemini Agent skill specification.
+   - `AGENTS.md`, `GEMINI.md`: Mandatory Agent operating guidelines, post-file-edit protocols, and system standards.
 
 ---
 
@@ -42,8 +48,9 @@ Directives and mandatory standards for AI Agents working within `C:\Users\Admini
    - สำหรับ Flutter/Dart: รัน `flutter analyze` เพื่อให้มั่นใจว่าไม่มี Error หรือ Warning (0 issues)
    - สำหรับ PowerShell: บันทึกไฟล์ `.ps1` ทุกไฟล์ด้วยรูปแบบ **UTF-8 with BOM** เสมอ
 
-3. **Zero-Waste Pruning & Workspace Cleanliness (ลบไฟล์ที่ไม่สำคัญทิ้งทันที)**:
-   - **ถ้าไฟล์ไหนไม่สำคัญต่อระบบ และไม่ทำลายระบบให้เสียหาย ให้ลบทิ้งได้ทันที** หลังแก้ไขหรือทดสอบไฟล์ทุกครั้ง:
+3. **Zero-Waste Pruning & Workspace Cleanliness (ลบไฟล์และแอพที่ไม่สำคัญทิ้งทันที)**:
+   - **ถ้าไฟล์หรือแอพไหนไม่สำคัญต่อระบบแล้ว และไม่ทำลายระบบให้เสียหาย ให้ลบทิ้งได้ทันที** หลังแก้ไขหรือทดสอบไฟล์ทุกครั้ง:
+     - ไฟล์ตัวติดตั้งหรือแอพเวอร์ชันเก่าที่ไม่ได้ใช้งานแล้ว (เช่น APK/AAB/IPA รุ่นเก่าที่ซ้ำซ้อนใน `releases/` ให้ลบทิ้งทันที เก็บเฉพาะรุ่นล่าสุด `*_latest.*` หรือรุ่นที่ใช้งานจริงเท่านั้น)
      - แคช Intermediate build: `build/`, `.dart_tool/` (รัน `flutter clean` เสมอเมื่อทดสอบเสร็จ)
      - แคช Android & Compiler: `android/.gradle/`, `android/.kotlin/`
      - แคช IDE & OS: `.idea/`, `*.iml`, `Thumbs.db`, `Desktop.ini`, `.DS_Store`

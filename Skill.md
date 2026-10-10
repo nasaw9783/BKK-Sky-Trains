@@ -1,0 +1,151 @@
+---
+name: bkk-skytrains
+description: >-
+  Manage, develop, test, sync, and deploy the BKK SkyTrains web app (PWA), mobile Flutter app (Android/iOS), and local reverse proxy server. Ensures dual-asset sync, 0-defect linting, train icon standards, and release packaging.
+---
+
+# BKK SkyTrains Skill
+
+## 1. ขอบเขตและหน้าที่ของ Skill (Overview & Scope)
+
+Skill นี้ออกแบบมาเพื่อให้ AI Agent (Antigravity & Google Gemini) สามารถปฏิบัติงาน, พัฒนาฟีเจอร์, แก้ไขบั๊ก, ตรวจสอบคุณภาพโค้ด, ซิงค์ไฟล์ และสร้างตัวติดตั้งสำหรับระบบ **BKK SKYTRAINs** ได้อย่างถูกต้องและปลอดภัย 100% ภายใต้ไดเรกทอรีทำงาน:
+`C:\Users\Administrator\Documents\BKK Sky Trains`
+
+---
+
+## 2. โครงสร้างระบบ 4 หมวดหมู่หลัก (Project Architecture)
+
+```text
+C:\Users\Administrator\Documents\BKK Sky Trains\
+├── [1. Web App & PWA] (Root)
+│   ├── index.html                  # Frontend หลักของระบบ (Transit UI)
+│   ├── js/app.js                   # Client Logic, Live TTA, Router, GPS, Fares, Timetables
+│   ├── sw.js                       # Service Worker แคช PWA สำหรับ Offline Support
+│   ├── manifest.json               # Web App Manifest สำหรับติดตั้งบนหน้าจอมือถือ
+│   ├── Start-BKK-Transit.ps1       # สคริปต์เซิร์ฟเวอร์ทดสอบในเครื่อง + BTS Live Reverse Proxy (UTF-8 BOM)
+│   ├── robots.txt, sitemap.xml     # ข้อมูล SEO
+│   └── *.png, *.svg, *.ico         # ไอคอนระบบและ Web Assets
+│
+├── [2. Mobile Flutter App] (bkk_skytrains_flutter/)
+│   ├── android/                    # Android Native configuration & build files
+│   ├── ios/                        # iOS Native configuration & Storyboards
+│   ├── lib/                        # Flutter Dart source code (WebView, Services, Themes)
+│   ├── test/                       # Flutter widget test suite
+│   ├── assets/www/                 # ไฟล์เว็บแคชออฟไลน์ในตัวแอป (ซิงค์ตรงกับ Root 100%)
+│   └── pubspec.yaml                # Flutter dependencies (Android & iOS เท่านั้น)
+│
+├── [3. Releases & CI/CD]
+│   ├── releases/                   # แหล่งเก็บตัวติดตั้ง (.apk, .ipa, .sha256)
+│   └── .github/workflows/          # CI/CD Workflows (build_ios.yml สำหรับบิลด์ iOS .ipa อัตโนมัติ)
+│
+└── [4. Documentation & Specifications]
+    ├── README.md                   # คู่มือระบบและภาพรวมโปรเจกต์
+    ├── PRD.md                      # Product Requirements Document
+    ├── Skill.md                    # ข้อกำหนด Antigravity Skill
+    ├── AGENTS.md                   # ข้อกำหนดมาตรฐาน Agent
+    └── GEMINI.md                   # ข้อกำหนดและโปรโตคอล Workspace
+```
+
+---
+
+## 3. กฎเหล็กและข้อกำหนดบังคับ (Mandatory Protocols)
+
+### 🔄 กฎข้อที่ 1: Dual-Asset Synchronization (ซิงค์ไฟล์อัตโนมัติ)
+ทุกครั้งที่มีการแก้ไขไฟล์ `index.html` หรือ `js/app.js` ที่โฟลเดอร์ Root จะต้องคัดลอกไฟล์ไปยัง `bkk_skytrains_flutter/assets/www/` ให้ตรงกัน 100% ทันที:
+```powershell
+# ซิงค์ไฟล์ Web Root ไปยัง Flutter Embedded Assets
+Copy-Item -Path "index.html" -Destination "bkk_skytrains_flutter\assets\www\index.html" -Force
+Copy-Item -Path "js\app.js" -Destination "bkk_skytrains_flutter\assets\www\js\app.js" -Force
+```
+
+### ✅ กฎข้อที่ 2: Code Validation & Quality Gates (การตรวจสอบคุณภาพ)
+1. **JavaScript Syntax Check:**
+   ```powershell
+   node --check js/app.js
+   node --check bkk_skytrains_flutter\assets\www\js\app.js
+   ```
+2. **Flutter / Dart Static Analysis (ต้อง 0 issues เสมอ):**
+   ```powershell
+   cd bkk_skytrains_flutter
+   flutter analyze
+   cd ..
+   ```
+3. **PowerShell Encoding:** บันทึกไฟล์ `.ps1` ทุกไฟล์ด้วยรูปแบบ **UTF-8 with BOM** เพื่อให้ทำงานได้ทั้ง PowerShell 5.1 และ pwsh 7+
+
+### 🚊 กฎข้อที่ 3: Project Train Icon Standard (มาตรฐานไอคอนรถไฟประจำสาย)
+- สัญลักษณ์ระบุสายสี/ไลน์รถไฟฟ้าทั้งหมดในโปรเจกต์นี้ **จะต้องใช้ไอคอน SVG รูปรถไฟเฉพาะตามสายสีจากฟังก์ชัน `getLineIconSvg(lineId)` เสมอ**
+- **ห้าม** ใช้จุดกลม (●) หรือไอคอนรถไฟทั่วไปที่ไม่ตรงกับสายโดยเด็ดขาด
+
+### 🧹 กฎข้อที่ 4: Zero-Waste Pruning (ลบไฟล์และแอพที่ไม่สำคัญทิ้งทันที)
+ถ้าไฟล์หรือแอพไหนไม่สำคัญต่อระบบแล้ว และไม่ทำลายระบบให้เสียหาย ให้ลบทิ้งได้ทันทีหลังแก้ไขหรือทดสอบไฟล์ทุกครั้ง:
+- ไฟล์ตัวติดตั้งหรือแอพเวอร์ชันเก่าที่ไม่ได้ใช้งานแล้ว (เช่น APK/IPA รุ่นเก่าที่ซ้ำซ้อนใน `releases/` ให้ลบทิ้งทันที เก็บเฉพาะรุ่นล่าสุด `*_latest.*` หรือรุ่นที่ใช้งานจริงเท่านั้น)
+- โฟลเดอร์แคชบิลด์: `bkk_skytrains_flutter\build\`, `bkk_skytrains_flutter\.dart_tool\` (รัน `flutter clean` เสมอเมื่อทดสอบเสร็จ)
+- โฟลเดอร์แคช Android & Compiler: `bkk_skytrains_flutter\android\.gradle\`, `bkk_skytrains_flutter\android\.kotlin\`
+- โฟลเดอร์แคช IDE & OS: `.idea\`, `*.iml`, `Thumbs.db`, `Desktop.ini`, `.DS_Store`
+- ไฟล์ขยะชั่วคราว: `.tmp`, `.bak`, `.old`, `.log`, `.swp`, `*~`
+- ไฟล์ assets ซ้ำซ้อนหรือไม่จำเป็น ที่ไม่ได้ถูกอ้างอิงในระบบ
+- ไฟล์ตัวติดตั้งที่เสร็จสมบูรณ์ให้จัดเก็บไว้ใน `releases/` เท่านั้น
+
+### ⛔ กฎข้อที่ 5: Strict Isolation Rule (การแยกโปรเจกต์โดยเด็ดขาด)
+- ห้ามกระทำการใดๆ ข้าม Workspace หรือแตะต้อง `D:\Exclusions\Programs` และ `C:\Users\Administrator\Downloads\Programs` โดยเด็ดขาด
+
+---
+
+## 4. ขั้นตอนการปฏิบัติงานมาตรฐาน (Standard Operating Procedures - SOP)
+
+### SOP-1: การแก้ไขฟังก์ชันหรือ UI ของแอปพลิเคชัน
+1. ทำการแก้ไขโค้ดที่ `index.html` หรือ `js/app.js`
+2. ทำการซิงค์ไฟล์ไปยัง `bkk_skytrains_flutter/assets/www/`
+3. รันคำสั่ง `node --check js/app.js` เพื่อตรวจสอบความถูกต้อง
+4. ทดสอบความถูกต้องในการแสดงผลและการทำงาน
+
+### SOP-2: การทดสอบรันเซิร์ฟเวอร์ในเครื่อง (Local Testing)
+เปิด Local Server พร้อม Reverse Proxy สำหรับดึงข้อมูลสดจาก BTS:
+```powershell
+.\Start-BKK-Transit.ps1
+```
+- เซิร์ฟเวอร์จะเปิดที่ `http://localhost:3000`
+- Reverse Proxy จะทำงานที่ `/api/bts-proxy`
+
+### SOP-3: การคอมไพล์และบิลด์ตัวติดตั้ง Android (APK Build)
+```powershell
+cd bkk_skytrains_flutter
+flutter clean
+flutter pub get
+flutter analyze
+flutter build apk --release
+# คัดลอกผลลัพธ์ไปยัง releases/
+Copy-Item -Path "build\app\outputs\flutter-apk\app-release.apk" -Destination "..\releases\BKK_SkyTrains_Android_latest.apk" -Force
+flutter clean
+cd ..
+```
+
+### SOP-4: การบิลด์ตัวติดตั้ง iOS (iOS IPA Build)
+เนื่องจากสภาพแวดล้อม Windows ไม่สามารถคอมไพล์ iOS ได้โดยตรง ให้ใช้ GitHub Actions Workflow:
+- ไฟล์ Workflow: `.github/workflows/build_ios.yml`
+- รันบน GitHub Runner `macos-14` อัตโนมัติเมื่อมีการ Push ไปยัง branch `main`
+- เมื่อบิลด์เสร็จ สามารถนำไฟล์ `.ipa` มาวางไว้ในโฟลเดอร์ `releases/BKK_SkyTrains_iOS_latest.ipa` พร้อมไฟล์ `.sha256`
+
+---
+
+## 5. คู่มือแก้ปัญหาและกรณีพิเศษ (Troubleshooting & Edge Cases)
+
+| ปัญหา | สาเหตุ | วิธีแก้ไข |
+| :--- | :--- | :--- |
+| **พอร์ต 3000 ชนกัน** | มีโปรเซสค้างอยู่บนพอร์ต 3000 | สคริปต์ `Start-BKK-Transit.ps1` จะปิดโปรเซส Node เก่าให้อัตโนมัติ หรือเลื่อนหาพอร์ตว่างถัดไป |
+| **CORS Error เมื่อเรียก API ของ BTS** | เรียกตรงโดยไม่ผ่าน Proxy | ตรวจสอบว่าแอปเรียกผ่าน `activeProxyBase` ซึ่งชี้ไปที่ `/api/bts-proxy` หรือ Production Reverse Proxy |
+| **Flutter แสดงหน้าเว็บเก่า (Cache ค้าง)** | WebView แคชไฟล์เก่า | ตรวจสอบคำสั่ง `_controller.clearCache()` ใน `bkk_web_view_screen.dart` |
+| **GPS ไม่ระบุตำแหน่งในแอปมือถือ** | ไม่ได้ขอสิทธิ์ Location | ตัวแอป Flutter มี `Geolocator.requestPermission()` ส่งพิกัดผ่าน `FlutterLocation` Javascript Channel |
+| **ภาษาไทยแสดงผลเพี้ยน (Mojibake)** | บันทึกไฟล์ `.ps1` โดยไม่มี BOM | บันทึกไฟล์ `.ps1` ด้วย `UTF-8 with BOM` เสมอ |
+
+---
+
+## 6. รายการตรวจสอบก่อนเสร็จงาน (Pre-Completion Checklist)
+
+- [ ] โค้ด `index.html` และ `js/app.js` ที่ Root และ `bkk_skytrains_flutter/assets/www/` ตรงกัน 100%
+- [ ] ผ่านการทดสอบ `node --check js/app.js` (0 errors)
+- [ ] ผ่านการทดสอบ `flutter analyze` ใน `bkk_skytrains_flutter` (0 issues)
+- [ ] ทุกไอคอนสายสีใช้ `getLineIconSvg(lineId)` ตามมาตรฐานโครงการ
+- [ ] รัน `flutter clean` และลบไฟล์แคชขยะชั่วคราวทั้งหมด
+- [ ] ไฟล์ `.ps1` ทุกไฟล์เข้ารหัสด้วย `UTF-8 with BOM`
+- [ ] ไม่มีการแตะต้องไดเรกทอรีภายนอก Workspace

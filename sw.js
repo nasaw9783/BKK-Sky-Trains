@@ -4,7 +4,7 @@
  * - ไฟล์ static (ฟอนต์/สคริปต์ CDN): stale-while-revalidate ให้โหลดซ้ำเร็วขึ้น
  * - คำขอ API ขบวนรถ (POST ข้ามโดเมน) ปล่อยผ่าน ไม่แตะ — ข้อมูลสดต้องมาจากเน็ตเสมอ
  */
-const VERSION = 'bts-v21';
+const VERSION = 'bts-v29';
 const SHELL_CACHE = 'bts-shell-' + VERSION;
 const RUNTIME_CACHE = 'bts-runtime-' + VERSION;
 
@@ -13,6 +13,7 @@ const SHELL_URLS = [
     '/',
     '/index.html',
     '/js/app.js',
+    '/js/jsencrypt.min.js',
     '/manifest.json',
     '/favicon.ico',
     '/favicon-48.png',

@@ -27,9 +27,16 @@ C:\Users\Administrator\Documents\BKK Sky Trains\
 │   ├── assets/www/                 # Embedded offline web assets (synced with root web files)
 │   └── pubspec.yaml                # Flutter project configuration (Android & iOS targets only)
 │
-└── [Releases & CI/CD]
-    ├── releases/                   # Distribution packages (e.g., BKK_SkyTrains_Android_latest.apk)
-    └── .github/workflows/          # GitHub Actions workflows (build_ios.yml for automated iOS builds)
+├── [Releases & CI/CD]
+│   ├── releases/                   # Distribution packages (e.g., BKK_SkyTrains_Android_latest.apk, .ipa)
+│   └── .github/workflows/          # GitHub Actions workflows (build_ios.yml for automated iOS builds)
+│
+└── [Documentation & Specifications]
+    ├── README.md                   # Workspace overview and documentation
+    ├── PRD.md                      # Product Requirements Document
+    ├── Skill.md                    # Antigravity / Gemini Agent skill specification
+    ├── AGENTS.md                   # Agent guidelines & post-file-edit protocol
+    └── GEMINI.md                   # Workspace directives & protocols
 ```
 
 ---
@@ -47,8 +54,9 @@ C:\Users\Administrator\Documents\BKK Sky Trains\
    - **Flutter / Dart:** รัน `flutter analyze` ภายใน `bkk_skytrains_flutter` และต้องไม่มีข้อผิดพลาด (0 issues)
    - **PowerShell:** บันทึกไฟล์ `.ps1` ทุกไฟล์ด้วยรูปแบบ **UTF-8 with BOM** เสมอ เพื่อป้องกันปัญหา Encoding ใน PowerShell 5.1
 
-3. **Zero-Waste Pruning & Space Optimization (ลบไฟล์ที่ไม่สำคัญทิ้งทันที)**:
-   - **ถ้าไฟล์ไหนไม่สำคัญต่อระบบ และไม่ทำลายระบบให้เสียหาย ให้ลบทิ้งได้ทันที** หลังแก้ไขหรือทดสอบไฟล์ทุกครั้ง:
+3. **Zero-Waste Pruning & Space Optimization (ลบไฟล์และแอพที่ไม่สำคัญทิ้งทันที)**:
+   - **ถ้าไฟล์หรือแอพไหนไม่สำคัญต่อระบบแล้ว และไม่ทำลายระบบให้เสียหาย ให้ลบทิ้งได้ทันที** หลังแก้ไขหรือทดสอบไฟล์ทุกครั้ง:
+     - ไฟล์ตัวติดตั้งหรือแอพเวอร์ชันเก่าที่ไม่ได้ใช้งานแล้ว (เช่น APK/AAB/IPA รุ่นเก่าที่ซ้ำซ้อนใน `releases/` ให้ลบทิ้งทันที เก็บเฉพาะรุ่นล่าสุด `*_latest.*` หรือรุ่นที่ใช้งานจริงเท่านั้น)
      - แคช Intermediate build: โฟลเดอร์ `build/`, `.dart_tool/` (รัน `flutter clean` เสมอเมื่อไม่ได้บิลด์หรือทดสอบเสร็จ)
      - แคช Android & Compiler: `android/.gradle/`, `android/.kotlin/`
      - แคช IDE & OS: `.idea/`, `*.iml`, `Thumbs.db`, `Desktop.ini`, `.DS_Store`

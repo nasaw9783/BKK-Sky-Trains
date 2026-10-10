@@ -6,7 +6,7 @@
 | เอกสาร | รายละเอียด |
 | :--- | :--- |
 | **ชื่อผลิตภัณฑ์** | **BKK SKYTRAINs** (Bangkok SkyTrains & Mass Transit Companion) |
-| **เวอร์ชันเอกสาร** | 1.3.0 (Production Release) |
+| **เวอร์ชันเอกสาร** | 1.3.1 (Production Release) |
 | **สถานะ** | Active / Production |
 | **แพลตฟอร์มที่รองรับ** | Progressive Web App (PWA), Android (Native Hybrid APK), iOS (Native Hybrid IPA) |
 | **กลุ่มเป้าหมาย** | ผู้โดยสารรถไฟฟ้าในกรุงเทพฯ และปริมณฑล (คนไทย, ชาวต่างชาติ, นักท่องเที่ยว) |
@@ -247,10 +247,11 @@ flowchart LR
 
 ## 8. แผนการพัฒนาในอนาคต (Product Roadmap)
 
-- **v1.3.0 (Completed / Current Production Release):**
-  - ผสาน JSEncrypt API Security (RSA Encryption) สำหรับเข้ารหัสความปลอดภัยคำขอข้อมูลสด
-  - รองรับมาตรฐานไอคอนรูปรถไฟประจำสายสีเฉพาะ 100% ผ่านฟังก์ชัน `getLineIconSvg(lineId)`
-  - ระบบ Automated iOS CI/CD Workflow (`.github/workflows/build_ios.yml`) สร้างตัวติดตั้ง `.ipa` ทั้ง `BKK_SkyTrains_iOS_latest.ipa` และเวอร์ชัน `BKK_SkyTrains_iOS_v1.3.0.ipa` พร้อม SHA-256 Checksum และเผยแพร่อัตโนมัติบน GitHub Releases
+- **v1.3.1 (Completed / Current Production Release):**
+  - ปรับปรุงการแสดงผลโมบายล์สำหรับ Flutter In-App Container (แท็บความถี่, การเลื่อนสถานะฟิลเตอร์สายรถไฟฟ้าแบบไดนามิก)
+  - แผนผังเส้นทางและ Card คำแนะนำแบบ Responsive สอดรับทุกขนาดหน้าจอ
+  - ผสาน JSEncrypt API Security (RSA Encryption) สำหรับความปลอดภัยของข้อมูล
+  - ระบบ Automated iOS CI/CD Workflow (`.github/workflows/build_ios.yml`) สร้างตัวติดตั้ง `.ipa` ทั้ง `BKK_SkyTrains_iOS_latest.ipa` และเวอร์ชัน `BKK_SkyTrains_iOS_v1.3.1.ipa` พร้อม SHA-256 Checksum และเผยแพร่อัตโนมัติบน GitHub Releases
   - อัปเดตข้อมูลตารางเดินรถ ทางออกสถานี และคำนวณค่าโดยสารแบบข้ามสายครบทุกโครงข่าย
 - **v1.4.0 (Future Roadmap):**
   - ระบบแจ้งเตือนแบบพุช (Push Notifications) แจ้งเตือนเมื่อใกล้ถึงสถานีปลายทาง

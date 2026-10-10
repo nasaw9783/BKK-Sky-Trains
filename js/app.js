@@ -638,7 +638,10 @@ gQIDAQAB
             beach: (s, c, cls) => `<svg class="ui-ic ui-ic-beach ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || 'currentColor'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v20"/><path d="M12 2a10 10 0 0 0-10 10c3 0 5-1 8-1s5 1 8 1a10 10 0 0 0-6-10Z"/><path d="M12 18a2 2 0 1 1 0 4"/></svg>`,
 
             // 📋 Clipboard / List
-            clipboard: (s, c, cls) => `<svg class="ui-ic ui-ic-clipboard ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || 'currentColor'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/></svg>`
+            clipboard: (s, c, cls) => `<svg class="ui-ic ui-ic-clipboard ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || 'currentColor'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/></svg>`,
+
+            // ✓ Checkmark (Show Both / All / Selected)
+            check: (s, c, cls) => `<svg class="ui-ic ui-ic-check ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || 'currentColor'}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>`
         };
 
         function getUiIcon(name, size = 18, color = '', extraClass = '') {
@@ -850,7 +853,7 @@ gQIDAQAB
                 mapZoomIn: `${getUiIcon('zoomIn', 13, 'currentColor')} ขยาย`,
                 mapZoomOut: `${getUiIcon('zoomOut', 13, 'currentColor')} ย่อ`,
                 mapReset: `${getUiIcon('resetZoom', 13, 'currentColor')} กลาง`,
-                mapHint: `${getUiIcon('bulb', 14, '#f59e0b')} <b>วิธีใช้งาน:</b> แตะที่จุดสถานีใดๆ บนแผนผังเพื่อเลือกเป็น <b>สถานีต้นทาง</b>, <b>สถานีปลายทาง</b>, หรือดู <b>ข้อมูลทางออก</b> ได้ทันที`,
+                mapHint: `<span class="map-hint-icon">${getUiIcon('bulb', 15, '#f59e0b')}</span><div class="map-hint-body"><span class="map-hint-phrase"><b>วิธีใช้งาน:</b> แตะที่จุดสถานีใดๆ บนแผนผัง</span> <span class="map-hint-phrase">เพื่อเลือกเป็น <b>สถานีต้นทาง</b>,</span> <span class="map-hint-phrase"><b>สถานีปลายทาง</b></span> <span class="map-hint-phrase">หรือดู <b>ข้อมูลทางออก</b> ได้ทันที</span></div>`,
                 sheetOrigin: 'ตั้งเป็นสถานีต้นทาง (Set Origin)',
                 sheetOriginSub: 'คำนวณเส้นทางจากสถานีนี้',
                 sheetDest: 'ตั้งเป็นสถานีปลายทาง (Set Destination)',
@@ -1065,7 +1068,7 @@ gQIDAQAB
                 mapZoomIn: `${getUiIcon('zoomIn', 13, 'currentColor')} Zoom In`,
                 mapZoomOut: `${getUiIcon('zoomOut', 13, 'currentColor')} Zoom Out`,
                 mapReset: `${getUiIcon('resetZoom', 13, 'currentColor')} Reset`,
-                mapHint: `${getUiIcon('bulb', 14, '#f59e0b')} <b>How to use:</b> Tap any station on the schematic map to set as <b>Origin</b>, <b>Destination</b>, or view <b>Exit Directory</b>.`,
+                mapHint: `<span class="map-hint-icon">${getUiIcon('bulb', 15, '#f59e0b')}</span><div class="map-hint-body"><span class="map-hint-phrase"><b>How to use:</b> Tap any station on the map</span> <span class="map-hint-phrase">to set as <b>Origin</b>,</span> <span class="map-hint-phrase"><b>Destination</b></span> <span class="map-hint-phrase">or view <b>Exit Directory</b>.</span></div>`,
                 sheetOrigin: 'Set as Origin Station',
                 sheetOriginSub: 'Plan journey starting from this station',
                 sheetDest: 'Set as Destination',
@@ -2258,8 +2261,9 @@ gQIDAQAB
             { code: 'A1', th: 'สุวรรณภูมิ (สนามบิน)', en: 'Suvarnabhumi Airport', price: '฿45' }
         ];
 
-        function renderLineFilterBar(activeLineId, onClickHandlerName) {
-            return `<div class="line-filter-bar">
+        function renderLineFilterBar(activeLineId, onClickHandlerName, barId = '') {
+            const idAttr = barId ? `id="${barId}"` : '';
+            return `<div ${idAttr} class="line-filter-bar" data-lang="${lang}">
                 ${TRANSIT_LINES_CATALOG.map(l => {
                     const isActive = l.id === activeLineId;
                     const name = lang === 'en' ? l.nameEN : l.nameTH;
@@ -2267,13 +2271,31 @@ gQIDAQAB
                         ? `background:${l.color};color:#ffffff;border-color:${l.color};font-weight:700;box-shadow:0 3px 10px ${l.color}55;`
                         : '';
                     return `<button type="button" class="line-filter-pill ${isActive ? 'active' : ''}"
+                        data-line-id="${l.id}"
                         style="${activeStyle}"
                         onclick="App.${onClickHandlerName}(${l.id})">
-                        ${getLineIconSvg(l.id, isActive, 15)}
+                        <span class="pill-icon" style="display:inline-flex;align-items:center;">${getLineIconSvg(l.id, isActive, 15)}</span>
                         <span>${esc(name)}</span>
                     </button>`;
                 }).join('')}
             </div>`;
+        }
+
+        function scrollActivePillIntoView(container, pill, smooth = true) {
+            if (!container || !pill) return;
+            const containerWidth = container.clientWidth;
+            if (containerWidth <= 0) return;
+            const pillLeft = pill.offsetLeft;
+            const pillWidth = pill.offsetWidth;
+            const targetScrollLeft = pillLeft - (containerWidth / 2) + (pillWidth / 2);
+            if (smooth && typeof container.scrollTo === 'function') {
+                container.scrollTo({
+                    left: Math.max(0, targetScrollLeft),
+                    behavior: 'smooth'
+                });
+            } else {
+                container.scrollLeft = Math.max(0, targetScrollLeft);
+            }
         }
 
         function getLineScheduleTables(lineId) {
@@ -2414,15 +2436,27 @@ gQIDAQAB
                 <!-- Day Type Segmented Tab Switcher -->
                 <div class="freq-tab-bar">
                     <button type="button" class="freq-tab-btn ${curTab === 'weekday' ? 'active' : ''}" onclick="App.setFreqTab('weekday')">
-                        <span>${getUiIcon('calendar', 13, 'currentColor')} ${isEn ? 'Weekday' : 'วันธรรมดา (จ.-ศ.)'}</span>
+                        <span class="freq-tab-icon">${getUiIcon('calendar', 12, 'currentColor')}</span>
+                        <span class="freq-tab-lbl">
+                            <span class="lbl-full">${isEn ? 'Weekday (Mon–Fri)' : 'วันธรรมดา (จ.-ศ.)'}</span>
+                            <span class="lbl-short">${isEn ? 'Weekday' : 'วันธรรมดา'}</span>
+                        </span>
                         ${!we ? `<span class="freq-today-badge">${isEn ? 'Today' : 'วันนี้'}</span>` : ''}
                     </button>
                     <button type="button" class="freq-tab-btn ${curTab === 'weekend' ? 'active' : ''}" onclick="App.setFreqTab('weekend')">
-                        <span>${getUiIcon('calendar', 13, 'currentColor')} ${isEn ? 'Weekend' : 'วันหยุด (ส.-อา.)'}</span>
+                        <span class="freq-tab-icon">${getUiIcon('calendar', 12, 'currentColor')}</span>
+                        <span class="freq-tab-lbl">
+                            <span class="lbl-full">${isEn ? 'Weekend (Sat–Sun)' : 'วันหยุด (ส.-อา.)'}</span>
+                            <span class="lbl-short">${isEn ? 'Weekend' : 'วันหยุด'}</span>
+                        </span>
                         ${we ? `<span class="freq-today-badge">${isEn ? 'Today' : 'วันนี้'}</span>` : ''}
                     </button>
                     <button type="button" class="freq-tab-btn ${curTab === 'all' ? 'active' : ''}" onclick="App.setFreqTab('all')">
-                        <span>${getUiIcon('check', 13, 'currentColor')} ${isEn ? 'Show Both' : 'แสดงทั้งหมด'}</span>
+                        <span class="freq-tab-icon">${getUiIcon('check', 12, 'currentColor')}</span>
+                        <span class="freq-tab-lbl">
+                            <span class="lbl-full">${isEn ? 'Show Both' : 'แสดงทั้งหมด'}</span>
+                            <span class="lbl-short">${isEn ? 'Both' : 'ทั้งหมด'}</span>
+                        </span>
                     </button>
                 </div>
 
@@ -2524,8 +2558,18 @@ gQIDAQAB
                     this.renderJourney();
                 } else if (viewName === 'fares') {
                     this.renderFaresView();
+                    requestAnimationFrame(() => {
+                        const bar = document.getElementById('faresLineFilterBar');
+                        const activePill = bar ? bar.querySelector('.line-filter-pill.active') : null;
+                        if (bar && activePill) scrollActivePillIntoView(bar, activePill, false);
+                    });
                 } else if (viewName === 'timetables') {
                     this.renderTimetablesView();
+                    requestAnimationFrame(() => {
+                        const bar = document.getElementById('timetablesLineFilterBar');
+                        const activePill = bar ? bar.querySelector('.line-filter-pill.active') : null;
+                        if (bar && activePill) scrollActivePillIntoView(bar, activePill, false);
+                    });
                 }
 
                 window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -3393,7 +3437,7 @@ gQIDAQAB
             },
 
             /* ---------- THE SKYTRAINs: Fares View (อัตราค่าโดยสารตามสาย) ---------- */
-            renderFaresView() {
+            renderFaresView(forceRebuild = false) {
                 const el = document.getElementById('faresViewContent');
                 if (!el) return;
 
@@ -3778,23 +3822,61 @@ gQIDAQAB
                     `;
                 }
 
-                el.innerHTML = `
-                    <div style="margin-bottom:12px;">
-                        <h2 style="font-size:18px;font-weight:800;color:var(--ink);margin:0 0 4px;display:flex;align-items:center;gap:8px;">
-                            <span>${getUiIcon('coins', 18, '#f59e0b')}</span>
-                            <span>${T('faresTitle')}</span>
-                        </h2>
-                        <div style="font-size:12px;color:var(--muted)">
-                            ${isEn ? 'Select a transit line below to view fare rates, pricing models, and payment methods' : 'เลือกสายรถไฟฟ้าด้านล่าง เพื่อดูอัตราค่าโดยสาร โครงสร้างราคา และบัตรโดยสารที่รองรับ'}
+                const existingBar = document.getElementById('faresLineFilterBar');
+                const existingBody = document.getElementById('faresViewBody');
+                const langMatches = existingBar && existingBar.getAttribute('data-lang') === lang;
+
+                if (!forceRebuild && existingBar && existingBody && langMatches) {
+                    existingBody.innerHTML = bodyHtml;
+                    const pills = existingBar.querySelectorAll('.line-filter-pill');
+                    let activePill = null;
+                    pills.forEach((p) => {
+                        const lineId = Number(p.getAttribute('data-line-id'));
+                        const isActive = lineId === activeId;
+                        p.classList.toggle('active', isActive);
+                        const lineData = TRANSIT_LINES_CATALOG.find(l => l.id === lineId);
+                        if (lineData) {
+                            p.style.cssText = isActive
+                                ? `background:${lineData.color};color:#ffffff;border-color:${lineData.color};font-weight:700;box-shadow:0 3px 10px ${lineData.color}55;`
+                                : '';
+                            const iconWrap = p.querySelector('.pill-icon');
+                            if (iconWrap) {
+                                iconWrap.innerHTML = getLineIconSvg(lineData.id, isActive, 15);
+                            }
+                        }
+                        if (isActive) activePill = p;
+                    });
+                    if (activePill) {
+                        scrollActivePillIntoView(existingBar, activePill, true);
+                    }
+                } else {
+                    el.innerHTML = `
+                        <div style="margin-bottom:12px;">
+                            <h2 style="font-size:18px;font-weight:800;color:var(--ink);margin:0 0 4px;display:flex;align-items:center;gap:8px;">
+                                <span>${getUiIcon('coins', 18, '#f59e0b')}</span>
+                                <span>${T('faresTitle')}</span>
+                            </h2>
+                            <div style="font-size:12px;color:var(--muted)">
+                                ${isEn ? 'Select a transit line below to view fare rates, pricing models, and payment methods' : 'เลือกสายรถไฟฟ้าด้านล่าง เพื่อดูอัตราค่าโดยสาร โครงสร้างราคา และบัตรโดยสารที่รองรับ'}
+                            </div>
                         </div>
-                    </div>
-                    ${renderLineFilterBar(activeId, 'setFaresLine')}
-                    ${bodyHtml}
-                `;
+                        ${renderLineFilterBar(activeId, 'setFaresLine', 'faresLineFilterBar')}
+                        <div id="faresViewBody">
+                            ${bodyHtml}
+                        </div>
+                    `;
+                    const newBar = document.getElementById('faresLineFilterBar');
+                    const activePill = newBar ? newBar.querySelector('.line-filter-pill.active') : null;
+                    if (newBar && activePill) {
+                        requestAnimationFrame(() => {
+                            scrollActivePillIntoView(newBar, activePill, false);
+                        });
+                    }
+                }
             },
 
             /* ---------- THE SKYTRAINs: Timetables View (เวลาเดินรถ & ความถี่ตามสาย) ---------- */
-            renderTimetablesView() {
+            renderTimetablesView(forceRebuild = false) {
                 const el = document.getElementById('timetablesViewContent');
                 if (!el) return;
 
@@ -4064,19 +4146,57 @@ gQIDAQAB
                     `;
                 }
 
-                el.innerHTML = `
-                    <div style="margin-bottom:12px;">
-                        <h2 style="font-size:18px;font-weight:800;color:var(--ink);margin:0 0 4px;display:flex;align-items:center;gap:8px;">
-                            <span>${getUiIcon('clock', 18, 'var(--primary,#0284c7)')}</span>
-                            <span>${T('timetablesTitle')}</span>
-                        </h2>
-                        <div style="font-size:12px;color:var(--muted)">
-                            ${isEn ? 'Select a transit line below to view first & last trains and official frequency schedules' : 'เลือกสายรถไฟฟ้าด้านล่าง เพื่อดูเวลาขบวนแรก ขบวนสุดท้าย และตารางความถี่การเดินรถ'}
+                const existingBar = document.getElementById('timetablesLineFilterBar');
+                const existingBody = document.getElementById('timetablesViewBody');
+                const langMatches = existingBar && existingBar.getAttribute('data-lang') === lang;
+
+                if (!forceRebuild && existingBar && existingBody && langMatches) {
+                    existingBody.innerHTML = bodyHtml;
+                    const pills = existingBar.querySelectorAll('.line-filter-pill');
+                    let activePill = null;
+                    pills.forEach((p) => {
+                        const lineId = Number(p.getAttribute('data-line-id'));
+                        const isActive = lineId === activeId;
+                        p.classList.toggle('active', isActive);
+                        const lineData = TRANSIT_LINES_CATALOG.find(l => l.id === lineId);
+                        if (lineData) {
+                            p.style.cssText = isActive
+                                ? `background:${lineData.color};color:#ffffff;border-color:${lineData.color};font-weight:700;box-shadow:0 3px 10px ${lineData.color}55;`
+                                : '';
+                            const iconWrap = p.querySelector('.pill-icon');
+                            if (iconWrap) {
+                                iconWrap.innerHTML = getLineIconSvg(lineData.id, isActive, 15);
+                            }
+                        }
+                        if (isActive) activePill = p;
+                    });
+                    if (activePill) {
+                        scrollActivePillIntoView(existingBar, activePill, true);
+                    }
+                } else {
+                    el.innerHTML = `
+                        <div style="margin-bottom:12px;">
+                            <h2 style="font-size:18px;font-weight:800;color:var(--ink);margin:0 0 4px;display:flex;align-items:center;gap:8px;">
+                                <span>${getUiIcon('clock', 18, 'var(--primary,#0284c7)')}</span>
+                                <span>${T('timetablesTitle')}</span>
+                            </h2>
+                            <div style="font-size:12px;color:var(--muted)">
+                                ${isEn ? 'Select a transit line below to view first & last trains and official frequency schedules' : 'เลือกสายรถไฟฟ้าด้านล่าง เพื่อดูเวลาขบวนแรก ขบวนสุดท้าย และตารางความถี่การเดินรถ'}
+                            </div>
                         </div>
-                    </div>
-                    ${renderLineFilterBar(activeId, 'setTimetablesLine')}
-                    ${bodyHtml}
-                `;
+                        ${renderLineFilterBar(activeId, 'setTimetablesLine', 'timetablesLineFilterBar')}
+                        <div id="timetablesViewBody">
+                            ${bodyHtml}
+                        </div>
+                    `;
+                    const newBar = document.getElementById('timetablesLineFilterBar');
+                    const activePill = newBar ? newBar.querySelector('.line-filter-pill.active') : null;
+                    if (newBar && activePill) {
+                        requestAnimationFrame(() => {
+                            scrollActivePillIntoView(newBar, activePill, false);
+                        });
+                    }
+                }
             },
 
 
@@ -4107,11 +4227,18 @@ gQIDAQAB
                 this.renderTraffic();
                 this.renderJourney();
                 this.renderInteractiveMap(true);
-                this.renderFaresView();
-                this.renderTimetablesView();
+                this.renderFaresView(true);
+                this.renderTimetablesView(true);
                 this.renderQuickHubChips();
                 this.renderExitsView(this.selectedExitKey);
                 if (this.journey.picking) this.renderPicker();
+            },
+
+            /* ---------- native app bridge hook ---------- */
+            onNativeBridgeReady() {
+                try {
+                    document.documentElement.classList.add('is-flutter-app');
+                } catch (e) { }
             },
 
             // ข้อความ static นอก render functions (header / search / footer / ปุ่ม)
@@ -4190,6 +4317,9 @@ gQIDAQAB
             },
 
             async init() {
+                if (typeof window !== 'undefined' && window.isFlutterApp) {
+                    try { document.documentElement.classList.add('is-flutter-app'); } catch (e) { }
+                }
                 this.applyStaticLang();
                 this.updateThemeBtn();   // ธีมถูกตั้งไว้แล้วจากสคริปต์ใน <head> — ปรับไอคอนปุ่มให้ตรง
                 this.startClock();

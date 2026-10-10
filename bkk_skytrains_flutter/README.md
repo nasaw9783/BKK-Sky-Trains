@@ -10,15 +10,19 @@
 
 1. **Embedded WebView Engine (`lib/screens/bkk_web_view_screen.dart`)**:
    - ทำงานผ่าน `webview_flutter` โดยโหลดเว็บแอปพลิเคชันเวอร์ชันออฟไลน์จาก `assets/www/index.html` ภายในเครื่องโดยตรง
-   - ให้ประสิทธิภาพสูง โหลดหน้าจอได้ทันทีโดยไม่ต้องพึ่งพาเซิร์ฟเวอร์ภายนอกสำหรับ UI
+   - มีระบบ `clearCache()` ก่อนโหลด เพื่อให้แน่ใจว่าได้ใช้ไฟล์ asset ล่าสุดเสมอ
+   - ให้ประสิทธิภาพสูง โหลดหน้าจอได้ทันที 0ms โดยไม่ต้องพึ่งพาเซิร์ฟเวอร์ภายนอกสำหรับ UI
 2. **Native Geolocation Bridge (`geolocator`)**:
    - เชื่อมต่อการขอสิทธิ์ GPS และพิกัดตำแหน่งของผู้ใช้งานผ่าน Native Android/iOS API
-   - ส่งต่อพิกัดความแม่นยำสูงเข้าไปยัง JavaScript ในหน้าเว็บแบบเรียลไทม์
-3. **Clean Platform Footprint**:
+   - ส่งต่อพิกัดความแม่นยำสูงเข้าไปยัง JavaScript ในหน้าเว็บแบบเรียลไทม์ผ่าน `JavaScriptChannel`
+3. **Train Icon Standard & API Security**:
+   - รองรับมาตรฐานไอคอนรูปรถไฟประจำสายสีเฉพาะ (`getLineIconSvg`)
+   - ผสานการทำงานร่วมกับไลบรารี `JSEncrypt` (`assets/www/js/jsencrypt.min.js`) สำหรับความปลอดภัยของข้อมูล
+4. **Clean Platform Footprint**:
    - รองรับเฉพาะ **Android** และ **iOS**
    - ตัดโฟลเดอร์ boilerplate ที่ไม่จำเป็น (Linux, macOS, Windows Desktop) ออกทั้งหมด เพื่อลดขนาดโปรเจกต์และประหยัดพื้นที่จัดเก็บ
-4. **Native Fallback & Modules**:
-   - มีชุดหน้าจอเนทีฟใน `lib/screens/` (`home_screen.dart`, `fares_screen.dart`, `trip_planner_screen.dart`, `map_screen.dart`) พร้อมรองรับการขยายตัวในอนาคต
+5. **Native Fallback & Modules**:
+   - มีชุดหน้าจอเนทีฟใน `lib/screens/` (`home_screen.dart`, `fares_screen.dart`, `trip_planner_screen.dart`, `map_screen.dart`) และโมเดลข้อมูล (`lib/models/`) พร้อมรองรับการขยายตัวในอนาคต
 
 ---
 
@@ -29,13 +33,16 @@ bkk_skytrains_flutter/
 ├── android/                    # การตั้งค่า Native Android (Manifest, Gradle, App Icons)
 ├── ios/                        # การตั้งค่า Native iOS (Info.plist, AppIcon, LaunchScreen)
 ├── assets/
-│   └── www/                    # ไฟล์เว็บแอปพลิเคชันออฟไลน์ที่ฝังในตัวแอป (ซิงค์ตรงกับ Root)
+│   └── www/                    # ไฟล์เว็บแอปพลิเคชันออฟไลน์ที่ฝังในตัวแอป (ซิงค์ตรงกับ Root 100%)
 │       ├── index.html
-│       ├── js/app.js
+│       ├── js/
+│       │   ├── app.js
+│       │   └── jsencrypt.min.js
 │       ├── sw.js
 │       └── *.png, *.svg
 ├── lib/                        # โค้ด Flutter Dart
 │   ├── main.dart               # จุดเริ่มต้นของแอปพลิเคชัน
+│   ├── models/                 # Data Models (Station, Journey)
 │   ├── screens/
 │   │   ├── bkk_web_view_screen.dart  # หน้าจอหลักรัน WebView + Location Bridge
 │   │   ├── home_screen.dart          # หน้าจอ Home แบบเนทีฟ
@@ -50,7 +57,7 @@ bkk_skytrains_flutter/
 │   │   └── app_theme.dart            # การตั้งค่าธีมสีและสไตล์ของแอป
 │   └── widgets/                      # วิดเจ็ตที่ใช้ร่วมกัน
 ├── test/                       # Unit & Widget Tests
-└── pubspec.yaml                # การตั้งค่า Dependencies และ Assets
+└── pubspec.yaml                # การตั้งค่า Dependencies และ Assets (Android & iOS)
 ```
 
 ---
@@ -99,12 +106,12 @@ flutter build apk --release
 ```bash
 flutter build ipa --no-codesign
 ```
-*หรือใช้ระบบ **Automated iOS CI/CD** ผ่าน GitHub Actions ใน `.github/workflows/build_ios.yml` เพื่อให้ GitHub macOS Runner บิลด์ไฟล์ `.ipa` ให้อัตโนมัติในระบบคลาวด์*
+*หรือใช้ระบบ **Automated iOS CI/CD** ผ่าน GitHub Actions ใน `.github/workflows/build_ios.yml` เพื่อให้ GitHub macOS Runner บิลด์ไฟล์ `.ipa` ให้อัตโนมัติในระบบคลาวด์ พร้อมอัปโหลดขึ้น GitHub Releases*
 
 ---
 
 ## 🔄 กฎการซิงค์ไฟล์ (Dual-Asset Synchronization Protocol)
 
-- โฟลเดอร์ `assets/www/` ในโปรเจกต์นี้ เป็นสำเนาของไฟล์เว็บแอปพลิเคชันจากโฟลเดอร์ Root (`index.html`, `js/app.js`, `sw.js` ฯลฯ)
+- โฟลเดอร์ `assets/www/` ในโปรเจกต์นี้ เป็นสำเนาของไฟล์เว็บแอปพลิเคชันจากโฟลเดอร์ Root (`index.html`, `js/app.js`, `js/jsencrypt.min.js`, `sw.js` ฯลฯ)
 - **ทุกครั้ง** ที่มีการแก้ไขไฟล์เว็บในโฟลเดอร์หลัก จะต้องคัดลอกไฟล์มาทับใน `assets/www/` ให้ตรงกัน 100% เสมอ เพื่อให้การทำงานในแอปมือถือและบนเว็บมีความถูกต้องตรงกัน
 - ตรวจสอบความถูกต้องด้วย `flutter analyze` ทุกครั้งหลังอัปเดตไฟล์

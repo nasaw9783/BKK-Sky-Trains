@@ -6,7 +6,7 @@
 | เอกสาร | รายละเอียด |
 | :--- | :--- |
 | **ชื่อผลิตภัณฑ์** | **BKK SKYTRAINs** (Bangkok SkyTrains & Mass Transit Companion) |
-| **เวอร์ชันเอกสาร** | 1.2.0 (Production Release) |
+| **เวอร์ชันเอกสาร** | 1.3.0 (Production Release) |
 | **สถานะ** | Active / Production |
 | **แพลตฟอร์มที่รองรับ** | Progressive Web App (PWA), Android (Native Hybrid APK), iOS (Native Hybrid IPA) |
 | **กลุ่มเป้าหมาย** | ผู้โดยสารรถไฟฟ้าในกรุงเทพฯ และปริมณฑล (คนไทย, ชาวต่างชาติ, นักท่องเที่ยว) |
@@ -193,7 +193,7 @@ flowchart TD
 | :--- | :--- |
 | **ประสิทธิภาพ (Performance)** | - First Contentful Paint (FCP) < 800ms บน 4G<br>- Time to Interactive (TTI) < 1.2 วินาที<br>- 60 FPS Smooth Scrolling & Transitions<br>- การคำนวณ Dijkstra ข้ามทุกสายใช้เวลา < 15ms |
 | **ความพร้อมใช้งาน (Availability)** | - รองรับการทำงานออฟไลน์ 100% สำหรับข้อมูลสถานี ผังเส้นทาง และการคำนวณเส้นทาง<br>- Graceful Degradation: หาก BTS API ล่ม ให้สลับใช้ข้อมูล Timetable อัตโนมัติ |
-| **ความปลอดภัย (Security)** | - ปลอดสารคุกกี้และ Third-party Tracker ไม่เก็บข้อมูลส่วนบุคคลของผู้ใช้<br>- การเรียก Reverse Proxy มีการป้องกัน Input Sanitization และ CORS Lockdown<br>- สคริปต์ทั้งหมดผ่านการปลดบล็อก Zone.Identifier (MOTW) |
+| **ความปลอดภัย (Security)** | - ปลอดสารคุกกี้และ Third-party Tracker ไม่เก็บข้อมูลส่วนบุคคลของผู้ใช้<br>- การเรียก Reverse Proxy มีการป้องกัน Input Sanitization และ CORS Lockdown<br>- ผสานไลบรารี `JSEncrypt` เข้ารหัสความปลอดภัย API payload (RSA)<br>- สคริปต์ทั้งหมดผ่านการปลดบล็อก Zone.Identifier (MOTW) |
 | **ความเข้ากันได้ (Compatibility)** | - เบราว์เซอร์: Chrome, Safari iOS, Edge, Samsung Internet, Firefox<br>- สมาร์ตโฟน: Android 8.0+ (API 26+) และ iOS 13.0+ |
 | **ขนาดแอปพลิเคชัน (Footprint)** | - PWA Bundle ขนาดเบา < 1.5 MB<br>- Android APK ขนาด < 45 MB |
 

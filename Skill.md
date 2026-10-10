@@ -56,6 +56,7 @@ C:\Users\Administrator\Documents\BKK Sky Trains\
 # ซิงค์ไฟล์ Web Root ไปยัง Flutter Embedded Assets
 Copy-Item -Path "index.html" -Destination "bkk_skytrains_flutter\assets\www\index.html" -Force
 Copy-Item -Path "js\app.js" -Destination "bkk_skytrains_flutter\assets\www\js\app.js" -Force
+if (Test-Path "js\jsencrypt.min.js") { Copy-Item -Path "js\jsencrypt.min.js" -Destination "bkk_skytrains_flutter\assets\www\js\jsencrypt.min.js" -Force }
 ```
 
 ### ✅ กฎข้อที่ 2: Code Validation & Quality Gates (การตรวจสอบคุณภาพ)

@@ -2,6 +2,11 @@ name: Build iOS App
 
 on:
   workflow_dispatch:
+    inputs:
+      publish_release:
+        description: 'Publish / Update GitHub Release'
+        type: boolean
+        default: true
   push:
     branches: [ main, master ]
     tags:
@@ -10,14 +15,12 @@ on:
       - '**.md'
       - 'Start-BKK-Transit.ps1'
       - '.gitignore'
-      - 'releases/**'
   pull_request:
     branches: [ main, master ]
     paths-ignore:
       - '**.md'
       - 'Start-BKK-Transit.ps1'
       - '.gitignore'
-      - 'releases/**'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -53,6 +56,14 @@ jobs:
         working-directory: bkk_skytrains_flutter
         run: flutter pub get
 
+      - name: Cache CocoaPods
+        uses: actions/cache@v4
+        with:
+          path: bkk_skytrains_flutter/ios/Pods
+          key: ${{ runner.os }}-pods-${{ hashFiles('bkk_skytrains_flutter/pubspec.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-pods-
+
       - name: Run Static Analysis
         working-directory: bkk_skytrains_flutter
         run: flutter analyze
@@ -84,12 +95,17 @@ jobs:
           retention-days: 14
 
       - name: Release to GitHub Releases
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/main' || inputs.publish_release == true
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ startsWith(github.ref, 'refs/tags/v') && github.ref_name || 'latest' }}
+          name: ${{ startsWith(github.ref, 'refs/tags/v') && format('BKK SkyTrains {0} (iOS & Android)', github.ref_name) || 'BKK SkyTrains Latest Build' }}
+          prerelease: ${{ !startsWith(github.ref, 'refs/tags/v') }}
           files: |
             bkk_skytrains_flutter/BKK_SkyTrains_iOS_unsigned.ipa
             bkk_skytrains_flutter/BKK_SkyTrains_iOS_unsigned.ipa.sha256
+            releases/BKK_SkyTrains_Android_latest.apk
+            releases/BKK_SkyTrains_Android_latest.apk.sha256
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

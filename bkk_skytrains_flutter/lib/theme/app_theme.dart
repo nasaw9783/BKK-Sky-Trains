@@ -14,7 +14,9 @@ class AppTheme {
   static const Color pinkLine = Color(0xFFEC4899);
   static const Color mrtBlue = Color(0xFF1F8FDF);
   static const Color mrtPurple = Color(0xFF8A2C9B);
-  static const Color srtRed = Color(0xFFC21E25);
+  static const Color srtDarkRed = Color(0xFFB91C1C);
+  static const Color srtLightRed = Color(0xFFF87171);
+  static const Color srtRed = Color(0xFFB91C1C);
   static const Color arlRed = Color(0xFFA11B22);
 
   static Color parseHexColor(String hex) {

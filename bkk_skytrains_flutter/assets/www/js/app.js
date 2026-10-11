@@ -34,8 +34,8 @@
         const YELLOW_MAP_SRC = 'เส้นทางและอัตราค่าโดยสาร_files/yellow-map.jpg';
         const GOLD_LINE_ID = 3;
         const MRT_BLUE_FARE_CHANGE_AT = new Date('2026-07-03T00:00:00+07:00').getTime();
-        const MRT_LINE_IDS = { BLUE: 101, PURPLE: 102, RED: 103, ARL: 104 };
-        const MRT_COLORS = { BLUE: '#1f8fdf', PURPLE: '#8a2c9b', RED: '#c21e25', ARL: '#a11b22' };
+        const MRT_LINE_IDS = { BLUE: 101, PURPLE: 102, RED: 103, DARK_RED: 103, LIGHT_RED: 105, ARL: 104 };
+        const MRT_COLORS = { BLUE: '#0284c7', PURPLE: '#8a2c9b', RED: '#b91c1c', DARK_RED: '#b91c1c', LIGHT_RED: '#f87171', ARL: '#8a1538' };
 
         const MRT_STATIC_DB = {
             lines: [
@@ -131,16 +131,13 @@
                     }))
                 },
                 {
-                    LineId: MRT_LINE_IDS.RED,
-                    LineName_TH: 'สีแดง',
-                    LineName_EN: 'Red',
-                    LineColor: MRT_COLORS.RED,
+                    LineId: MRT_LINE_IDS.DARK_RED,
+                    LineName_TH: 'สีแดงเข้ม',
+                    LineName_EN: 'Dark Red',
+                    LineColor: MRT_COLORS.DARK_RED,
                     StaticJourney: true,
                     StationList: [
-                        ['RW04', 'ตลิ่งชัน', 'Taling Chan', 13.7893, 100.4393],
-                        ['RW03', 'บางบำหรุ', 'Bang Bamru', 13.7918, 100.4776],
-                        ['RW02', 'บางซ่อน', 'Bang Son', 13.8221, 100.5342],
-                        ['RN01', 'กรุงเทพ อภิวัฒน์', 'Krung Thep Aphiwat', 13.805, 100.54166667],
+                        ['RN01', 'กรุงเทพอภิวัฒน์', 'Krung Thep Aphiwat', 13.805, 100.54166667],
                         ['RN02', 'จตุจักร', 'Chatuchak', 13.824, 100.549],
                         ['RN03', 'วัดเสมียนนารี', 'Wat Samian Nari', 13.8415, 100.5574],
                         ['RN04', 'บางเขน', 'Bang Khen', 13.8493, 100.5618],
@@ -154,8 +151,30 @@
                         StationKey: key,
                         StationNameTH: th,
                         StationNameEN: en,
-                        StationLineId: MRT_LINE_IDS.RED,
-                        StationLineColor: MRT_COLORS.RED,
+                        StationLineId: MRT_LINE_IDS.DARK_RED,
+                        StationLineColor: MRT_COLORS.DARK_RED,
+                        StaticJourney: true,
+                        Latitude: lat,
+                        Longitude: lon
+                    }))
+                },
+                {
+                    LineId: MRT_LINE_IDS.LIGHT_RED,
+                    LineName_TH: 'สีแดงอ่อน',
+                    LineName_EN: 'Light Red',
+                    LineColor: MRT_COLORS.LIGHT_RED,
+                    StaticJourney: true,
+                    StationList: [
+                        ['RN01', 'กรุงเทพอภิวัฒน์', 'Krung Thep Aphiwat', 13.805, 100.54166667],
+                        ['RW02', 'บางซ่อน', 'Bang Son', 13.8221, 100.5342],
+                        ['RW03', 'บางบำหรุ', 'Bang Bamru', 13.7918, 100.4776],
+                        ['RW04', 'ตลิ่งชัน', 'Taling Chan', 13.7893, 100.4393]
+                    ].map(([key, th, en, lat, lon]) => ({
+                        StationKey: key,
+                        StationNameTH: th,
+                        StationNameEN: en,
+                        StationLineId: MRT_LINE_IDS.LIGHT_RED,
+                        StationLineColor: MRT_COLORS.LIGHT_RED,
                         StaticJourney: true,
                         Latitude: lat,
                         Longitude: lon
@@ -359,12 +378,12 @@
                     return isPeak ? { label: '9.00', minutes: 9 } : { label: '10.00–12.00', minutes: 11 };
                 }
             }
-            if (lineId === MRT_LINE_IDS.RED) {
+            if (lineId === MRT_LINE_IDS.RED || lineId === 103 || lineId === 105) {
                 const now = new Date();
                 const nowMin = timeToMinutes(now.getHours(), now.getMinutes());
                 const we = isWeekend();
                 if (nowMin < timeToMinutes(5, 0) || nowMin >= timeToMinutes(24, 0)) return null;
-                const isWest = stationKey && stationKey.startsWith('RW');
+                const isWest = (lineId === 105) || (stationKey && stationKey.startsWith('RW'));
                 const isPeak = !we && ((nowMin >= timeToMinutes(7, 0) && nowMin < timeToMinutes(9, 30)) ||
                     (nowMin >= timeToMinutes(17, 0) && nowMin < timeToMinutes(19, 30)));
                 if (isWest) {
@@ -442,11 +461,11 @@
                     isBlueOuter: false
                 };
             }
-            if (lineId === MRT_LINE_IDS.RED) {
+            if (lineId === MRT_LINE_IDS.RED || lineId === 103 || lineId === 105) {
                 const now = new Date();
                 const nowMin = timeToMinutes(now.getHours(), now.getMinutes());
                 const we = isWeekend();
-                const isWest = stationKey && stationKey.startsWith('RW');
+                const isWest = (lineId === 105) || (stationKey && stationKey.startsWith('RW'));
                 const buildRed = (isWeekendTable) => {
                     const peakLabel = isWest ? '20.00' : '10.00';
                     const offPeakLabel = isWest ? '30.00' : '20.00';
@@ -1382,7 +1401,7 @@ gQIDAQAB
         }
 
         function isMrtLineId(id) {
-            return id === MRT_LINE_IDS.BLUE || id === MRT_LINE_IDS.PURPLE || id === MRT_LINE_IDS.RED || id === MRT_LINE_IDS.ARL;
+            return id === MRT_LINE_IDS.BLUE || id === MRT_LINE_IDS.PURPLE || id === 103 || id === 105 || id === MRT_LINE_IDS.ARL;
         }
 
         function isGoldLineId(id) {
@@ -1510,7 +1529,7 @@ gQIDAQAB
                     const a = line.StationList[i - 1].StationKey;
                     const b = line.StationList[i].StationKey;
                     let w = isMrtLineId(line.LineId) ? 2.2 : 2;
-                    if (line.LineId === MRT_LINE_IDS.RED) {
+                    if (line.LineId === 103 || line.LineId === 105 || line.LineId === MRT_LINE_IDS.RED) {
                         w = SRT_RED_TRAVEL_TIMES[`${a}|${b}`] || 2;
                     }
                     addEdge(a, b, {
@@ -1641,7 +1660,7 @@ gQIDAQAB
                 }
                 const kind = e.lineId === MRT_LINE_IDS.BLUE ? 'blue'
                     : e.lineId === MRT_LINE_IDS.PURPLE ? 'purple'
-                        : e.lineId === MRT_LINE_IDS.RED ? 'red'
+                        : (e.lineId === 103 || e.lineId === 105 || e.lineId === MRT_LINE_IDS.RED) ? 'red'
                             : e.lineId === MRT_LINE_IDS.ARL ? 'arl' : 'live';
                 if (!segment || segment.kind !== kind) {
                     await closeSegment();
@@ -1748,7 +1767,7 @@ gQIDAQAB
             if (lineId === MRT_LINE_IDS.PURPLE) {
                 return { fare: mrtPurpleFare(1), lineName };
             }
-            if (lineId === MRT_LINE_IDS.RED) {
+            if (lineId === MRT_LINE_IDS.RED || lineId === 103 || lineId === 105) {
                 return { fare: 12, lineName };
             }
             if (lineId === MRT_LINE_IDS.ARL) {
@@ -2067,8 +2086,8 @@ gQIDAQAB
             },
             {
                 id: 4,
-                nameTH: 'MRT สายสีเหลือง',
-                nameEN: 'MRT Yellow Line',
+                nameTH: 'MRT สายสีเหลือง (นัคราพิพัฒน์)',
+                nameEN: 'MRT Yellow Line (Nakkhara Phiphat)',
                 color: '#FFD100',
                 operatorTH: 'EBM (Eastern Bangkok Monorail)',
                 operatorEN: 'EBM (Eastern Bangkok Monorail)',
@@ -2093,8 +2112,8 @@ gQIDAQAB
             },
             {
                 id: 5,
-                nameTH: 'MRT สายสีชมพู',
-                nameEN: 'MRT Pink Line',
+                nameTH: 'MRT สายสีชมพู (วิวัฒน์นคร)',
+                nameEN: 'MRT Pink Line (Wiwat Nakhon)',
                 color: '#EC4899',
                 operatorTH: 'NBM (Northern Bangkok Monorail)',
                 operatorEN: 'NBM (Northern Bangkok Monorail)',
@@ -2119,8 +2138,8 @@ gQIDAQAB
             },
             {
                 id: 101,
-                nameTH: 'MRT สายสีน้ำเงิน',
-                nameEN: 'MRT Blue Line',
+                nameTH: 'MRT สายสีน้ำเงิน (เฉลิมรัชมงคล)',
+                nameEN: 'MRT Blue Line (Chaloem Ratchamongkhon)',
                 color: '#0284C7',
                 operatorTH: 'BEM (Bangkok Expressway and Metro) / รฟม.',
                 operatorEN: 'BEM / MRTA (Mass Rapid Transit Authority)',
@@ -2145,8 +2164,8 @@ gQIDAQAB
             },
             {
                 id: 102,
-                nameTH: 'MRT สายสีม่วง',
-                nameEN: 'MRT Purple Line',
+                nameTH: 'MRT สายสีม่วง (ฉลองรัชธรรม)',
+                nameEN: 'MRT Purple Line (Chalong Ratchatham)',
                 color: '#8A2C9B',
                 operatorTH: 'BEM / รฟม.',
                 operatorEN: 'BEM / MRTA',
@@ -2171,13 +2190,13 @@ gQIDAQAB
             },
             {
                 id: 103,
-                nameTH: 'SRT สายสีแดง',
-                nameEN: 'SRT Red Line',
-                color: '#DC2626',
+                nameTH: 'SRT สายสีแดงเข้ม (ธานีรัถยา)',
+                nameEN: 'SRT Dark Red Line (Thani Ratthaya)',
+                color: '#B91C1C',
                 operatorTH: 'SRTET (รถไฟฟ้า ร.ฟ.ท.)',
                 operatorEN: 'SRTET (State Railway of Thailand Electrified Train)',
-                terminusTH: 'กรุงเทพอภิวัฒน์ ↔ รังสิต / ตลิ่งชัน (14 สถานี)',
-                terminusEN: 'Krung Thep Aphiwat ↔ Rangsit / Taling Chan (14 Stations)',
+                terminusTH: 'กรุงเทพอภิวัฒน์ ↔ รังสิต (10 สถานี)',
+                terminusEN: 'Krung Thep Aphiwat ↔ Rangsit (10 Stations)',
                 minFare: 12,
                 maxFare: 20,
                 pricingModelTH: 'นโยบาย 20 บาทตลอดสาย (สูงสุดไม่เกิน ฿20)',
@@ -2188,12 +2207,38 @@ gQIDAQAB
                 firstTrainEN: '05:00',
                 lastTrainTH: '24:00 น.',
                 lastTrainEN: '24:00',
-                peakFreqTH: '10.00 นาที (สายเหนือ) / 20.00 นาที (สายตะวันตก)',
-                peakFreqEN: '10.00 min (North) / 20.00 min (West)',
-                offPeakFreqTH: '20.00 นาที (สายเหนือ) / 30.00 นาที (สายตะวันตก)',
-                offPeakFreqEN: '20.00 min (North) / 30.00 min (West)',
-                dir1: { toTH: 'รังสิต (สายเหนือ)', toEN: 'Rangsit (North Line)', first: '05:00', last: '24:00' },
-                dir2: { toTH: 'ตลิ่งชัน (สายตะวันตก)', toEN: 'Taling Chan (West Line)', first: '05:00', last: '24:00' }
+                peakFreqTH: '10.00 นาที',
+                peakFreqEN: '10.00 min',
+                offPeakFreqTH: '20.00 นาที',
+                offPeakFreqEN: '20.00 min',
+                dir1: { toTH: 'รังสิต (Rangsit)', toEN: 'Rangsit', first: '05:00', last: '24:00' },
+                dir2: { toTH: 'กรุงเทพอภิวัฒน์ (Krung Thep Aphiwat)', toEN: 'Krung Thep Aphiwat', first: '05:00', last: '24:00' }
+            },
+            {
+                id: 105,
+                nameTH: 'SRT สายสีแดงอ่อน (นครวิถี)',
+                nameEN: 'SRT Light Red Line (Nakhon Withi)',
+                color: '#F87171',
+                operatorTH: 'SRTET (รถไฟฟ้า ร.ฟ.ท.)',
+                operatorEN: 'SRTET (State Railway of Thailand Electrified Train)',
+                terminusTH: 'กรุงเทพอภิวัฒน์ ↔ ตลิ่งชัน (4 สถานี)',
+                terminusEN: 'Krung Thep Aphiwat ↔ Taling Chan (4 Stations)',
+                minFare: 12,
+                maxFare: 20,
+                pricingModelTH: 'นโยบาย 20 บาทตลอดสาย (สูงสุดไม่เกิน ฿20)',
+                pricingModelEN: 'Flat 20 Baht Policy (Capped at ฿20 max)',
+                ticketsTH: 'เหรียญโดยสาร (Token), บัตร SRTET, บัตร EMV Contactless',
+                ticketsEN: 'Single Journey Token, SRTET Card, EMV Contactless',
+                firstTrainTH: '05:00 น.',
+                firstTrainEN: '05:00',
+                lastTrainTH: '24:00 น.',
+                lastTrainEN: '24:00',
+                peakFreqTH: '20.00 นาที',
+                peakFreqEN: '20.00 min',
+                offPeakFreqTH: '30.00 นาที',
+                offPeakFreqEN: '30.00 min',
+                dir1: { toTH: 'ตลิ่งชัน (Taling Chan)', toEN: 'Taling Chan', first: '05:00', last: '24:00' },
+                dir2: { toTH: 'กรุงเทพอภิวัฒน์ (Krung Thep Aphiwat)', toEN: 'Krung Thep Aphiwat', first: '05:00', last: '24:00' }
             },
             {
                 id: 104,
@@ -2281,21 +2326,30 @@ gQIDAQAB
             </div>`;
         }
 
-        function scrollActivePillIntoView(container, pill, smooth = true) {
-            if (!container || !pill) return;
-            const containerWidth = container.clientWidth;
-            if (containerWidth <= 0) return;
-            const pillLeft = pill.offsetLeft;
-            const pillWidth = pill.offsetWidth;
-            const targetScrollLeft = pillLeft - (containerWidth / 2) + (pillWidth / 2);
+        function scrollContainerChildToCenter(container, child, smooth = true) {
+            if (!container || !child) return;
+            if (container.clientWidth <= 0) return;
+            const containerRect = container.getBoundingClientRect();
+            const childRect = child.getBoundingClientRect();
+            if (childRect.width === 0 && child.offsetWidth === 0) return;
+            const currentScroll = container.scrollLeft;
+            const childContentLeft = (childRect.left - containerRect.left) + currentScroll;
+            const childWidth = child.offsetWidth || childRect.width;
+            const target = childContentLeft - (container.clientWidth / 2) + (childWidth / 2);
+            const maxScroll = Math.max(0, container.scrollWidth - container.clientWidth);
+            const clampedTarget = Math.max(0, Math.min(maxScroll, Math.round(target)));
             if (smooth && typeof container.scrollTo === 'function') {
                 container.scrollTo({
-                    left: Math.max(0, targetScrollLeft),
+                    left: clampedTarget,
                     behavior: 'smooth'
                 });
             } else {
-                container.scrollLeft = Math.max(0, targetScrollLeft);
+                container.scrollLeft = clampedTarget;
             }
+        }
+
+        function scrollActivePillIntoView(container, pill, smooth = true) {
+            scrollContainerChildToCenter(container, pill, smooth);
         }
 
         function getLineScheduleTables(lineId) {
@@ -2313,7 +2367,9 @@ gQIDAQAB
             if (!t) return null;
             let note = '';
             if (lineId === 103) {
-                note = lang === 'en' ? '* North line (Rangsit) 10-20 min · West line (Taling Chan) 20-30 min' : '* สายธานีรัถยา (รังสิต) ทุก 10-20 นาที · สายนครวิถี (ตลิ่งชัน) ทุก 20-30 นาที';
+                note = lang === 'en' ? '* Thani Ratthaya Line (Rangsit) every 10-20 min' : '* สายธานีรัถยา (รังสิต) ทุก 10-20 นาที';
+            } else if (lineId === 105) {
+                note = lang === 'en' ? '* Nakhon Withi Line (Taling Chan) every 20-30 min' : '* สายนครวิถี (ตลิ่งชัน) ทุก 20-30 นาที';
             } else if (lineId === 101) {
                 note = lang === 'en' ? '* Inner Circle (Bang Sue ↔ Tha Phra) / Outer Loop' : '* ช่วง 07:00–09:00 ช่วงบางซื่อ–ท่าพระ–หลักสอง ความถี่ตามตารางทางการ';
             }
@@ -3001,16 +3057,38 @@ gQIDAQAB
                 // 1. Line Filter Tabs (ทุกสาย, สุขุมวิท, สีลม, สีทอง, สีน้ำเงิน, สีม่วง, สีเหลือง, สีชมพู, สีแดง, ARL)
                 if (lineTabsEl) {
                     const isAll = this.exitFilterLine === 0;
-                    lineTabsEl.innerHTML = `
-                        <button class="tab ${isAll ? 'on' : ''}" style="${isAll ? 'background:var(--primary,#0284c7);color:#fff;' : ''}" onclick="App.filterExitLine(0)">
-                            ${getLineIconSvg(0, isAll, 17)}
-                            <span>${lang === 'th' ? 'ทุกสาย' : 'All Lines'}</span>
-                        </button>` + allLines.map(l => {
-                        const on = l.LineId === this.exitFilterLine;
-                        return `<button class="tab ${on ? 'on' : ''}" style="${on ? 'background:' + l.LineColor + ';color:#fff;' : ''}" onclick="App.filterExitLine(${l.LineId})">
-                            ${getLineIconSvg(l.LineId, on, 17)}
-                            <span>${esc(shortLineName(l))}</span></button>`;
-                    }).join('');
+                    const existingTabs = lineTabsEl.querySelectorAll('.tab');
+                    const totalExpected = 1 + allLines.length;
+
+                    if (existingTabs.length === totalExpected) {
+                        const allBtn = existingTabs[0];
+                        allBtn.className = `tab ${isAll ? 'on' : ''}`;
+                        allBtn.style.cssText = isAll ? 'background:var(--primary,#0284c7);color:#fff;' : '';
+                        allLines.forEach((l, idx) => {
+                            const btn = existingTabs[idx + 1];
+                            const on = l.LineId === this.exitFilterLine;
+                            btn.className = `tab ${on ? 'on' : ''}`;
+                            btn.style.cssText = on ? `background:${l.LineColor};color:#fff;` : '';
+                        });
+                    } else {
+                        lineTabsEl.innerHTML = `
+                            <button class="tab ${isAll ? 'on' : ''}" style="${isAll ? 'background:var(--primary,#0284c7);color:#fff;' : ''}" onclick="App.filterExitLine(0)">
+                                ${getLineIconSvg(0, isAll, 17)}
+                                <span>${lang === 'th' ? 'ทุกสาย' : 'All Lines'}</span>
+                            </button>` + allLines.map(l => {
+                            const on = l.LineId === this.exitFilterLine;
+                            return `<button class="tab ${on ? 'on' : ''}" style="${on ? 'background:' + l.LineColor + ';color:#fff;' : ''}" onclick="App.filterExitLine(${l.LineId})">
+                                ${getLineIconSvg(l.LineId, on, 17)}
+                                <span>${esc(shortLineName(l))}</span></button>`;
+                        }).join('');
+                    }
+
+                    const activeExitTab = lineTabsEl.querySelector('.tab.on');
+                    if (activeExitTab) {
+                        requestAnimationFrame(() => {
+                            scrollContainerChildToCenter(lineTabsEl, activeExitTab, true);
+                        });
+                    }
                 }
 
                 // 2. Update Framed Lines in the Custom Dropdown Panel
@@ -3133,9 +3211,28 @@ gQIDAQAB
                     svg.style.transform = 'scale(1)';
                     const vp = document.getElementById('mapViewport');
                     if (vp) {
-                        vp.scrollLeft = 140;
-                        vp.scrollTop = 120;
+                        const targetX = (740 / 1600) * vp.scrollWidth - (vp.clientWidth / 2);
+                        const targetY = (635 / 1200) * vp.scrollHeight - (vp.clientHeight / 2);
+                        vp.scrollLeft = Math.max(0, targetX);
+                        vp.scrollTop = Math.max(0, targetY);
                     }
+                }
+            },
+
+            toggleMapLegend() {
+                const el = document.getElementById('mapLegendGroup');
+                if (!el) return;
+                const isHidden = el.getAttribute('display') === 'none' || el.style.display === 'none';
+                if (isHidden) {
+                    el.removeAttribute('display');
+                    el.style.display = '';
+                } else {
+                    el.setAttribute('display', 'none');
+                    el.style.display = 'none';
+                }
+                const btnText = document.getElementById('mapLegendBtnText');
+                if (btnText) {
+                    btnText.textContent = isHidden ? (lang === 'en' ? 'Legend' : 'สัญลักษณ์') : (lang === 'en' ? 'Show Legend' : 'เปิดสัญลักษณ์');
                 }
             },
 
@@ -3144,199 +3241,290 @@ gQIDAQAB
                 if (!container) return;
                 if (!force && container.innerHTML.trim() !== '') return;
 
-                const mapLbl = (code, th, en, icon = '') => {
-                    const s = this.findStation(code);
-                    const prefix = icon ? (icon + ' ') : '';
-                    if (s) {
-                        return `${prefix}${code} ${stName(s)}`;
-                    }
-                    return `${prefix}${code} ${lang === 'en' ? (en || th) : (th || en)}`;
+                const MAP_STATION_COORDS = {
+                    // 1. BTS Sukhumvit Line (N24 -> E23) [Green]
+                    'N24': [950, 40], 'N23': [920, 40], 'N22': [890, 40], 'N21': [860, 40],
+                    'N20': [830, 40], 'N19': [800, 40], 'N18': [770, 40],
+                    'N17': [740, 75], 'N16': [740, 110], 'N15': [740, 140], 'N14': [740, 170],
+                    'N13': [740, 200], 'N12': [740, 230], 'N11': [740, 260], 'N10': [740, 290],
+                    'N9':  [740, 320], 'N8':  [740, 355], 'N7':  [740, 395], 'N5':  [740, 435],
+                    'N4':  [740, 475], 'N3':  [740, 515], 'N2':  [740, 555], 'N1':  [740, 595],
+                    'CEN': [740, 635],
+                    'E1':  [780, 635], 'E2':  [820, 635], 'E3':  [860, 635], 'E4':  [900, 635],
+                    'E5':  [940, 635], 'E6':  [980, 635], 'E7':  [1020, 635], 'E8':  [1060, 635],
+                    'E9':  [1100, 650], 'E10': [1130, 680], 'E11': [1160, 710], 'E12': [1190, 740],
+                    'E13': [1220, 770], 'E14': [1250, 800], 'E15': [1280, 835], 'E16': [1280, 870],
+                    'E17': [1280, 905], 'E18': [1280, 940], 'E19': [1280, 975], 'E20': [1280, 1010],
+                    'E21': [1280, 1045], 'E22': [1280, 1080], 'E23': [1280, 1115],
+
+                    // 2. BTS Silom Line (W1 -> S12) [Teal]
+                    'W1':  [695, 635], 'S1':  [740, 675], 'S2':  [740, 715],
+                    'S3':  [710, 745], 'S4':  [680, 775], 'S5':  [650, 805], 'S6':  [615, 835],
+                    'S7':  [555, 865], 'S8':  [510, 890], 'S9':  [465, 915], 'S10': [420, 940],
+                    'S11': [375, 965], 'S12': [325, 990],
+
+                    // 3. BTS Gold Line (G1 -> G3) [Gold]
+                    'G1':  [572, 878], 'G2':  [602, 908], 'G3':  [632, 938],
+
+                    // 4. SRT Dark Red Line (RN01 -> RN10) [Dark Red #B91C1C]
+                    'RN01': [565, 355], 'RN02': [610, 315], 'RN03': [610, 275], 'RN04': [610, 235],
+                    'RN05': [610, 195], 'RN06': [610, 155], 'RN07': [610, 120], 'RN08': [610, 85],
+                    'RN09': [610, 50],  'RN10': [610, 15],
+
+                    // 5. SRT Light Red Line (RN01 -> RW04) [Light Red #F87171]
+                    'RW02': [460, 315], 'RW03': [350, 355], 'RW04': [240, 355],
+
+                    // 6. MRT Blue Line (BL01 -> BL38) [Blue #0284C7]
+                    'BL11': [590, 355], 'BL12': [665, 355], 'BL13': [760, 355], 'BL14': [780, 335],
+                    'BL15': [845, 335], 'BL16': [900, 355], 'BL17': [900, 395], 'BL18': [900, 435],
+                    'BL19': [900, 475], 'BL20': [900, 515], 'BL21': [900, 560], 'BL22': [900, 655],
+                    'BL23': [900, 690], 'BL24': [870, 715], 'BL25': [815, 715], 'BL26': [760, 715],
+                    'BL27': [675, 715], 'BL28': [610, 715], 'BL29': [560, 715], 'BL30': [510, 715],
+                    'BL31': [460, 715], 'BL32': [410, 715], 'BL01': [365, 760], 'BL02': [365, 710],
+                    'BL03': [365, 660], 'BL04': [365, 610], 'BL05': [365, 560], 'BL06': [365, 510],
+                    'BL07': [375, 465], 'BL08': [395, 420], 'BL09': [425, 385], 'BL10': [460, 355],
+                    'BL33': [345, 870], 'BL34': [345, 990], 'BL35': [295, 1010], 'BL36': [245, 1030],
+                    'BL37': [195, 1050], 'BL38': [145, 1070],
+
+                    // 7. MRT Purple Line (PP01 -> PP16) [Purple #8A2C9B]
+                    'PP16': [440, 355], 'PP15': [440, 315], 'PP14': [415, 285], 'PP13': [380, 255],
+                    'PP12': [340, 225], 'PP11': [300, 195], 'PP10': [260, 180], 'PP09': [220, 165],
+                    'PP08': [180, 150], 'PP07': [150, 135], 'PP06': [125, 125], 'PP05': [100, 125],
+                    'PP04': [75, 125],  'PP03': [50, 125],  'PP02': [30, 100],  'PP01': [30, 70],
+
+                    // 8. MRT Pink Line (PK01 -> PK30, MT01, MT02) [Pink #EC4899]
+                    'PK01': [318, 195], 'PK02': [340, 155], 'PK03': [365, 155], 'PK04': [390, 155],
+                    'PK05': [415, 155], 'PK06': [440, 155], 'PK07': [465, 155], 'PK08': [490, 155],
+                    'PK09': [515, 155], 'MT01': [515, 120], 'MT02': [515, 85],  'PK10': [540, 155],
+                    'PK11': [565, 155], 'PK12': [580, 155], 'PK13': [595, 155], 'PK14': [625, 155],
+                    'PK15': [675, 115], 'PK16': [740, 95],  'PK17': [800, 75],  'PK18': [855, 75],
+                    'PK19': [910, 75],  'PK20': [965, 75],  'PK21': [1020, 75], 'PK22': [1075, 75],
+                    'PK23': [1130, 75], 'PK24': [1185, 75], 'PK25': [1240, 85], 'PK26': [1285, 105],
+                    'PK27': [1330, 130], 'PK28': [1370, 160], 'PK29': [1405, 190], 'PK30': [1435, 220],
+
+                    // 9. MRT Yellow Line (YL01 -> YL23) [Yellow #EAB308]
+                    'YL01': [865, 335], 'YL02': [905, 310], 'YL03': [950, 310], 'YL04': [995, 310],
+                    'YL05': [1040, 310], 'YL06': [1085, 310], 'YL07': [1130, 310], 'YL08': [1175, 325],
+                    'YL09': [1220, 355], 'YL10': [1235, 410], 'YL11': [1235, 470], 'YL12': [1235, 515],
+                    'YL13': [1235, 555], 'YL14': [1235, 595], 'YL15': [1235, 635], 'YL16': [1235, 675],
+                    'YL17': [1235, 715], 'YL18': [1235, 755], 'YL19': [1235, 790], 'YL20': [1235, 825],
+                    'YL21': [1235, 860], 'YL22': [1250, 885], 'YL23': [1260, 835],
+
+                    // 10. Airport Rail Link (A8 -> A1) [ARL #8A1538]
+                    'A8':   [760, 555], 'A7':   [830, 555], 'A6':   [920, 560], 'A5':   [1080, 515],
+                    'A4':   [1255, 470], 'A3':   [1370, 470], 'A2':   [1475, 470], 'A1':   [1560, 505]
                 };
 
-                // Build rich SVG network schematic
-                const svg = `
-                    <svg viewBox="0 0 1020 740" style="transform-origin:0 0;transition:transform .2s ease;">
+                const STATION_DIRS = {
+                    'N24':'t','N23':'t','N22':'t','N21':'t','N20':'t','N19':'t','N18':'t',
+                    'N17':'tl','N16':'r','N15':'r','N14':'r','N13':'r','N12':'r','N11':'r','N10':'r','N9':'l',
+                    'N8':'l','N7':'r','N5':'r','N4':'r','N3':'r','N2':'l','N1':'r','CEN':'tr',
+                    'E1':'b','E2':'b','E3':'b','E4':'t','E5':'b','E6':'b','E7':'b','E8':'b',
+                    'E9':'br','E10':'br','E11':'br','E12':'br','E13':'br','E14':'br','E15':'r',
+                    'E16':'r','E17':'r','E18':'r','E19':'r','E20':'r','E21':'r','E22':'r','E23':'r',
+
+                    'W1':'t','S1':'l','S2':'l','S3':'r','S4':'r','S5':'r','S6':'r',
+                    'S7':'l','S8':'b','S9':'b','S10':'b','S11':'b','S12':'l',
+
+                    'G1':'r','G2':'r','G3':'r',
+
+                    'RN01':'l','RN02':'l','RN03':'l','RN04':'l','RN05':'l',
+                    'RN06':'l','RN07':'l','RN08':'l','RN09':'l','RN10':'l',
+
+                    'RW02':'t','RW03':'b','RW04':'l',
+
+                    'BL11':'r','BL12':'t','BL13':'r','BL14':'t','BL15':'l',
+                    'BL16':'r','BL17':'r','BL18':'r','BL19':'r','BL20':'r','BL21':'l','BL22':'b',
+                    'BL23':'r','BL24':'b','BL25':'b','BL26':'r','BL27':'b','BL28':'b','BL29':'b',
+                    'BL30':'b','BL31':'b','BL32':'b','BL01':'l','BL02':'l','BL03':'l','BL04':'l',
+                    'BL05':'l','BL06':'l','BL07':'l','BL08':'l','BL09':'l','BL10':'t',
+                    'BL33':'r','BL34':'r','BL35':'b','BL36':'b','BL37':'b','BL38':'b',
+
+                    'PP01':'t','PP02':'r','PP03':'t','PP04':'t','PP05':'t','PP06':'t','PP07':'t',
+                    'PP08':'t','PP09':'t','PP10':'t','PP11':'l','PP12':'l','PP13':'l','PP14':'l',
+                    'PP15':'l','PP16':'l',
+
+                    'PK01':'r','PK02':'t','PK03':'t','PK04':'t','PK05':'t','PK06':'t','PK07':'t',
+                    'PK08':'t','PK09':'t','MT01':'r','MT02':'r','PK10':'t','PK11':'t','PK12':'t',
+                    'PK13':'t','PK14':'r','PK15':'t','PK16':'b','PK17':'t','PK18':'t','PK19':'t',
+                    'PK20':'t','PK21':'t','PK22':'t','PK23':'t','PK24':'t','PK25':'tr','PK26':'tr',
+                    'PK27':'tr','PK28':'tr','PK29':'tr','PK30':'r',
+
+                    'YL01':'r','YL02':'t','YL03':'t','YL04':'t','YL05':'t','YL06':'t','YL07':'t',
+                    'YL08':'t','YL09':'r','YL10':'r','YL11':'l','YL12':'r','YL13':'r','YL14':'r',
+                    'YL15':'r','YL16':'r','YL17':'r','YL18':'r','YL19':'r','YL20':'r','YL21':'r',
+                    'YL22':'r','YL23':'l',
+
+                    'A8':'r','A7':'t','A6':'r','A5':'b','A4':'r','A3':'b','A2':'b','A1':'b'
+                };
+
+                const INTERCHANGE_PAIRS = [
+                    ['N8', 'BL13'], ['N9', 'BL14'], ['N2', 'A8'], ['E4', 'BL22'], ['E15', 'YL23'],
+                    ['S2', 'BL26'], ['S7', 'G1'], ['S12', 'BL34'], ['N17', 'PK16'], ['BL10', 'PP16'],
+                    ['RW02', 'PP15'], ['RN01', 'BL11'], ['RN06', 'PK14'], ['BL15', 'YL01'],
+                    ['BL21', 'A6'], ['YL11', 'A4'], ['PP11', 'PK01']
+                ];
+
+                const INTERCHANGE_SET = new Set(['CEN']);
+                INTERCHANGE_PAIRS.forEach(([a, b]) => {
+                    INTERCHANGE_SET.add(a);
+                    INTERCHANGE_SET.add(b);
+                });
+
+                const getStColor = (key) => {
+                    if (['RN01','RN02','RN03','RN04','RN05','RN06','RN07','RN08','RN09','RN10'].includes(key)) return '#B91C1C';
+                    if (['RW02','RW03','RW04'].includes(key)) return '#F87171';
+                    if (['PP01','PP02','PP03','PP04','PP05','PP06','PP07','PP08','PP09','PP10','PP11','PP12','PP13','PP14','PP15','PP16'].includes(key)) return '#8A2C9B';
+                    if (['PK01','PK02','PK03','PK04','PK05','PK06','PK07','PK08','PK09','MT01','MT02','PK10','PK11','PK12','PK13','PK14','PK15','PK16','PK17','PK18','PK19','PK20','PK21','PK22','PK23','PK24','PK25','PK26','PK27','PK28','PK29','PK30'].includes(key)) return '#EC4899';
+                    if (['YL01','YL02','YL03','YL04','YL05','YL06','YL07','YL08','YL09','YL10','YL11','YL12','YL13','YL14','YL15','YL16','YL17','YL18','YL19','YL20','YL21','YL22','YL23'].includes(key)) return '#EAB308';
+                    if (['A1','A2','A3','A4','A5','A6','A7','A8'].includes(key)) return '#8A1538';
+                    if (['G1','G2','G3'].includes(key)) return '#B89D18';
+                    if (['W1','S1','S2','S3','S4','S5','S6','S7','S8','S9','S10','S11','S12'].includes(key)) return '#00807D';
+                    if (key === 'CEN') return '#7AB420';
+                    if (key.startsWith('BL')) return '#0284C7';
+                    return '#7AB420';
+                };
+
+                const LINES = [
+                    { id: 'sukhumvit', color: '#7AB420', width: 7.5, stations: ['N24','N23','N22','N21','N20','N19','N18','N17','N16','N15','N14','N13','N12','N11','N10','N9','N8','N7','N5','N4','N3','N2','N1','CEN','E1','E2','E3','E4','E5','E6','E7','E8','E9','E10','E11','E12','E13','E14','E15','E16','E17','E18','E19','E20','E21','E22','E23'] },
+                    { id: 'silom', color: '#00807D', width: 7.5, stations: ['W1','CEN','S1','S2','S3','S4','S5','S6','S7','S8','S9','S10','S11','S12'] },
+                    { id: 'gold', color: '#B89D18', width: 5.5, stations: ['G1','G2','G3'] },
+                    { id: 'darkred', color: '#B91C1C', width: 6.5, stations: ['RN01','RN02','RN03','RN04','RN05','RN06','RN07','RN08','RN09','RN10'] },
+                    { id: 'lightred', color: '#F87171', width: 6.5, stations: ['RN01','RW02','RW03','RW04'] },
+                    { id: 'blue_loop', color: '#0284C7', width: 7.5, stations: ['BL11','BL12','BL13','BL14','BL15','BL16','BL17','BL18','BL19','BL20','BL21','BL22','BL23','BL24','BL25','BL26','BL27','BL28','BL29','BL30','BL31','BL32','BL01','BL02','BL03','BL04','BL05','BL06','BL07','BL08','BL09','BL10','BL11'] },
+                    { id: 'blue_spur', color: '#0284C7', width: 7.5, stations: ['BL01','BL33','BL34','BL35','BL36','BL37','BL38'] },
+                    { id: 'purple', color: '#8A2C9B', width: 6.5, stations: ['PP01','PP02','PP03','PP04','PP05','PP06','PP07','PP08','PP09','PP10','PP11','PP12','PP13','PP14','PP15','PP16'] },
+                    { id: 'pink_main', color: '#EC4899', width: 6.5, stations: ['PK01','PK02','PK03','PK04','PK05','PK06','PK07','PK08','PK09','PK10','PK11','PK12','PK13','PK14','PK15','PK16','PK17','PK18','PK19','PK20','PK21','PK22','PK23','PK24','PK25','PK26','PK27','PK28','PK29','PK30'] },
+                    { id: 'pink_branch', color: '#EC4899', width: 6.5, stations: ['PK09','MT01','MT02'] },
+                    { id: 'yellow', color: '#EAB308', width: 6.5, stations: ['YL01','YL02','YL03','YL04','YL05','YL06','YL07','YL08','YL09','YL10','YL11','YL12','YL13','YL14','YL15','YL16','YL17','YL18','YL19','YL20','YL21','YL22','YL23'] },
+                    { id: 'arl', color: '#8A1538', width: 6.5, stations: ['A8','A7','A6','A5','A4','A3','A2','A1'] }
+                ];
+
+                const mapLbl = (code) => {
+                    const s = this.findStation(code);
+                    const plane = (code === 'A1' || code === 'RN08') ? '✈ ' : '';
+                    if (s) {
+                        return `${plane}${code} ${stName(s)}`;
+                    }
+                    return `${plane}${code}`;
+                };
+
+                let svg = `
+                    <svg viewBox="0 0 1600 1200" style="transform-origin:0 0;transition:transform .2s ease;">
                         <defs>
                             <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
                                 <feGaussianBlur stdDeviation="3" result="blur" />
                                 <feComposite in="SourceGraphic" in2="blur" operator="over" />
                             </filter>
+                            <filter id="mapShadow" x="-10%" y="-10%" width="120%" height="120%">
+                                <feDropShadow dx="0" dy="3" stdDeviation="4" flood-opacity="0.12" />
+                            </filter>
                         </defs>
 
                         <!-- Background River (Chao Phraya) -->
-                        <path d="M 230,0 C 240,150 180,320 220,430 C 250,510 270,600 240,740" fill="none" stroke="#38bdf8" stroke-width="26" stroke-linecap="round" opacity="0.32" />
-                        <text x="250" y="700" fill="#0284c7" font-size="12" font-weight="700" opacity="0.6">${lang === 'th' ? 'แม่น้ำเจ้าพระยา (Chao Phraya River)' : 'Chao Phraya River'}</text>
+                        <path d="M 180,-10 C 190,130 380,240 405,370 C 435,490 385,630 430,705 C 485,780 575,815 575,860 C 575,930 520,1050 560,1210" fill="none" stroke="#38bdf8" stroke-width="36" stroke-linecap="round" opacity="0.30" />
+                        <text x="435" y="785" fill="#0284c7" font-size="13" font-weight="800" opacity="0.55" transform="rotate(45 435 785)">แม่น้ำเจ้าพระยา (Chao Phraya River)</text>
 
-                        <!-- BTS Sukhumvit Line (Green) -->
-                        <path d="M 280,30 L 280,270 L 340,340 L 460,340 L 530,370 L 610,430 L 730,550 L 780,670" fill="none" stroke="#7AB420" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
-                        
-                        <!-- BTS Silom Line (Teal) -->
-                        <path d="M 230,340 L 340,340 L 340,430 L 310,480 L 240,530 L 190,530 L 120,530" fill="none" stroke="#00807D" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+                        <!-- Interchange Connector Links -->
+                        ${INTERCHANGE_PAIRS.map(([a, b]) => {
+                            const [x1, y1] = MAP_STATION_COORDS[a];
+                            const [x2, y2] = MAP_STATION_COORDS[b];
+                            return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#ffffff" stroke-width="11" stroke-linecap="round" />
+                                    <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#64748b" stroke-width="4.5" stroke-linecap="round" />`;
+                        }).join('')}
 
-                        <!-- BTS Gold Line (Gold) -->
-                        <path d="M 240,530 L 265,510 L 290,490" fill="none" stroke="#B89D18" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+                        <!-- Transit Lines -->
+                        ${LINES.map(line => {
+                            const pts = line.stations.map(st => MAP_STATION_COORDS[st].join(',')).join(' ');
+                            return `<polyline points="${pts}" fill="none" stroke="${line.color}" stroke-width="${line.width}" stroke-linecap="round" stroke-linejoin="round" />`;
+                        }).join('')}
 
-                        <!-- MRT Blue Line (Loop & Spur) -->
-                        <path d="M 60,530 L 120,530 L 160,470 L 210,420 L 280,420 L 340,430 L 460,340 L 460,200 L 460,140 L 280,180 L 200,180 L 160,240 L 160,470" fill="none" stroke="#1f8fdf" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+                        <!-- Stations (Nodes & Labels) -->
+                        ${Object.entries(MAP_STATION_COORDS).map(([key, [cx, cy]]) => {
+                            const col = getStColor(key);
+                            const isInter = INTERCHANGE_SET.has(key);
+                            const dir = STATION_DIRS[key] || 'r';
+                            let tx = cx, ty = cy, anchor = 'start';
+                            if (dir === 'r') { tx = cx + 8.5; ty = cy + 3.2; anchor = 'start'; }
+                            else if (dir === 'l') { tx = cx - 8.5; ty = cy + 3.2; anchor = 'end'; }
+                            else if (dir === 't') { tx = cx; ty = cy - 8.5; anchor = 'middle'; }
+                            else if (dir === 'b') { tx = cx; ty = cy + 13; anchor = 'middle'; }
+                            else if (dir === 'tr') { tx = cx + 8; ty = cy - 6.5; anchor = 'start'; }
+                            else if (dir === 'br') { tx = cx + 8; ty = cy + 12; anchor = 'start'; }
+                            else if (dir === 'tl') { tx = cx - 8; ty = cy - 6.5; anchor = 'end'; }
+                            else if (dir === 'bl') { tx = cx - 8; ty = cy + 12; anchor = 'end'; }
 
-                        <!-- MRT Purple Line -->
-                        <path d="M 60,70 L 110,120 L 160,180 L 200,180" fill="none" stroke="#8a2c9b" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+                            let circleSvg = '';
+                            if (key === 'CEN') {
+                                circleSvg = `<circle cx="${cx}" cy="${cy}" r="9" fill="#ffffff" stroke="#10213a" stroke-width="4" class="map-node" /><circle cx="${cx}" cy="${cy}" r="5" fill="#7AB420" />`;
+                            } else if (isInter) {
+                                circleSvg = `<circle cx="${cx}" cy="${cy}" r="7" fill="#ffffff" stroke="${col}" stroke-width="3.5" class="map-node" />`;
+                            } else {
+                                circleSvg = `<circle cx="${cx}" cy="${cy}" r="4.2" fill="#ffffff" stroke="${col}" stroke-width="2.6" class="map-node" />`;
+                            }
 
-                        <!-- MRT Yellow Monorail -->
-                        <path d="M 460,140 L 640,180 L 660,290 L 700,470 L 730,550" fill="none" stroke="#F5C242" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+                            return `<g class="map-node-group" onclick="App.onMapStationClick('${key}')" style="cursor:pointer;">
+                                        ${circleSvg}
+                                        <text x="${tx}" y="${ty}" class="map-label" text-anchor="${anchor}">${mapLbl(key)}</text>
+                                    </g>`;
+                        }).join('')}
 
-                        <!-- MRT Pink Monorail -->
-                        <path d="M 110,120 L 220,70 L 360,70 L 680,70" fill="none" stroke="#F2779A" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
-
-                        <!-- Airport Rail Link -->
-                        <path d="M 280,280 L 460,300 L 660,290 L 880,310" fill="none" stroke="#a11b22" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
-
-                        <!-- SRT Red Line -->
-                        <path d="M 170,30 L 200,180 L 200,240" fill="none" stroke="#c21e25" stroke-width="5" stroke-dasharray="8,5" stroke-linecap="round" stroke-linejoin="round" />
-
-                        <!-- STATIONS (Nodes & Labels) -->
-                        <!-- SIAM INTERCHANGE (CEN) -->
-                        <g onclick="App.onMapStationClick('CEN')">
-                            <circle cx="340" cy="340" r="10" fill="#fff" stroke="#10213a" stroke-width="4" class="map-node" />
-                            <circle cx="340" cy="340" r="5" fill="#7AB420" />
-                            <text x="354" y="344" class="map-label" font-size="12" font-weight="800">${mapLbl('CEN', 'สยาม (Siam)', 'Siam')}</text>
-                        </g>
-
-                        <!-- ASOK / SUKHUMVIT (E4 / BL22) -->
-                        <g onclick="App.onMapStationClick('E4')">
-                            <circle cx="460" cy="340" r="9" fill="#fff" stroke="#7AB420" stroke-width="4" class="map-node" />
-                            <text x="472" y="336" class="map-label" font-size="11" font-weight="700">${mapLbl('E4', 'อโศก (Asok)', 'Asok')}</text>
-                        </g>
-
-                        <!-- MO CHIT / CHATUCHAK (N8 / BL13) -->
-                        <g onclick="App.onMapStationClick('N8')">
-                            <circle cx="280" cy="180" r="9" fill="#fff" stroke="#7AB420" stroke-width="4" class="map-node" />
-                            <text x="292" y="176" class="map-label" font-size="11" font-weight="700">${mapLbl('N8', 'หมอชิต (Mo Chit)', 'Mo Chit')}</text>
-                        </g>
-
-                        <!-- PHAYA THAI / ARL (N2 / A8) -->
-                        <g onclick="App.onMapStationClick('N2')">
-                            <circle cx="280" cy="280" r="8" fill="#fff" stroke="#a11b22" stroke-width="3.5" class="map-node" />
-                            <text x="292" y="278" class="map-label">${mapLbl('N2', 'พญาไท (Phaya Thai)', 'Phaya Thai')}</text>
-                        </g>
-
-                        <!-- SALA DAENG / SI LOM (S2 / BL26) -->
-                        <g onclick="App.onMapStationClick('S2')">
-                            <circle cx="340" cy="430" r="8" fill="#fff" stroke="#00807D" stroke-width="3.5" class="map-node" />
-                            <text x="352" y="434" class="map-label">${mapLbl('S2', 'ศาลาแดง (Sala Daeng)', 'Sala Daeng')}</text>
-                        </g>
-
-                        <!-- KRUNG THON BURI (S7 / G1) -->
-                        <g onclick="App.onMapStationClick('S7')">
-                            <circle cx="240" cy="530" r="8" fill="#fff" stroke="#B89D18" stroke-width="3.5" class="map-node" />
-                            <text x="210" y="555" class="map-label">${mapLbl('S7', 'กรุงธนบุรี', 'Krung Thon Buri')}</text>
-                        </g>
-
-                        <!-- CHAROEN NAKHON / ICONSIAM (G2) -->
-                        <g onclick="App.onMapStationClick('G2')">
-                            <circle cx="265" cy="510" r="7" fill="#fff" stroke="#B89D18" stroke-width="3" class="map-node" />
-                            <text x="280" y="515" class="map-label">${mapLbl('G2', 'เจริญนคร (ICONSIAM)', 'Charoen Nakhon (ICONSIAM)')}</text>
-                        </g>
-
-                        <!-- BANG WA (S12 / BL34) -->
-                        <g onclick="App.onMapStationClick('S12')">
-                            <circle cx="120" cy="530" r="8" fill="#fff" stroke="#00807D" stroke-width="3.5" class="map-node" />
-                            <text x="80" y="555" class="map-label">${mapLbl('S12', 'บางหว้า (Bang Wa)', 'Bang Wa')}</text>
-                        </g>
-
-                        <!-- BANG SUE / CENTRAL TERMINAL (BL11) -->
-                        <g onclick="App.onMapStationClick('BL11')">
-                            <circle cx="200" cy="180" r="8" fill="#fff" stroke="#c21e25" stroke-width="3.5" class="map-node" />
-                            <text x="140" y="165" class="map-label">${mapLbl('BL11', 'บางซื่อ (Bang Sue)', 'Bang Sue')}</text>
-                        </g>
-
-                        <!-- TAO POON (BL10 / PP16) -->
-                        <g onclick="App.onMapStationClick('BL10')">
-                            <circle cx="160" cy="240" r="7" fill="#fff" stroke="#8a2c9b" stroke-width="3" class="map-node" />
-                            <text x="96" y="240" class="map-label">${mapLbl('PP16', 'เตาปูน', 'Tao Poon')}</text>
-                        </g>
-
-                        <!-- LAT PHRAO (BL15 / YL01) -->
-                        <g onclick="App.onMapStationClick('YL01')">
-                            <circle cx="460" cy="140" r="8" fill="#fff" stroke="#F5C242" stroke-width="3.5" class="map-node" />
-                            <text x="474" y="136" class="map-label">${mapLbl('YL01', 'ลาดพร้าว (Lat Phrao)', 'Lat Phrao')}</text>
-                        </g>
-
-                        <!-- SI DAN (YL20) -->
-                        <g onclick="App.onMapStationClick('YL20')">
-                            <circle cx="700" cy="470" r="7" fill="#fff" stroke="#F5C242" stroke-width="3.5" class="map-node" />
-                            <text x="712" y="474" class="map-label">${mapLbl('YL20', 'ศรีด่าน (Si Dan)', 'Si Dan')}</text>
-                        </g>
-
-                        <!-- SAMRONG (YL23 / E23) -->
-                        <g onclick="App.onMapStationClick('YL23')">
-                            <circle cx="730" cy="550" r="8" fill="#fff" stroke="#7AB420" stroke-width="3.5" class="map-node" />
-                            <text x="744" y="554" class="map-label">${mapLbl('YL23', 'สำโรง (Samrong)', 'Samrong')}</text>
-                        </g>
-
-                        <!-- NONTHABURI CIVIC CENTER (PK01 / PP11) -->
-                        <g onclick="App.onMapStationClick('PK01')">
-                            <circle cx="110" cy="120" r="8" fill="#fff" stroke="#F2779A" stroke-width="3.5" class="map-node" />
-                            <text x="18" y="110" class="map-label">${mapLbl('PK01', 'ศูนย์ราชการนนท์', 'Nonthaburi CC')}</text>
-                        </g>
-
-                        <!-- SUVARNABHUMI AIRPORT (A1) -->
-                        <g onclick="App.onMapStationClick('A1')">
-                            <circle cx="880" cy="310" r="8" fill="#fff" stroke="#a11b22" stroke-width="3.5" class="map-node" />
-                            <text x="800" y="335" class="map-label">${mapLbl('A1', 'สุวรรณภูมิ (Suvarnabhumi)', 'Suvarnabhumi Airport', '✈')}</text>
-                        </g>
-
-                        <!-- KHU KHOT (N24) -->
-                        <g onclick="App.onMapStationClick('N24')">
-                            <circle cx="280" cy="30" r="6" fill="#7AB420" class="map-node" />
-                            <text x="292" y="34" class="map-label">${mapLbl('N24', 'คูคต (Khu Khot)', 'Khu Khot')}</text>
-                        </g>
-
-                        <!-- RANGSIT (RN10) -->
-                        <g onclick="App.onMapStationClick('RN10')">
-                            <circle cx="170" cy="30" r="6" fill="#c21e25" class="map-node" />
-                            <text x="110" y="34" class="map-label">${mapLbl('RN10', 'รังสิต', 'Rangsit')}</text>
-                        </g>
-
-                        <!-- LAK SONG (BL38) -->
-                        <g onclick="App.onMapStationClick('BL38')">
-                            <circle cx="60" cy="530" r="6" fill="#1f8fdf" class="map-node" />
-                            <text x="10" y="555" class="map-label">${mapLbl('BL38', 'หลักสอง', 'Lak Song')}</text>
-                        </g>
-
-                        <!-- Map Legend Box -->
-                        <g transform="translate(20, 595)">
-                            <rect width="215" height="120" rx="8" fill="rgba(255,255,255,0.92)" stroke="#cbd5e1" stroke-width="1" />
-                            <text x="10" y="18" font-size="10" font-weight="700" fill="#0f172a">${lang === 'th' ? 'สัญลักษณ์สายรถไฟฟ้า' : 'Transit Lines Legend'}</text>
+                        <!-- Map Legend Box (Positioned at bottom-center open gulf, avoiding all stations) -->
+                        <g transform="translate(680, 915)" class="map-legend" id="mapLegendGroup">
+                            <rect width="440" height="255" rx="10" fill="rgba(255,255,255,0.94)" stroke="#cbd5e1" stroke-width="1.2" filter="url(#mapShadow)" />
+                            <text x="14" y="24" font-size="12" font-weight="800" fill="#0f172a">${lang === 'th' ? 'สัญลักษณ์สายรถไฟฟ้า (Transit Lines)' : 'Transit Lines Legend'}</text>
+                            <g onclick="App.toggleMapLegend()" style="cursor:pointer;" transform="translate(410, 10)">
+                                <rect width="20" height="20" rx="4" fill="rgba(203,213,225,0.3)" />
+                                <text x="10" y="10" font-size="12" font-weight="800" fill="#64748b" text-anchor="middle" dominant-baseline="central">✕</text>
+                            </g>
                             
                             <!-- Column 1 -->
-                            <line x1="12" y1="34" x2="28" y2="34" stroke="#7AB420" stroke-width="3.5" stroke-linecap="round"/>
-                            <text x="33" y="37.5" font-size="8.5" fill="#334155">${lang === 'th' ? 'สายสุขุมวิท' : 'Sukhumvit Line'}</text>
+                            <line x1="16" y1="46" x2="34" y2="46" stroke="#7AB420" stroke-width="4" stroke-linecap="round"/>
+                            <text x="42" y="49.5" font-size="10" font-weight="700" fill="#334155">${lang === 'th' ? 'สายสุขุมวิท' : 'Sukhumvit Line'}</text>
 
-                            <line x1="12" y1="52" x2="28" y2="52" stroke="#00807D" stroke-width="3.5" stroke-linecap="round"/>
-                            <text x="33" y="55.5" font-size="8.5" fill="#334155">${lang === 'th' ? 'สายสีลม' : 'Silom Line'}</text>
+                            <line x1="16" y1="68" x2="34" y2="68" stroke="#00807D" stroke-width="4" stroke-linecap="round"/>
+                            <text x="42" y="71.5" font-size="10" font-weight="700" fill="#334155">${lang === 'th' ? 'สายสีลม' : 'Silom Line'}</text>
 
-                            <line x1="12" y1="70" x2="28" y2="70" stroke="#B89D18" stroke-width="3.5" stroke-linecap="round"/>
-                            <text x="33" y="73.5" font-size="8.5" fill="#334155">${lang === 'th' ? 'สายสีทอง' : 'Gold Line'}</text>
+                            <line x1="16" y1="90" x2="34" y2="90" stroke="#B89D18" stroke-width="4" stroke-linecap="round"/>
+                            <text x="42" y="93.5" font-size="10" font-weight="700" fill="#334155">${lang === 'th' ? 'สายสีทอง' : 'Gold Line'}</text>
 
-                            <line x1="12" y1="88" x2="28" y2="88" stroke="#1f8fdf" stroke-width="3.5" stroke-linecap="round"/>
-                            <text x="33" y="91.5" font-size="8.5" fill="#334155">${lang === 'th' ? 'สายสีน้ำเงิน' : 'Blue Line'}</text>
+                            <line x1="16" y1="112" x2="34" y2="112" stroke="#0284C7" stroke-width="4" stroke-linecap="round"/>
+                            <text x="42" y="115.5" font-size="9.5" font-weight="700" fill="#334155">${lang === 'th' ? 'สายสีน้ำเงิน (เฉลิมรัชมงคล)' : 'Blue Line (Chaloem Ratch.)'}</text>
 
-                            <line x1="12" y1="106" x2="28" y2="106" stroke="#8a2c9b" stroke-width="3.5" stroke-linecap="round"/>
-                            <text x="33" y="109.5" font-size="8.5" fill="#334155">${lang === 'th' ? 'สายสีม่วง' : 'Purple Line'}</text>
+                            <line x1="16" y1="134" x2="34" y2="134" stroke="#8A2C9B" stroke-width="4" stroke-linecap="round"/>
+                            <text x="42" y="137.5" font-size="9.5" font-weight="700" fill="#334155">${lang === 'th' ? 'สายสีม่วง (ฉลองรัชธรรม)' : 'Purple Line (Chalong Ratch.)'}</text>
 
                             <!-- Column 2 -->
-                            <line x1="114" y1="34" x2="130" y2="34" stroke="#F5C242" stroke-width="3.5" stroke-linecap="round"/>
-                            <text x="135" y="37.5" font-size="8.5" fill="#334155">${lang === 'th' ? 'สายสีเหลือง' : 'Yellow Line'}</text>
+                            <line x1="218" y1="46" x2="236" y2="46" stroke="#EC4899" stroke-width="4" stroke-linecap="round"/>
+                            <text x="244" y="49.5" font-size="9.5" font-weight="700" fill="#334155">${lang === 'th' ? 'สายสีชมพู (วิวัฒน์นคร)' : 'Pink Line (Wiwat Nakhon)'}</text>
 
-                            <line x1="114" y1="52" x2="130" y2="52" stroke="#F2779A" stroke-width="3.5" stroke-linecap="round"/>
-                            <text x="135" y="55.5" font-size="8.5" fill="#334155">${lang === 'th' ? 'สายสีชมพู' : 'Pink Line'}</text>
+                            <line x1="218" y1="68" x2="236" y2="68" stroke="#EAB308" stroke-width="4" stroke-linecap="round"/>
+                            <text x="244" y="71.5" font-size="9.5" font-weight="700" fill="#334155">${lang === 'th' ? 'สายสีเหลือง (นัคราพิพัฒน์)' : 'Yellow Line (Nakkhara Phiphat)'}</text>
 
-                            <line x1="114" y1="70" x2="130" y2="70" stroke="#c21e25" stroke-width="3.5" stroke-dasharray="4,2" stroke-linecap="round"/>
-                            <text x="135" y="73.5" font-size="8.5" fill="#334155">${lang === 'th' ? 'รถไฟสายสีแดง' : 'SRT Red Line'}</text>
+                            <line x1="218" y1="90" x2="236" y2="90" stroke="#B91C1C" stroke-width="4" stroke-linecap="round"/>
+                            <text x="244" y="93.5" font-size="9.5" font-weight="700" fill="#334155">${lang === 'th' ? 'สายสีแดงเข้ม (ธานีรัถยา)' : 'Dark Red Line (Thani Ratthaya)'}</text>
 
-                            <line x1="114" y1="88" x2="130" y2="88" stroke="#a11b22" stroke-width="3.5" stroke-linecap="round"/>
-                            <text x="135" y="91.5" font-size="8.5" fill="#334155">${lang === 'th' ? 'แอร์พอร์ต ลิงก์' : 'Airport Rail Link'}</text>
+                            <line x1="218" y1="112" x2="236" y2="112" stroke="#F87171" stroke-width="4" stroke-linecap="round"/>
+                            <text x="244" y="115.5" font-size="9.5" font-weight="700" fill="#334155">${lang === 'th' ? 'สายสีแดงอ่อน (นครวิถี)' : 'Light Red Line (Nakhon Withi)'}</text>
+
+                            <line x1="218" y1="134" x2="236" y2="134" stroke="#8A1538" stroke-width="4" stroke-linecap="round"/>
+                            <text x="244" y="137.5" font-size="10" font-weight="700" fill="#334155">${lang === 'th' ? 'แอร์พอร์ต ลิงก์' : 'Airport Rail Link'}</text>
+
+                            <!-- Transfer Station & Airport Indicator -->
+                            <g transform="translate(16, 160)">
+                                <line x1="0" y1="12" x2="20" y2="12" stroke="#64748b" stroke-width="3" stroke-linecap="round"/>
+                                <circle cx="0" cy="12" r="5" fill="#fff" stroke="#334155" stroke-width="2.5"/>
+                                <circle cx="20" cy="12" r="5" fill="#fff" stroke="#334155" stroke-width="2.5"/>
+                                <text x="30" y="15.5" font-size="10" font-weight="700" fill="#334155">${lang === 'th' ? 'จุดเชื่อมต่อข้ามสาย (Interchange)' : 'Interchange Station'}</text>
+                            </g>
+                            <g transform="translate(16, 185)">
+                                <text x="0" y="12" font-size="11" fill="#0284c7">✈</text>
+                                <text x="20" y="12" font-size="10" font-weight="700" fill="#334155">${lang === 'th' ? 'เชื่อมต่อท่าอากาศยาน (สนามบิน)' : 'Airport Connection'}</text>
+                            </g>
+                            <g transform="translate(16, 210)">
+                                <rect width="8" height="8" rx="2" fill="#7AB420" y="3"/>
+                                <text x="16" y="10.5" font-size="9" fill="#64748b">${lang === 'th' ? 'แตะที่สถานีเพื่อเลือกเป็นจุดเริ่มต้น/ปลายทาง' : 'Tap any station node to plan route'}</text>
+                            </g>
                         </g>
                     </svg>`;
 
@@ -3344,8 +3532,12 @@ gQIDAQAB
                 if (!force) {
                     const vp = document.getElementById('mapViewport');
                     if (vp) {
-                        vp.scrollLeft = 140;
-                        vp.scrollTop = 120;
+                        setTimeout(() => {
+                            const targetX = (740 / 1600) * vp.scrollWidth - (vp.clientWidth / 2);
+                            const targetY = (635 / 1200) * vp.scrollHeight - (vp.clientHeight / 2);
+                            vp.scrollLeft = Math.max(0, targetX);
+                            vp.scrollTop = Math.max(0, targetY);
+                        }, 50);
                     }
                 }
             },
@@ -3454,7 +3646,7 @@ gQIDAQAB
                         <div class="info-card" style="background:linear-gradient(135deg,#dc26260d,#ef444415);border-color:#ef444444">
                             <span class="fare-badge-20">${isEn ? '20 Baht Flat Fare Policy' : 'นโยบาย 20 บาทตลอดสาย'}</span>
                             <h3 style="color:#b91c1c;display:flex;align-items:center;gap:8px">
-                                <span style="display:inline-flex;gap:4px;align-items:center">${getLineIconSvg(102, false, 20)} ${getLineIconSvg(103, false, 20)}</span>
+                                <span style="display:inline-flex;gap:4px;align-items:center">${getLineIconSvg(102, false, 20)} ${getLineIconSvg(103, false, 20)} ${getLineIconSvg(105, false, 20)}</span>
                                 <span>${isEn ? 'Flat 20 Baht Fare (EMV Contactless)' : 'รถไฟฟ้า 20 บาทตลอดสาย (EMV Contactless)'}</span>
                             </h3>
                             <div style="font-size:12.5px;color:var(--ink);line-height:1.6">
@@ -3462,15 +3654,19 @@ gQIDAQAB
                                 <ul style="margin:8px 0 8px 6px;padding-left:14px;list-style:none">
                                     <li style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
                                         ${getLineIconSvg(102, false, 18)}
-                                        <span><b>${isEn ? 'MRT Purple Line:' : 'สายสีม่วง (MRT Purple Line):'}</b> ${isEn ? 'Khlong Bang Phai ↔ Tao Poon (Max ฿20)' : 'คลองบางไผ่ ↔ เตาปูน (สูงสุด 20 บาท)'}</span>
+                                        <span><b>${isEn ? 'MRT Purple Line:' : 'สายสีม่วง (ฉลองรัชธรรม):'}</b> ${isEn ? 'Khlong Bang Phai ↔ Tao Poon (Max ฿20)' : 'คลองบางไผ่ ↔ เตาปูน (สูงสุด 20 บาท)'}</span>
                                     </li>
                                     <li style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
                                         ${getLineIconSvg(103, false, 18)}
-                                        <span><b>${isEn ? 'SRT Red Line:' : 'สายสีแดง (SRT Red Line):'}</b> ${isEn ? 'Krung Thep Aphiwat ↔ Rangsit / Taling Chan (Max ฿20)' : 'กรุงเทพอภิวัฒน์ ↔ รังสิต / ตลิ่งชัน (สูงสุด 20 บาท)'}</span>
+                                        <span><b>${isEn ? 'SRT Dark Red Line:' : 'สายสีแดงเข้ม (ธานีรัถยา):'}</b> ${isEn ? 'Krung Thep Aphiwat ↔ Rangsit (Max ฿20)' : 'กรุงเทพอภิวัฒน์ ↔ รังสิต (สูงสุด 20 บาท)'}</span>
+                                    </li>
+                                    <li style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+                                        ${getLineIconSvg(105, false, 18)}
+                                        <span><b>${isEn ? 'SRT Light Red Line:' : 'สายสีแดงอ่อน (นครวิถี):'}</b> ${isEn ? 'Krung Thep Aphiwat ↔ Taling Chan (Max ฿20)' : 'กรุงเทพอภิวัฒน์ ↔ ตลิ่งชัน (สูงสุด 20 บาท)'}</span>
                                     </li>
                                     <li style="display:flex;align-items:center;gap:8px">
-                                        <span style="display:inline-flex;align-items:center;gap:3px">${getLineIconSvg(102, false, 15)}⇄${getLineIconSvg(103, false, 15)}</span>
-                                        <span><b>${isEn ? 'Cross-line Transfer (Purple ⇄ Red):' : 'เชื่อมต่อข้ามสายสีม่วงและสายสีแดง:'}</b> ${isEn ? 'Max ฿20 combined (transfer at Bang Sue station within 30 mins)' : 'สูงสุดรวม 20 บาท (แตะเปลี่ยนขบวนที่สถานีบางซื่อภายใน 30 นาที)'}</span>
+                                        <span style="display:inline-flex;align-items:center;gap:3px">${getLineIconSvg(102, false, 15)}⇄${getLineIconSvg(103, false, 15)}/${getLineIconSvg(105, false, 15)}</span>
+                                        <span><b>${isEn ? 'Cross-line Transfer (Purple ⇄ Red):' : 'เชื่อมต่อข้ามสายสีม่วงและสายสีแดง:'}</b> ${isEn ? 'Max ฿20 combined (transfer at Bang Sue / Bang Son within 30 mins)' : 'สูงสุดรวมไม่เกิน 20 บาท (แตะเปลี่ยนขบวนที่สถานีบางซื่อ/บางซ่อน ภายใน 30 นาที)'}</span>
                                     </li>
                                 </ul>
                             </div>
@@ -3724,7 +3920,7 @@ gQIDAQAB
                                 </div>
                             </div>
                         `;
-                    } else if (activeId === 102 || activeId === 103) {
+                    } else if (activeId === 102 || activeId === 103 || activeId === 105) {
                         // MRT Purple or SRT Red Line
                         specificContent = `
                             <div class="info-card" style="background:linear-gradient(135deg,#dc26260d,#ef444415);border-color:#ef444444">
@@ -4546,19 +4742,22 @@ gQIDAQAB
             buildConnections() {
                 this.connections = {};
                 const flat = [];
-                for (const l of this.lines)
+                const allNetworkLines = [...this.lines, ...MRT_STATIC_DB.lines];
+                for (const l of allNetworkLines)
                     for (const s of l.StationList)
                         if (s.Latitude && s.Longitude) flat.push({ s, l });
                 for (let i = 0; i < flat.length; i++) {
                     for (let j = i + 1; j < flat.length; j++) {
                         const a = flat[i], b = flat[j];
-                        // สถานี key เดียวกันคนละสาย (สยาม CEN อยู่ทั้งสุขุมวิท+สีลม) ก็คือจุดเปลี่ยนสาย
+                        // สถานี key เดียวกันคนละสาย (สยาม CEN สุขุมวิท+สีลม, RN01 สายสีแดงเข้ม+แดงอ่อน) คือจุดเปลี่ยนสาย
                         if (a.l.LineId === b.l.LineId) continue;
                         if (haversineKm(a.s.Latitude, a.s.Longitude, b.s.Latitude, b.s.Longitude) > 0.35) continue;
-                        (this.connections[a.s.StationKey] ??= [])
-                            .push({ key: b.s.StationKey, lineId: b.l.LineId, color: b.l.LineColor });
-                        (this.connections[b.s.StationKey] ??= [])
-                            .push({ key: a.s.StationKey, lineId: a.l.LineId, color: a.l.LineColor });
+                        if (!(this.connections[a.s.StationKey] || []).some(c => c.key === b.s.StationKey && c.lineId === b.l.LineId)) {
+                            (this.connections[a.s.StationKey] ??= []).push({ key: b.s.StationKey, lineId: b.l.LineId, color: b.l.LineColor });
+                        }
+                        if (!(this.connections[b.s.StationKey] || []).some(c => c.key === a.s.StationKey && c.lineId === a.l.LineId)) {
+                            (this.connections[b.s.StationKey] ??= []).push({ key: a.s.StationKey, lineId: a.l.LineId, color: a.l.LineColor });
+                        }
                     }
                 }
 
@@ -4604,7 +4803,7 @@ gQIDAQAB
             jumpToLine(lineId) {
                 const id = Number(lineId) || 1;
                 this.switchView('home');
-                this.setLine(id === 105 ? 103 : id);
+                this.setLine(id);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             },
 
@@ -4870,7 +5069,7 @@ gQIDAQAB
                         <div class="tabs picker-tabs" id="pickerTabs"></div>
                         ${this.nearest ? `<div style="padding:2px 14px 6px;"><button class="alt-chip" style="align-self:flex-start;"
                             onclick="App.pickJourneyStation('${esc(this.nearest.station.StationKey)}')">
-                            ${T('jUseNearest')} · <b>${esc(this.nearest.station.StationKey)}</b> ${esc(stName(this.nearest.station))}</button></div>` : ''}
+                            ${T('jUseNearest')} · <span class="st-key" style="background:${this.nearest.station.StationLineColor || '#7AB420'};">${esc(this.nearest.station.StationKey)}</span> ${esc(stName(this.nearest.station))}</button></div>` : ''}
                         <div class="picker-list" id="pickerList"></div>
                     </div>`;
                 this.renderPickerTabs();
@@ -4882,21 +5081,48 @@ gQIDAQAB
                 const el = document.getElementById('pickerTabs');
                 if (!el) return;
                 const isAll = this.journey.pickerLine === 0;
-                el.innerHTML = `
-                    <button class="tab ${isAll ? 'on' : ''}" style="${isAll ? 'background:var(--primary,#0284c7);color:#fff;' : ''}"
-                        aria-pressed="${isAll ? 'true' : 'false'}" onclick="App.setPickerLine(0)">
-                        ${getLineIconSvg(0, isAll, 18)}
-                        <span>${lang === 'th' ? 'ทุกสาย' : 'All Lines'}</span>
-                    </button>` + allJourneyLines().map(l => {
-                    const on = l.LineId === this.journey.pickerLine;
-                    const st = this.traffic?.lines?.find(x => x.LineId === l.LineId);
-                    const warn = st && st.TrafficStatus !== 1 ? ` ${getUiIcon('alert', 12, '#ef4444')}` : '';
-                    const textColor = on ? (isBrightColor(l.LineColor) ? '#0f172a' : '#fff') : '';
-                    return `<button class="tab ${on ? 'on' : ''}" style="${on ? 'background:' + l.LineColor + ';color:' + textColor + ';' : ''}"
-                        aria-pressed="${on ? 'true' : 'false'}" onclick="App.setPickerLine(${l.LineId})">
-                        ${getLineIconSvg(l.LineId, on, 18)}
-                        <span>${esc(shortLineName(l))}${warn}</span></button>`;
-                }).join('');
+                const allLines = allJourneyLines();
+                const existingTabs = el.querySelectorAll('.tab');
+                const totalExpected = 1 + allLines.length;
+
+                if (existingTabs.length === totalExpected) {
+                    const allBtn = existingTabs[0];
+                    allBtn.className = `tab ${isAll ? 'on' : ''}`;
+                    allBtn.style.cssText = isAll ? 'background:var(--primary,#0284c7);color:#fff;' : '';
+                    allBtn.setAttribute('aria-pressed', isAll ? 'true' : 'false');
+
+                    allLines.forEach((l, idx) => {
+                        const btn = existingTabs[idx + 1];
+                        const on = l.LineId === this.journey.pickerLine;
+                        const textColor = on ? (isBrightColor(l.LineColor) ? '#0f172a' : '#fff') : '';
+                        btn.className = `tab ${on ? 'on' : ''}`;
+                        btn.style.cssText = on ? `background:${l.LineColor};color:${textColor};` : '';
+                        btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+                    });
+                } else {
+                    el.innerHTML = `
+                        <button class="tab ${isAll ? 'on' : ''}" style="${isAll ? 'background:var(--primary,#0284c7);color:#fff;' : ''}"
+                            aria-pressed="${isAll ? 'true' : 'false'}" onclick="App.setPickerLine(0)">
+                            ${getLineIconSvg(0, isAll, 18)}
+                            <span>${lang === 'th' ? 'ทุกสาย' : 'All Lines'}</span>
+                        </button>` + allLines.map(l => {
+                        const on = l.LineId === this.journey.pickerLine;
+                        const st = this.traffic?.lines?.find(x => x.LineId === l.LineId);
+                        const warn = st && st.TrafficStatus !== 1 ? ` ${getUiIcon('alert', 12, '#ef4444')}` : '';
+                        const textColor = on ? (isBrightColor(l.LineColor) ? '#0f172a' : '#fff') : '';
+                        return `<button class="tab ${on ? 'on' : ''}" style="${on ? 'background:' + l.LineColor + ';color:' + textColor + ';' : ''}"
+                            aria-pressed="${on ? 'true' : 'false'}" onclick="App.setPickerLine(${l.LineId})">
+                            ${getLineIconSvg(l.LineId, on, 18)}
+                            <span>${esc(shortLineName(l))}${warn}</span></button>`;
+                    }).join('');
+                }
+
+                const activePickerTab = el.querySelector('.tab.on');
+                if (activePickerTab) {
+                    requestAnimationFrame(() => {
+                        scrollContainerChildToCenter(el, activePickerTab, true);
+                    });
+                }
             },
 
             setPickerLine(id) {
@@ -5601,7 +5827,7 @@ gQIDAQAB
 
             pinStation(key) {
                 this.pinnedKey = key;
-                this.renderNearest(true);
+                this.renderNearest();
                 this.renderTraffic();
                 const pinned = this.pinnedStation();
                 if (pinned) {
@@ -5812,8 +6038,51 @@ gQIDAQAB
                 });
             },
 
+            /* ---------- station train icon color dynamic transition ---------- */
+            getStationTrainIconColor(r, lineId) {
+                const brandColor = r.station.StationLineColor || LINE_BRAND_COLORS[lineId] || '#7AB420';
+
+                // 1. ตรวจจับว่าตรวจพบว่าอยู่ที่สถานีแล้วหรือไม่ (ระยะห่าง <= 120 เมตร หรือสถานีที่ calibrate ตำแหน่งแล้ว)
+                const isAtStation = (r.km != null && r.km <= 0.12) || (this.userPos?.calibrated && r.station.StationKey === this.pinnedKey);
+                if (isAtStation) {
+                    return brandColor; // อยู่ที่สถานีแล้ว → มีสีเต็ม 100%
+                }
+
+                // ตรวจสอบข้อมูลขบวนรถ real-time ว่ามีขบวนกำลังเข้าสถานีหรือไม่
+                let arrivalRatio = 0;
+                const arr = this.arrivals?.[r.station.StationKey];
+                if (arr && arr.platforms && arr.platforms.length) {
+                    for (const p of arr.platforms) {
+                        if (p.train_list && p.train_list.length) {
+                            for (const tr of p.train_list) {
+                                const min = parseFloat(tr.min_left ?? tr.eta ?? 999);
+                                if (!isNaN(min) && min <= 1.5) {
+                                    const rEta = Math.max(0, Math.min(1, (1.5 - min) / 1.5));
+                                    if (rEta > arrivalRatio) arrivalRatio = rEta;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // 2. ตรวจสอบระยะทาง: หากอยู่นอกสถานี (r.km == null หรือ r.km > 0.8 กม.) และไม่มีรถไฟกำลังเข้าสถานี
+                if ((r.km == null || r.km > 0.8) && arrivalRatio <= 0) {
+                    return '#ffffff'; // อยู่นอกสถานี → เป็นสีขาว
+                }
+
+                // 3. เมื่อรถไฟกำลังเข้าสถานีใหม่ (ระยะ 0.8 กม. ลงมาจนถึง 0.12 กม. หรือตามเวลาที่รถไฟกำลังเข้าสถานี)
+                // ค่อย ๆ เริ่มมีสีจนเต็ม เมื่อถึงสถานีใหม่
+                const distRatio = (r.km != null && r.km <= 0.8) ? Math.max(0, Math.min(1, (0.8 - r.km) / (0.8 - 0.12))) : 0;
+                const effectiveRatio = Math.max(distRatio, arrivalRatio);
+
+                if (effectiveRatio >= 0.98) return brandColor;
+                if (effectiveRatio <= 0.02) return '#ffffff';
+
+                return interpolateColor('#ffffff', brandColor, effectiveRatio);
+            },
+
             /* ---------- render: nearest card ---------- */
-            renderNearest(scrollActiveChip = false) {
+            renderNearest() {
                 const el = document.getElementById('nearestBody');
                 if (!el) return;
                 if (this.locating && !this.nearest) {
@@ -5832,16 +6101,22 @@ gQIDAQAB
                 const arr = this.arrivals[s.StationKey];
                 const staticTime = usesStaticTimetable(s);
 
-                const prevAltRow = el.querySelector('.alt-row');
-                const prevScrollLeft = prevAltRow ? prevAltRow.scrollLeft : null;
-
                 const chips = this.nearestList.map(r => {
                     const isSel = r.station.StationKey === this.pinnedKey;
                     const lineId = r.station.StationLineId || 1;
-                    return `<button class="alt-chip ${isSel ? 'on' : ''}"
+                    const stColor = r.station.StationLineColor || LINE_BRAND_COLORS[lineId] || '#7AB420';
+                    const distStr = fmtDist(r.km);
+                    const nm = stName(r.station);
+                    const nameClass = nm.length > 14 ? 'chip-name xxlong' : (nm.length > 9 ? 'chip-name xlong' : (nm.length > 5 ? 'chip-name long' : 'chip-name'));
+                    const iconColor = this.getStationTrainIconColor(r, lineId);
+                    return `<button type="button" class="alt-chip ${isSel ? 'on' : ''}"
                         onclick="App.pinStation('${r.station.StationKey}')">
-                        ${getLineIconSvg(lineId, !isSel, 15)}
-                        <span><b>${esc(r.station.StationKey)}</b> ${esc(stName(r.station))}</span> <span class="km">${fmtDist(r.km)}</span></button>`;
+                        <span class="chip-row-top">
+                            ${getLineIconSvg(lineId, iconColor, 15)}
+                            <span class="st-key" style="background:${stColor}">${esc(r.station.StationKey)}</span>
+                            <span class="${nameClass}">${esc(nm)}</span>
+                        </span>
+                        <span class="km km-bottom">${distStr}</span></button>`;
                 }).join('');
 
                 const crowded = s.IsCrowded === true;
@@ -5875,32 +6150,9 @@ gQIDAQAB
                         ${distChip}
                     </div>
                     ${this.renderCrowdGauge(s)}
-                    <div class="alt-row" id="nearestAltRow">${chips}</div>
+                    <div class="alt-row nearest-alt-row" id="nearestAltRow" data-count="${this.nearestList.length}">${chips}</div>
                     ${renderPlatformSection(s, arr)}
                     ${renderRouteSection(s)}`;
-
-                const newAltRow = document.getElementById('nearestAltRow');
-                const activeChip = newAltRow ? newAltRow.querySelector('.alt-chip.on') : null;
-                if (newAltRow && activeChip) {
-                    requestAnimationFrame(() => {
-                        const chipLeft = activeChip.offsetLeft;
-                        const chipWidth = activeChip.offsetWidth;
-                        const containerWidth = newAltRow.clientWidth;
-                        const targetScroll = Math.max(0, chipLeft - (containerWidth / 2) + (chipWidth / 2));
-                        if (scrollActiveChip) {
-                            newAltRow.scrollTo({
-                                left: targetScroll,
-                                behavior: 'smooth'
-                            });
-                        } else if (prevScrollLeft != null) {
-                            newAltRow.scrollLeft = prevScrollLeft;
-                        } else if (targetScroll > 0) {
-                            newAltRow.scrollLeft = targetScroll;
-                        }
-                    });
-                } else if (newAltRow && prevScrollLeft != null) {
-                    newAltRow.scrollLeft = prevScrollLeft;
-                }
 
                 this.updatePopupDistance(s);
             },
@@ -5951,15 +6203,8 @@ gQIDAQAB
                 requestAnimationFrame(() => {
                     const tabsEl = document.getElementById('lineTabs');
                     const activeTab = tabsEl ? tabsEl.querySelector('.tab.on') : null;
-                    if (tabsEl && activeTab && tabsEl.clientWidth > 0) {
-                        const tabLeft = activeTab.offsetLeft;
-                        const tabWidth = activeTab.offsetWidth;
-                        const containerWidth = tabsEl.clientWidth;
-                        const scrollTarget = tabLeft - (containerWidth / 2) + (tabWidth / 2);
-                        tabsEl.scrollTo({
-                            left: Math.max(0, scrollTarget),
-                            behavior: smooth ? 'smooth' : 'auto'
-                        });
+                    if (tabsEl && activeTab) {
+                        scrollContainerChildToCenter(tabsEl, activeTab, smooth);
                     }
                 });
             },
@@ -5969,8 +6214,8 @@ gQIDAQAB
                 const stationKey = station.StationKey;
                 const lineId = station.StationLineId;
 
-                // หากผู้ใช้จงใจเลือกสายด้วยตนเองไปแล้ว และสถานีที่ตรวจจับยังคงเป็นสถานีเดิม ไม่สลับสายกลับไปกวนใจ
-                if (!force && this.userPickedLineManually && this.lastSyncedStationKey === stationKey) {
+                // หากผู้ใช้จงใจเลือกสายด้วยตนเองไปแล้ว และไม่ได้เป็นการสั่งบังคับ (force) ให้คงสายที่ผู้ใช้เลือกไว้เสมอ ไม่สลับสายกลับไปกวนใจ
+                if (!force && this.userPickedLineManually) {
                     return;
                 }
 
@@ -5985,7 +6230,7 @@ gQIDAQAB
                     this.renderStrip();
                     this.syncUrl();
                 }
-                this.scrollActiveTabIntoView();
+                this.scrollActiveTabIntoView(true);
             },
 
             /* ---------- render: strip (line map) ---------- */
@@ -6256,45 +6501,92 @@ gQIDAQAB
                 });
             }
 
-            // 4. สายสีแดง (LineId: 103) — North (RN01..RN10) & West (RW04..RW02, RN01)
-            else if (lineId === MRT_LINE_IDS.RED) {
-                const isWest = key.startsWith('RW');
+            // 4. สายสีแดงเข้ม (LineId: 103) & สายสีแดงอ่อน (LineId: 105)
+            else if (lineId === MRT_LINE_IDS.DARK_RED || lineId === MRT_LINE_IDS.LIGHT_RED || lineId === 103 || lineId === 105 || lineId === MRT_LINE_IDS.RED) {
+                const isWest = (lineId === 105 || key.startsWith('RW'));
                 const travelPerStation = 2.4;
 
                 if (key === 'RN01') {
-                    // ชุมทางกลางกรุงเทพอภิวัฒน์: Plat 1 -> รังสิต (RN10), Plat 2 -> ตลิ่งชัน (RW04)
-                    const dest1 = getDestPair('RN10', 'รังสิต', 'Rangsit');
-                    const dest2 = getDestPair('RW04', 'ตลิ่งชัน', 'Taling Chan');
-                    platforms.push({
-                        platform: 1,
-                        LineId: lineId,
-                        LineColor: color,
-                        DestinationStation: dest1,
-                        DestinationStation_key: 'RN10',
-                        isDropOffOnly: false,
-                        train_list: makeTrains(1, dest1, 'RN10', 0, false)
-                    });
-                    platforms.push({
-                        platform: 2,
-                        LineId: lineId,
-                        LineColor: color,
-                        DestinationStation: dest2,
-                        DestinationStation_key: 'RW04',
-                        isDropOffOnly: false,
-                        train_list: makeTrains(2, dest2, 'RW04', interval * 0.5, false)
-                    });
+                    // ชุมทางกลางกรุงเทพอภิวัฒน์
+                    if (lineId === 105) {
+                        // สายสีแดงอ่อน (นครวิถี) มุ่งหน้า ตลิ่งชัน
+                        const dest1 = getDestPair('RW04', 'ตลิ่งชัน', 'Taling Chan');
+                        const dest2 = getDestPair('RN01', 'กรุงเทพอภิวัฒน์ (ขบวนสิ้นสุด)', 'Krung Thep Aphiwat (Terminating)');
+                        platforms.push({
+                            platform: 1,
+                            LineId: 105,
+                            LineColor: '#F87171',
+                            DestinationStation: dest1,
+                            DestinationStation_key: 'RW04',
+                            isDropOffOnly: false,
+                            train_list: makeTrains(1, dest1, 'RW04', 0, false)
+                        });
+                        platforms.push({
+                            platform: 2,
+                            LineId: 105,
+                            LineColor: '#F87171',
+                            DestinationStation: dest2,
+                            DestinationStation_key: 'RN01',
+                            isDropOffOnly: true,
+                            train_list: makeTrains(2, dest2, 'RN01', 0, true)
+                        });
+                    } else if (lineId === 103) {
+                        // สายสีแดงเข้ม (ธานีรัถยา) มุ่งหน้า รังสิต
+                        const dest1 = getDestPair('RN10', 'รังสิต', 'Rangsit');
+                        const dest2 = getDestPair('RN01', 'กรุงเทพอภิวัฒน์ (ขบวนสิ้นสุด)', 'Krung Thep Aphiwat (Terminating)');
+                        platforms.push({
+                            platform: 1,
+                            LineId: 103,
+                            LineColor: '#B91C1C',
+                            DestinationStation: dest1,
+                            DestinationStation_key: 'RN10',
+                            isDropOffOnly: false,
+                            train_list: makeTrains(1, dest1, 'RN10', 0, false)
+                        });
+                        platforms.push({
+                            platform: 2,
+                            LineId: 103,
+                            LineColor: '#B91C1C',
+                            DestinationStation: dest2,
+                            DestinationStation_key: 'RN01',
+                            isDropOffOnly: true,
+                            train_list: makeTrains(2, dest2, 'RN01', 0, true)
+                        });
+                    } else {
+                        // ภาพรวมชุมทาง (ทั้งสองสาย)
+                        const dest1 = getDestPair('RN10', 'รังสิต', 'Rangsit');
+                        const dest2 = getDestPair('RW04', 'ตลิ่งชัน', 'Taling Chan');
+                        platforms.push({
+                            platform: 1,
+                            LineId: 103,
+                            LineColor: '#B91C1C',
+                            DestinationStation: dest1,
+                            DestinationStation_key: 'RN10',
+                            isDropOffOnly: false,
+                            train_list: makeTrains(1, dest1, 'RN10', 0, false)
+                        });
+                        platforms.push({
+                            platform: 2,
+                            LineId: 105,
+                            LineColor: '#F87171',
+                            DestinationStation: dest2,
+                            DestinationStation_key: 'RW04',
+                            isDropOffOnly: false,
+                            train_list: makeTrains(2, dest2, 'RW04', interval * 0.5, false)
+                        });
+                    }
                 } else if (isWest) {
-                    // สายสีแดงฝั่งตะวันตก (RW02..RW04)
+                    // สายสีแดงอ่อน (RW02..RW04)
                     const orderWest = { 'RW04': 0, 'RW03': 1, 'RW02': 2 };
                     const idx = orderWest[key] != null ? orderWest[key] : 1;
                     const dest1 = getDestPair('RW04', 'ตลิ่งชัน', 'Taling Chan');
-                    const dest2 = getDestPair('RN01', 'กรุงเทพ อภิวัฒน์', 'Krung Thep Aphiwat');
+                    const dest2 = getDestPair('RN01', 'กรุงเทพอภิวัฒน์', 'Krung Thep Aphiwat');
                     const isTerm1 = (key === 'RW04');
 
                     platforms.push({
                         platform: 1,
-                        LineId: lineId,
-                        LineColor: color,
+                        LineId: 105,
+                        LineColor: '#F87171',
                         DestinationStation: dest1,
                         DestinationStation_key: 'RW04',
                         isDropOffOnly: isTerm1,
@@ -6302,25 +6594,25 @@ gQIDAQAB
                     });
                     platforms.push({
                         platform: 2,
-                        LineId: lineId,
-                        LineColor: color,
+                        LineId: 105,
+                        LineColor: '#F87171',
                         DestinationStation: dest2,
                         DestinationStation_key: 'RN01',
                         isDropOffOnly: false,
                         train_list: makeTrains(2, dest2, 'RN01', idx * travelPerStation + (interval * 0.5), false)
                     });
                 } else {
-                    // สายสีแดงฝั่งเหนือ (RN02..RN10)
+                    // สายสีแดงเข้ม (RN02..RN10)
                     const num = parseInt(key.replace(/\D/g, ''), 10) || 1;
                     const idx = Math.max(0, Math.min(9, num - 1));
                     const isTerm1 = (key === 'RN10');
                     const dest1 = getDestPair('RN10', 'รังสิต', 'Rangsit');
-                    const dest2 = getDestPair('RN01', 'กรุงเทพ อภิวัฒน์', 'Krung Thep Aphiwat');
+                    const dest2 = getDestPair('RN01', 'กรุงเทพอภิวัฒน์', 'Krung Thep Aphiwat');
 
                     platforms.push({
                         platform: 1,
-                        LineId: lineId,
-                        LineColor: color,
+                        LineId: 103,
+                        LineColor: '#B91C1C',
                         DestinationStation: dest1,
                         DestinationStation_key: 'RN10',
                         isDropOffOnly: isTerm1,
@@ -6328,8 +6620,8 @@ gQIDAQAB
                     });
                     platforms.push({
                         platform: 2,
-                        LineId: lineId,
-                        LineColor: color,
+                        LineId: 103,
+                        LineColor: '#B91C1C',
                         DestinationStation: dest2,
                         DestinationStation_key: 'RN01',
                         isDropOffOnly: false,
@@ -6547,14 +6839,49 @@ gQIDAQAB
                 </div>`;
             }).join('');
         }
+        /* ================= COLOR INTERPOLATION HELPERS ================= */
+        function hexToRgb(hex) {
+            let c = String(hex || '').replace('#', '');
+            if (c.length === 3) c = c.split('').map(x => x + x).join('');
+            const num = parseInt(c, 16);
+            if (isNaN(num)) return { r: 255, g: 255, b: 255 };
+            return {
+                r: (num >> 16) & 255,
+                g: (num >> 8) & 255,
+                b: num & 255
+            };
+        }
+
+        function rgbToHex(r, g, b) {
+            const toHex = x => Math.max(0, Math.min(255, Math.round(x))).toString(16).padStart(2, '0');
+            return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+        }
+
+        function interpolateColor(hexFrom, hexTo, ratio) {
+            const clampedRatio = Math.max(0, Math.min(1, ratio));
+            if (clampedRatio <= 0) return hexFrom;
+            if (clampedRatio >= 1) return hexTo;
+            const c1 = hexToRgb(hexFrom);
+            const c2 = hexToRgb(hexTo);
+            const r = c1.r + (c2.r - c1.r) * clampedRatio;
+            const g = c1.g + (c2.g - c1.g) * clampedRatio;
+            const b = c1.b + (c2.b - c1.b) * clampedRatio;
+            return rgbToHex(r, g, b);
+        }
+
         /* ================= SHARED RENDER HELPERS ================= */
 
-        function getLineIconSvg(lineId, active = false, size = 18) {
+        function getLineIconSvg(lineId, activeOrColor = false, size = 18) {
             const id = Number(lineId) || 0;
             const color = LINE_BRAND_COLORS[id] || '#64748B';
+            let c;
+            if (typeof activeOrColor === 'string' && (activeOrColor.startsWith('#') || activeOrColor.startsWith('rgb'))) {
+                c = activeOrColor;
+            } else {
+                c = activeOrColor ? '#ffffff' : color;
+            }
             const isYellow = id === 4;
-            const c = active ? '#ffffff' : color;
-            const filter = (active && isYellow) ? 'filter: drop-shadow(0 1px 2px rgba(0,0,0,0.6));' : '';
+            const filter = (String(c).toLowerCase() === '#ffffff' && isYellow) ? 'filter: drop-shadow(0 1px 2px rgba(0,0,0,0.6));' : '';
 
             let inner = '';
 
@@ -6870,7 +7197,7 @@ gQIDAQAB
             const multiLine = groups.length > 1;
 
             const platHtml = groups.map(g => {
-                const line = App.lineById[g.lineId];
+                const line = App.lineById[g.lineId] || MRT_LINE_BY_ID[g.lineId];
                 const head = multiLine ? `
                     <div class="line-group-head" style="color:${g.color};display:flex;align-items:center;gap:6px;">
                         ${getLineIconSvg(g.lineId, false, 18)}
@@ -7008,7 +7335,7 @@ gQIDAQAB
 
                 rows.push(`<div class="${stepClasses}" style="color:${pick.color}">
                     <span class="ndw"><span class="nd"></span></span>
-                    <span class="nm" style="color:var(--ink)"><span style="color:${pick.color};font-size:10.5px;font-weight:800;margin-right:4px">${esc(st.StationCode)}</span>${esc(destName(st.Title))}</span>
+                    <span class="nm" style="color:var(--ink)"><span class="st-key" style="background:${pick.color};font-size:9.5px;padding:1px 5px;min-width:28px;height:18px;margin-right:6px;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;color:#fff;line-height:1;">${esc(st.StationCode)}</span>${esc(destName(st.Title))}</span>
                     <span class="tm">${esc(st.TimeRoute || '')}</span></div>`);
             });
 
@@ -7165,7 +7492,7 @@ gQIDAQAB
             const topPlatHdr = topLabel ? `
                 <div class="rt-plat-hdr top" style="justify-self: end; width: fit-content;">
                     <span class="p-tag">
-                        <span class="p-badge" style="background:${color}">${pTop?.platform != null ? 'P' + pTop.platform : 'P'}</span>
+                        <span class="p-badge" style="background:${color}">${pTop?.platform != null ? pTop.platform : ''}</span>
                         <span>${esc(topLabel)}</span>
                     </span>
                 </div>` : '';
@@ -7173,12 +7500,13 @@ gQIDAQAB
             const btmPlatHdr = btmLabel ? `
                 <div class="rt-plat-hdr btm" style="justify-self: start; width: fit-content;">
                     <span class="p-tag">
-                        <span class="p-badge" style="background:${color}">${pBtm?.platform != null ? 'P' + pBtm.platform : 'P'}</span>
+                        <span class="p-badge" style="background:${color}">${pBtm?.platform != null ? pBtm.platform : ''}</span>
                         <span>${esc(btmLabel)}</span>
                     </span>
                 </div>` : '';
 
-            const lineName = App.lineById[block.lineId] ? shortLineName(App.lineById[block.lineId]) : '';
+            const lineObj = App.lineById[block.lineId] || MRT_LINE_BY_ID[block.lineId];
+            const lineName = lineObj ? shortLineName(lineObj) : '';
 
             // รางบน (วิ่ง →):
             const allP1 = Z.prev;

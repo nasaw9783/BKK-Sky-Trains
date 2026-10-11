@@ -49,7 +49,8 @@ class _StationPickerModalState extends State<StationPickerModal> {
       {'id': 5, 'name': 'สีชมพู', 'color': AppTheme.pinkLine},
       {'id': 101, 'name': 'สีน้ำเงิน', 'color': AppTheme.mrtBlue},
       {'id': 102, 'name': 'สีม่วง', 'color': AppTheme.mrtPurple},
-      {'id': 103, 'name': 'สายสีแดง', 'color': AppTheme.srtRed},
+      {'id': 103, 'name': 'สีแดงเข้ม', 'color': AppTheme.srtDarkRed},
+      {'id': 105, 'name': 'สีแดงอ่อน', 'color': AppTheme.srtLightRed},
       {'id': 104, 'name': 'แอร์พอร์ตลิงก์', 'color': AppTheme.arlRed},
     ];
 

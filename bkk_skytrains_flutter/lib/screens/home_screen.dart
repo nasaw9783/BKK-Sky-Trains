@@ -440,9 +440,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           decoration: BoxDecoration(
                             color: isSel ? itemColor.withValues(alpha: 0.2) : Colors.white.withValues(alpha: 0.05),
                             borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                              color: isSel ? itemColor : Colors.white12,
-                            ),
+                              border: Border.all(
+                                color: isSel ? AppTheme.accentGreen : Colors.white12,
+                                width: 2,
+                              ),
                           ),
                           child: Row(
                             children: [
@@ -595,7 +596,8 @@ class _HomeScreenState extends State<HomeScreen> {
       {'name': 'สีชมพู', 'color': AppTheme.pinkLine},
       {'name': 'สีน้ำเงิน', 'color': AppTheme.mrtBlue},
       {'name': 'สีม่วง', 'color': AppTheme.mrtPurple},
-      {'name': 'สายสีแดง', 'color': AppTheme.srtRed},
+      {'name': 'สายสีแดงเข้ม', 'color': AppTheme.srtDarkRed},
+      {'name': 'สายสีแดงอ่อน', 'color': AppTheme.srtLightRed},
       {'name': 'แอร์พอร์ตลิงก์', 'color': AppTheme.arlRed},
     ];
 

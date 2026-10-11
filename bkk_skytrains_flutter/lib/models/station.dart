@@ -36,7 +36,9 @@ class Station {
       case 102:
         return 'สายสีม่วง (MRT)';
       case 103:
-        return 'สายสีแดง (SRT)';
+        return 'สายสีแดงเข้ม (SRT)';
+      case 105:
+        return 'สายสีแดงอ่อน (SRT)';
       case 104:
         return 'แอร์พอร์ต เรล ลิงก์ (ARL)';
       default:

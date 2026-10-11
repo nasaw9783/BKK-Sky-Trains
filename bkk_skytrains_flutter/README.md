@@ -15,8 +15,9 @@
 2. **Native Geolocation Bridge (`geolocator`)**:
    - เชื่อมต่อการขอสิทธิ์ GPS และพิกัดตำแหน่งของผู้ใช้งานผ่าน Native Android/iOS API
    - ส่งต่อพิกัดความแม่นยำสูงเข้าไปยัง JavaScript ในหน้าเว็บแบบเรียลไทม์ผ่าน `JavaScriptChannel`
-3. **Train Icon Standard & API Security**:
+3. **Train Icon Standard & Element Centering Standard**:
    - รองรับมาตรฐานไอคอนรูปรถไฟประจำสายสีเฉพาะ (`getLineIconSvg`)
+   - รองรับมาตรฐานการจัดกึ่งกลางของกรอบข้อความและสัญลักษณ์ (Station Codes, Line Badges, Control Buttons)
    - ผสานการทำงานร่วมกับไลบรารี `JSEncrypt` (`assets/www/js/jsencrypt.min.js`) สำหรับความปลอดภัยของข้อมูล
 4. **Clean Platform Footprint**:
    - รองรับเฉพาะ **Android** และ **iOS**

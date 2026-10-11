@@ -18,7 +18,9 @@
 3. **🚆 มาตรฐานไอคอนรูปรถไฟประจำสายสี (Project Train Icon Standard)**
    - ระบุสายสีของรถไฟฟ้าทุกสายด้วยไอคอนรูปรถไฟเฉพาะสีจากฟังก์ชัน `getLineIconSvg(lineId)`
    - สวยงาม คมชัดในรูปแบบ SVG Vector รองรับทุกความละเอียดหน้าจอ
-4. **🗺️ ผังสายรถไฟฟ้าแบบโต้ตอบ (Interactive Route Strip & Line Network)**
+4. **🎯 มาตรฐานการจัดองค์ประกอบกึ่งกลาง (Project Element Centering Standard)**
+   - ทุกกรอบข้อความ รหัสสถานี (Station Code เช่น `YL20`, `CEN`), ไอคอนสัญลักษณ์ (Icons / Symbols เช่น Theme Button, Line Icons, Badges), และปุ่มควบคุมแบบ Pill/Box ทั้งหมด ถูกจัดวางกึ่งกลางอย่างสมบูรณ์แบบทั้งแนวนอนและแนวตั้ง (Centering Layout)
+5. **🗺️ ผังสายรถไฟฟ้าแบบโต้ตอบ (Interactive Route Strip & Line Network)**
    - แสดงแผนผังสถานีตามแนวเส้นทางครอบคลุมทุกโครงข่ายใน กทม.:
      - BTS สายสุขุมวิท (สีเขียวอ่อน), BTS สายสีลม (สีเขียวเข้ม), BTS สายสีทอง
      - MRT สายสีน้ำเงิน, MRT สายสีม่วง, MRT สายสีเหลือง, MRT สายสีชมพู

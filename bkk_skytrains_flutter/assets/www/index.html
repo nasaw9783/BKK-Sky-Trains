@@ -414,6 +414,10 @@
         }
 
         .header-pill-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
             font-family: inherit;
             background: rgba(255, 255, 255, 0.12);
             border: 1px solid rgba(255, 255, 255, 0.28);
@@ -421,12 +425,34 @@
             font-size: 11.5px;
             font-weight: 600;
             border-radius: var(--radius-full);
-            padding: 4px 9px;
+            height: 30px;
+            padding: 0 9px;
             cursor: pointer;
             flex: none;
             transition: all var(--transition-fast);
             box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(8px);
+            line-height: 1;
+            box-sizing: border-box;
+        }
+
+        .header-pill-btn svg {
+            display: block;
+            margin: auto;
+            flex-shrink: 0;
+        }
+
+        #themeBtn {
+            width: 30px;
+            height: 30px;
+            min-width: 30px;
+            padding: 0;
+        }
+
+        #langBtn {
+            min-width: 36px;
+            height: 30px;
+            padding: 0 8px;
         }
 
         .header-pill-btn:hover {
@@ -477,8 +503,20 @@
                 gap: 4px;
             }
             .header-pill-btn {
-                padding: 3.5px 7px;
+                height: 28px;
+                padding: 0 7px;
                 font-size: 11px;
+            }
+            #themeBtn {
+                width: 28px;
+                height: 28px;
+                min-width: 28px;
+                padding: 0;
+            }
+            #langBtn {
+                min-width: 32px;
+                height: 28px;
+                padding: 0 6px;
             }
             .clock .t {
                 font-size: 12px;
@@ -498,9 +536,15 @@
                 gap: 4px;
             }
             .j-field .val .st-key {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
                 font-size: 9px;
-                padding: 1px 4px;
+                padding: 1.5px 5px;
                 border-radius: 4px;
+                line-height: 1;
+                box-sizing: border-box;
             }
             .j-field .val .nm {
                 font-size: 12px;
@@ -597,6 +641,7 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            text-align: center;
             width: 24px;
             height: 24px;
             border-radius: 7px;
@@ -604,6 +649,13 @@
             color: #f43f5e;
             flex-shrink: 0;
             line-height: 1;
+            box-sizing: border-box;
+        }
+
+        .card-icon-pill svg {
+            display: block;
+            margin: auto;
+            flex-shrink: 0;
         }
 
         .card-icon-pill.sky {
@@ -615,6 +667,7 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            text-align: center;
             width: 26px;
             height: 26px;
             border-radius: 8px;
@@ -622,6 +675,13 @@
             color: #10b981;
             flex-shrink: 0;
             line-height: 1;
+            box-sizing: border-box;
+        }
+
+        .footer-title-icon-pill svg {
+            display: block;
+            margin: auto;
+            flex-shrink: 0;
         }
 
         html.dark .footer-title-icon-pill {
@@ -706,6 +766,7 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            text-align: center;
             color: #fff;
             font-weight: 800;
             font-size: 13.5px;
@@ -713,6 +774,8 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.35);
             transition: transform var(--transition-fast);
             line-height: 1;
+            letter-spacing: 0;
+            box-sizing: border-box;
         }
 
         .station-hero .names {
@@ -813,9 +876,301 @@
         }
 
         .alt-chip.on {
-            border-color: var(--accent);
+            border: 2px solid var(--accent);
             background: var(--accent-bg, rgba(16, 185, 129, 0.08));
-            box-shadow: 0 0 0 1px var(--accent);
+            box-shadow: none;
+        }
+
+        /* Nearest station chips in Home card — unified single-row layout across desktop & mobile */
+        #nearestAltRow,
+        .nearest-alt-row {
+            display: flex;
+            flex-direction: row;
+            align-items: stretch;
+            gap: 6px;
+            margin-top: 12px;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 4px 3px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        #nearestAltRow::-webkit-scrollbar,
+        .nearest-alt-row::-webkit-scrollbar {
+            display: none;
+        }
+
+        #nearestAltRow .alt-chip,
+        .nearest-alt-row .alt-chip {
+            flex: 1 1 auto;
+            width: auto;
+            min-width: 0;
+            padding: 5px 8px;
+            font-size: 11.5px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            gap: 5px;
+            box-sizing: border-box;
+            border: 2px solid var(--line);
+            border-radius: 10px;
+            transition: all var(--transition-fast);
+            cursor: pointer;
+            height: 36px;
+            min-height: 36px;
+        }
+
+        #nearestAltRow .alt-chip.on,
+        .nearest-alt-row .alt-chip.on {
+            border: 2px solid var(--accent) !important;
+            background: var(--accent-bg, rgba(16, 185, 129, 0.10)) !important;
+            box-shadow: none !important;
+        }
+
+        #nearestAltRow .alt-chip .chip-row-top,
+        .nearest-alt-row .alt-chip .chip-row-top {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            min-width: 0;
+            flex: 1 1 auto;
+            overflow: hidden;
+        }
+
+        #nearestAltRow .alt-chip .chip-row-top svg,
+        .nearest-alt-row .alt-chip .chip-row-top svg {
+            display: block;
+            margin: auto 0;
+            flex-shrink: 0;
+            transition: stroke 0.4s ease, fill 0.4s ease;
+        }
+
+        #nearestAltRow .alt-chip .st-key,
+        .nearest-alt-row .alt-chip .st-key {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            min-width: 22px;
+            height: 17px;
+            padding: 1px 4px 0 4px;
+            font-size: 9.5px;
+            font-weight: 800;
+            border-radius: 4px;
+            flex-shrink: 0;
+            line-height: 1;
+            box-sizing: border-box;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            color: #ffffff;
+            letter-spacing: 0;
+        }
+
+        #nearestAltRow .alt-chip .chip-name,
+        .nearest-alt-row .alt-chip .chip-name {
+            display: inline-block;
+            min-width: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: left;
+            flex: 1 1 auto;
+            font-weight: 700;
+            font-size: 11.5px;
+            color: var(--ink);
+            line-height: 1.2;
+        }
+
+        #nearestAltRow .alt-chip .chip-name.long,
+        .nearest-alt-row .alt-chip .chip-name.long {
+            font-size: 10.2px;
+            letter-spacing: -0.15px;
+        }
+
+        #nearestAltRow .alt-chip .chip-name.xlong,
+        .nearest-alt-row .alt-chip .chip-name.xlong {
+            font-size: 9px;
+            letter-spacing: -0.25px;
+        }
+
+        #nearestAltRow .alt-chip .chip-name.xxlong,
+        .nearest-alt-row .alt-chip .chip-name.xxlong {
+            font-size: 8.2px;
+            letter-spacing: -0.3px;
+        }
+
+        #nearestAltRow .alt-chip .km-bottom,
+        .nearest-alt-row .alt-chip .km-bottom {
+            display: inline-flex;
+            align-items: center;
+            justify-content: flex-end;
+            margin-left: auto;
+            flex-shrink: 0;
+            white-space: nowrap;
+            font-size: 10.5px;
+            font-weight: 600;
+            color: var(--muted);
+            padding-left: 2px;
+            line-height: 1;
+        }
+
+        #nearestAltRow .alt-chip.on .km-bottom,
+        .nearest-alt-row .alt-chip.on .km-bottom {
+            color: var(--accent);
+            opacity: 1;
+        }
+
+        /* Compact layout on small mobile screens (< 480px) preserving exact single-row layout of Image 2 */
+        @media (max-width: 480px) {
+            #nearestAltRow,
+            .nearest-alt-row {
+                gap: 4px;
+                padding: 4px 2px;
+            }
+
+            #nearestAltRow .alt-chip,
+            .nearest-alt-row .alt-chip {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+                padding: 4px 6px;
+                gap: 3px;
+                height: 33px;
+                min-height: 33px;
+            }
+
+            #nearestAltRow .alt-chip .chip-row-top,
+            .nearest-alt-row .alt-chip .chip-row-top {
+                display: inline-flex;
+                align-items: center;
+                gap: 3px;
+                min-width: 0;
+                flex: 1 1 auto;
+                overflow: hidden;
+            }
+
+            #nearestAltRow .alt-chip .chip-row-top svg,
+            .nearest-alt-row .alt-chip .chip-row-top svg {
+                width: 14px;
+                height: 14px;
+                margin: auto 0;
+                flex-shrink: 0;
+            }
+
+            #nearestAltRow .alt-chip .st-key,
+            .nearest-alt-row .alt-chip .st-key {
+                min-width: 19px;
+                height: 16px;
+                padding: 1px 3px 0 3px;
+                font-size: 8.8px;
+                flex-shrink: 0;
+            }
+
+            #nearestAltRow .alt-chip .chip-name,
+            .nearest-alt-row .alt-chip .chip-name {
+                font-size: 10px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                text-align: left;
+                flex: 1 1 auto;
+                min-width: 0;
+                line-height: 1.1;
+            }
+
+            #nearestAltRow .alt-chip .chip-name.long,
+            .nearest-alt-row .alt-chip .chip-name.long {
+                font-size: 9px;
+                letter-spacing: -0.15px;
+            }
+
+            #nearestAltRow .alt-chip .chip-name.xlong,
+            .nearest-alt-row .alt-chip .chip-name.xlong {
+                font-size: 8.2px;
+                letter-spacing: -0.25px;
+            }
+
+            #nearestAltRow .alt-chip .chip-name.xxlong,
+            .nearest-alt-row .alt-chip .chip-name.xxlong {
+                font-size: 7.5px;
+                letter-spacing: -0.35px;
+            }
+
+            #nearestAltRow .alt-chip .km-bottom,
+            .nearest-alt-row .alt-chip .km-bottom {
+                display: inline-flex;
+                align-items: center;
+                justify-content: flex-end;
+                margin-left: auto;
+                width: auto;
+                text-align: right;
+                font-size: 8.8px;
+                font-weight: 600;
+                color: var(--muted);
+                white-space: nowrap;
+                line-height: 1;
+                padding-left: 2px;
+                padding-top: 0;
+                flex-shrink: 0;
+            }
+        }
+
+        @media (max-width: 360px) {
+            #nearestAltRow,
+            .nearest-alt-row {
+                padding: 3px 2px;
+            }
+
+            #nearestAltRow .alt-chip,
+            .nearest-alt-row .alt-chip {
+                padding: 3px 4px;
+                gap: 2.5px;
+                height: 31px;
+                min-height: 31px;
+            }
+
+            #nearestAltRow .alt-chip .chip-row-top,
+            .nearest-alt-row .alt-chip .chip-row-top {
+                gap: 2px;
+            }
+
+            #nearestAltRow .alt-chip .st-key,
+            .nearest-alt-row .alt-chip .st-key {
+                min-width: 17px;
+                height: 15px;
+                padding: 0 2px;
+                font-size: 8px;
+            }
+
+            #nearestAltRow .alt-chip .chip-name,
+            .nearest-alt-row .alt-chip .chip-name {
+                font-size: 9.2px;
+            }
+
+            #nearestAltRow .alt-chip .chip-name.long,
+            .nearest-alt-row .alt-chip .chip-name.long {
+                font-size: 8.5px;
+            }
+
+            #nearestAltRow .alt-chip .chip-name.xlong,
+            .nearest-alt-row .alt-chip .chip-name.xlong {
+                font-size: 7.8px;
+            }
+
+            #nearestAltRow .alt-chip .chip-name.xxlong,
+            .nearest-alt-row .alt-chip .chip-name.xxlong {
+                font-size: 7.2px;
+                letter-spacing: -0.4px;
+            }
+
+            #nearestAltRow .alt-chip .km-bottom,
+            .nearest-alt-row .alt-chip .km-bottom {
+                font-size: 8px;
+            }
         }
 
         /* ===== Platform Cards & Real-Time Arrivals ===== */
@@ -872,6 +1227,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            text-align: center;
+            line-height: 1;
+            letter-spacing: 0;
+            box-sizing: border-box;
+            padding: 1px 0 0 0;
             color: #fff;
             margin-top: 1px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
@@ -1093,12 +1453,14 @@
 
         /* ===== Line Tabs Selector ===== */
         .tabs {
+            position: relative;
             display: flex;
             gap: 6px;
             overflow-x: auto;
             scrollbar-width: none;
             padding: 12px 2px 4px;
             margin-bottom: 4px;
+            -webkit-overflow-scrolling: touch;
         }
 
         .tabs::-webkit-scrollbar {
@@ -1274,16 +1636,21 @@
         }
 
         .st-key {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
             font-size: 11px;
             font-weight: 800;
             color: #fff;
-            padding: 2.5px 8px;
+            padding: 3px 8px 2px 8px;
             border-radius: 6px;
             min-width: 40px;
-            text-align: center;
             flex-shrink: 0;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-            letter-spacing: 0.5px;
+            letter-spacing: 0;
+            line-height: 1;
+            box-sizing: border-box;
         }
 
         .st-btn .names {
@@ -1317,11 +1684,16 @@
         .badge {
             font-size: 10.5px;
             font-weight: 700;
-            padding: 2px 7px;
+            padding: 2.5px 7px 2px 7px;
             border-radius: var(--radius-full);
             flex-shrink: 0;
             display: inline-flex;
             align-items: center;
+            justify-content: center;
+            text-align: center;
+            line-height: 1;
+            box-sizing: border-box;
+            letter-spacing: 0;
             gap: 4px;
         }
 
@@ -2026,13 +2398,21 @@
         }
 
         .rt-plat-hdr .p-badge {
-            font-size: 9px;
+            font-size: 9.5px;
             font-weight: 800;
-            padding: 1.5px 5px;
+            padding: 2px 4px 1px 4px;
             border-radius: 4px;
             color: #fff;
             flex-shrink: 0;
-            letter-spacing: 0.3px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            line-height: 1;
+            box-sizing: border-box;
+            letter-spacing: 0;
+            min-width: 17px;
+            height: 17px;
         }
 
         .rt-plat-hdr .p-arrow {
@@ -2184,10 +2564,10 @@
         }
 
         .map-viewport svg {
-            min-width: 680px;
-            min-height: 540px;
-            width: 100%;
-            height: auto;
+            min-width: 1400px;
+            min-height: 1050px;
+            width: 1600px;
+            height: 1200px;
             display: block;
         }
 
@@ -2197,20 +2577,34 @@
         }
 
         .map-node:hover {
-            r: 8;
-            stroke-width: 3.5;
+            r: 8.5;
+            stroke-width: 4;
         }
 
         .map-label {
-            font-size: 9.5px;
-            font-weight: 600;
-            fill: var(--ink);
+            font-size: 8.5px;
+            font-weight: 700;
+            fill: #0f172a;
             cursor: pointer;
             pointer-events: all;
             user-select: none;
+            paint-order: stroke fill;
+            stroke: rgba(255, 255, 255, 0.92);
+            stroke-width: 2.5px;
+            stroke-linejoin: round;
         }
 
         html.dark .map-label {
+            fill: #f8fafc;
+            stroke: rgba(11, 19, 34, 0.92);
+        }
+
+        html.dark .map-legend rect {
+            fill: rgba(15, 23, 42, 0.95);
+            stroke: #334155;
+        }
+
+        html.dark .map-legend text {
             fill: #e2e8f0;
         }
 
@@ -2312,6 +2706,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            text-align: center;
+            line-height: 1;
+            letter-spacing: 0;
+            box-sizing: border-box;
             color: #fff;
             font-weight: 800;
             font-size: 16px;
@@ -2506,17 +2904,22 @@
         .j-field .st-key,
         .j-field .j-head .st-key,
         .j-field .val .st-key {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
             flex-shrink: 0;
             font-size: 10px;
             font-weight: 800;
-            padding: 1.5px 5.5px;
+            padding: 2.5px 6px 1.5px 6px;
             border-radius: 5px;
             white-space: nowrap;
             color: #ffffff;
-            line-height: 1.25;
-            min-width: 0;
-            box-shadow: none;
-            letter-spacing: 0.3px;
+            line-height: 1;
+            min-width: 32px;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+            letter-spacing: 0;
+            box-sizing: border-box;
         }
 
         .j-field .val {
@@ -2969,11 +3372,21 @@
         }
 
         .trigger-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
             font-size: 11px;
             font-weight: 800;
             color: #fff;
-            padding: 2.5px 7px;
+            padding: 1px 7px 0 7px;
+            min-width: 36px;
+            height: 22px;
             border-radius: 6px;
+            line-height: 1;
+            letter-spacing: 0;
+            box-sizing: border-box;
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
         }
 
         .trigger-names .th-name {
@@ -3114,18 +3527,22 @@
         }
 
         .station-picker-chip .chip-code {
-            font-size: 9px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 9.5px;
             font-weight: 800;
             color: #fff;
-            padding: 1.5px 4.5px;
-            border-radius: 4px;
-            min-width: 26px;
-            text-align: center;
+            padding: 2px 5px;
+            border-radius: 5px;
+            min-width: 30px;
             flex-shrink: 0;
-            line-height: 1.25;
+            line-height: 1;
             white-space: nowrap;
             overflow: hidden;
             box-sizing: border-box;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
         }
 
         .station-picker-chip .chip-name {
@@ -3238,21 +3655,24 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            text-align: center;
             min-width: 32px;
             height: 22px;
-            padding: 0 6px;
+            padding: 1px 6px 0 6px;
             border-radius: 6px;
             font-size: 11px;
             font-weight: 800;
             color: #fff;
-            letter-spacing: 0.2px;
+            letter-spacing: 0;
             flex-shrink: 0;
             line-height: 1;
+            box-sizing: border-box;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.14);
         }
 
         /* ===== Line Selector & Detailed Views ===== */
         .line-filter-bar {
+            position: relative;
             display: flex;
             gap: 7px;
             overflow-x: auto;
@@ -3260,7 +3680,6 @@
             padding: 4px 2px 14px;
             margin-bottom: 8px;
             -webkit-overflow-scrolling: touch;
-            scroll-behavior: smooth;
         }
 
         .line-filter-bar::-webkit-scrollbar {
@@ -3661,9 +4080,11 @@
         }
 
         .picker-tabs {
+            position: relative;
             padding: 8px 14px 4px;
             margin-bottom: 2px;
             flex-shrink: 0;
+            -webkit-overflow-scrolling: touch;
         }
 
         .picker-list {
@@ -3863,11 +4284,19 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            text-align: center;
             flex-shrink: 0;
             width: 32px;
             height: 32px;
             border-radius: 8px;
             border: 1px solid transparent;
+            box-sizing: border-box;
+        }
+
+        .quick-hub-icon-box svg {
+            display: block;
+            margin: auto;
+            flex-shrink: 0;
         }
 
         .quick-hub-info {
@@ -3886,13 +4315,21 @@
         }
 
         .quick-hub-code-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
             flex-shrink: 0;
-            font-size: 10.5px;
+            min-width: 38px;
+            height: 22px;
+            font-size: 11px;
             font-weight: 800;
-            padding: 1.5px 5.5px;
-            border-radius: 5px;
-            line-height: 1.15;
-            letter-spacing: -0.2px;
+            padding: 1px 6px 0 6px;
+            border-radius: 6px;
+            line-height: 1;
+            letter-spacing: 0;
+            box-sizing: border-box;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
         }
 
         .quick-hub-name {
@@ -4088,6 +4525,7 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            text-align: center;
             width: 24px;
             height: 24px;
             border-radius: 7px;
@@ -4095,6 +4533,13 @@
             color: #f43f5e;
             flex-shrink: 0;
             line-height: 1;
+            box-sizing: border-box;
+        }
+
+        .nearest-popup-icon svg {
+            display: block;
+            margin: auto;
+            flex-shrink: 0;
         }
 
         .nearest-popup-title {
@@ -4111,13 +4556,22 @@
             width: 28px;
             height: 28px;
             border-radius: 50%;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
+            text-align: center;
+            line-height: 1;
+            box-sizing: border-box;
             font-size: 14px;
             font-weight: 700;
             cursor: pointer;
             transition: all var(--transition-fast);
+        }
+
+        .nearest-popup-close svg {
+            display: block;
+            margin: auto;
+            flex-shrink: 0;
         }
 
         .nearest-popup-close:hover {
@@ -4384,6 +4838,7 @@
                         <span style="font-size:11px;font-weight:700;color:var(--accent);background:var(--accent-bg);padding:2px 8px;border-radius:var(--radius-full)">Tap-to-Route</span>
                     </div>
                     <div class="map-ctrl-group">
+                        <button class="map-btn" id="mapToggleLegendBtn" onclick="App.toggleMapLegend()"><svg class="ui-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg> <span id="mapLegendBtnText">สัญลักษณ์</span></button>
                         <button class="map-btn" id="mapZoomInBtn" onclick="App.zoomMap(1.2)"><svg class="ui-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" x2="16.65" y1="21" y2="16.65"/><line x1="11" x2="11" y1="8" y2="14"/><line x1="8" x2="14" y1="11" y2="11"/></svg> <span>ขยาย</span></button>
                         <button class="map-btn" id="mapZoomOutBtn" onclick="App.zoomMap(0.8)"><svg class="ui-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" x2="16.65" y1="21" y2="16.65"/><line x1="8" x2="14" y1="11" y2="11"/></svg> <span>ย่อ</span></button>
                         <button class="map-btn" id="mapResetBtn" onclick="App.resetMapZoom()"><svg class="ui-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg> <span>กลาง</span></button>
@@ -4499,62 +4954,62 @@
                     </div>
                     <div class="footer-card-arrow">›</div>
                 </button>
-                <button type="button" class="footer-line-card" onclick="App.jumpToLine(101)" title="MRT สายสีน้ำเงิน (ท่าพระ ↔ หลักสอง)" aria-label="MRT สายสีน้ำเงิน">
+                <button type="button" class="footer-line-card" onclick="App.jumpToLine(101)" title="MRT สายสีน้ำเงิน (เฉลิมรัชมงคล) (ท่าพระ ↔ หลักสอง)" aria-label="MRT สายสีน้ำเงิน (เฉลิมรัชมงคล)">
                     <div class="footer-card-icon" style="background:rgba(2,132,199,0.12);border-color:rgba(2,132,199,0.3)">
                         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#0284C7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 20V11a9.5 9.5 0 0 1 19 0v9" stroke-width="1.6" opacity="0.6"/><line x1="2" y1="20" x2="22" y2="20" stroke-width="2"/><rect x="5.5" y="6" width="13" height="12" rx="3" fill="#0284C7" fill-opacity="0.22"/><rect x="7.2" y="8" width="9.6" height="4.8" rx="1.5" fill="#0284C7"/><line x1="7.5" y1="15" x2="9.5" y2="15" stroke-width="2"/><line x1="14.5" y1="15" x2="16.5" y2="15" stroke-width="2"/></svg>
                     </div>
                     <div class="footer-card-info">
-                        <div class="footer-card-name">MRT สายสีน้ำเงิน</div>
+                        <div class="footer-card-name">MRT สายสีน้ำเงิน (เฉลิมรัชมงคล)</div>
                         <div class="footer-card-route">ท่าพระ ↔ หลักสอง</div>
                     </div>
                     <div class="footer-card-arrow">›</div>
                 </button>
-                <button type="button" class="footer-line-card" onclick="App.jumpToLine(102)" title="MRT สายสีม่วง (คลองบางไผ่ ↔ เตาปูน)" aria-label="MRT สายสีม่วง">
+                <button type="button" class="footer-line-card" onclick="App.jumpToLine(102)" title="MRT สายสีม่วง (ฉลองรัชธรรม) (คลองบางไผ่ ↔ เตาปูน)" aria-label="MRT สายสีม่วง (ฉลองรัชธรรม)">
                     <div class="footer-card-icon" style="background:rgba(138,44,155,0.12);border-color:rgba(138,44,155,0.3)">
                         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#8A2C9B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="2" y1="20" x2="22" y2="20" stroke-width="2"/><path d="M6 20l-2 3M18 20l2 3" stroke-width="1.8"/><rect x="5" y="5.5" width="14" height="13" rx="2.5" fill="#8A2C9B" fill-opacity="0.22"/><path d="M8.5 3h7v2.5h-7z" fill="#8A2C9B"/><path d="M7 8h10v4.5H7z" rx="1" fill="#8A2C9B"/><circle cx="8" cy="15" r="1.3" fill="#8A2C9B"/><circle cx="16" cy="15" r="1.3" fill="#8A2C9B"/><line x1="10.5" y1="15" x2="13.5" y2="15" stroke-width="1.5"/></svg>
                     </div>
                     <div class="footer-card-info">
-                        <div class="footer-card-name">MRT สายสีม่วง</div>
+                        <div class="footer-card-name">MRT สายสีม่วง (ฉลองรัชธรรม)</div>
                         <div class="footer-card-route">คลองบางไผ่ ↔ เตาปูน</div>
                     </div>
                     <div class="footer-card-arrow">›</div>
                 </button>
-                <button type="button" class="footer-line-card" onclick="App.jumpToLine(4)" title="MRT สายสีเหลือง (ลาดพร้าว ↔ สำโรง)" aria-label="MRT สายสีเหลือง">
+                <button type="button" class="footer-line-card" onclick="App.jumpToLine(4)" title="MRT สายสีเหลือง (นัคราพิพัฒน์) (ลาดพร้าว ↔ สำโรง)" aria-label="MRT สายสีเหลือง (นัคราพิพัฒน์)">
                     <div class="footer-card-icon" style="background:rgba(255,209,0,0.15);border-color:rgba(255,209,0,0.35)">
                         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#FFD100" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="18" x2="12" y2="22" stroke-width="3"/><rect x="9" y="14" width="6" height="5" rx="0.5" fill="#FFD100" fill-opacity="0.4"/><path d="M5 16V9c0-4 3.2-6 7-6s7 2 7 6v7c0 1-.8 1.5-2 1.5h-2c-.8 0-1-.5-1.2-1.2l-.6-2.3h-2.4l-.6 2.3c-.2.7-.4 1.2-1.2 1.2H7c-1.2 0-2-.5-2-1.5z" fill="#FFD100" fill-opacity="0.22"/><path d="M7 8c1.2-2.5 2.8-3.5 5-3.5s3.8 1 5 3.5v3.5H7V8z" fill="#FFD100"/><circle cx="7.5" cy="14" r="1.1" fill="#FFD100"/><circle cx="16.5" cy="14" r="1.1" fill="#FFD100"/></svg>
                     </div>
                     <div class="footer-card-info">
-                        <div class="footer-card-name">MRT สายสีเหลือง</div>
+                        <div class="footer-card-name">MRT สายสีเหลือง (นัคราพิพัฒน์)</div>
                         <div class="footer-card-route">ลาดพร้าว ↔ สำโรง</div>
                     </div>
                     <div class="footer-card-arrow">›</div>
                 </button>
-                <button type="button" class="footer-line-card" onclick="App.jumpToLine(5)" title="MRT สายสีชมพู (ศูนย์ราชการฯ ↔ มีนบุรี)" aria-label="MRT สายสีชมพู">
+                <button type="button" class="footer-line-card" onclick="App.jumpToLine(5)" title="MRT สายสีชมพู (วิวัฒน์นคร) (ศูนย์ราชการฯ ↔ มีนบุรี)" aria-label="MRT สายสีชมพู (วิวัฒน์นคร)">
                     <div class="footer-card-icon" style="background:rgba(236,72,153,0.12);border-color:rgba(236,72,153,0.3)">
                         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#EC4899" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="18" x2="12" y2="22" stroke-width="3"/><rect x="9" y="14" width="6" height="5" rx="0.5" fill="#EC4899" fill-opacity="0.4"/><path d="M5 16V9c0-4 3.2-6 7-6s7 2 7 6v7c0 1-.8 1.5-2 1.5h-2c-.8 0-1-.5-1.2-1.2l-.6-2.3h-2.4l-.6 2.3c-.2.7-.4 1.2-1.2 1.2H7c-1.2 0-2-.5-2-1.5z" fill="#EC4899" fill-opacity="0.22"/><path d="M7 8c1.2-2.5 2.8-3.5 5-3.5s3.8 1 5 3.5v3.5H7V8z" fill="#EC4899"/><circle cx="7.5" cy="14" r="1.1" fill="#EC4899"/><circle cx="16.5" cy="14" r="1.1" fill="#EC4899"/></svg>
                     </div>
                     <div class="footer-card-info">
-                        <div class="footer-card-name">MRT สายสีชมพู</div>
+                        <div class="footer-card-name">MRT สายสีชมพู (วิวัฒน์นคร)</div>
                         <div class="footer-card-route">ศูนย์ราชการฯ ↔ มีนบุรี</div>
                     </div>
                     <div class="footer-card-arrow">›</div>
                 </button>
-                <button type="button" class="footer-line-card" onclick="App.jumpToLine(103)" title="SRT สายสีแดงเข้ม (กรุงเทพอภิวัฒน์ ↔ รังสิต)" aria-label="SRT สายสีแดงเข้ม">
+                <button type="button" class="footer-line-card" onclick="App.jumpToLine(103)" title="SRT สายสีแดงเข้ม (ธานีรัถยา) (กรุงเทพอภิวัฒน์ ↔ รังสิต)" aria-label="SRT สายสีแดงเข้ม (ธานีรัถยา)">
                     <div class="footer-card-icon" style="background:rgba(185,28,28,0.12);border-color:rgba(185,28,28,0.3)">
                         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#B91C1C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l-3.5 3.5h7L12 2m0 3.5v2" stroke-width="1.5"/><path d="M5 7.5h14c1 0 1.5.5 1.5 1.8v7.4c0 1-.5 1.5-1.5 1.5H5c-1 0-1.5-.5-1.5-1.5V9.3c0-1.3.5-1.8 1.5-1.8z" fill="#B91C1C" fill-opacity="0.22"/><rect x="6.5" y="9.5" width="11" height="4" rx="1" fill="#B91C1C"/><circle cx="8" cy="15.2" r="1.3" fill="#B91C1C"/><circle cx="16" cy="15.2" r="1.3" fill="#B91C1C"/><line x1="2" y1="21" x2="22" y2="21" stroke-width="2"/><line x1="6" y1="18.2" x2="18" y2="18.2" stroke-width="1.5" opacity="0.6"/></svg>
                     </div>
                     <div class="footer-card-info">
-                        <div class="footer-card-name">SRT สายสีแดงเข้ม</div>
+                        <div class="footer-card-name">SRT สายสีแดงเข้ม (ธานีรัถยา)</div>
                         <div class="footer-card-route">กรุงเทพอภิวัฒน์ ↔ รังสิต</div>
                     </div>
                     <div class="footer-card-arrow">›</div>
                 </button>
-                <button type="button" class="footer-line-card" onclick="App.jumpToLine(105)" title="SRT สายสีแดงอ่อน (กรุงเทพอภิวัฒน์ ↔ ตลิ่งชัน)" aria-label="SRT สายสีแดงอ่อน">
+                <button type="button" class="footer-line-card" onclick="App.jumpToLine(105)" title="SRT สายสีแดงอ่อน (นครวิถี) (กรุงเทพอภิวัฒน์ ↔ ตลิ่งชัน)" aria-label="SRT สายสีแดงอ่อน (นครวิถี)">
                     <div class="footer-card-icon" style="background:rgba(248,113,113,0.15);border-color:rgba(248,113,113,0.35)">
                         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#F87171" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2.5l5 2.5h-5" stroke-width="1.5" stroke-linecap="round"/><line x1="10.5" y1="5" x2="10.5" y2="7.5" stroke-width="1.5"/><path d="M5 7.5h14c1 0 1.5.5 1.5 1.8v7.4c0 1-.5 1.5-1.5 1.5H5c-1 0-1.5-.5-1.5-1.5V9.3c0-1.3.5-1.8 1.5-1.8z" fill="#F87171" fill-opacity="0.28"/><path d="M7 9.5h10v4H7z" rx="1" fill="#F87171"/><circle cx="8" cy="15.2" r="1.3" fill="#F87171"/><circle cx="16" cy="15.2" r="1.3" fill="#F87171"/><line x1="2" y1="21" x2="22" y2="21" stroke-width="2"/><line x1="6" y1="18.2" x2="18" y2="18.2" stroke-width="1.5" opacity="0.6"/></svg>
                     </div>
                     <div class="footer-card-info">
-                        <div class="footer-card-name">SRT สายสีแดงอ่อน</div>
+                        <div class="footer-card-name">SRT สายสีแดงอ่อน (นครวิถี)</div>
                         <div class="footer-card-route">กรุงเทพอภิวัฒน์ ↔ ตลิ่งชัน</div>
                     </div>
                     <div class="footer-card-arrow">›</div>

@@ -6,7 +6,7 @@
 | เอกสาร | รายละเอียด |
 | :--- | :--- |
 | **ชื่อผลิตภัณฑ์** | **BKK SKYTRAINs** (Bangkok SkyTrains & Mass Transit Companion) |
-| **เวอร์ชันเอกสาร** | 1.3.2 (Production Release) |
+| **เวอร์ชันเอกสาร** | 1.3.3 (Production Release) |
 | **สถานะ** | Active / Production |
 | **แพลตฟอร์มที่รองรับ** | Progressive Web App (PWA), Android (Native Hybrid APK), iOS (Native Hybrid IPA) |
 | **กลุ่มเป้าหมาย** | ผู้โดยสารรถไฟฟ้าในกรุงเทพฯ และปริมณฑล (คนไทย, ชาวต่างชาติ, นักท่องเที่ยว) |
@@ -140,7 +140,8 @@ flowchart TD
   - MRT สายสีชมพู (Pink Monorail - LineId: 5)
   - MRT สายสีน้ำเงิน (Blue Ring Line - LineId: 101)
   - MRT สายสีม่วง (Purple Line - LineId: 102)
-  - SRTET สายสีแดงเข้ม/แดงอ่อน (Thani Ratthaya & Nakhon Withi - LineId: 103)
+  - SRTET สายสีแดงเข้ม (ธานีรัถยา - Dark Red - LineId: 103, #B91C1C)
+  - SRTET สายสีแดงอ่อน (นครวิถี - Light Red - LineId: 105, #F87171)
   - ARL รถไฟฟ้าแอร์พอร์ต เรล ลิงก์ (Airport Rail Link - LineId: 104)
 - **FR-3.2:** ผู้ใช้สามารถแตะเลือกสถานีใดๆ บนผังเพื่อเปิดแผ่นข้อมูลรายละเอียด (Station Bottom Sheet) ได้ทันที
 - **FR-3.3 (Mandatory Icon Standard):** ทุกจุดที่แสดงสัญลักษณ์สายสี ต้องใช้ไอคอนรูปรถไฟเฉพาะประจำสายสีผ่าน `getLineIconSvg(lineId)` ห้ามใช้จุดกลมหรือไอคอนรถไฟทั่วไปเด็ดขาด
@@ -211,7 +212,8 @@ flowchart TD
 --mrt-purple    : #8A2C9B;  /* สายสีม่วง */
 --mrt-yellow    : #EDAC15;  /* สายสีเหลือง */
 --mrt-pink      : #F06595;  /* สายสีชมพู */
---srt-red       : #C21E25;  /* สายสีแดง (ธานีรัถยา / นครวิถี) */
+--srt-dark-red  : #B91C1C;  /* สายสีแดงเข้ม (ธานีรัถยา) */
+--srt-light-red : #F87171;  /* สายสีแดงอ่อน (นครวิถี) */
 --arl           : #A11B22;  /* แอร์พอร์ต เรล ลิงก์ */
 ```
 
@@ -247,13 +249,12 @@ flowchart LR
 
 ## 8. แผนการพัฒนาในอนาคต (Product Roadmap)
 
-- **v1.3.2 (Completed / Current Production Release):**
-  - ปรับปรุงชิประยะทางสถานีใกล้เคียงพร้อมสถานะถึงสถานี (.at-station) และแบดจ์แสดงผลความแม่นยำสูง
-  - ระบบจัดตำแหน่งกึ่งกลางอัตโนมัติ (Centering auto-scroll) สำหรับสถานีใกล้เคียงที่เลือกในแถบสถานีทางเลือก
-  - ปรับปรุงประสิทธิภาพการอัปเดตแท็บสายรถไฟฟ้าในหน้าหลักแบบ In-Place DOM
-  - อัปเกรด Service Worker แคชเป็นเวอร์ชัน `bts-v33`
-  - อัปเดตตัวติดตั้ง Android APK รุ่นล่าสุดและ SHA-256 Checksum (`9ECBCE3F...`)
-  - ระบบ Automated iOS & Android CI/CD Workflow (`.github/workflows/build_ios.yml`) คอมไพล์และสร้างตัวติดตั้ง `.ipa` ทั้ง `BKK_SkyTrains_iOS_latest.ipa` และ `BKK_SkyTrains_iOS_v1.3.2.ipa` พร้อม SHA-256 Checksum และเผยแพร่อัตโนมัติบน GitHub Releases
+- **v1.3.3 (Completed / Current Production Release):**
+  - มาตรฐานการจัดองค์ประกอบกึ่งกลางกรอบข้อความและสัญลักษณ์ (Project Element Centering Standard) ทั้ง Station Code, Theme Button, Line Icons, Badges
+  - แยกข้อมูลการแสดงผลสายสีแดงเข้ม (SRT Dark Red 103) และสายสีแดงอ่อน (SRT Light Red 105) ในโมเดลและหน้าจอแอป Flutter
+  - อัปเกรด Service Worker แคชเป็นเวอร์ชัน `bts-v48`
+  - อัปเดตตัวติดตั้ง Android APK รุ่นล่าสุดและ SHA-256 Checksum (`563D2F67...`)
+  - ระบบ Automated iOS & Android CI/CD Workflow (`.github/workflows/build_ios.yml`) คอมไพล์และสร้างตัวติดตั้ง `.ipa` ทั้ง `BKK_SkyTrains_iOS_latest.ipa` และ `BKK_SkyTrains_iOS_v1.3.3.ipa` พร้อม SHA-256 Checksum และเผยแพร่อัตโนมัติบน GitHub Releases
 - **v1.4.0 (Future Roadmap):**
   - ระบบแจ้งเตือนแบบพุช (Push Notifications) แจ้งเตือนเมื่อใกล้ถึงสถานีปลายทาง
   - แผนที่สามมิติ (3D Station Concourse & Platform Map) สำหรับสถานีขนาดใหญ่ (เช่น สยาม, อโศก, บางซื่อ)

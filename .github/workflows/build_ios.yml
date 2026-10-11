@@ -8,7 +8,7 @@ on:
         type: boolean
         default: true
       custom_tag:
-        description: 'Custom tag name (optional, e.g. v1.3.2)'
+        description: 'Custom tag name (optional, e.g. v1.3.3)'
         required: false
         type: string
         default: ''

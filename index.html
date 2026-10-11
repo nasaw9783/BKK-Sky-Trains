@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="theme-color" content="#0f172a">
     <title>BKK SKYTRAINs | เช็คเวลารถไฟฟ้า BTS แบบ RealTime</title>
     <meta name="description"
@@ -124,6 +124,19 @@
             --rose-bg: rgba(239, 68, 68, 0.09);
             --purple: #8b5cf6;
             --purple-bg: rgba(139, 92, 246, 0.09);
+
+            /* Map Blueprint Theme (Light) */
+            --map-canvas-bg: #f8fafc;
+            --map-line-casing: #ffffff;
+            --map-label-color: #0f172a;
+            --map-label-halo: rgba(248, 250, 252, 0.95);
+            --map-node-bg: #ffffff;
+            --map-node-text: #0f172a;
+            --map-node-outer: #ffffff;
+            --map-interchange-link: #64748b;
+            --map-river-stream: #38bdf8;
+            --map-river-glow: rgba(56, 189, 248, 0.18);
+            --map-grid-dot: rgba(148, 163, 184, 0.22);
             
             /* Shape Geometry */
             --radius-xs: 6px;
@@ -180,6 +193,19 @@
             --rose-bg: rgba(248, 113, 113, 0.15);
             --purple: #a78bfa;
             --purple-bg: rgba(167, 139, 250, 0.15);
+
+            /* Map Blueprint Theme (Dark) */
+            --map-canvas-bg: #090e17;
+            --map-line-casing: #090e17;
+            --map-label-color: #f1f5f9;
+            --map-label-halo: rgba(9, 14, 23, 0.96);
+            --map-node-bg: #090e17;
+            --map-node-text: #ffffff;
+            --map-node-outer: #0f172a;
+            --map-interchange-link: #475569;
+            --map-river-stream: #0284c7;
+            --map-river-glow: rgba(2, 132, 199, 0.18);
+            --map-grid-dot: rgba(71, 85, 105, 0.32);
             
             --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
             --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.35);
@@ -220,20 +246,17 @@
             max-width: 100vw;
         }
 
-        /* Elegant Modern Scrollbars */
+        /* ================= REMOVE ALL SCROLLBARS (UP-DOWN & LEFT-RIGHT) ================= */
+        * {
+            scrollbar-width: none !important;
+            -ms-overflow-style: none !important;
+        }
+        *::-webkit-scrollbar,
         ::-webkit-scrollbar {
-            width: 5px;
-            height: 5px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(148, 163, 184, 0.35);
-            border-radius: var(--radius-full);
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(148, 163, 184, 0.65);
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
+            background: transparent !important;
         }
 
         body {
@@ -247,6 +270,19 @@
             -moz-osx-font-smoothing: grayscale;
             text-rendering: optimizeLegibility;
             background-image: radial-gradient(at 50% 0%, rgba(16, 185, 129, 0.04) 0%, transparent 65%);
+            scrollbar-width: none !important;
+            -ms-overflow-style: none !important;
+            touch-action: pan-y;
+            -webkit-text-size-adjust: 100%;
+        }
+
+        /* อนุญาตให้ Zoom และ Pan บนผังโครงข่ายรถไฟฟ้า 10 สาย */
+        #viewMap,
+        .map-card,
+        .map-viewport,
+        #networkMapContainer,
+        #networkMapContainer svg {
+            touch-action: none !important;
         }
 
         html.dark body {
@@ -2630,18 +2666,23 @@
         .map-viewport {
             width: 100%;
             height: 480px;
-            background: radial-gradient(rgba(148, 163, 184, 0.25) 1px, transparent 1px);
-            background-size: 18px 18px;
+            background-color: var(--map-canvas-bg, #f8fafc);
+            background-image: radial-gradient(var(--map-grid-dot, rgba(148, 163, 184, 0.22)) 1px, transparent 1px);
+            background-size: 20px 20px;
             overflow: auto;
             position: relative;
             cursor: grab;
             user-select: none;
             -webkit-user-select: none;
+            border-radius: 14px;
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.04);
+            scroll-behavior: auto !important;
         }
 
         html.dark .map-viewport {
-            background-color: #0b1322;
-            background-image: radial-gradient(rgba(71, 85, 105, 0.45) 1px, transparent 1px);
+            background-color: var(--map-canvas-bg, #090e17);
+            background-image: radial-gradient(var(--map-grid-dot, rgba(71, 85, 105, 0.32)) 1px, transparent 1px);
+            box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.4);
         }
 
         .map-viewport svg {
@@ -2652,32 +2693,52 @@
             display: block;
         }
 
-        .map-node {
-            cursor: pointer;
-            transition: r 0.2s ease, stroke-width 0.2s ease;
+        .map-viewport:active {
+            cursor: grabbing;
         }
 
-        .map-node:hover {
-            r: 8.5;
-            stroke-width: 4;
+        .map-node {
+            cursor: pointer;
+            transition: stroke-width 0.18s ease, filter 0.18s ease;
+        }
+
+        .map-node-group {
+            cursor: pointer;
+            transition: opacity 0.18s ease, filter 0.18s ease;
+        }
+
+        .map-node-group:hover {
+            filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.35));
+        }
+
+        .map-node-group:hover .map-node {
+            stroke-width: 3.2px;
         }
 
         .map-label {
+            font-family: var(--font-main);
             font-size: 8.5px;
-            font-weight: 700;
-            fill: #0f172a;
+            font-weight: 600;
+            fill: var(--map-label-color, #0f172a);
             cursor: pointer;
             pointer-events: all;
             user-select: none;
             paint-order: stroke fill;
-            stroke: rgba(255, 255, 255, 0.92);
-            stroke-width: 2.5px;
+            stroke: var(--map-label-halo, rgba(248, 250, 252, 0.95));
+            stroke-width: 3.2px;
+            stroke-linecap: round;
             stroke-linejoin: round;
+            letter-spacing: -0.1px;
+            transition: font-weight 0.15s ease;
+        }
+
+        .map-node-group:hover .map-label {
+            font-weight: 700;
         }
 
         html.dark .map-label {
-            fill: #f8fafc;
-            stroke: rgba(11, 19, 34, 0.92);
+            fill: var(--map-label-color, #f8fafc);
+            stroke: var(--map-label-halo, rgba(9, 14, 23, 0.96));
         }
 
         html.dark .map-legend rect {
@@ -2687,6 +2748,180 @@
 
         html.dark .map-legend text {
             fill: #e2e8f0;
+        }
+
+        /* ===== Floating Transit Lines Legend Modal (เปิด-ปิด ไม่บดบังสถานีบนแผนที่) ===== */
+        .map-legend-sheet {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: rgba(15, 23, 42, 0.68);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            box-sizing: border-box;
+            opacity: 0;
+            transition: opacity 0.22s ease;
+        }
+
+        .map-legend-sheet.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .map-legend-box {
+            background: var(--card, #1e293b);
+            border: 1px solid var(--line, rgba(255, 255, 255, 0.12));
+            border-radius: 18px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.45);
+            padding: 16px 18px;
+            box-sizing: border-box;
+            animation: legendBoxIn 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes legendBoxIn {
+            from { transform: scale(0.92) translateY(14px); opacity: 0; }
+            to { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        .map-legend-box-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .map-legend-box-title {
+            font-size: 13.5px;
+            font-weight: 800;
+            color: var(--ink);
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .map-legend-box-close {
+            background: var(--bg-subtle, rgba(255, 255, 255, 0.08));
+            border: 1px solid var(--line);
+            color: var(--muted);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            transition: all var(--transition-fast);
+        }
+
+        .map-legend-box-close:hover {
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.12);
+            border-color: #ef4444;
+        }
+
+        .map-legend-cols {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px 14px;
+            margin-bottom: 14px;
+        }
+
+        .legend-line-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11.5px;
+            font-weight: 700;
+            color: var(--ink);
+            min-width: 0;
+            line-height: 1.3;
+        }
+
+        .legend-bar {
+            width: 20px;
+            height: 5.5px;
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+
+        .legend-txt {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .map-legend-box-foot {
+            border-top: 1px dashed var(--line);
+            padding-top: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 7px;
+            font-size: 10.5px;
+            font-weight: 600;
+            color: var(--muted);
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .legend-sub-item {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 8px;
+            width: 100%;
+            box-sizing: border-box;
+            line-height: 1;
+        }
+
+        .legend-inter-node {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            flex-shrink: 0;
+        }
+
+        .legend-inter-node .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 2px solid #334155;
+            box-sizing: border-box;
+        }
+
+        .legend-inter-node .line {
+            width: 8px;
+            height: 3px;
+            background: #64748b;
+            border-radius: 2px;
+        }
+
+        .legend-plane {
+            color: #0284c7;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .legend-tip-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 2px;
+            background: #7AB420;
+            flex-shrink: 0;
         }
 
         /* ===== Map Hint Card ===== */
@@ -4227,21 +4462,57 @@
             gap: 6px;
         }
 
-        .footer-systems-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 8px;
+        /* ===== Footer 10 Lines Single-Line Smooth Slider ===== */
+        .footer-slider-wrapper {
             width: 100%;
-            max-width: 360px;
-            margin: 0 auto;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scrollbar-width: none !important;
+            -ms-overflow-style: none !important;
+            -webkit-overflow-scrolling: touch;
+            padding: 4px 0 8px 0;
+            margin-bottom: 12px;
             box-sizing: border-box;
+            position: relative;
+            mask-image: linear-gradient(to right, transparent, black 3%, black 97%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 3%, black 97%, transparent);
+        }
+
+        .footer-slider-wrapper::-webkit-scrollbar {
+            display: none !important;
+            width: 0 !important;
+            height: 0 !important;
+        }
+
+        .footer-slider-track {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            gap: 10px;
+            width: max-content;
+            animation: footerSlideLeft 42s linear infinite;
+        }
+
+        .footer-slider-track:hover,
+        .footer-slider-track:active {
+            animation-play-state: paused;
+        }
+
+        @keyframes footerSlideLeft {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
         }
 
         .footer-line-card {
-            display: flex;
+            display: inline-flex;
+            flex-direction: row;
             align-items: center;
-            gap: 7px;
-            padding: 6px 9px;
+            gap: 8px;
+            padding: 6px 12px;
             border-radius: var(--radius-sm, 10px);
             background: var(--card);
             border: 1px solid var(--line);
@@ -4252,10 +4523,13 @@
             -webkit-tap-highlight-color: transparent;
             outline: none;
             text-align: left;
-            min-width: 0;
-            width: 100%;
+            flex: 0 0 auto;
+            width: auto;
+            min-width: max-content;
             box-sizing: border-box;
             font-family: inherit;
+            height: 38px;
+            min-height: 38px;
         }
 
         .footer-line-card:hover {
@@ -4274,47 +4548,49 @@
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
-            width: 28px;
-            height: 28px;
+            width: 26px;
+            height: 26px;
             border-radius: 7px;
             border: 1px solid transparent;
         }
 
         .footer-card-info {
-            flex: 1;
-            min-width: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 1px;
+            display: inline-flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+            min-width: max-content;
+            line-height: 1.2;
         }
 
         .footer-card-name {
-            font-size: 11px;
+            font-size: 11.5px;
             font-weight: 700;
             color: var(--ink);
             white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            line-height: 1.25;
+        }
+
+        .footer-card-dot {
+            font-size: 11px;
+            color: var(--muted);
+            opacity: 0.6;
+            margin: 0 1px;
         }
 
         .footer-card-route {
-            font-size: 9px;
-            font-weight: 500;
+            font-size: 10.5px;
+            font-weight: 600;
             color: var(--muted);
             white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            line-height: 1.2;
         }
 
         .footer-card-arrow {
             flex-shrink: 0;
-            font-size: 13px;
+            font-size: 12px;
             color: var(--muted);
             opacity: 0.55;
-            margin-left: auto;
-            font-weight: 600;
+            margin-left: 2px;
         }
 
         /* ===== Journey Planner Quick Hubs Grid ===== */
@@ -4933,6 +5209,39 @@
                 <span class="map-hint-icon"><svg class="ui-ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span>
                 <div class="map-hint-body"><span class="map-hint-phrase"><b>วิธีใช้งาน:</b> แตะที่จุดสถานีใดๆ บนแผนผัง</span> <span class="map-hint-phrase">เพื่อเลือกเป็น <b>สถานีต้นทาง</b>,</span> <span class="map-hint-phrase"><b>สถานีปลายทาง</b></span> <span class="map-hint-phrase">หรือดู <b>ข้อมูลทางออก</b> ได้ทันที</span></div>
             </div>
+            <!-- Floating Transit Lines Legend Modal (เปิด-ปิด ไม่บดบังสถานีบนแผนที่) -->
+            <div class="map-legend-sheet" id="mapLegendSheet" onclick="if(event.target===this)App.toggleMapLegend()">
+                <div class="map-legend-box">
+                    <div class="map-legend-box-head">
+                        <div class="map-legend-box-title">
+                            <svg class="ui-ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                            <span id="mapLegendSheetTitle">สัญลักษณ์สายรถไฟฟ้า (Transit Lines)</span>
+                        </div>
+                        <button type="button" class="map-legend-box-close" onclick="App.toggleMapLegend()" aria-label="ปิด">✕</button>
+                    </div>
+                    <div class="map-legend-cols">
+                        <div class="map-legend-col">
+                            <div class="legend-line-row"><span class="legend-bar" style="background:#7AB420"></span> <span class="legend-txt" id="legTxt1">สายสุขุมวิท</span></div>
+                            <div class="legend-line-row"><span class="legend-bar" style="background:#00807D"></span> <span class="legend-txt" id="legTxt2">สายสีลม</span></div>
+                            <div class="legend-line-row"><span class="legend-bar" style="background:#B89D18"></span> <span class="legend-txt" id="legTxt3">สายสีทอง</span></div>
+                            <div class="legend-line-row"><span class="legend-bar" style="background:#0284C7"></span> <span class="legend-txt" id="legTxt4">สายสีน้ำเงิน (เฉลิมรัชมงคล)</span></div>
+                            <div class="legend-line-row"><span class="legend-bar" style="background:#8A2C9B"></span> <span class="legend-txt" id="legTxt5">สายสีม่วง (ฉลองรัชธรรม)</span></div>
+                        </div>
+                        <div class="map-legend-col">
+                            <div class="legend-line-row"><span class="legend-bar" style="background:#EC4899"></span> <span class="legend-txt" id="legTxt6">สายสีชมพู (วิวัฒน์นคร)</span></div>
+                            <div class="legend-line-row"><span class="legend-bar" style="background:#EAB308"></span> <span class="legend-txt" id="legTxt7">สายสีเหลือง (นัคราพิพัฒน์)</span></div>
+                            <div class="legend-line-row"><span class="legend-bar" style="background:#B91C1C"></span> <span class="legend-txt" id="legTxt8">สายสีแดงเข้ม (ธานีรัถยา)</span></div>
+                            <div class="legend-line-row"><span class="legend-bar" style="background:#F87171"></span> <span class="legend-txt" id="legTxt9">สายสีแดงอ่อน (นครวิถี)</span></div>
+                            <div class="legend-line-row"><span class="legend-bar" style="background:#8A1538"></span> <span class="legend-txt" id="legTxt10">แอร์พอร์ต ลิงก์</span></div>
+                        </div>
+                    </div>
+                    <div class="map-legend-box-foot">
+                        <div class="legend-sub-item"><span class="legend-inter-node"><span class="dot"></span><span class="line"></span><span class="dot"></span></span> <span id="legTxtInter">จุดเชื่อมต่อข้ามสาย (Interchange)</span></div>
+                        <div class="legend-sub-item"><span class="legend-plane">✈</span> <span id="legTxtAirport">เชื่อมต่อท่าอากาศยาน (สนามบิน)</span></div>
+                        <div class="legend-sub-item"><span class="legend-tip-dot"></span> <span id="legTxtTap">แตะที่สถานีเพื่อเลือกเป็นจุดเริ่มต้น/ปลายทาง</span></div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- ===== VIEW 3: JOURNEY PLANNER (ระบบวางแผนเดินทางเต็มรูปแบบ) ===== -->
@@ -5004,107 +5313,232 @@
 
         <footer id="footerNote">
             <div class="footer-systems-title"><span class="footer-title-icon-pill"><svg class="ui-ic ui-ic-train" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="16" height="15" x="4" y="3" rx="3.5"/><path d="M4 10.5h16"/><path d="M12 3v7.5"/><path d="m8 18-3 3"/><path d="m16 18 3 3"/><circle cx="8" cy="14.5" r="1.2" fill="#10b981"/><circle cx="16" cy="14.5" r="1.2" fill="#10b981"/></svg></span> <span>โครงข่ายระบบรถไฟฟ้า 10 สายที่เชื่อมต่อข้อมูลในระบบ</span></div>
-            <div class="footer-systems-grid">
-                <button type="button" class="footer-line-card" onclick="App.jumpToLine(1)" title="BTS สายสุขุมวิท (คูคต ↔ เคหะฯ)" aria-label="BTS สายสุขุมวิท">
-                    <div class="footer-card-icon" style="background:rgba(122,180,32,0.12);border-color:rgba(122,180,32,0.3)">
-                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#7AB420" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 21h20M6 21v-3M18 21v-3" stroke-width="2"/><rect x="4" y="3" width="16" height="15" rx="3.5" fill="#7AB420" fill-opacity="0.22"/><path d="M6 7.5h12c0 2.2-1 4.5-6 4.5s-6-2.3-6-4.5z" fill="#7AB420"/><circle cx="7.5" cy="15" r="1.3" fill="#7AB420"/><circle cx="16.5" cy="15" r="1.3" fill="#7AB420"/><line x1="9" y1="5.2" x2="15" y2="5.2" stroke-width="1.6"/></svg>
-                    </div>
-                    <div class="footer-card-info">
-                        <div class="footer-card-name">BTS สายสุขุมวิท</div>
-                        <div class="footer-card-route">คูคต ↔ เคหะฯ</div>
-                    </div>
-                    <div class="footer-card-arrow">›</div>
-                </button>
-                <button type="button" class="footer-line-card" onclick="App.jumpToLine(2)" title="BTS สายสีลม (สนามกีฬาฯ ↔ บางหว้า)" aria-label="BTS สายสีลม">
-                    <div class="footer-card-icon" style="background:rgba(0,128,125,0.12);border-color:rgba(0,128,125,0.3)">
-                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#00807D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 21h20M6 21v-3M18 21v-3" stroke-width="2"/><rect x="4" y="3" width="16" height="15" rx="3.5" fill="#00807D" fill-opacity="0.22"/><path d="M6 7.5h12c0 2.2-1 4.5-6 4.5s-6-2.3-6-4.5z" fill="#00807D"/><circle cx="7.5" cy="15" r="1.3" fill="#00807D"/><circle cx="16.5" cy="15" r="1.3" fill="#00807D"/><line x1="9" y1="5.2" x2="15" y2="5.2" stroke-width="1.6"/></svg>
-                    </div>
-                    <div class="footer-card-info">
-                        <div class="footer-card-name">BTS สายสีลม</div>
-                        <div class="footer-card-route">สนามกีฬาฯ ↔ บางหว้า</div>
-                    </div>
-                    <div class="footer-card-arrow">›</div>
-                </button>
-                <button type="button" class="footer-line-card" onclick="App.jumpToLine(3)" title="APM สายสีทอง (กรุงธนบุรี ↔ คลองสาน)" aria-label="APM สายสีทอง">
-                    <div class="footer-card-icon" style="background:rgba(201,160,56,0.12);border-color:rgba(201,160,56,0.3)">
-                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#C9A038" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="21" x2="21" y2="21" stroke-width="2"/><rect x="9.5" y="18" width="5" height="3" rx="0.5" fill="#C9A038"/><rect x="4.5" y="3.5" width="15" height="14.5" rx="5" fill="#C9A038" fill-opacity="0.22"/><rect x="6.5" y="6" width="11" height="7.5" rx="3" fill="#C9A038"/><circle cx="7.5" cy="15.5" r="1.3" fill="#C9A038"/><circle cx="16.5" cy="15.5" r="1.3" fill="#C9A038"/></svg>
-                    </div>
-                    <div class="footer-card-info">
-                        <div class="footer-card-name">APM สายสีทอง</div>
-                        <div class="footer-card-route">กรุงธนบุรี ↔ คลองสาน</div>
-                    </div>
-                    <div class="footer-card-arrow">›</div>
-                </button>
-                <button type="button" class="footer-line-card" onclick="App.jumpToLine(101)" title="MRT สายสีน้ำเงิน (เฉลิมรัชมงคล) (ท่าพระ ↔ หลักสอง)" aria-label="MRT สายสีน้ำเงิน (เฉลิมรัชมงคล)">
-                    <div class="footer-card-icon" style="background:rgba(2,132,199,0.12);border-color:rgba(2,132,199,0.3)">
-                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#0284C7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 20V11a9.5 9.5 0 0 1 19 0v9" stroke-width="1.6" opacity="0.6"/><line x1="2" y1="20" x2="22" y2="20" stroke-width="2"/><rect x="5.5" y="6" width="13" height="12" rx="3" fill="#0284C7" fill-opacity="0.22"/><rect x="7.2" y="8" width="9.6" height="4.8" rx="1.5" fill="#0284C7"/><line x1="7.5" y1="15" x2="9.5" y2="15" stroke-width="2"/><line x1="14.5" y1="15" x2="16.5" y2="15" stroke-width="2"/></svg>
-                    </div>
-                    <div class="footer-card-info">
-                        <div class="footer-card-name">MRT สายสีน้ำเงิน (เฉลิมรัชมงคล)</div>
-                        <div class="footer-card-route">ท่าพระ ↔ หลักสอง</div>
-                    </div>
-                    <div class="footer-card-arrow">›</div>
-                </button>
-                <button type="button" class="footer-line-card" onclick="App.jumpToLine(102)" title="MRT สายสีม่วง (ฉลองรัชธรรม) (คลองบางไผ่ ↔ เตาปูน)" aria-label="MRT สายสีม่วง (ฉลองรัชธรรม)">
-                    <div class="footer-card-icon" style="background:rgba(138,44,155,0.12);border-color:rgba(138,44,155,0.3)">
-                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#8A2C9B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="2" y1="20" x2="22" y2="20" stroke-width="2"/><path d="M6 20l-2 3M18 20l2 3" stroke-width="1.8"/><rect x="5" y="5.5" width="14" height="13" rx="2.5" fill="#8A2C9B" fill-opacity="0.22"/><path d="M8.5 3h7v2.5h-7z" fill="#8A2C9B"/><path d="M7 8h10v4.5H7z" rx="1" fill="#8A2C9B"/><circle cx="8" cy="15" r="1.3" fill="#8A2C9B"/><circle cx="16" cy="15" r="1.3" fill="#8A2C9B"/><line x1="10.5" y1="15" x2="13.5" y2="15" stroke-width="1.5"/></svg>
-                    </div>
-                    <div class="footer-card-info">
-                        <div class="footer-card-name">MRT สายสีม่วง (ฉลองรัชธรรม)</div>
-                        <div class="footer-card-route">คลองบางไผ่ ↔ เตาปูน</div>
-                    </div>
-                    <div class="footer-card-arrow">›</div>
-                </button>
-                <button type="button" class="footer-line-card" onclick="App.jumpToLine(4)" title="MRT สายสีเหลือง (นัคราพิพัฒน์) (ลาดพร้าว ↔ สำโรง)" aria-label="MRT สายสีเหลือง (นัคราพิพัฒน์)">
-                    <div class="footer-card-icon" style="background:rgba(255,209,0,0.15);border-color:rgba(255,209,0,0.35)">
-                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#FFD100" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="18" x2="12" y2="22" stroke-width="3"/><rect x="9" y="14" width="6" height="5" rx="0.5" fill="#FFD100" fill-opacity="0.4"/><path d="M5 16V9c0-4 3.2-6 7-6s7 2 7 6v7c0 1-.8 1.5-2 1.5h-2c-.8 0-1-.5-1.2-1.2l-.6-2.3h-2.4l-.6 2.3c-.2.7-.4 1.2-1.2 1.2H7c-1.2 0-2-.5-2-1.5z" fill="#FFD100" fill-opacity="0.22"/><path d="M7 8c1.2-2.5 2.8-3.5 5-3.5s3.8 1 5 3.5v3.5H7V8z" fill="#FFD100"/><circle cx="7.5" cy="14" r="1.1" fill="#FFD100"/><circle cx="16.5" cy="14" r="1.1" fill="#FFD100"/></svg>
-                    </div>
-                    <div class="footer-card-info">
-                        <div class="footer-card-name">MRT สายสีเหลือง (นัคราพิพัฒน์)</div>
-                        <div class="footer-card-route">ลาดพร้าว ↔ สำโรง</div>
-                    </div>
-                    <div class="footer-card-arrow">›</div>
-                </button>
-                <button type="button" class="footer-line-card" onclick="App.jumpToLine(5)" title="MRT สายสีชมพู (วิวัฒน์นคร) (ศูนย์ราชการฯ ↔ มีนบุรี)" aria-label="MRT สายสีชมพู (วิวัฒน์นคร)">
-                    <div class="footer-card-icon" style="background:rgba(236,72,153,0.12);border-color:rgba(236,72,153,0.3)">
-                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#EC4899" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="18" x2="12" y2="22" stroke-width="3"/><rect x="9" y="14" width="6" height="5" rx="0.5" fill="#EC4899" fill-opacity="0.4"/><path d="M5 16V9c0-4 3.2-6 7-6s7 2 7 6v7c0 1-.8 1.5-2 1.5h-2c-.8 0-1-.5-1.2-1.2l-.6-2.3h-2.4l-.6 2.3c-.2.7-.4 1.2-1.2 1.2H7c-1.2 0-2-.5-2-1.5z" fill="#EC4899" fill-opacity="0.22"/><path d="M7 8c1.2-2.5 2.8-3.5 5-3.5s3.8 1 5 3.5v3.5H7V8z" fill="#EC4899"/><circle cx="7.5" cy="14" r="1.1" fill="#EC4899"/><circle cx="16.5" cy="14" r="1.1" fill="#EC4899"/></svg>
-                    </div>
-                    <div class="footer-card-info">
-                        <div class="footer-card-name">MRT สายสีชมพู (วิวัฒน์นคร)</div>
-                        <div class="footer-card-route">ศูนย์ราชการฯ ↔ มีนบุรี</div>
-                    </div>
-                    <div class="footer-card-arrow">›</div>
-                </button>
-                <button type="button" class="footer-line-card" onclick="App.jumpToLine(103)" title="SRT สายสีแดงเข้ม (ธานีรัถยา) (กรุงเทพอภิวัฒน์ ↔ รังสิต)" aria-label="SRT สายสีแดงเข้ม (ธานีรัถยา)">
-                    <div class="footer-card-icon" style="background:rgba(185,28,28,0.12);border-color:rgba(185,28,28,0.3)">
-                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#B91C1C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l-3.5 3.5h7L12 2m0 3.5v2" stroke-width="1.5"/><path d="M5 7.5h14c1 0 1.5.5 1.5 1.8v7.4c0 1-.5 1.5-1.5 1.5H5c-1 0-1.5-.5-1.5-1.5V9.3c0-1.3.5-1.8 1.5-1.8z" fill="#B91C1C" fill-opacity="0.22"/><rect x="6.5" y="9.5" width="11" height="4" rx="1" fill="#B91C1C"/><circle cx="8" cy="15.2" r="1.3" fill="#B91C1C"/><circle cx="16" cy="15.2" r="1.3" fill="#B91C1C"/><line x1="2" y1="21" x2="22" y2="21" stroke-width="2"/><line x1="6" y1="18.2" x2="18" y2="18.2" stroke-width="1.5" opacity="0.6"/></svg>
-                    </div>
-                    <div class="footer-card-info">
-                        <div class="footer-card-name">SRT สายสีแดงเข้ม (ธานีรัถยา)</div>
-                        <div class="footer-card-route">กรุงเทพอภิวัฒน์ ↔ รังสิต</div>
-                    </div>
-                    <div class="footer-card-arrow">›</div>
-                </button>
-                <button type="button" class="footer-line-card" onclick="App.jumpToLine(105)" title="SRT สายสีแดงอ่อน (นครวิถี) (กรุงเทพอภิวัฒน์ ↔ ตลิ่งชัน)" aria-label="SRT สายสีแดงอ่อน (นครวิถี)">
-                    <div class="footer-card-icon" style="background:rgba(248,113,113,0.15);border-color:rgba(248,113,113,0.35)">
-                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#F87171" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2.5l5 2.5h-5" stroke-width="1.5" stroke-linecap="round"/><line x1="10.5" y1="5" x2="10.5" y2="7.5" stroke-width="1.5"/><path d="M5 7.5h14c1 0 1.5.5 1.5 1.8v7.4c0 1-.5 1.5-1.5 1.5H5c-1 0-1.5-.5-1.5-1.5V9.3c0-1.3.5-1.8 1.5-1.8z" fill="#F87171" fill-opacity="0.28"/><path d="M7 9.5h10v4H7z" rx="1" fill="#F87171"/><circle cx="8" cy="15.2" r="1.3" fill="#F87171"/><circle cx="16" cy="15.2" r="1.3" fill="#F87171"/><line x1="2" y1="21" x2="22" y2="21" stroke-width="2"/><line x1="6" y1="18.2" x2="18" y2="18.2" stroke-width="1.5" opacity="0.6"/></svg>
-                    </div>
-                    <div class="footer-card-info">
-                        <div class="footer-card-name">SRT สายสีแดงอ่อน (นครวิถี)</div>
-                        <div class="footer-card-route">กรุงเทพอภิวัฒน์ ↔ ตลิ่งชัน</div>
-                    </div>
-                    <div class="footer-card-arrow">›</div>
-                </button>
-                <button type="button" class="footer-line-card" onclick="App.jumpToLine(104)" title="ARL แอร์พอร์ต ลิงก์ (พญาไท ↔ สุวรรณภูมิ)" aria-label="ARL แอร์พอร์ต ลิงก์">
-                    <div class="footer-card-icon" style="background:rgba(138,21,56,0.12);border-color:rgba(138,21,56,0.3)">
-                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#8A1538" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16.5V9.5c0-4 3.5-6.5 8-6.5s8 2.5 8 6.5v7c0 1-.8 1.5-1.8 1.5H5.8C4.8 18 4 17.5 4 16.5z" fill="#8A1538" fill-opacity="0.22"/><path d="M6.5 9c1-2.5 2.5-3.5 5.5-3.5s4.5 1 5.5 3.5v2.8H6.5V9z" fill="#8A1538"/><path d="M12 11.8l1.6 2.6h2.2l-2.4 1.4 1 2.8-2.4-1.4-2.4 1.4 1-2.8-2.4-1.4h2.2z" fill="#8A1538" stroke-width="0.5"/><line x1="2" y1="21" x2="22" y2="21" stroke-width="2"/></svg>
-                    </div>
-                    <div class="footer-card-info">
-                        <div class="footer-card-name">ARL แอร์พอร์ตลิงก์</div>
-                        <div class="footer-card-route">พญาไท ↔ สุวรรณภูมิ</div>
-                    </div>
-                    <div class="footer-card-arrow">›</div>
-                </button>
+            <div class="footer-slider-wrapper" id="footerSliderWrapper">
+                <div class="footer-slider-track" id="footerSliderTrack">
+                    <!-- Primary Set (10 Transit Lines) -->
+                    <button type="button" class="footer-line-card" onclick="App.jumpToLine(1)" title="BTS สายสุขุมวิท (คูคต ↔ เคหะฯ)" aria-label="BTS สายสุขุมวิท">
+                        <div class="footer-card-icon" style="background:rgba(122,180,32,0.12);border-color:rgba(122,180,32,0.3)">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#7AB420" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 21h20M6 21v-3M18 21v-3" stroke-width="2"/><rect x="4" y="3" width="16" height="15" rx="3.5" fill="#7AB420" fill-opacity="0.22"/><path d="M6 7.5h12c0 2.2-1 4.5-6 4.5s-6-2.3-6-4.5z" fill="#7AB420"/><circle cx="7.5" cy="15" r="1.3" fill="#7AB420"/><circle cx="16.5" cy="15" r="1.3" fill="#7AB420"/><line x1="9" y1="5.2" x2="15" y2="5.2" stroke-width="1.6"/></svg>
+                        </div>
+                        <div class="footer-card-info">
+                            <span class="footer-card-name">BTS สายสุขุมวิท</span>
+                            <span class="footer-card-dot">·</span>
+                            <span class="footer-card-route">คูคต ↔ เคหะฯ</span>
+                        </div>
+                        <div class="footer-card-arrow">›</div>
+                    </button>
+                    <button type="button" class="footer-line-card" onclick="App.jumpToLine(2)" title="BTS สายสีลม (สนามกีฬาฯ ↔ บางหว้า)" aria-label="BTS สายสีลม">
+                        <div class="footer-card-icon" style="background:rgba(0,128,125,0.12);border-color:rgba(0,128,125,0.3)">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#00807D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 21h20M6 21v-3M18 21v-3" stroke-width="2"/><rect x="4" y="3" width="16" height="15" rx="3.5" fill="#00807D" fill-opacity="0.22"/><path d="M6 7.5h12c0 2.2-1 4.5-6 4.5s-6-2.3-6-4.5z" fill="#00807D"/><circle cx="7.5" cy="15" r="1.3" fill="#00807D"/><circle cx="16.5" cy="15" r="1.3" fill="#00807D"/><line x1="9" y1="5.2" x2="15" y2="5.2" stroke-width="1.6"/></svg>
+                        </div>
+                        <div class="footer-card-info">
+                            <span class="footer-card-name">BTS สายสีลม</span>
+                            <span class="footer-card-dot">·</span>
+                            <span class="footer-card-route">สนามกีฬาฯ ↔ บางหว้า</span>
+                        </div>
+                        <div class="footer-card-arrow">›</div>
+                    </button>
+                    <button type="button" class="footer-line-card" onclick="App.jumpToLine(3)" title="APM สายสีทอง (กรุงธนบุรี ↔ คลองสาน)" aria-label="APM สายสีทอง">
+                        <div class="footer-card-icon" style="background:rgba(201,160,56,0.12);border-color:rgba(201,160,56,0.3)">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#C9A038" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="21" x2="21" y2="21" stroke-width="2"/><rect x="9.5" y="18" width="5" height="3" rx="0.5" fill="#C9A038"/><rect x="4.5" y="3.5" width="15" height="14.5" rx="5" fill="#C9A038" fill-opacity="0.22"/><rect x="6.5" y="6" width="11" height="7.5" rx="3" fill="#C9A038"/><circle cx="7.5" cy="15.5" r="1.3" fill="#C9A038"/><circle cx="16.5" cy="15.5" r="1.3" fill="#C9A038"/></svg>
+                        </div>
+                        <div class="footer-card-info">
+                            <span class="footer-card-name">APM สายสีทอง</span>
+                            <span class="footer-card-dot">·</span>
+                            <span class="footer-card-route">กรุงธนบุรี ↔ คลองสาน</span>
+                        </div>
+                        <div class="footer-card-arrow">›</div>
+                    </button>
+                    <button type="button" class="footer-line-card" onclick="App.jumpToLine(101)" title="MRT สายสีน้ำเงิน (เฉลิมรัชมงคล) (ท่าพระ ↔ หลักสอง)" aria-label="MRT สายสีน้ำเงิน (เฉลิมรัชมงคล)">
+                        <div class="footer-card-icon" style="background:rgba(2,132,199,0.12);border-color:rgba(2,132,199,0.3)">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#0284C7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 20V11a9.5 9.5 0 0 1 19 0v9" stroke-width="1.6" opacity="0.6"/><line x1="2" y1="20" x2="22" y2="20" stroke-width="2"/><rect x="5.5" y="6" width="13" height="12" rx="3" fill="#0284C7" fill-opacity="0.22"/><rect x="7.2" y="8" width="9.6" height="4.8" rx="1.5" fill="#0284C7"/><line x1="7.5" y1="15" x2="9.5" y2="15" stroke-width="2"/><line x1="14.5" y1="15" x2="16.5" y2="15" stroke-width="2"/></svg>
+                        </div>
+                        <div class="footer-card-info">
+                            <span class="footer-card-name">MRT สายสีน้ำเงิน (เฉลิมรัชมงคล)</span>
+                            <span class="footer-card-dot">·</span>
+                            <span class="footer-card-route">ท่าพระ ↔ หลักสอง</span>
+                        </div>
+                        <div class="footer-card-arrow">›</div>
+                    </button>
+                    <button type="button" class="footer-line-card" onclick="App.jumpToLine(102)" title="MRT สายสีม่วง (ฉลองรัชธรรม) (คลองบางไผ่ ↔ เตาปูน)" aria-label="MRT สายสีม่วง (ฉลองรัชธรรม)">
+                        <div class="footer-card-icon" style="background:rgba(138,44,155,0.12);border-color:rgba(138,44,155,0.3)">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#8A2C9B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="2" y1="20" x2="22" y2="20" stroke-width="2"/><path d="M6 20l-2 3M18 20l2 3" stroke-width="1.8"/><rect x="5" y="5.5" width="14" height="13" rx="2.5" fill="#8A2C9B" fill-opacity="0.22"/><path d="M8.5 3h7v2.5h-7z" fill="#8A2C9B"/><path d="M7 8h10v4.5H7z" rx="1" fill="#8A2C9B"/><circle cx="8" cy="15" r="1.3" fill="#8A2C9B"/><circle cx="16" cy="15" r="1.3" fill="#8A2C9B"/><line x1="10.5" y1="15" x2="13.5" y2="15" stroke-width="1.5"/></svg>
+                        </div>
+                        <div class="footer-card-info">
+                            <span class="footer-card-name">MRT สายสีม่วง (ฉลองรัชธรรม)</span>
+                            <span class="footer-card-dot">·</span>
+                            <span class="footer-card-route">คลองบางไผ่ ↔ เตาปูน</span>
+                        </div>
+                        <div class="footer-card-arrow">›</div>
+                    </button>
+                    <button type="button" class="footer-line-card" onclick="App.jumpToLine(4)" title="MRT สายสีเหลือง (นัคราพิพัฒน์) (ลาดพร้าว ↔ สำโรง)" aria-label="MRT สายสีเหลือง (นัคราพิพัฒน์)">
+                        <div class="footer-card-icon" style="background:rgba(255,209,0,0.15);border-color:rgba(255,209,0,0.35)">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#FFD100" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="18" x2="12" y2="22" stroke-width="3"/><rect x="9" y="14" width="6" height="5" rx="0.5" fill="#FFD100" fill-opacity="0.4"/><path d="M5 16V9c0-4 3.2-6 7-6s7 2 7 6v7c0 1-.8 1.5-2 1.5h-2c-.8 0-1-.5-1.2-1.2l-.6-2.3h-2.4l-.6 2.3c-.2.7-.4 1.2-1.2 1.2H7c-1.2 0-2-.5-2-1.5z" fill="#FFD100" fill-opacity="0.22"/><path d="M7 8c1.2-2.5 2.8-3.5 5-3.5s3.8 1 5 3.5v3.5H7V8z" fill="#FFD100"/><circle cx="7.5" cy="14" r="1.1" fill="#FFD100"/><circle cx="16.5" cy="14" r="1.1" fill="#FFD100"/></svg>
+                        </div>
+                        <div class="footer-card-info">
+                            <span class="footer-card-name">MRT สายสีเหลือง (นัคราพิพัฒน์)</span>
+                            <span class="footer-card-dot">·</span>
+                            <span class="footer-card-route">ลาดพร้าว ↔ สำโรง</span>
+                        </div>
+                        <div class="footer-card-arrow">›</div>
+                    </button>
+                    <button type="button" class="footer-line-card" onclick="App.jumpToLine(5)" title="MRT สายสีชมพู (วิวัฒน์นคร) (ศูนย์ราชการฯ ↔ มีนบุรี)" aria-label="MRT สายสีชมพู (วิวัฒน์นคร)">
+                        <div class="footer-card-icon" style="background:rgba(236,72,153,0.12);border-color:rgba(236,72,153,0.3)">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#EC4899" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="18" x2="12" y2="22" stroke-width="3"/><rect x="9" y="14" width="6" height="5" rx="0.5" fill="#EC4899" fill-opacity="0.4"/><path d="M5 16V9c0-4 3.2-6 7-6s7 2 7 6v7c0 1-.8 1.5-2 1.5h-2c-.8 0-1-.5-1.2-1.2l-.6-2.3h-2.4l-.6 2.3c-.2.7-.4 1.2-1.2 1.2H7c-1.2 0-2-.5-2-1.5z" fill="#EC4899" fill-opacity="0.22"/><path d="M7 8c1.2-2.5 2.8-3.5 5-3.5s3.8 1 5 3.5v3.5H7V8z" fill="#EC4899"/><circle cx="7.5" cy="14" r="1.1" fill="#EC4899"/><circle cx="16.5" cy="14" r="1.1" fill="#EC4899"/></svg>
+                        </div>
+                        <div class="footer-card-info">
+                            <span class="footer-card-name">MRT สายสีชมพู (วิวัฒน์นคร)</span>
+                            <span class="footer-card-dot">·</span>
+                            <span class="footer-card-route">ศูนย์ราชการฯ ↔ มีนบุรี</span>
+                        </div>
+                        <div class="footer-card-arrow">›</div>
+                    </button>
+                    <button type="button" class="footer-line-card" onclick="App.jumpToLine(103)" title="SRT สายสีแดงเข้ม (ธานีรัถยา) (กรุงเทพอภิวัฒน์ ↔ รังสิต)" aria-label="SRT สายสีแดงเข้ม (ธานีรัถยา)">
+                        <div class="footer-card-icon" style="background:rgba(185,28,28,0.12);border-color:rgba(185,28,28,0.3)">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#B91C1C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l-3.5 3.5h7L12 2m0 3.5v2" stroke-width="1.5"/><path d="M5 7.5h14c1 0 1.5.5 1.5 1.8v7.4c0 1-.5 1.5-1.5 1.5H5c-1 0-1.5-.5-1.5-1.5V9.3c0-1.3.5-1.8 1.5-1.8z" fill="#B91C1C" fill-opacity="0.22"/><rect x="6.5" y="9.5" width="11" height="4" rx="1" fill="#B91C1C"/><circle cx="8" cy="15.2" r="1.3" fill="#B91C1C"/><circle cx="16" cy="15.2" r="1.3" fill="#B91C1C"/><line x1="2" y1="21" x2="22" y2="21" stroke-width="2"/><line x1="6" y1="18.2" x2="18" y2="18.2" stroke-width="1.5" opacity="0.6"/></svg>
+                        </div>
+                        <div class="footer-card-info">
+                            <span class="footer-card-name">SRT สายสีแดงเข้ม (ธานีรัถยา)</span>
+                            <span class="footer-card-dot">·</span>
+                            <span class="footer-card-route">กรุงเทพอภิวัฒน์ ↔ รังสิต</span>
+                        </div>
+                        <div class="footer-card-arrow">›</div>
+                    </button>
+                    <button type="button" class="footer-line-card" onclick="App.jumpToLine(105)" title="SRT สายสีแดงอ่อน (นครวิถี) (กรุงเทพอภิวัฒน์ ↔ ตลิ่งชัน)" aria-label="SRT สายสีแดงอ่อน (นครวิถี)">
+                        <div class="footer-card-icon" style="background:rgba(248,113,113,0.15);border-color:rgba(248,113,113,0.35)">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#F87171" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2.5l5 2.5h-5" stroke-width="1.5" stroke-linecap="round"/><line x1="10.5" y1="5" x2="10.5" y2="7.5" stroke-width="1.5"/><path d="M5 7.5h14c1 0 1.5.5 1.5 1.8v7.4c0 1-.5 1.5-1.5 1.5H5c-1 0-1.5-.5-1.5-1.5V9.3c0-1.3.5-1.8 1.5-1.8z" fill="#F87171" fill-opacity="0.28"/><path d="M7 9.5h10v4H7z" rx="1" fill="#F87171"/><circle cx="8" cy="15.2" r="1.3" fill="#F87171"/><circle cx="16" cy="15.2" r="1.3" fill="#F87171"/><line x1="2" y1="21" x2="22" y2="21" stroke-width="2"/><line x1="6" y1="18.2" x2="18" y2="18.2" stroke-width="1.5" opacity="0.6"/></svg>
+                        </div>
+                        <div class="footer-card-info">
+                            <span class="footer-card-name">SRT สายสีแดงอ่อน (นครวิถี)</span>
+                            <span class="footer-card-dot">·</span>
+                            <span class="footer-card-route">กรุงเทพอภิวัฒน์ ↔ ตลิ่งชัน</span>
+                        </div>
+                        <div class="footer-card-arrow">›</div>
+                    </button>
+                    <button type="button" class="footer-line-card" onclick="App.jumpToLine(104)" title="ARL แอร์พอร์ต ลิงก์ (พญาไท ↔ สุวรรณภูมิ)" aria-label="ARL แอร์พอร์ต ลิงก์">
+                        <div class="footer-card-icon" style="background:rgba(138,21,56,0.12);border-color:rgba(138,21,56,0.3)">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#8A1538" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16.5V9.5c0-4 3.5-6.5 8-6.5s8 2.5 8 6.5v7c0 1-.8 1.5-1.8 1.5H5.8C4.8 18 4 17.5 4 16.5z" fill="#8A1538" fill-opacity="0.22"/><path d="M6.5 9c1-2.5 2.5-3.5 5.5-3.5s4.5 1 5.5 3.5v2.8H6.5V9z" fill="#8A1538"/><path d="M12 11.8l1.6 2.6h2.2l-2.4 1.4 1 2.8-2.4-1.4-2.4 1.4 1-2.8-2.4-1.4h2.2z" fill="#8A1538" stroke-width="0.5"/><line x1="2" y1="21" x2="22" y2="21" stroke-width="2"/></svg>
+                        </div>
+                        <div class="footer-card-info">
+                            <span class="footer-card-name">ARL แอร์พอร์ตลิงก์</span>
+                            <span class="footer-card-dot">·</span>
+                            <span class="footer-card-route">พญาไท ↔ สุวรรณภูมิ</span>
+                        </div>
+                        <div class="footer-card-arrow">›</div>
+                    </button>
+
+                    <!-- Duplicate Loop Set (for seamless infinite left scroll) -->
+                    <button type="button" class="footer-line-card" onclick="App.jumpToLine(1)" title="BTS สายสุขุมวิท (คูคต ↔ เคหะฯ)" aria-label="BTS สายสุขุมวิท" aria-hidden="true" tabindex="-1">
+                        <div class="footer-card-icon" style="background:rgba(122,180,32,0.12);border-color:rgba(122,180,32,0.3)">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#7AB420" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 21h20M6 21v-3M18 21v-3" stroke-width="2"/><rect x="4" y="3" width="16" height="15" rx="3.5" fill="#7AB420" fill-opacity="0.22"/><path d="M6 7.5h12c0 2.2-1 4.5-6 4.5s-6-2.3-6-4.5z" fill="#7AB420"/><circle cx="7.5" cy="15" r="1.3" fill="#7AB420"/><circle cx="16.5" cy="15" r="1.3" fill="#7AB420"/><line x1="9" y1="5.2" x2="15" y2="5.2" stroke-width="1.6"/></svg>
+                        </div>
+                        <div class="footer-card-info">
+                            <span class="footer-card-name">BTS สายสุขุมวิท</span>
+                            <span class="footer-card-dot">·</span>
+                            <span class="footer-card-route">คูคต ↔ เคหะฯ</span>
+                        </div>
+                        <div class="footer-card-arrow">›</div>
+                    </button>
+                    <button type="button" class="footer-line-card" onclick="App.jumpToLine(2)" title="BTS สายสีลม (สนามกีฬาฯ ↔ บางหว้า)" aria-label="BTS สายสีลม" aria-hidden="true" tabindex="-1">
+                        <div class="footer-card-icon" style="background:rgba(0,128,125,0.12);border-color:rgba(0,128,125,0.3)">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#00807D" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 21h20M6 21v-3M18 21v-3" stroke-width="2"/><rect x="4" y="3" width="16" height="15" rx="3.5" fill="#00807D" fill-opacity="0.22"/><path d="M6 7.5h12c0 2.2-1 4.5-6 4.5s-6-2.3-6-4.5z" fill="#00807D"/><circle cx="7.5" cy="15" r="1.3" fill="#00807D"/><circle cx="16.5" cy="15" r="1.3" fill="#00807D"/><line x1="9" y1="5.2" x2="15" y2="5.2" stroke-width="1.6"/></svg>
+                        </div>
+                        <div class="footer-card-info">
+                            <span class="footer-card-name">BTS สายสีลม</span>
+                            <span class="footer-card-dot">·</span>
+                            <span class="footer-card-route">สนามกีฬาฯ ↔ บางหว้า</span>
+                        </div>
+                        <div class="footer-card-arrow">›</div>
+                    </button>
+                    <button type="button" class="footer-line-card" onclick="App.jumpToLine(3)" title="APM สายสีทอง (กรุงธนบุรี ↔ คลองสาน)" aria-label="APM สายสีทอง" aria-hidden="true" tabindex="-1">
+                        <div class="footer-card-icon" style="background:rgba(201,160,56,0.12);border-color:rgba(201,160,56,0.3)">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#C9A038" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="3" y1="21" x2="21" y2="21" stroke-width="2"/><rect x="9.5" y="18" width="5" height="3" rx="0.5" fill="#C9A038"/><rect x="4.5" y="3.5" width="15" height="14.5" rx="5" fill="#C9A038" fill-opacity="0.22"/><rect x="6.5" y="6" width="11" height="7.5" rx="3" fill="#C9A038"/><circle cx="7.5" cy="15.5" r="1.3" fill="#C9A038"/><circle cx="16.5" cy="15.5" r="1.3" fill="#C9A038"/></svg>
+                        </div>
+                        <div class="footer-card-info">
+                            <span class="footer-card-name">APM สายสีทอง</span>
+                            <span class="footer-card-dot">·</span>
+                            <span class="footer-card-route">กรุงธนบุรี ↔ คลองสาน</span>
+                        </div>
+                        <div class="footer-card-arrow">›</div>
+                    </button>
+                    <button type="button" class="footer-line-card" onclick="App.jumpToLine(101)" title="MRT สายสีน้ำเงิน (เฉลิมรัชมงคล) (ท่าพระ ↔ หลักสอง)" aria-label="MRT สายสีน้ำเงิน (เฉลิมรัชมงคล)" aria-hidden="true" tabindex="-1">
+                        <div class="footer-card-icon" style="background:rgba(2,132,199,0.12);border-color:rgba(2,132,199,0.3)">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#0284C7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 20V11a9.5 9.5 0 0 1 19 0v9" stroke-width="1.6" opacity="0.6"/><line x1="2" y1="20" x2="22" y2="20" stroke-width="2"/><rect x="5.5" y="6" width="13" height="12" rx="3" fill="#0284C7" fill-opacity="0.22"/><rect x="7.2" y="8" width="9.6" height="4.8" rx="1.5" fill="#0284C7"/><line x1="7.5" y1="15" x2="9.5" y2="15" stroke-width="2"/><line x1="14.5" y1="15" x2="16.5" y2="15" stroke-width="2"/></svg>
+                        </div>
+                        <div class="footer-card-info">
+                            <span class="footer-card-name">MRT สายสีน้ำเงิน (เฉลิมรัชมงคล)</span>
+                            <span class="footer-card-dot">·</span>
+                            <span class="footer-card-route">ท่าพระ ↔ หลักสอง</span>
+                        </div>
+                        <div class="footer-card-arrow">›</div>
+                    </button>
+                    <button type="button" class="footer-line-card" onclick="App.jumpToLine(102)" title="MRT สายสีม่วง (ฉลองรัชธรรม) (คลองบางไผ่ ↔ เตาปูน)" aria-label="MRT สายสีม่วง (ฉลองรัชธรรม)" aria-hidden="true" tabindex="-1">
+                        <div class="footer-card-icon" style="background:rgba(138,44,155,0.12);border-color:rgba(138,44,155,0.3)">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#8A2C9B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="2" y1="20" x2="22" y2="20" stroke-width="2"/><path d="M6 20l-2 3M18 20l2 3" stroke-width="1.8"/><rect x="5" y="5.5" width="14" height="13" rx="2.5" fill="#8A2C9B" fill-opacity="0.22"/><path d="M8.5 3h7v2.5h-7z" fill="#8A2C9B"/><path d="M7 8h10v4.5H7z" rx="1" fill="#8A2C9B"/><circle cx="8" cy="15" r="1.3" fill="#8A2C9B"/><circle cx="16" cy="15" r="1.3" fill="#8A2C9B"/><line x1="10.5" y1="15" x2="13.5" y2="15" stroke-width="1.5"/></svg>
+                        </div>
+                        <div class="footer-card-info">
+                            <span class="footer-card-name">MRT สายสีม่วง (ฉลองรัชธรรม)</span>
+                            <span class="footer-card-dot">·</span>
+                            <span class="footer-card-route">คลองบางไผ่ ↔ เตาปูน</span>
+                        </div>
+                        <div class="footer-card-arrow">›</div>
+                    </button>
+                    <button type="button" class="footer-line-card" onclick="App.jumpToLine(4)" title="MRT สายสีเหลือง (นัคราพิพัฒน์) (ลาดพร้าว ↔ สำโรง)" aria-label="MRT สายสีเหลือง (นัคราพิพัฒน์)" aria-hidden="true" tabindex="-1">
+                        <div class="footer-card-icon" style="background:rgba(255,209,0,0.15);border-color:rgba(255,209,0,0.35)">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#FFD100" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="18" x2="12" y2="22" stroke-width="3"/><rect x="9" y="14" width="6" height="5" rx="0.5" fill="#FFD100" fill-opacity="0.4"/><path d="M5 16V9c0-4 3.2-6 7-6s7 2 7 6v7c0 1-.8 1.5-2 1.5h-2c-.8 0-1-.5-1.2-1.2l-.6-2.3h-2.4l-.6 2.3c-.2.7-.4 1.2-1.2 1.2H7c-1.2 0-2-.5-2-1.5z" fill="#FFD100" fill-opacity="0.22"/><path d="M7 8c1.2-2.5 2.8-3.5 5-3.5s3.8 1 5 3.5v3.5H7V8z" fill="#FFD100"/><circle cx="7.5" cy="14" r="1.1" fill="#FFD100"/><circle cx="16.5" cy="14" r="1.1" fill="#FFD100"/></svg>
+                        </div>
+                        <div class="footer-card-info">
+                            <span class="footer-card-name">MRT สายสีเหลือง (นัคราพิพัฒน์)</span>
+                            <span class="footer-card-dot">·</span>
+                            <span class="footer-card-route">ลาดพร้าว ↔ สำโรง</span>
+                        </div>
+                        <div class="footer-card-arrow">›</div>
+                    </button>
+                    <button type="button" class="footer-line-card" onclick="App.jumpToLine(5)" title="MRT สายสีชมพู (วิวัฒน์นคร) (ศูนย์ราชการฯ ↔ มีนบุรี)" aria-label="MRT สายสีชมพู (วิวัฒน์นคร)" aria-hidden="true" tabindex="-1">
+                        <div class="footer-card-icon" style="background:rgba(236,72,153,0.12);border-color:rgba(236,72,153,0.3)">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#EC4899" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="18" x2="12" y2="22" stroke-width="3"/><rect x="9" y="14" width="6" height="5" rx="0.5" fill="#EC4899" fill-opacity="0.4"/><path d="M5 16V9c0-4 3.2-6 7-6s7 2 7 6v7c0 1-.8 1.5-2 1.5h-2c-.8 0-1-.5-1.2-1.2l-.6-2.3h-2.4l-.6 2.3c-.2.7-.4 1.2-1.2 1.2H7c-1.2 0-2-.5-2-1.5z" fill="#EC4899" fill-opacity="0.22"/><path d="M7 8c1.2-2.5 2.8-3.5 5-3.5s3.8 1 5 3.5v3.5H7V8z" fill="#EC4899"/><circle cx="7.5" cy="14" r="1.1" fill="#EC4899"/><circle cx="16.5" cy="14" r="1.1" fill="#EC4899"/></svg>
+                        </div>
+                        <div class="footer-card-info">
+                            <span class="footer-card-name">MRT สายสีชมพู (วิวัฒน์นคร)</span>
+                            <span class="footer-card-dot">·</span>
+                            <span class="footer-card-route">ศูนย์ราชการฯ ↔ มีนบุรี</span>
+                        </div>
+                        <div class="footer-card-arrow">›</div>
+                    </button>
+                    <button type="button" class="footer-line-card" onclick="App.jumpToLine(103)" title="SRT สายสีแดงเข้ม (ธานีรัถยา) (กรุงเทพอภิวัฒน์ ↔ รังสิต)" aria-label="SRT สายสีแดงเข้ม (ธานีรัถยา)" aria-hidden="true" tabindex="-1">
+                        <div class="footer-card-icon" style="background:rgba(185,28,28,0.12);border-color:rgba(185,28,28,0.3)">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#B91C1C" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2l-3.5 3.5h7L12 2m0 3.5v2" stroke-width="1.5"/><path d="M5 7.5h14c1 0 1.5.5 1.5 1.8v7.4c0 1-.5 1.5-1.5 1.5H5c-1 0-1.5-.5-1.5-1.5V9.3c0-1.3.5-1.8 1.5-1.8z" fill="#B91C1C" fill-opacity="0.22"/><rect x="6.5" y="9.5" width="11" height="4" rx="1" fill="#B91C1C"/><circle cx="8" cy="15.2" r="1.3" fill="#B91C1C"/><circle cx="16" cy="15.2" r="1.3" fill="#B91C1C"/><line x1="2" y1="21" x2="22" y2="21" stroke-width="2"/><line x1="6" y1="18.2" x2="18" y2="18.2" stroke-width="1.5" opacity="0.6"/></svg>
+                        </div>
+                        <div class="footer-card-info">
+                            <span class="footer-card-name">SRT สายสีแดงเข้ม (ธานีรัถยา)</span>
+                            <span class="footer-card-dot">·</span>
+                            <span class="footer-card-route">กรุงเทพอภิวัฒน์ ↔ รังสิต</span>
+                        </div>
+                        <div class="footer-card-arrow">›</div>
+                    </button>
+                    <button type="button" class="footer-line-card" onclick="App.jumpToLine(105)" title="SRT สายสีแดงอ่อน (นครวิถี) (กรุงเทพอภิวัฒน์ ↔ ตลิ่งชัน)" aria-label="SRT สายสีแดงอ่อน (นครวิถี)" aria-hidden="true" tabindex="-1">
+                        <div class="footer-card-icon" style="background:rgba(248,113,113,0.15);border-color:rgba(248,113,113,0.35)">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#F87171" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 2.5l5 2.5h-5" stroke-width="1.5" stroke-linecap="round"/><line x1="10.5" y1="5" x2="10.5" y2="7.5" stroke-width="1.5"/><path d="M5 7.5h14c1 0 1.5.5 1.5 1.8v7.4c0 1-.5 1.5-1.5 1.5H5c-1 0-1.5-.5-1.5-1.5V9.3c0-1.3.5-1.8 1.5-1.8z" fill="#F87171" fill-opacity="0.28"/><path d="M7 9.5h10v4H7z" rx="1" fill="#F87171"/><circle cx="8" cy="15.2" r="1.3" fill="#F87171"/><circle cx="16" cy="15.2" r="1.3" fill="#F87171"/><line x1="2" y1="21" x2="22" y2="21" stroke-width="2"/><line x1="6" y1="18.2" x2="18" y2="18.2" stroke-width="1.5" opacity="0.6"/></svg>
+                        </div>
+                        <div class="footer-card-info">
+                            <span class="footer-card-name">SRT สายสีแดงอ่อน (นครวิถี)</span>
+                            <span class="footer-card-dot">·</span>
+                            <span class="footer-card-route">กรุงเทพอภิวัฒน์ ↔ ตลิ่งชัน</span>
+                        </div>
+                        <div class="footer-card-arrow">›</div>
+                    </button>
+                    <button type="button" class="footer-line-card" onclick="App.jumpToLine(104)" title="ARL แอร์พอร์ต ลิงก์ (พญาไท ↔ สุวรรณภูมิ)" aria-label="ARL แอร์พอร์ต ลิงก์" aria-hidden="true" tabindex="-1">
+                        <div class="footer-card-icon" style="background:rgba(138,21,56,0.12);border-color:rgba(138,21,56,0.3)">
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#8A1538" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 16.5V9.5c0-4 3.5-6.5 8-6.5s8 2.5 8 6.5v7c0 1-.8 1.5-1.8 1.5H5.8C4.8 18 4 17.5 4 16.5z" fill="#8A1538" fill-opacity="0.22"/><path d="M6.5 9c1-2.5 2.5-3.5 5.5-3.5s4.5 1 5.5 3.5v2.8H6.5V9z" fill="#8A1538"/><path d="M12 11.8l1.6 2.6h2.2l-2.4 1.4 1 2.8-2.4-1.4-2.4 1.4 1-2.8-2.4-1.4h2.2z" fill="#8A1538" stroke-width="0.5"/><line x1="2" y1="21" x2="22" y2="21" stroke-width="2"/></svg>
+                        </div>
+                        <div class="footer-card-info">
+                            <span class="footer-card-name">ARL แอร์พอร์ตลิงก์</span>
+                            <span class="footer-card-dot">·</span>
+                            <span class="footer-card-route">พญาไท ↔ สุวรรณภูมิ</span>
+                        </div>
+                        <div class="footer-card-arrow">›</div>
+                    </button>
+                </div>
             </div>
             <div class="footer-refresh-note">
                 <span class="ui-ic ui-ic-refresh" style="color:var(--sky,#0284c7);margin-right:2px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg></span> <span>ข้อมูลเรียลไทม์ · รีเฟรชอัตโนมัติทุก 20 วินาที · ครอบคลุมทั้ง 10 สายทั่วกรุงเทพฯ และปริมณฑล</span>

@@ -133,16 +133,14 @@ flutter clean
 cd ..
 ```
 
-### SOP-4: การบิลด์ตัวติดตั้ง iOS (iOS IPA Build)
-เนื่องจากสภาพแวดล้อม Windows ไม่สามารถคอมไพล์ iOS ได้โดยตรง ให้ใช้ GitHub Actions Workflow:
-- ไฟล์ Workflow: `.github/workflows/build_ios.yml`
+### SOP-4: การบิลด์ตัวติดตั้ง iOS & Android (iOS IPA & Android APK Automated Build)
+- ไฟล์ Workflow: `.github/workflows/build_ios.yml` ("Build iOS & Android Apps")
 - รันบน GitHub Runner `macos-14` อัตโนมัติเมื่อมีการ Push ไปยัง branch `main` หรือ Tag `v*`
 - สคริปต์ Workflow จะดึงเวอร์ชันจาก `pubspec.yaml` อัตโนมัติ และสร้างไฟล์แพ็กเกจ:
-  - `BKK_SkyTrains_iOS_latest.ipa` + `.sha256`
-  - `BKK_SkyTrains_iOS_v${VERSION_BASE}.ipa` + `.sha256`
-  - `BKK_SkyTrains_iOS_unsigned.ipa` + `.sha256`
-- เผยแพร่ขึ้น GitHub Releases (Production / Official) พร้อมแนบ APK และ Checksum อัตโนมัติ
-- ในเครื่องพัฒนา สามารถเก็บไฟล์ `.ipa` รุ่นล่าสุดไว้ในโฟลเดอร์ `releases/BKK_SkyTrains_iOS_latest.ipa` พร้อมไฟล์ `.sha256`
+  - iOS IPA: `BKK_SkyTrains_iOS_latest.ipa`, `BKK_SkyTrains_iOS_v${VERSION_BASE}.ipa`, `BKK_SkyTrains_iOS_unsigned.ipa` + `.sha256`
+  - Android APK: `BKK_SkyTrains_Android_latest.apk`, `BKK_SkyTrains_Android_v${VERSION_BASE}.apk` + `.sha256`
+- เผยแพร่ขึ้น GitHub Releases (Production / Official) แบบ Unified Release พร้อมแนบไฟล์ตัวติดตั้งและ SHA-256 Checksum ครบถ้วน
+- ในเครื่องพัฒนา สามารถคอมไพล์ APK ได้ด้วย `flutter build apk --release` และเก็บไว้ที่ `releases/BKK_SkyTrains_Android_latest.apk` พร้อม `.sha256`
 
 ---
 

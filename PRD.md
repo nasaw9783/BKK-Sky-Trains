@@ -6,7 +6,7 @@
 | เอกสาร | รายละเอียด |
 | :--- | :--- |
 | **ชื่อผลิตภัณฑ์** | **BKK SKYTRAINs** (Bangkok SkyTrains & Mass Transit Companion) |
-| **เวอร์ชันเอกสาร** | 1.3.4 (Production Release) |
+| **เวอร์ชันเอกสาร** | 1.3.5 (Production Release) |
 | **สถานะ** | Active / Production |
 | **แพลตฟอร์มที่รองรับ** | Progressive Web App (PWA), Android (Native Hybrid APK), iOS (Native Hybrid IPA) |
 | **กลุ่มเป้าหมาย** | ผู้โดยสารรถไฟฟ้าในกรุงเทพฯ และปริมณฑล (คนไทย, ชาวต่างชาติ, นักท่องเที่ยว) |
@@ -249,7 +249,11 @@ flowchart LR
 
 ## 8. แผนการพัฒนาในอนาคต (Product Roadmap)
 
-- **v1.3.4 (Completed / Current Production Release):**
+- **v1.3.5 (Completed / Current Production Release):**
+  - คอมไพล์และบิลด์ตัวติดตั้ง Android APK รุ่นสมบูรณ์ (`BKK_SkyTrains_Android_latest.apk`, `BKK_SkyTrains_Android_v1.3.5.apk`) พร้อมสร้าง SHA-256 Checksum (`FBACEE348015...`)
+  - อัปเกรดระบบ CI/CD Workflow (`.github/workflows/build_ios.yml` - `Build iOS & Android Apps`) ให้คอมไพล์และสร้างแพ็กเกจทั้ง iOS IPA และ Android APK พร้อมสร้าง SHA-256 และเผยแพร่ลง GitHub Releases อัตโนมัติในครั้งเดียว
+  - ทำความสะอาดระบบ Releases & Artifacts บน GitHub กำจัดข้อมูลเก่าที่ไม่จำเป็นออกทั้งหมดตามนโยบาย Zero-Waste Pruning
+- **v1.3.4 (Completed):**
   - กรองขบวนรถศูนย์ซ่อมบำรุงและขบวนรถทดสอบเปล่า (Depot / Empty Trains Filtering เช่น `YL00`, `PK00`) ออกจากการแสดงผล Live TTA
   - ตรวจสอบช่วงเวลาเปิดให้บริการจริงของสายรถไฟฟ้า (Transit Operating Hours: 05:30/06:00 - 24:00 น.) เพื่อป้องกันไม่ให้นำข้อมูลทดสอบเวลากลางคืนมาแสดงเป็นขบวนรถจริง
   - ปรับปรุงการแสดงผลชิปสถานีใกล้เคียง (Nearest Station Alt Chips) บนจอมือถือขนาดเล็ก (`< 480px`) ให้แสดงชื่อเต็มทุกตัวอักษรไม่หลุดกรอบ และปัดเลื่อนแนวนอนได้อย่างนุ่มนวล (`scroll-snap-type`)

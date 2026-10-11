@@ -1,4 +1,4 @@
-name: Build iOS App
+name: Build iOS & Android Apps
 
 on:
   workflow_dispatch:
@@ -8,7 +8,7 @@ on:
         type: boolean
         default: true
       custom_tag:
-        description: 'Custom tag name (optional, e.g. v1.3.4)'
+        description: 'Custom tag name (optional, e.g. v1.3.5)'
         required: false
         type: string
         default: ''
@@ -27,8 +27,8 @@ permissions:
   contents: write
 
 jobs:
-  build-ios:
-    name: Build iOS IPA (Automated Release)
+  build-release:
+    name: Build iOS IPA & Android APK (Automated Release)
     runs-on: macos-14
     timeout-minutes: 45
 
@@ -79,16 +79,17 @@ jobs:
           echo "version_base=$VERSION_BASE" >> $GITHUB_OUTPUT
           echo "Detected App Version: $VERSION (Base: $VERSION_BASE)"
 
-      - name: Build Android APK (if not present)
+      - name: Build Android APK (Release)
         working-directory: bkk_skytrains_flutter
         run: |
-          if [ ! -f "../releases/BKK_SkyTrains_Android_latest.apk" ]; then
-            echo "Building Android APK for unified release..."
-            flutter build apk --release
-            mkdir -p ../releases
-            cp build/app/outputs/flutter-apk/app-release.apk ../releases/BKK_SkyTrains_Android_latest.apk
-            shasum -a 256 ../releases/BKK_SkyTrains_Android_latest.apk > ../releases/BKK_SkyTrains_Android_latest.apk.sha256
-          fi
+          VERSION_BASE="${{ steps.app_version.outputs.version_base }}"
+          echo "Building Android APK for release v${VERSION_BASE}..."
+          flutter build apk --release
+          mkdir -p ../releases
+          cp build/app/outputs/flutter-apk/app-release.apk ../releases/BKK_SkyTrains_Android_latest.apk
+          cp build/app/outputs/flutter-apk/app-release.apk "../releases/BKK_SkyTrains_Android_v${VERSION_BASE}.apk"
+          shasum -a 256 ../releases/BKK_SkyTrains_Android_latest.apk > ../releases/BKK_SkyTrains_Android_latest.apk.sha256
+          shasum -a 256 "../releases/BKK_SkyTrains_Android_v${VERSION_BASE}.apk" > "../releases/BKK_SkyTrains_Android_v${VERSION_BASE}.apk.sha256"
 
       - name: Build iOS (Release without Codesign)
         working-directory: bkk_skytrains_flutter
@@ -108,10 +109,10 @@ jobs:
           shasum -a 256 "BKK_SkyTrains_iOS_v${VERSION_BASE}.ipa" > "BKK_SkyTrains_iOS_v${VERSION_BASE}.ipa.sha256"
           rm -rf Payload
 
-      - name: Upload IPA Artifacts
+      - name: Upload IPA & APK Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: BKK_SkyTrains_iOS_latest
+          name: BKK_SkyTrains_Release_Packages
           path: |
             bkk_skytrains_flutter/BKK_SkyTrains_iOS_latest.ipa
             bkk_skytrains_flutter/BKK_SkyTrains_iOS_latest.ipa.sha256
@@ -119,6 +120,10 @@ jobs:
             bkk_skytrains_flutter/BKK_SkyTrains_iOS_unsigned.ipa.sha256
             bkk_skytrains_flutter/BKK_SkyTrains_iOS_v*.ipa
             bkk_skytrains_flutter/BKK_SkyTrains_iOS_v*.ipa.sha256
+            releases/BKK_SkyTrains_Android_latest.apk
+            releases/BKK_SkyTrains_Android_latest.apk.sha256
+            releases/BKK_SkyTrains_Android_v*.apk
+            releases/BKK_SkyTrains_Android_v*.apk.sha256
           retention-days: 14
 
       - name: Release to GitHub Releases
@@ -131,16 +136,16 @@ jobs:
           make_latest: true
           fail_on_unmatched_files: false
           body: |
-            ### 🚆 BKK SkyTrains Production Release
-            - **iOS App**: Production Release IPA (`BKK_SkyTrains_iOS_v${{ steps.app_version.outputs.version_base }}.ipa`, `BKK_SkyTrains_iOS_latest.ipa`, `BKK_SkyTrains_iOS_unsigned.ipa`)
-            - **Android App**: Production Release APK (`BKK_SkyTrains_Android_latest.apk`)
-            - **Key Highlights**:
+            ### 🚆 BKK SkyTrains Production Release v${{ steps.app_version.outputs.version_base }}
+            - **iOS Application**: Production IPA packages (`BKK_SkyTrains_iOS_v${{ steps.app_version.outputs.version_base }}.ipa`, `BKK_SkyTrains_iOS_latest.ipa`, `BKK_SkyTrains_iOS_unsigned.ipa`)
+            - **Android Application**: Production APK packages (`BKK_SkyTrains_Android_v${{ steps.app_version.outputs.version_base }}.apk`, `BKK_SkyTrains_Android_latest.apk`)
+            - **Key Features & Enhancements**:
               - Depot & maintenance train telemetry filtering (`YL00`, `PK00`).
               - Real-time transit operating hours validation (05:30/06:00 - 24:00).
               - Nearest alternate stations smooth horizontal scrolling on mobile displays.
               - Unified element centering and train line icon standards.
               - Service worker cache updated (`bts-v49`).
-            - **Integrity**: SHA-256 checksums provided for all distribution packages.
+            - **Security & Integrity**: Cryptographic SHA-256 checksums provided for all distribution packages.
           files: |
             bkk_skytrains_flutter/BKK_SkyTrains_iOS_latest.ipa
             bkk_skytrains_flutter/BKK_SkyTrains_iOS_latest.ipa.sha256
@@ -150,6 +155,8 @@ jobs:
             bkk_skytrains_flutter/BKK_SkyTrains_iOS_v*.ipa.sha256
             releases/BKK_SkyTrains_Android_latest.apk
             releases/BKK_SkyTrains_Android_latest.apk.sha256
+            releases/BKK_SkyTrains_Android_v*.apk
+            releases/BKK_SkyTrains_Android_v*.apk.sha256
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

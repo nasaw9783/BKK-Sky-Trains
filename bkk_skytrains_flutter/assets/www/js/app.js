@@ -726,87 +726,112 @@ gQIDAQAB
                 geoFail: 'หาตำแหน่งไม่สำเร็จ ลองใหม่อีกครั้ง',
                 connectFail: s => `เชื่อมต่อไม่สำเร็จ (HTTP ${s})`,
                 footer: `<div class="footer-systems-title"><span class="footer-title-icon-pill" style="background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.28);color:#10b981">${getUiIcon('train', 16, '#10b981')}</span> โครงข่ายระบบรถไฟฟ้า 10 สายที่เชื่อมต่อข้อมูลในระบบ</div>
-<div class="footer-systems-grid">
-    <button type="button" class="footer-line-card" onclick="App.jumpToLine(1)" title="BTS สายสุขุมวิท (คูคต ↔ เคหะฯ)" aria-label="BTS สายสุขุมวิท">
-        <div class="footer-card-icon" style="background:rgba(122,180,32,0.12);border-color:rgba(122,180,32,0.3)">${getLineIconSvg(1, false, 20)}</div>
-        <div class="footer-card-info">
-            <div class="footer-card-name">BTS สายสุขุมวิท</div>
-            <div class="footer-card-route">คูคต ↔ เคหะฯ</div>
-        </div>
-        <div class="footer-card-arrow">›</div>
-    </button>
-    <button type="button" class="footer-line-card" onclick="App.jumpToLine(2)" title="BTS สายสีลม (สนามกีฬาฯ ↔ บางหว้า)" aria-label="BTS สายสีลม">
-        <div class="footer-card-icon" style="background:rgba(0,128,125,0.12);border-color:rgba(0,128,125,0.3)">${getLineIconSvg(2, false, 20)}</div>
-        <div class="footer-card-info">
-            <div class="footer-card-name">BTS สายสีลม</div>
-            <div class="footer-card-route">สนามกีฬาฯ ↔ บางหว้า</div>
-        </div>
-        <div class="footer-card-arrow">›</div>
-    </button>
-    <button type="button" class="footer-line-card" onclick="App.jumpToLine(3)" title="APM สายสีทอง (กรุงธนบุรี ↔ คลองสาน)" aria-label="APM สายสีทอง">
-        <div class="footer-card-icon" style="background:rgba(201,160,56,0.12);border-color:rgba(201,160,56,0.3)">${getLineIconSvg(3, false, 20)}</div>
-        <div class="footer-card-info">
-            <div class="footer-card-name">APM สายสีทอง</div>
-            <div class="footer-card-route">กรุงธนบุรี ↔ คลองสาน</div>
-        </div>
-        <div class="footer-card-arrow">›</div>
-    </button>
-    <button type="button" class="footer-line-card" onclick="App.jumpToLine(101)" title="MRT สายสีน้ำเงิน (ท่าพระ ↔ หลักสอง)" aria-label="MRT สายสีน้ำเงิน">
-        <div class="footer-card-icon" style="background:rgba(2,132,199,0.12);border-color:rgba(2,132,199,0.3)">${getLineIconSvg(101, false, 20)}</div>
-        <div class="footer-card-info">
-            <div class="footer-card-name">MRT สายสีน้ำเงิน</div>
-            <div class="footer-card-route">ท่าพระ ↔ หลักสอง</div>
-        </div>
-        <div class="footer-card-arrow">›</div>
-    </button>
-    <button type="button" class="footer-line-card" onclick="App.jumpToLine(102)" title="MRT สายสีม่วง (คลองบางไผ่ ↔ เตาปูน)" aria-label="MRT สายสีม่วง">
-        <div class="footer-card-icon" style="background:rgba(138,44,155,0.12);border-color:rgba(138,44,155,0.3)">${getLineIconSvg(102, false, 20)}</div>
-        <div class="footer-card-info">
-            <div class="footer-card-name">MRT สายสีม่วง</div>
-            <div class="footer-card-route">คลองบางไผ่ ↔ เตาปูน</div>
-        </div>
-        <div class="footer-card-arrow">›</div>
-    </button>
-    <button type="button" class="footer-line-card" onclick="App.jumpToLine(4)" title="MRT สายสีเหลือง (ลาดพร้าว ↔ สำโรง)" aria-label="MRT สายสีเหลือง">
-        <div class="footer-card-icon" style="background:rgba(255,209,0,0.15);border-color:rgba(255,209,0,0.35)">${getLineIconSvg(4, false, 20)}</div>
-        <div class="footer-card-info">
-            <div class="footer-card-name">MRT สายสีเหลือง</div>
-            <div class="footer-card-route">ลาดพร้าว ↔ สำโรง</div>
-        </div>
-        <div class="footer-card-arrow">›</div>
-    </button>
-    <button type="button" class="footer-line-card" onclick="App.jumpToLine(5)" title="MRT สายสีชมพู (ศูนย์ราชการฯ ↔ มีนบุรี)" aria-label="MRT สายสีชมพู">
-        <div class="footer-card-icon" style="background:rgba(236,72,153,0.12);border-color:rgba(236,72,153,0.3)">${getLineIconSvg(5, false, 20)}</div>
-        <div class="footer-card-info">
-            <div class="footer-card-name">MRT สายสีชมพู</div>
-            <div class="footer-card-route">ศูนย์ราชการฯ ↔ มีนบุรี</div>
-        </div>
-        <div class="footer-card-arrow">›</div>
-    </button>
-    <button type="button" class="footer-line-card" onclick="App.jumpToLine(103)" title="SRT สายสีแดงเข้ม (กรุงเทพอภิวัฒน์ ↔ รังสิต)" aria-label="SRT สายสีแดงเข้ม">
-        <div class="footer-card-icon" style="background:rgba(185,28,28,0.12);border-color:rgba(185,28,28,0.3)">${getLineIconSvg(103, false, 20)}</div>
-        <div class="footer-card-info">
-            <div class="footer-card-name">SRT สายสีแดงเข้ม</div>
-            <div class="footer-card-route">กรุงเทพอภิวัฒน์ ↔ รังสิต</div>
-        </div>
-        <div class="footer-card-arrow">›</div>
-    </button>
-    <button type="button" class="footer-line-card" onclick="App.jumpToLine(105)" title="SRT สายสีแดงอ่อน (กรุงเทพอภิวัฒน์ ↔ ตลิ่งชัน)" aria-label="SRT สายสีแดงอ่อน">
-        <div class="footer-card-icon" style="background:rgba(248,113,113,0.15);border-color:rgba(248,113,113,0.35)">${getLineIconSvg(105, false, 20)}</div>
-        <div class="footer-card-info">
-            <div class="footer-card-name">SRT สายสีแดงอ่อน</div>
-            <div class="footer-card-route">กรุงเทพอภิวัฒน์ ↔ ตลิ่งชัน</div>
-        </div>
-        <div class="footer-card-arrow">›</div>
-    </button>
-    <button type="button" class="footer-line-card" onclick="App.jumpToLine(104)" title="ARL แอร์พอร์ต ลิงก์ (พญาไท ↔ สุวรรณภูมิ)" aria-label="ARL แอร์พอร์ต ลิงก์">
-        <div class="footer-card-icon" style="background:rgba(138,21,56,0.12);border-color:rgba(138,21,56,0.3)">${getLineIconSvg(104, false, 20)}</div>
-        <div class="footer-card-info">
-            <div class="footer-card-name">ARL แอร์พอร์ตลิงก์</div>
-            <div class="footer-card-route">พญาไท ↔ สุวรรณภูมิ</div>
-        </div>
-        <div class="footer-card-arrow">›</div>
-    </button>
+<div class="footer-slider-wrapper" id="footerSliderWrapper">
+    <div class="footer-slider-track" id="footerSliderTrack">
+        <!-- Set 1 (10 Lines) -->
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(1)" title="BTS สายสุขุมวิท (คูคต ↔ เคหะฯ)" aria-label="BTS สายสุขุมวิท">
+            <div class="footer-card-icon" style="background:rgba(122,180,32,0.12);border-color:rgba(122,180,32,0.3)">${getLineIconSvg(1, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">BTS สายสุขุมวิท</span><span class="footer-card-dot">·</span><span class="footer-card-route">คูคต ↔ เคหะฯ</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(2)" title="BTS สายสีลม (สนามกีฬาฯ ↔ บางหว้า)" aria-label="BTS สายสีลม">
+            <div class="footer-card-icon" style="background:rgba(0,128,125,0.12);border-color:rgba(0,128,125,0.3)">${getLineIconSvg(2, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">BTS สายสีลม</span><span class="footer-card-dot">·</span><span class="footer-card-route">สนามกีฬาฯ ↔ บางหว้า</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(3)" title="APM สายสีทอง (กรุงธนบุรี ↔ คลองสาน)" aria-label="APM สายสีทอง">
+            <div class="footer-card-icon" style="background:rgba(201,160,56,0.12);border-color:rgba(201,160,56,0.3)">${getLineIconSvg(3, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">APM สายสีทอง</span><span class="footer-card-dot">·</span><span class="footer-card-route">กรุงธนบุรี ↔ คลองสาน</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(101)" title="MRT สายสีน้ำเงิน (ท่าพระ ↔ หลักสอง)" aria-label="MRT สายสีน้ำเงิน">
+            <div class="footer-card-icon" style="background:rgba(2,132,199,0.12);border-color:rgba(2,132,199,0.3)">${getLineIconSvg(101, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีน้ำเงิน (เฉลิมรัชมงคล)</span><span class="footer-card-dot">·</span><span class="footer-card-route">ท่าพระ ↔ หลักสอง</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(102)" title="MRT สายสีม่วง (คลองบางไผ่ ↔ เตาปูน)" aria-label="MRT สายสีม่วง">
+            <div class="footer-card-icon" style="background:rgba(138,44,155,0.12);border-color:rgba(138,44,155,0.3)">${getLineIconSvg(102, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีม่วง (ฉลองรัชธรรม)</span><span class="footer-card-dot">·</span><span class="footer-card-route">คลองบางไผ่ ↔ เตาปูน</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(4)" title="MRT สายสีเหลือง (ลาดพร้าว ↔ สำโรง)" aria-label="MRT สายสีเหลือง">
+            <div class="footer-card-icon" style="background:rgba(255,209,0,0.15);border-color:rgba(255,209,0,0.35)">${getLineIconSvg(4, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีเหลือง (นัคราพิพัฒน์)</span><span class="footer-card-dot">·</span><span class="footer-card-route">ลาดพร้าว ↔ สำโรง</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(5)" title="MRT สายสีชมพู (ศูนย์ราชการฯ ↔ มีนบุรี)" aria-label="MRT สายสีชมพู">
+            <div class="footer-card-icon" style="background:rgba(236,72,153,0.12);border-color:rgba(236,72,153,0.3)">${getLineIconSvg(5, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีชมพู (วิวัฒน์นคร)</span><span class="footer-card-dot">·</span><span class="footer-card-route">ศูนย์ราชการฯ ↔ มีนบุรี</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(103)" title="SRT สายสีแดงเข้ม (กรุงเทพอภิวัฒน์ ↔ รังสิต)" aria-label="SRT สายสีแดงเข้ม">
+            <div class="footer-card-icon" style="background:rgba(185,28,28,0.12);border-color:rgba(185,28,28,0.3)">${getLineIconSvg(103, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">SRT สายสีแดงเข้ม (ธานีรัถยา)</span><span class="footer-card-dot">·</span><span class="footer-card-route">กรุงเทพอภิวัฒน์ ↔ รังสิต</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(105)" title="SRT สายสีแดงอ่อน (กรุงเทพอภิวัฒน์ ↔ ตลิ่งชัน)" aria-label="SRT สายสีแดงอ่อน">
+            <div class="footer-card-icon" style="background:rgba(248,113,113,0.15);border-color:rgba(248,113,113,0.35)">${getLineIconSvg(105, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">SRT สายสีแดงอ่อน (นครวิถี)</span><span class="footer-card-dot">·</span><span class="footer-card-route">กรุงเทพอภิวัฒน์ ↔ ตลิ่งชัน</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(104)" title="ARL แอร์พอร์ต ลิงก์ (พญาไท ↔ สุวรรณภูมิ)" aria-label="ARL แอร์พอร์ต ลิงก์">
+            <div class="footer-card-icon" style="background:rgba(138,21,56,0.12);border-color:rgba(138,21,56,0.3)">${getLineIconSvg(104, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">ARL แอร์พอร์ตลิงก์</span><span class="footer-card-dot">·</span><span class="footer-card-route">พญาไท ↔ สุวรรณภูมิ</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+
+        <!-- Set 2 (10 Duplicate Lines for Seamless Infinite Loop) -->
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(1)" title="BTS สายสุขุมวิท (คูคต ↔ เคหะฯ)" aria-label="BTS สายสุขุมวิท" aria-hidden="true" tabindex="-1">
+            <div class="footer-card-icon" style="background:rgba(122,180,32,0.12);border-color:rgba(122,180,32,0.3)">${getLineIconSvg(1, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">BTS สายสุขุมวิท</span><span class="footer-card-dot">·</span><span class="footer-card-route">คูคต ↔ เคหะฯ</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(2)" title="BTS สายสีลม (สนามกีฬาฯ ↔ บางหว้า)" aria-label="BTS สายสีลม" aria-hidden="true" tabindex="-1">
+            <div class="footer-card-icon" style="background:rgba(0,128,125,0.12);border-color:rgba(0,128,125,0.3)">${getLineIconSvg(2, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">BTS สายสีลม</span><span class="footer-card-dot">·</span><span class="footer-card-route">สนามกีฬาฯ ↔ บางหว้า</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(3)" title="APM สายสีทอง (กรุงธนบุรี ↔ คลองสาน)" aria-label="APM สายสีทอง" aria-hidden="true" tabindex="-1">
+            <div class="footer-card-icon" style="background:rgba(201,160,56,0.12);border-color:rgba(201,160,56,0.3)">${getLineIconSvg(3, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">APM สายสีทอง</span><span class="footer-card-dot">·</span><span class="footer-card-route">กรุงธนบุรี ↔ คลองสาน</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(101)" title="MRT สายสีน้ำเงิน (ท่าพระ ↔ หลักสอง)" aria-label="MRT สายสีน้ำเงิน" aria-hidden="true" tabindex="-1">
+            <div class="footer-card-icon" style="background:rgba(2,132,199,0.12);border-color:rgba(2,132,199,0.3)">${getLineIconSvg(101, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีน้ำเงิน (เฉลิมรัชมงคล)</span><span class="footer-card-dot">·</span><span class="footer-card-route">ท่าพระ ↔ หลักสอง</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(102)" title="MRT สายสีม่วง (คลองบางไผ่ ↔ เตาปูน)" aria-label="MRT สายสีม่วง" aria-hidden="true" tabindex="-1">
+            <div class="footer-card-icon" style="background:rgba(138,44,155,0.12);border-color:rgba(138,44,155,0.3)">${getLineIconSvg(102, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีม่วง (ฉลองรัชธรรม)</span><span class="footer-card-dot">·</span><span class="footer-card-route">คลองบางไผ่ ↔ เตาปูน</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(4)" title="MRT สายสีเหลือง (ลาดพร้าว ↔ สำโรง)" aria-label="MRT สายสีเหลือง" aria-hidden="true" tabindex="-1">
+            <div class="footer-card-icon" style="background:rgba(255,209,0,0.15);border-color:rgba(255,209,0,0.35)">${getLineIconSvg(4, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีเหลือง (นัคราพิพัฒน์)</span><span class="footer-card-dot">·</span><span class="footer-card-route">ลาดพร้าว ↔ สำโรง</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(5)" title="MRT สายสีชมพู (ศูนย์ราชการฯ ↔ มีนบุรี)" aria-label="MRT สายสีชมพู" aria-hidden="true" tabindex="-1">
+            <div class="footer-card-icon" style="background:rgba(236,72,153,0.12);border-color:rgba(236,72,153,0.3)">${getLineIconSvg(5, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีชมพู (วิวัฒน์นคร)</span><span class="footer-card-dot">·</span><span class="footer-card-route">ศูนย์ราชการฯ ↔ มีนบุรี</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(103)" title="SRT สายสีแดงเข้ม (กรุงเทพอภิวัฒน์ ↔ รังสิต)" aria-label="SRT สายสีแดงเข้ม" aria-hidden="true" tabindex="-1">
+            <div class="footer-card-icon" style="background:rgba(185,28,28,0.12);border-color:rgba(185,28,28,0.3)">${getLineIconSvg(103, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">SRT สายสีแดงเข้ม (ธานีรัถยา)</span><span class="footer-card-dot">·</span><span class="footer-card-route">กรุงเทพอภิวัฒน์ ↔ รังสิต</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(105)" title="SRT สายสีแดงอ่อน (กรุงเทพอภิวัฒน์ ↔ ตลิ่งชัน)" aria-label="SRT สายสีแดงอ่อน" aria-hidden="true" tabindex="-1">
+            <div class="footer-card-icon" style="background:rgba(248,113,113,0.15);border-color:rgba(248,113,113,0.35)">${getLineIconSvg(105, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">SRT สายสีแดงอ่อน (นครวิถี)</span><span class="footer-card-dot">·</span><span class="footer-card-route">กรุงเทพอภิวัฒน์ ↔ ตลิ่งชัน</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(104)" title="ARL แอร์พอร์ต ลิงก์ (พญาไท ↔ สุวรรณภูมิ)" aria-label="ARL แอร์พอร์ต ลิงก์" aria-hidden="true" tabindex="-1">
+            <div class="footer-card-icon" style="background:rgba(138,21,56,0.12);border-color:rgba(138,21,56,0.3)">${getLineIconSvg(104, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">ARL แอร์พอร์ตลิงก์</span><span class="footer-card-dot">·</span><span class="footer-card-route">พญาไท ↔ สุวรรณภูมิ</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+    </div>
 </div>
 <div class="footer-refresh-note">
     ${getUiIcon('refresh', 14, 'var(--sky)')} ข้อมูลเรียลไทม์ · รีเฟรชอัตโนมัติทุก 20 วินาที · ครอบคลุมทั้ง 10 สายทั่วกรุงเทพฯ และปริมณฑล
@@ -941,87 +966,112 @@ gQIDAQAB
                 geoFail: 'Could not get your location, please retry',
                 connectFail: s => `Connection failed (HTTP ${s})`,
                 footer: `<div class="footer-systems-title"><span class="footer-title-icon-pill" style="background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.28);color:#10b981">${getUiIcon('train', 16, '#10b981')}</span> Connected Transit Network (All 10 Lines)</div>
-<div class="footer-systems-grid">
-    <button type="button" class="footer-line-card" onclick="App.jumpToLine(1)" title="BTS Sukhumvit Line (Khu Khot ↔ Kheha)" aria-label="BTS Sukhumvit Line">
-        <div class="footer-card-icon" style="background:rgba(122,180,32,0.12);border-color:rgba(122,180,32,0.3)">${getLineIconSvg(1, false, 20)}</div>
-        <div class="footer-card-info">
-            <div class="footer-card-name">BTS Sukhumvit</div>
-            <div class="footer-card-route">Khu Khot ↔ Kheha</div>
-        </div>
-        <div class="footer-card-arrow">›</div>
-    </button>
-    <button type="button" class="footer-line-card" onclick="App.jumpToLine(2)" title="BTS Silom Line (National Stadium ↔ Bang Wa)" aria-label="BTS Silom Line">
-        <div class="footer-card-icon" style="background:rgba(0,128,125,0.12);border-color:rgba(0,128,125,0.3)">${getLineIconSvg(2, false, 20)}</div>
-        <div class="footer-card-info">
-            <div class="footer-card-name">BTS Silom</div>
-            <div class="footer-card-route">National Stadium ↔ Bang Wa</div>
-        </div>
-        <div class="footer-card-arrow">›</div>
-    </button>
-    <button type="button" class="footer-line-card" onclick="App.jumpToLine(3)" title="APM Gold Line (Krung Thon Buri ↔ Khlong San)" aria-label="APM Gold Line">
-        <div class="footer-card-icon" style="background:rgba(201,160,56,0.12);border-color:rgba(201,160,56,0.3)">${getLineIconSvg(3, false, 20)}</div>
-        <div class="footer-card-info">
-            <div class="footer-card-name">APM Gold Line</div>
-            <div class="footer-card-route">Krung Thon Buri ↔ Khlong San</div>
-        </div>
-        <div class="footer-card-arrow">›</div>
-    </button>
-    <button type="button" class="footer-line-card" onclick="App.jumpToLine(101)" title="MRT Blue Line (Tha Phra ↔ Lak Song)" aria-label="MRT Blue Line">
-        <div class="footer-card-icon" style="background:rgba(2,132,199,0.12);border-color:rgba(2,132,199,0.3)">${getLineIconSvg(101, false, 20)}</div>
-        <div class="footer-card-info">
-            <div class="footer-card-name">MRT Blue Line</div>
-            <div class="footer-card-route">Tha Phra ↔ Lak Song</div>
-        </div>
-        <div class="footer-card-arrow">›</div>
-    </button>
-    <button type="button" class="footer-line-card" onclick="App.jumpToLine(102)" title="MRT Purple Line (Khlong Bang Phai ↔ Tao Poon)" aria-label="MRT Purple Line">
-        <div class="footer-card-icon" style="background:rgba(138,44,155,0.12);border-color:rgba(138,44,155,0.3)">${getLineIconSvg(102, false, 20)}</div>
-        <div class="footer-card-info">
-            <div class="footer-card-name">MRT Purple Line</div>
-            <div class="footer-card-route">Khlong Bang Phai ↔ Tao Poon</div>
-        </div>
-        <div class="footer-card-arrow">›</div>
-    </button>
-    <button type="button" class="footer-line-card" onclick="App.jumpToLine(4)" title="MRT Yellow Line (Lat Phrao ↔ Samrong)" aria-label="MRT Yellow Line">
-        <div class="footer-card-icon" style="background:rgba(255,209,0,0.15);border-color:rgba(255,209,0,0.35)">${getLineIconSvg(4, false, 20)}</div>
-        <div class="footer-card-info">
-            <div class="footer-card-name">MRT Yellow Line</div>
-            <div class="footer-card-route">Lat Phrao ↔ Samrong</div>
-        </div>
-        <div class="footer-card-arrow">›</div>
-    </button>
-    <button type="button" class="footer-line-card" onclick="App.jumpToLine(5)" title="MRT Pink Line (Nonthaburi Civic Center ↔ Min Buri)" aria-label="MRT Pink Line">
-        <div class="footer-card-icon" style="background:rgba(236,72,153,0.12);border-color:rgba(236,72,153,0.3)">${getLineIconSvg(5, false, 20)}</div>
-        <div class="footer-card-info">
-            <div class="footer-card-name">MRT Pink Line</div>
-            <div class="footer-card-route">Nonthaburi CC ↔ Min Buri</div>
-        </div>
-        <div class="footer-card-arrow">›</div>
-    </button>
-    <button type="button" class="footer-line-card" onclick="App.jumpToLine(103)" title="SRT Dark Red Line (Krung Thep Aphiwat ↔ Rangsit)" aria-label="SRT Dark Red Line">
-        <div class="footer-card-icon" style="background:rgba(185,28,28,0.12);border-color:rgba(185,28,28,0.3)">${getLineIconSvg(103, false, 20)}</div>
-        <div class="footer-card-info">
-            <div class="footer-card-name">SRT Dark Red</div>
-            <div class="footer-card-route">Krung Thep Aphiwat ↔ Rangsit</div>
-        </div>
-        <div class="footer-card-arrow">›</div>
-    </button>
-    <button type="button" class="footer-line-card" onclick="App.jumpToLine(105)" title="SRT Light Red Line (Krung Thep Aphiwat ↔ Taling Chan)" aria-label="SRT Light Red Line">
-        <div class="footer-card-icon" style="background:rgba(248,113,113,0.15);border-color:rgba(248,113,113,0.35)">${getLineIconSvg(105, false, 20)}</div>
-        <div class="footer-card-info">
-            <div class="footer-card-name">SRT Light Red</div>
-            <div class="footer-card-route">Aphiwat ↔ Taling Chan</div>
-        </div>
-        <div class="footer-card-arrow">›</div>
-    </button>
-    <button type="button" class="footer-line-card" onclick="App.jumpToLine(104)" title="ARL Airport Rail Link (Phaya Thai ↔ Suvarnabhumi)" aria-label="ARL Airport Rail Link">
-        <div class="footer-card-icon" style="background:rgba(138,21,56,0.12);border-color:rgba(138,21,56,0.3)">${getLineIconSvg(104, false, 20)}</div>
-        <div class="footer-card-info">
-            <div class="footer-card-name">Airport Rail Link</div>
-            <div class="footer-card-route">Phaya Thai ↔ Suvarnabhumi</div>
-        </div>
-        <div class="footer-card-arrow">›</div>
-    </button>
+<div class="footer-slider-wrapper" id="footerSliderWrapper">
+    <div class="footer-slider-track" id="footerSliderTrack">
+        <!-- Set 1 (10 Lines) -->
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(1)" title="BTS Sukhumvit Line (Khu Khot ↔ Kheha)" aria-label="BTS Sukhumvit Line">
+            <div class="footer-card-icon" style="background:rgba(122,180,32,0.12);border-color:rgba(122,180,32,0.3)">${getLineIconSvg(1, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">BTS Sukhumvit</span><span class="footer-card-dot">·</span><span class="footer-card-route">Khu Khot ↔ Kheha</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(2)" title="BTS Silom Line (National Stadium ↔ Bang Wa)" aria-label="BTS Silom Line">
+            <div class="footer-card-icon" style="background:rgba(0,128,125,0.12);border-color:rgba(0,128,125,0.3)">${getLineIconSvg(2, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">BTS Silom</span><span class="footer-card-dot">·</span><span class="footer-card-route">National Stadium ↔ Bang Wa</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(3)" title="APM Gold Line (Krung Thon Buri ↔ Khlong San)" aria-label="APM Gold Line">
+            <div class="footer-card-icon" style="background:rgba(201,160,56,0.12);border-color:rgba(201,160,56,0.3)">${getLineIconSvg(3, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">APM Gold Line</span><span class="footer-card-dot">·</span><span class="footer-card-route">Krung Thon Buri ↔ Khlong San</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(101)" title="MRT Blue Line (Tha Phra ↔ Lak Song)" aria-label="MRT Blue Line">
+            <div class="footer-card-icon" style="background:rgba(2,132,199,0.12);border-color:rgba(2,132,199,0.3)">${getLineIconSvg(101, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT Blue Line</span><span class="footer-card-dot">·</span><span class="footer-card-route">Tha Phra ↔ Lak Song</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(102)" title="MRT Purple Line (Khlong Bang Phai ↔ Tao Poon)" aria-label="MRT Purple Line">
+            <div class="footer-card-icon" style="background:rgba(138,44,155,0.12);border-color:rgba(138,44,155,0.3)">${getLineIconSvg(102, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT Purple Line</span><span class="footer-card-dot">·</span><span class="footer-card-route">Khlong Bang Phai ↔ Tao Poon</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(4)" title="MRT Yellow Line (Lat Phrao ↔ Samrong)" aria-label="MRT Yellow Line">
+            <div class="footer-card-icon" style="background:rgba(255,209,0,0.15);border-color:rgba(255,209,0,0.35)">${getLineIconSvg(4, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT Yellow Line</span><span class="footer-card-dot">·</span><span class="footer-card-route">Lat Phrao ↔ Samrong</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(5)" title="MRT Pink Line (Nonthaburi Civic Center ↔ Min Buri)" aria-label="MRT Pink Line">
+            <div class="footer-card-icon" style="background:rgba(236,72,153,0.12);border-color:rgba(236,72,153,0.3)">${getLineIconSvg(5, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT Pink Line</span><span class="footer-card-dot">·</span><span class="footer-card-route">Nonthaburi CC ↔ Min Buri</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(103)" title="SRT Dark Red Line (Krung Thep Aphiwat ↔ Rangsit)" aria-label="SRT Dark Red Line">
+            <div class="footer-card-icon" style="background:rgba(185,28,28,0.12);border-color:rgba(185,28,28,0.3)">${getLineIconSvg(103, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">SRT Dark Red</span><span class="footer-card-dot">·</span><span class="footer-card-route">Krung Thep Aphiwat ↔ Rangsit</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(105)" title="SRT Light Red Line (Krung Thep Aphiwat ↔ Taling Chan)" aria-label="SRT Light Red Line">
+            <div class="footer-card-icon" style="background:rgba(248,113,113,0.15);border-color:rgba(248,113,113,0.35)">${getLineIconSvg(105, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">SRT Light Red</span><span class="footer-card-dot">·</span><span class="footer-card-route">Aphiwat ↔ Taling Chan</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(104)" title="ARL Airport Rail Link (Phaya Thai ↔ Suvarnabhumi)" aria-label="ARL Airport Rail Link">
+            <div class="footer-card-icon" style="background:rgba(138,21,56,0.12);border-color:rgba(138,21,56,0.3)">${getLineIconSvg(104, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">Airport Rail Link</span><span class="footer-card-dot">·</span><span class="footer-card-route">Phaya Thai ↔ Suvarnabhumi</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+
+        <!-- Set 2 (10 Duplicate Lines for Seamless Infinite Loop) -->
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(1)" title="BTS Sukhumvit Line (Khu Khot ↔ Kheha)" aria-label="BTS Sukhumvit Line" aria-hidden="true" tabindex="-1">
+            <div class="footer-card-icon" style="background:rgba(122,180,32,0.12);border-color:rgba(122,180,32,0.3)">${getLineIconSvg(1, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">BTS Sukhumvit</span><span class="footer-card-dot">·</span><span class="footer-card-route">Khu Khot ↔ Kheha</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(2)" title="BTS Silom Line (National Stadium ↔ Bang Wa)" aria-label="BTS Silom Line" aria-hidden="true" tabindex="-1">
+            <div class="footer-card-icon" style="background:rgba(0,128,125,0.12);border-color:rgba(0,128,125,0.3)">${getLineIconSvg(2, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">BTS Silom</span><span class="footer-card-dot">·</span><span class="footer-card-route">National Stadium ↔ Bang Wa</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(3)" title="APM Gold Line (Krung Thon Buri ↔ Khlong San)" aria-label="APM Gold Line" aria-hidden="true" tabindex="-1">
+            <div class="footer-card-icon" style="background:rgba(201,160,56,0.12);border-color:rgba(201,160,56,0.3)">${getLineIconSvg(3, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">APM Gold Line</span><span class="footer-card-dot">·</span><span class="footer-card-route">Krung Thon Buri ↔ Khlong San</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(101)" title="MRT Blue Line (Tha Phra ↔ Lak Song)" aria-label="MRT Blue Line" aria-hidden="true" tabindex="-1">
+            <div class="footer-card-icon" style="background:rgba(2,132,199,0.12);border-color:rgba(2,132,199,0.3)">${getLineIconSvg(101, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT Blue Line</span><span class="footer-card-dot">·</span><span class="footer-card-route">Tha Phra ↔ Lak Song</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(102)" title="MRT Purple Line (Khlong Bang Phai ↔ Tao Poon)" aria-label="MRT Purple Line" aria-hidden="true" tabindex="-1">
+            <div class="footer-card-icon" style="background:rgba(138,44,155,0.12);border-color:rgba(138,44,155,0.3)">${getLineIconSvg(102, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT Purple Line</span><span class="footer-card-dot">·</span><span class="footer-card-route">Khlong Bang Phai ↔ Tao Poon</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(4)" title="MRT Yellow Line (Lat Phrao ↔ Samrong)" aria-label="MRT Yellow Line" aria-hidden="true" tabindex="-1">
+            <div class="footer-card-icon" style="background:rgba(255,209,0,0.15);border-color:rgba(255,209,0,0.35)">${getLineIconSvg(4, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT Yellow Line</span><span class="footer-card-dot">·</span><span class="footer-card-route">Lat Phrao ↔ Samrong</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(5)" title="MRT Pink Line (Nonthaburi Civic Center ↔ Min Buri)" aria-label="MRT Pink Line" aria-hidden="true" tabindex="-1">
+            <div class="footer-card-icon" style="background:rgba(236,72,153,0.12);border-color:rgba(236,72,153,0.3)">${getLineIconSvg(5, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT Pink Line</span><span class="footer-card-dot">·</span><span class="footer-card-route">Nonthaburi CC ↔ Min Buri</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(103)" title="SRT Dark Red Line (Krung Thep Aphiwat ↔ Rangsit)" aria-label="SRT Dark Red Line" aria-hidden="true" tabindex="-1">
+            <div class="footer-card-icon" style="background:rgba(185,28,28,0.12);border-color:rgba(185,28,28,0.3)">${getLineIconSvg(103, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">SRT Dark Red</span><span class="footer-card-dot">·</span><span class="footer-card-route">Krung Thep Aphiwat ↔ Rangsit</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(105)" title="SRT Light Red Line (Krung Thep Aphiwat ↔ Taling Chan)" aria-label="SRT Light Red Line" aria-hidden="true" tabindex="-1">
+            <div class="footer-card-icon" style="background:rgba(248,113,113,0.15);border-color:rgba(248,113,113,0.35)">${getLineIconSvg(105, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">SRT Light Red</span><span class="footer-card-dot">·</span><span class="footer-card-route">Aphiwat ↔ Taling Chan</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(104)" title="ARL Airport Rail Link (Phaya Thai ↔ Suvarnabhumi)" aria-label="ARL Airport Rail Link" aria-hidden="true" tabindex="-1">
+            <div class="footer-card-icon" style="background:rgba(138,21,56,0.12);border-color:rgba(138,21,56,0.3)">${getLineIconSvg(104, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">Airport Rail Link</span><span class="footer-card-dot">·</span><span class="footer-card-route">Phaya Thai ↔ Suvarnabhumi</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+    </div>
 </div>
 <div class="footer-refresh-note">
     ${getUiIcon('refresh', 14, 'var(--sky)')} Real-time data · Auto-refresh every 20 seconds · Covering all 10 transit lines across BKK & Vicinity
@@ -3220,6 +3270,15 @@ gQIDAQAB
             },
 
             toggleMapLegend() {
+                const sheet = document.getElementById('mapLegendSheet');
+                if (sheet) {
+                    const isActive = sheet.classList.toggle('active');
+                    const btnText = document.getElementById('mapLegendBtnText');
+                    if (btnText) {
+                        btnText.textContent = isActive ? (lang === 'en' ? 'Close' : 'ปิดสัญลักษณ์') : (lang === 'en' ? 'Legend' : 'สัญลักษณ์');
+                    }
+                    return;
+                }
                 const el = document.getElementById('mapLegendGroup');
                 if (!el) return;
                 const isHidden = el.getAttribute('display') === 'none' || el.style.display === 'none';
@@ -3234,6 +3293,164 @@ gQIDAQAB
                 if (btnText) {
                     btnText.textContent = isHidden ? (lang === 'en' ? 'Legend' : 'สัญลักษณ์') : (lang === 'en' ? 'Show Legend' : 'เปิดสัญลักษณ์');
                 }
+            },
+
+            setMapZoomDirect(zoomLevel) {
+                this.mapZoom = Math.min(2.5, Math.max(0.6, zoomLevel));
+                const svg = document.querySelector('#networkMapContainer svg');
+                if (svg) svg.style.transform = `scale(${this.mapZoom})`;
+            },
+
+            setupMapGestureHandlers() {
+                const vp = document.getElementById('mapViewport');
+                if (!vp || vp._gestureInitialized) return;
+                vp._gestureInitialized = true;
+
+                let isMouseDown = false;
+                let mouseStartX = 0, mouseStartY = 0;
+                let mouseScrollLeft = 0, mouseScrollTop = 0;
+                let isMouseDragging = false;
+
+                // --- Mouse Pan Handler (Smooth 1:1 Natural Drag) ---
+                vp.addEventListener('mousedown', (e) => {
+                    if (e.button !== 0) return; // Only primary (left) button
+                    isMouseDown = true;
+                    isMouseDragging = false;
+                    mouseStartX = e.clientX;
+                    mouseStartY = e.clientY;
+                    mouseScrollLeft = vp.scrollLeft;
+                    mouseScrollTop = vp.scrollTop;
+                    vp.style.cursor = 'grabbing';
+                });
+
+                window.addEventListener('mousemove', (e) => {
+                    if (!isMouseDown) return;
+                    const dx = e.clientX - mouseStartX;
+                    const dy = e.clientY - mouseStartY;
+                    if (!isMouseDragging && (Math.abs(dx) > 3 || Math.abs(dy) > 3)) {
+                        isMouseDragging = true;
+                    }
+                    if (isMouseDragging) {
+                        e.preventDefault();
+                        vp.scrollLeft = mouseScrollLeft - dx;
+                        vp.scrollTop = mouseScrollTop - dy;
+                    }
+                }, { passive: false });
+
+                window.addEventListener('mouseup', (e) => {
+                    if (!isMouseDown) return;
+                    isMouseDown = false;
+                    vp.style.cursor = 'grab';
+                    if (isMouseDragging) {
+                        vp._preventClick = true;
+                        setTimeout(() => { vp._preventClick = false; }, 120);
+                    }
+                    isMouseDragging = false;
+                });
+
+                // --- Touch Pan (1 finger) & Pinch-to-zoom (2 fingers) ---
+                let touchStartX = 0, touchStartY = 0;
+                let touchScrollLeft = 0, touchScrollTop = 0;
+                let isTouchDragging = false;
+                let initialDist = 0;
+                let initialZoom = 1;
+
+                vp.addEventListener('touchstart', (e) => {
+                    if (e.touches.length === 1) {
+                        isTouchDragging = false;
+                        touchStartX = e.touches[0].clientX;
+                        touchStartY = e.touches[0].clientY;
+                        touchScrollLeft = vp.scrollLeft;
+                        touchScrollTop = vp.scrollTop;
+                    } else if (e.touches.length === 2) {
+                        e.preventDefault();
+                        isTouchDragging = false;
+                        initialDist = Math.hypot(
+                            e.touches[0].clientX - e.touches[1].clientX,
+                            e.touches[0].clientY - e.touches[1].clientY
+                        );
+                        initialZoom = this.mapZoom || 1.0;
+                    }
+                }, { passive: false });
+
+                vp.addEventListener('touchmove', (e) => {
+                    if (e.touches.length === 1) {
+                        const dx = e.touches[0].clientX - touchStartX;
+                        const dy = e.touches[0].clientY - touchStartY;
+                        if (!isTouchDragging && (Math.abs(dx) > 3 || Math.abs(dy) > 3)) {
+                            isTouchDragging = true;
+                        }
+                        if (isTouchDragging) {
+                            e.preventDefault();
+                            vp.scrollLeft = touchScrollLeft - dx;
+                            vp.scrollTop = touchScrollTop - dy;
+                        }
+                    } else if (e.touches.length === 2 && initialDist > 0) {
+                        e.preventDefault();
+                        const currentDist = Math.hypot(
+                            e.touches[0].clientX - e.touches[1].clientX,
+                            e.touches[0].clientY - e.touches[1].clientY
+                        );
+                        const factor = currentDist / initialDist;
+                        this.setMapZoomDirect(initialZoom * factor);
+                    }
+                }, { passive: false });
+
+                vp.addEventListener('touchend', (e) => {
+                    if (e.touches.length === 0) {
+                        if (isTouchDragging) {
+                            vp._preventClick = true;
+                            setTimeout(() => { vp._preventClick = false; }, 120);
+                        }
+                        isTouchDragging = false;
+                        initialDist = 0;
+                    } else if (e.touches.length === 1) {
+                        touchStartX = e.touches[0].clientX;
+                        touchStartY = e.touches[0].clientY;
+                        touchScrollLeft = vp.scrollLeft;
+                        touchScrollTop = vp.scrollTop;
+                        isTouchDragging = false;
+                        initialDist = 0;
+                    }
+                }, { passive: true });
+            },
+
+            setupMobileZoomLock() {
+                // Prevent multi-touch pinch zoom everywhere except inside the interactive map viewport
+                document.addEventListener('touchstart', (e) => {
+                    if (e.touches.length > 1) {
+                        if (!e.target.closest('#mapViewport')) {
+                            e.preventDefault();
+                        }
+                    }
+                }, { passive: false });
+
+                document.addEventListener('touchmove', (e) => {
+                    if (e.touches.length > 1) {
+                        if (!e.target.closest('#mapViewport')) {
+                            e.preventDefault();
+                        }
+                    }
+                }, { passive: false });
+
+                // Prevent Safari/iOS gesturestart outside the interactive map viewport
+                document.addEventListener('gesturestart', (e) => {
+                    if (!e.target.closest('#mapViewport')) {
+                        e.preventDefault();
+                    }
+                }, { passive: false });
+
+                // Prevent double-tap to zoom everywhere except inside the interactive map viewport
+                let lastTouchEnd = 0;
+                document.addEventListener('touchend', (e) => {
+                    const now = Date.now();
+                    if (now - lastTouchEnd <= 300) {
+                        if (!e.target.closest('#mapViewport')) {
+                            e.preventDefault();
+                        }
+                    }
+                    lastTouchEnd = now;
+                }, { passive: false });
             },
 
             renderInteractiveMap(force = false) {
@@ -3296,7 +3513,7 @@ gQIDAQAB
                     'PK01': [318, 195], 'PK02': [340, 155], 'PK03': [365, 155], 'PK04': [390, 155],
                     'PK05': [415, 155], 'PK06': [440, 155], 'PK07': [465, 155], 'PK08': [490, 155],
                     'PK09': [515, 155], 'MT01': [515, 120], 'MT02': [515, 85],  'PK10': [540, 155],
-                    'PK11': [565, 155], 'PK12': [580, 155], 'PK13': [595, 155], 'PK14': [625, 155],
+                    'PK11': [563, 155], 'PK12': [584, 155], 'PK13': [605, 155], 'PK14': [625, 155],
                     'PK15': [675, 115], 'PK16': [740, 95],  'PK17': [800, 75],  'PK18': [855, 75],
                     'PK19': [910, 75],  'PK20': [965, 75],  'PK21': [1020, 75], 'PK22': [1075, 75],
                     'PK23': [1130, 75], 'PK24': [1185, 75], 'PK25': [1240, 85], 'PK26': [1285, 105],
@@ -3316,7 +3533,7 @@ gQIDAQAB
                 };
 
                 const STATION_DIRS = {
-                    'N24':'t','N23':'t','N22':'t','N21':'t','N20':'t','N19':'t','N18':'t',
+                    'N24':'tr45','N23':'br45','N22':'tr45','N21':'br45','N20':'tr45','N19':'br45','N18':'tr45',
                     'N17':'tl','N16':'r','N15':'r','N14':'r','N13':'r','N12':'r','N11':'r','N10':'r','N9':'l',
                     'N8':'l','N7':'r','N5':'r','N4':'r','N3':'r','N2':'l','N1':'r','CEN':'tr',
                     'E1':'b','E2':'b','E3':'b','E4':'t','E5':'b','E6':'b','E7':'b','E8':'b',
@@ -3340,14 +3557,14 @@ gQIDAQAB
                     'BL05':'l','BL06':'l','BL07':'l','BL08':'l','BL09':'l','BL10':'t',
                     'BL33':'r','BL34':'r','BL35':'b','BL36':'b','BL37':'b','BL38':'b',
 
-                    'PP01':'t','PP02':'r','PP03':'t','PP04':'t','PP05':'t','PP06':'t','PP07':'t',
+                    'PP01':'t','PP02':'r','PP03':'tr45','PP04':'br45','PP05':'tr45','PP06':'br45','PP07':'t',
                     'PP08':'t','PP09':'t','PP10':'t','PP11':'l','PP12':'l','PP13':'l','PP14':'l',
                     'PP15':'l','PP16':'l',
 
-                    'PK01':'r','PK02':'t','PK03':'t','PK04':'t','PK05':'t','PK06':'t','PK07':'t',
-                    'PK08':'t','PK09':'t','MT01':'r','MT02':'r','PK10':'t','PK11':'t','PK12':'t',
-                    'PK13':'t','PK14':'r','PK15':'t','PK16':'b','PK17':'t','PK18':'t','PK19':'t',
-                    'PK20':'t','PK21':'t','PK22':'t','PK23':'t','PK24':'t','PK25':'tr','PK26':'tr',
+                    'PK01':'r','PK02':'tr45','PK03':'br45','PK04':'tr45','PK05':'br45','PK06':'tr45','PK07':'br45',
+                    'PK08':'tr45','PK09':'b','MT01':'r','MT02':'r','PK10':'tr45','PK11':'br45','PK12':'tr45',
+                    'PK13':'br45','PK14':'r','PK15':'tr','PK16':'b','PK17':'tr45','PK18':'br45','PK19':'tr45',
+                    'PK20':'br45','PK21':'tr45','PK22':'br45','PK23':'tr45','PK24':'br45','PK25':'tr','PK26':'tr',
                     'PK27':'tr','PK28':'tr','PK29':'tr','PK30':'r',
 
                     'YL01':'r','YL02':'t','YL03':'t','YL04':'t','YL05':'t','YL06':'t','YL07':'t',
@@ -3404,7 +3621,7 @@ gQIDAQAB
                     const s = this.findStation(code);
                     const plane = (code === 'A1' || code === 'RN08') ? '✈ ' : '';
                     if (s) {
-                        return `${plane}${code} ${stName(s)}`;
+                        return `${plane}${stName(s)}`;
                     }
                     return `${plane}${code}`;
                 };
@@ -3417,23 +3634,34 @@ gQIDAQAB
                                 <feComposite in="SourceGraphic" in2="blur" operator="over" />
                             </filter>
                             <filter id="mapShadow" x="-10%" y="-10%" width="120%" height="120%">
-                                <feDropShadow dx="0" dy="3" stdDeviation="4" flood-opacity="0.12" />
+                                <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.10" />
                             </filter>
                         </defs>
 
-                        <!-- Background River (Chao Phraya) -->
-                        <path d="M 180,-10 C 190,130 380,240 405,370 C 435,490 385,630 430,705 C 485,780 575,815 575,860 C 575,930 520,1050 560,1210" fill="none" stroke="#38bdf8" stroke-width="36" stroke-linecap="round" opacity="0.30" />
-                        <text x="435" y="785" fill="#0284c7" font-size="13" font-weight="800" opacity="0.55" transform="rotate(45 435 785)">แม่น้ำเจ้าพระยา (Chao Phraya River)</text>
+                        <!-- Background River (Chao Phraya) - Layered Soft Stream -->
+                        <path d="M 180,-10 C 190,130 380,240 405,370 C 435,490 385,630 430,705 C 485,780 575,815 575,860 C 575,930 520,1050 560,1210" fill="none" stroke="var(--map-river-glow, rgba(56,189,248,0.18))" stroke-width="48" stroke-linecap="round" />
+                        <path d="M 180,-10 C 190,130 380,240 405,370 C 435,490 385,630 430,705 C 485,780 575,815 575,860 C 575,930 520,1050 560,1210" fill="none" stroke="var(--map-river-stream, #38bdf8)" stroke-width="26" stroke-linecap="round" opacity="0.32" />
+                        <g transform="rotate(45 435 785)">
+                            <rect x="345" y="771" width="180" height="20" rx="10" fill="var(--map-canvas-bg, #f8fafc)" opacity="0.85" />
+                            <text x="435" y="785" fill="var(--sky, #0284c7)" font-family="var(--font-main)" font-size="11.5" font-weight="700" letter-spacing="0.5" text-anchor="middle" dominant-baseline="middle">แม่น้ำเจ้าพระยา (Chao Phraya)</text>
+                        </g>
 
-                        <!-- Interchange Connector Links -->
+                        <!-- Interchange Connector Links (Clean Capsule Pill Style) -->
                         ${INTERCHANGE_PAIRS.map(([a, b]) => {
                             const [x1, y1] = MAP_STATION_COORDS[a];
                             const [x2, y2] = MAP_STATION_COORDS[b];
-                            return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#ffffff" stroke-width="11" stroke-linecap="round" />
-                                    <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#64748b" stroke-width="4.5" stroke-linecap="round" />`;
+                            return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="var(--map-line-casing, #ffffff)" stroke-width="13" stroke-linecap="round" />
+                                    <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="var(--map-interchange-link, #64748b)" stroke-width="5" stroke-linecap="round" opacity="0.85" />
+                                    <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="var(--map-line-casing, #ffffff)" stroke-width="2.5" stroke-linecap="round" />`;
                         }).join('')}
 
-                        <!-- Transit Lines -->
+                        <!-- Transit Lines - Layer 1: Casing Underlay (Clean Track Separation) -->
+                        ${LINES.map(line => {
+                            const pts = line.stations.map(st => MAP_STATION_COORDS[st].join(',')).join(' ');
+                            return `<polyline points="${pts}" fill="none" stroke="var(--map-line-casing, #ffffff)" stroke-width="${line.width + 4.5}" stroke-linecap="round" stroke-linejoin="round" />`;
+                        }).join('')}
+
+                        <!-- Transit Lines - Layer 2: Vibrant Track Lines -->
                         ${LINES.map(line => {
                             const pts = line.stations.map(st => MAP_STATION_COORDS[st].join(',')).join(' ');
                             return `<polyline points="${pts}" fill="none" stroke="${line.color}" stroke-width="${line.width}" stroke-linecap="round" stroke-linejoin="round" />`;
@@ -3444,91 +3672,67 @@ gQIDAQAB
                             const col = getStColor(key);
                             const isInter = INTERCHANGE_SET.has(key);
                             const dir = STATION_DIRS[key] || 'r';
-                            let tx = cx, ty = cy, anchor = 'start';
-                            if (dir === 'r') { tx = cx + 8.5; ty = cy + 3.2; anchor = 'start'; }
-                            else if (dir === 'l') { tx = cx - 8.5; ty = cy + 3.2; anchor = 'end'; }
-                            else if (dir === 't') { tx = cx; ty = cy - 8.5; anchor = 'middle'; }
-                            else if (dir === 'b') { tx = cx; ty = cy + 13; anchor = 'middle'; }
-                            else if (dir === 'tr') { tx = cx + 8; ty = cy - 6.5; anchor = 'start'; }
-                            else if (dir === 'br') { tx = cx + 8; ty = cy + 12; anchor = 'start'; }
-                            else if (dir === 'tl') { tx = cx - 8; ty = cy - 6.5; anchor = 'end'; }
-                            else if (dir === 'bl') { tx = cx - 8; ty = cy + 12; anchor = 'end'; }
+                            const is4 = key.length > 3;
+                            const codeFontSize = is4 ? '4.7' : (key.length === 3 ? '5.3' : '5.8');
+                            const nodeRadius = isInter ? 9.2 : (is4 ? 7.8 : 7.2);
+                            const offsetDist = nodeRadius + 3.8;
+
+                            let tx = cx, ty = cy, anchor = 'start', rot = 0;
+                            if (dir === 'r') {
+                                tx = cx + offsetDist; ty = cy + 3.2; anchor = 'start';
+                            } else if (dir === 'l') {
+                                tx = cx - offsetDist; ty = cy + 3.2; anchor = 'end';
+                            } else if (dir === 't') {
+                                tx = cx; ty = cy - (offsetDist + 1); anchor = 'middle';
+                            } else if (dir === 'b') {
+                                tx = cx; ty = cy + (offsetDist + 6.5); anchor = 'middle';
+                            } else if (dir === 'tr') {
+                                tx = cx + (offsetDist * 0.75); ty = cy - (offsetDist * 0.7); anchor = 'start';
+                            } else if (dir === 'br') {
+                                tx = cx + (offsetDist * 0.75); ty = cy + (offsetDist * 0.85); anchor = 'start';
+                            } else if (dir === 'tl') {
+                                tx = cx - (offsetDist * 0.75); ty = cy - (offsetDist * 0.7); anchor = 'end';
+                            } else if (dir === 'bl') {
+                                tx = cx - (offsetDist * 0.75); ty = cy + (offsetDist * 0.85); anchor = 'end';
+                            } else if (dir === 'tr45') {
+                                tx = cx + (offsetDist * 0.72); ty = cy - (offsetDist * 0.72); anchor = 'start'; rot = -45;
+                            } else if (dir === 'br45') {
+                                tx = cx + (offsetDist * 0.72); ty = cy + (offsetDist * 0.72); anchor = 'start'; rot = 45;
+                            } else if (dir === 'tl45') {
+                                tx = cx - (offsetDist * 0.72); ty = cy - (offsetDist * 0.72); anchor = 'end'; rot = 45;
+                            } else if (dir === 'bl45') {
+                                tx = cx - (offsetDist * 0.72); ty = cy + (offsetDist * 0.72); anchor = 'end'; rot = -45;
+                            }
 
                             let circleSvg = '';
                             if (key === 'CEN') {
-                                circleSvg = `<circle cx="${cx}" cy="${cy}" r="9" fill="#ffffff" stroke="#10213a" stroke-width="4" class="map-node" /><circle cx="${cx}" cy="${cy}" r="5" fill="#7AB420" />`;
+                                circleSvg = `
+                                    <circle cx="${cx}" cy="${cy}" r="11.5" fill="var(--map-line-casing, #ffffff)" stroke="var(--map-line-casing, #ffffff)" stroke-width="2.5" class="map-node" />
+                                    <circle cx="${cx}" cy="${cy}" r="10.2" fill="var(--map-node-bg, #ffffff)" stroke="#00807D" stroke-width="2.6" />
+                                    <circle cx="${cx}" cy="${cy}" r="8.2" fill="var(--map-node-bg, #ffffff)" stroke="#7AB420" stroke-width="1.6" />
+                                    <text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="central" fill="var(--map-node-text, #0f172a)" font-family="var(--font-main)" font-size="6.0" font-weight="900" letter-spacing="0" style="pointer-events:none;">CEN</text>`;
                             } else if (isInter) {
-                                circleSvg = `<circle cx="${cx}" cy="${cy}" r="7" fill="#ffffff" stroke="${col}" stroke-width="3.5" class="map-node" />`;
+                                circleSvg = `
+                                    <circle cx="${cx}" cy="${cy}" r="${nodeRadius + 1.2}" fill="var(--map-line-casing, #ffffff)" stroke="var(--map-line-casing, #ffffff)" stroke-width="2" class="map-node" />
+                                    <circle cx="${cx}" cy="${cy}" r="${nodeRadius}" fill="var(--map-node-bg, #ffffff)" stroke="${col}" stroke-width="3" />
+                                    <text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="central" fill="var(--map-node-text, #0f172a)" font-family="var(--font-main)" font-size="${codeFontSize}" font-weight="800" letter-spacing="0" style="pointer-events:none;">${key}</text>`;
                             } else {
-                                circleSvg = `<circle cx="${cx}" cy="${cy}" r="4.2" fill="#ffffff" stroke="${col}" stroke-width="2.6" class="map-node" />`;
+                                circleSvg = `
+                                    <circle cx="${cx}" cy="${cy}" r="${nodeRadius + 1.2}" fill="var(--map-line-casing, #ffffff)" stroke="var(--map-line-casing, #ffffff)" stroke-width="1.8" class="map-node" />
+                                    <circle cx="${cx}" cy="${cy}" r="${nodeRadius}" fill="var(--map-node-bg, #ffffff)" stroke="${col}" stroke-width="2.2" />
+                                    <text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="central" fill="var(--map-node-text, #0f172a)" font-family="var(--font-main)" font-size="${codeFontSize}" font-weight="800" letter-spacing="0" style="pointer-events:none;">${key}</text>`;
                             }
 
-                            return `<g class="map-node-group" onclick="App.onMapStationClick('${key}')" style="cursor:pointer;">
+                            const rotAttr = rot ? ` transform="rotate(${rot} ${tx} ${ty})"` : '';
+                            return `<g class="map-node-group" onclick="App.onMapStationClick('${key}')" style="cursor:pointer;" tabindex="0" role="button" aria-label="${esc(key)} ${esc(mapLbl(key))}">
                                         ${circleSvg}
-                                        <text x="${tx}" y="${ty}" class="map-label" text-anchor="${anchor}">${mapLbl(key)}</text>
+                                        <text x="${tx}" y="${ty}"${rotAttr} class="map-label" text-anchor="${anchor}">${mapLbl(key)}</text>
                                     </g>`;
                         }).join('')}
-
-                        <!-- Map Legend Box (Positioned at bottom-center open gulf, avoiding all stations) -->
-                        <g transform="translate(680, 915)" class="map-legend" id="mapLegendGroup">
-                            <rect width="440" height="255" rx="10" fill="rgba(255,255,255,0.94)" stroke="#cbd5e1" stroke-width="1.2" filter="url(#mapShadow)" />
-                            <text x="14" y="24" font-size="12" font-weight="800" fill="#0f172a">${lang === 'th' ? 'สัญลักษณ์สายรถไฟฟ้า (Transit Lines)' : 'Transit Lines Legend'}</text>
-                            <g onclick="App.toggleMapLegend()" style="cursor:pointer;" transform="translate(410, 10)">
-                                <rect width="20" height="20" rx="4" fill="rgba(203,213,225,0.3)" />
-                                <text x="10" y="10" font-size="12" font-weight="800" fill="#64748b" text-anchor="middle" dominant-baseline="central">✕</text>
-                            </g>
-                            
-                            <!-- Column 1 -->
-                            <line x1="16" y1="46" x2="34" y2="46" stroke="#7AB420" stroke-width="4" stroke-linecap="round"/>
-                            <text x="42" y="49.5" font-size="10" font-weight="700" fill="#334155">${lang === 'th' ? 'สายสุขุมวิท' : 'Sukhumvit Line'}</text>
-
-                            <line x1="16" y1="68" x2="34" y2="68" stroke="#00807D" stroke-width="4" stroke-linecap="round"/>
-                            <text x="42" y="71.5" font-size="10" font-weight="700" fill="#334155">${lang === 'th' ? 'สายสีลม' : 'Silom Line'}</text>
-
-                            <line x1="16" y1="90" x2="34" y2="90" stroke="#B89D18" stroke-width="4" stroke-linecap="round"/>
-                            <text x="42" y="93.5" font-size="10" font-weight="700" fill="#334155">${lang === 'th' ? 'สายสีทอง' : 'Gold Line'}</text>
-
-                            <line x1="16" y1="112" x2="34" y2="112" stroke="#0284C7" stroke-width="4" stroke-linecap="round"/>
-                            <text x="42" y="115.5" font-size="9.5" font-weight="700" fill="#334155">${lang === 'th' ? 'สายสีน้ำเงิน (เฉลิมรัชมงคล)' : 'Blue Line (Chaloem Ratch.)'}</text>
-
-                            <line x1="16" y1="134" x2="34" y2="134" stroke="#8A2C9B" stroke-width="4" stroke-linecap="round"/>
-                            <text x="42" y="137.5" font-size="9.5" font-weight="700" fill="#334155">${lang === 'th' ? 'สายสีม่วง (ฉลองรัชธรรม)' : 'Purple Line (Chalong Ratch.)'}</text>
-
-                            <!-- Column 2 -->
-                            <line x1="218" y1="46" x2="236" y2="46" stroke="#EC4899" stroke-width="4" stroke-linecap="round"/>
-                            <text x="244" y="49.5" font-size="9.5" font-weight="700" fill="#334155">${lang === 'th' ? 'สายสีชมพู (วิวัฒน์นคร)' : 'Pink Line (Wiwat Nakhon)'}</text>
-
-                            <line x1="218" y1="68" x2="236" y2="68" stroke="#EAB308" stroke-width="4" stroke-linecap="round"/>
-                            <text x="244" y="71.5" font-size="9.5" font-weight="700" fill="#334155">${lang === 'th' ? 'สายสีเหลือง (นัคราพิพัฒน์)' : 'Yellow Line (Nakkhara Phiphat)'}</text>
-
-                            <line x1="218" y1="90" x2="236" y2="90" stroke="#B91C1C" stroke-width="4" stroke-linecap="round"/>
-                            <text x="244" y="93.5" font-size="9.5" font-weight="700" fill="#334155">${lang === 'th' ? 'สายสีแดงเข้ม (ธานีรัถยา)' : 'Dark Red Line (Thani Ratthaya)'}</text>
-
-                            <line x1="218" y1="112" x2="236" y2="112" stroke="#F87171" stroke-width="4" stroke-linecap="round"/>
-                            <text x="244" y="115.5" font-size="9.5" font-weight="700" fill="#334155">${lang === 'th' ? 'สายสีแดงอ่อน (นครวิถี)' : 'Light Red Line (Nakhon Withi)'}</text>
-
-                            <line x1="218" y1="134" x2="236" y2="134" stroke="#8A1538" stroke-width="4" stroke-linecap="round"/>
-                            <text x="244" y="137.5" font-size="10" font-weight="700" fill="#334155">${lang === 'th' ? 'แอร์พอร์ต ลิงก์' : 'Airport Rail Link'}</text>
-
-                            <!-- Transfer Station & Airport Indicator -->
-                            <g transform="translate(16, 160)">
-                                <line x1="0" y1="12" x2="20" y2="12" stroke="#64748b" stroke-width="3" stroke-linecap="round"/>
-                                <circle cx="0" cy="12" r="5" fill="#fff" stroke="#334155" stroke-width="2.5"/>
-                                <circle cx="20" cy="12" r="5" fill="#fff" stroke="#334155" stroke-width="2.5"/>
-                                <text x="30" y="15.5" font-size="10" font-weight="700" fill="#334155">${lang === 'th' ? 'จุดเชื่อมต่อข้ามสาย (Interchange)' : 'Interchange Station'}</text>
-                            </g>
-                            <g transform="translate(16, 185)">
-                                <text x="0" y="12" font-size="11" fill="#0284c7">✈</text>
-                                <text x="20" y="12" font-size="10" font-weight="700" fill="#334155">${lang === 'th' ? 'เชื่อมต่อท่าอากาศยาน (สนามบิน)' : 'Airport Connection'}</text>
-                            </g>
-                            <g transform="translate(16, 210)">
-                                <rect width="8" height="8" rx="2" fill="#7AB420" y="3"/>
-                                <text x="16" y="10.5" font-size="9" fill="#64748b">${lang === 'th' ? 'แตะที่สถานีเพื่อเลือกเป็นจุดเริ่มต้น/ปลายทาง' : 'Tap any station node to plan route'}</text>
-                            </g>
-                        </g>
                     </svg>`;
 
                 container.innerHTML = svg;
+                this.setupMapGestureHandlers();
                 if (!force) {
                     const vp = document.getElementById('mapViewport');
                     if (vp) {
@@ -3544,6 +3748,8 @@ gQIDAQAB
 
             /* ---------- THE SKYTRAINs: Tap-to-Route Floating Action Sheet ---------- */
             onMapStationClick(stationKey) {
+                const vp = document.getElementById('mapViewport');
+                if (vp && (vp._preventClick || vp._justDragged)) return;
                 this.selectedMapStationKey = stationKey;
                 this.activeMapStationKey = stationKey;
                 const s = this.findStation(stationKey);
@@ -4513,6 +4719,7 @@ gQIDAQAB
             },
 
             async init() {
+                this.setupMobileZoomLock();
                 if (typeof window !== 'undefined' && window.isFlutterApp) {
                     try { document.documentElement.classList.add('is-flutter-app'); } catch (e) { }
                 }

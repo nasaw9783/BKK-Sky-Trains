@@ -1024,33 +1024,49 @@
             opacity: 1;
         }
 
-        /* Compact layout on small mobile screens (< 480px) preserving exact single-row layout of Image 2 */
+        /* Mobile Responsive layout (< 480px): กล่องชื่อสถานีแสดงเต็มทุกตัวอักษร ไม่หลุดกรอบ และปัดเลื่อนได้นุ่มนวล */
         @media (max-width: 480px) {
             #nearestAltRow,
             .nearest-alt-row {
-                gap: 4px;
-                padding: 4px 2px;
+                display: flex;
+                flex-direction: row;
+                flex-wrap: nowrap;
+                justify-content: flex-start;
+                align-items: center;
+                gap: 6px;
+                padding: 4px 4px;
+                overflow-x: auto;
+                overflow-y: hidden;
+                scroll-snap-type: x mandatory;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
             }
 
             #nearestAltRow .alt-chip,
             .nearest-alt-row .alt-chip {
+                flex: 0 0 auto !important;
+                width: auto !important;
+                min-width: max-content !important;
+                scroll-snap-align: start;
+                display: inline-flex;
                 flex-direction: row;
                 align-items: center;
-                justify-content: space-between;
-                padding: 4px 6px;
-                gap: 3px;
-                height: 33px;
-                min-height: 33px;
+                justify-content: flex-start;
+                padding: 4px 9px;
+                gap: 5px;
+                height: 34px;
+                min-height: 34px;
+                box-sizing: border-box;
             }
 
             #nearestAltRow .alt-chip .chip-row-top,
             .nearest-alt-row .alt-chip .chip-row-top {
                 display: inline-flex;
                 align-items: center;
-                gap: 3px;
-                min-width: 0;
-                flex: 1 1 auto;
-                overflow: hidden;
+                gap: 4px;
+                min-width: max-content;
+                flex: 0 0 auto;
+                overflow: visible;
             }
 
             #nearestAltRow .alt-chip .chip-row-top svg,
@@ -1063,41 +1079,42 @@
 
             #nearestAltRow .alt-chip .st-key,
             .nearest-alt-row .alt-chip .st-key {
-                min-width: 19px;
-                height: 16px;
-                padding: 1px 3px 0 3px;
-                font-size: 8.8px;
+                min-width: 20px;
+                height: 17px;
+                padding: 1px 4px 0 4px;
+                font-size: 9px;
                 flex-shrink: 0;
             }
 
             #nearestAltRow .alt-chip .chip-name,
             .nearest-alt-row .alt-chip .chip-name {
-                font-size: 10px;
+                font-size: 11px;
+                font-weight: 700;
                 white-space: nowrap;
-                overflow: hidden;
-                text-overflow: ellipsis;
+                overflow: visible;
+                text-overflow: clip; /* แสดงเต็มทุกตัวอักษร ไม่ตัดคำด้วยจุดไข่ปลา */
                 text-align: left;
-                flex: 1 1 auto;
-                min-width: 0;
-                line-height: 1.1;
+                flex: 0 0 auto;
+                min-width: max-content;
+                line-height: 1.2;
             }
 
             #nearestAltRow .alt-chip .chip-name.long,
             .nearest-alt-row .alt-chip .chip-name.long {
-                font-size: 9px;
-                letter-spacing: -0.15px;
+                font-size: 10.5px;
+                letter-spacing: normal;
             }
 
             #nearestAltRow .alt-chip .chip-name.xlong,
             .nearest-alt-row .alt-chip .chip-name.xlong {
-                font-size: 8.2px;
-                letter-spacing: -0.25px;
+                font-size: 10px;
+                letter-spacing: normal;
             }
 
             #nearestAltRow .alt-chip .chip-name.xxlong,
             .nearest-alt-row .alt-chip .chip-name.xxlong {
-                font-size: 7.5px;
-                letter-spacing: -0.35px;
+                font-size: 9.5px;
+                letter-spacing: normal;
             }
 
             #nearestAltRow .alt-chip .km-bottom,
@@ -1105,10 +1122,10 @@
                 display: inline-flex;
                 align-items: center;
                 justify-content: flex-end;
-                margin-left: auto;
+                margin-left: 2px;
                 width: auto;
                 text-align: right;
-                font-size: 8.8px;
+                font-size: 9.5px;
                 font-weight: 600;
                 color: var(--muted);
                 white-space: nowrap;
@@ -1123,53 +1140,53 @@
             #nearestAltRow,
             .nearest-alt-row {
                 padding: 3px 2px;
+                gap: 5px;
             }
 
             #nearestAltRow .alt-chip,
             .nearest-alt-row .alt-chip {
-                padding: 3px 4px;
-                gap: 2.5px;
-                height: 31px;
-                min-height: 31px;
+                padding: 4px 7px;
+                gap: 4px;
+                height: 33px;
+                min-height: 33px;
             }
 
             #nearestAltRow .alt-chip .chip-row-top,
             .nearest-alt-row .alt-chip .chip-row-top {
-                gap: 2px;
+                gap: 3px;
             }
 
             #nearestAltRow .alt-chip .st-key,
             .nearest-alt-row .alt-chip .st-key {
-                min-width: 17px;
-                height: 15px;
-                padding: 0 2px;
-                font-size: 8px;
+                min-width: 18px;
+                height: 16px;
+                padding: 1px 3px 0 3px;
+                font-size: 8.5px;
             }
 
             #nearestAltRow .alt-chip .chip-name,
             .nearest-alt-row .alt-chip .chip-name {
-                font-size: 9.2px;
+                font-size: 10px;
             }
 
             #nearestAltRow .alt-chip .chip-name.long,
             .nearest-alt-row .alt-chip .chip-name.long {
-                font-size: 8.5px;
+                font-size: 9.5px;
             }
 
             #nearestAltRow .alt-chip .chip-name.xlong,
             .nearest-alt-row .alt-chip .chip-name.xlong {
-                font-size: 7.8px;
+                font-size: 9px;
             }
 
             #nearestAltRow .alt-chip .chip-name.xxlong,
             .nearest-alt-row .alt-chip .chip-name.xxlong {
-                font-size: 7.2px;
-                letter-spacing: -0.4px;
+                font-size: 8.5px;
             }
 
             #nearestAltRow .alt-chip .km-bottom,
             .nearest-alt-row .alt-chip .km-bottom {
-                font-size: 8px;
+                font-size: 8.8px;
             }
         }
 
@@ -1936,6 +1953,70 @@
             font-size: 8.5px;
             padding: 1px 4px;
             border-radius: 4px;
+        }
+
+        /* Flutter Mobile App: แสดงชื่อสถานีใกล้เคียงแบบเต็มทุกตัวอักษร ไม่หลุดกรอบ */
+        html.is-flutter-app #nearestAltRow,
+        html.is-flutter-app .nearest-alt-row {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: nowrap;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 6px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        html.is-flutter-app #nearestAltRow .alt-chip,
+        html.is-flutter-app .nearest-alt-row .alt-chip {
+            flex: 0 0 auto !important;
+            width: auto !important;
+            min-width: max-content !important;
+            scroll-snap-align: start;
+            display: inline-flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 4px 9px;
+            gap: 5px;
+            height: 34px;
+            min-height: 34px;
+            box-sizing: border-box;
+        }
+        html.is-flutter-app #nearestAltRow .alt-chip .chip-row-top,
+        html.is-flutter-app .nearest-alt-row .alt-chip .chip-row-top {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            min-width: max-content;
+            flex: 0 0 auto;
+            overflow: visible;
+        }
+        html.is-flutter-app #nearestAltRow .alt-chip .chip-name,
+        html.is-flutter-app .nearest-alt-row .alt-chip .chip-name {
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: visible;
+            text-overflow: clip;
+            flex: 0 0 auto;
+            min-width: max-content;
+            line-height: 1.2;
+        }
+        html.is-flutter-app #nearestAltRow .alt-chip .km-bottom,
+        html.is-flutter-app .nearest-alt-row .alt-chip .km-bottom {
+            display: inline-flex;
+            align-items: center;
+            justify-content: flex-end;
+            margin-left: 2px;
+            font-size: 9.5px;
+            font-weight: 600;
+            white-space: nowrap;
+            flex: 0 0 auto;
+            line-height: 1;
         }
 
         /* ===== Modern Frequency Table Container ===== */

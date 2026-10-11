@@ -6,7 +6,7 @@
 | เอกสาร | รายละเอียด |
 | :--- | :--- |
 | **ชื่อผลิตภัณฑ์** | **BKK SKYTRAINs** (Bangkok SkyTrains & Mass Transit Companion) |
-| **เวอร์ชันเอกสาร** | 1.3.3 (Production Release) |
+| **เวอร์ชันเอกสาร** | 1.3.4 (Production Release) |
 | **สถานะ** | Active / Production |
 | **แพลตฟอร์มที่รองรับ** | Progressive Web App (PWA), Android (Native Hybrid APK), iOS (Native Hybrid IPA) |
 | **กลุ่มเป้าหมาย** | ผู้โดยสารรถไฟฟ้าในกรุงเทพฯ และปริมณฑล (คนไทย, ชาวต่างชาติ, นักท่องเที่ยว) |
@@ -249,7 +249,13 @@ flowchart LR
 
 ## 8. แผนการพัฒนาในอนาคต (Product Roadmap)
 
-- **v1.3.3 (Completed / Current Production Release):**
+- **v1.3.4 (Completed / Current Production Release):**
+  - กรองขบวนรถศูนย์ซ่อมบำรุงและขบวนรถทดสอบเปล่า (Depot / Empty Trains Filtering เช่น `YL00`, `PK00`) ออกจากการแสดงผล Live TTA
+  - ตรวจสอบช่วงเวลาเปิดให้บริการจริงของสายรถไฟฟ้า (Transit Operating Hours: 05:30/06:00 - 24:00 น.) เพื่อป้องกันไม่ให้นำข้อมูลทดสอบเวลากลางคืนมาแสดงเป็นขบวนรถจริง
+  - ปรับปรุงการแสดงผลชิปสถานีใกล้เคียง (Nearest Station Alt Chips) บนจอมือถือขนาดเล็ก (`< 480px`) ให้แสดงชื่อเต็มทุกตัวอักษรไม่หลุดกรอบ และปัดเลื่อนแนวนอนได้อย่างนุ่มนวล (`scroll-snap-type`)
+  - อัปเกรด Service Worker แคชเป็นเวอร์ชัน `bts-v49`
+  - ปรับปรุง GitHub Actions CI/CD Workflow (`.github/workflows/build_ios.yml`) พร้อมสร้าง Release Notes สมบูรณ์แบบและแพ็กเกจ iOS IPA เวอร์ชัน `v1.3.4`
+- **v1.3.3 (Completed):**
   - มาตรฐานการจัดองค์ประกอบกึ่งกลางกรอบข้อความและสัญลักษณ์ (Project Element Centering Standard) ทั้ง Station Code, Theme Button, Line Icons, Badges
   - แยกข้อมูลการแสดงผลสายสีแดงเข้ม (SRT Dark Red 103) และสายสีแดงอ่อน (SRT Light Red 105) ในโมเดลและหน้าจอแอป Flutter
   - อัปเกรด Service Worker แคชเป็นเวอร์ชัน `bts-v48`

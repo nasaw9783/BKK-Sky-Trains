@@ -5895,6 +5895,14 @@ gQIDAQAB
                     }
                 }
                 for (const p of data.platform_list || []) {
+                    // กรองขบวนรถศูนย์ซ่อมบำรุง / ขบวนรถเปล่า (เช่น YL00, PK00) ออกตั้งแต่ต้น
+                    if (Array.isArray(p.train_list)) {
+                        p.train_list = p.train_list.filter(t => {
+                            const isDepot = (t.station_key && /^[A-Z]{1,3}00$/i.test(t.station_key))
+                                || (t.trainNo && /depot|test|empty/i.test(t.trainNo));
+                            return !isDepot;
+                        });
+                    }
                     for (const t of p.train_list || []) {
                         const num = (t.time_come !== '--' && t.time_come != null) ? parseFloat(t.time_come) : NaN;
                         const base = (!isNaN(num) && num >= 0) ? num : (t.time_come_double != null ? t.time_come_double : null);
@@ -7039,14 +7047,45 @@ gQIDAQAB
             return null;
         }
 
-        // กรองขบวนที่แสดงได้ของชานชาลา (จัดการขบวนที่ API ตอบ time_come = "--"):
+        // ตรวจสอบช่วงเวลาเปิดให้บริการจริงของสายรถไฟฟ้า (Transit Operating Hours)
+        // เพื่อป้องกันไม่ให้นำ Telemetry ทดสอบในศูนย์ซ่อมบำรุงหรือข้อมูลค้างมาแสดงเป็นรถไฟจริง
+        function isTransitOperatingHours(lineId) {
+            const now = new Date();
+            const nowMin = now.getHours() * 60 + now.getMinutes();
+            const id = Number(lineId) || 0;
+            // สายสีเหลือง (4) และสายสีชมพู (5): ให้บริการ 06:00 - 24:00 น. (ปิด 00:30 - 05:25 น.)
+            if (id === 4 || id === 5) {
+                if (nowMin >= 30 && nowMin < 325) return false;
+            } else {
+                // สายอื่นๆ ในกรุงเทพฯ (BTS/MRT): ให้บริการ 05:30 - 24:00 น. (ปิด 00:45 - 05:15 น.)
+                if (nowMin >= 45 && nowMin < 315) return false;
+            }
+            return true;
+        }
+
+        // กรองขบวนที่แสดงได้ของชานชาลา (จัดการขบวนที่ API ตอบ time_come = "--" หรือขบวนศูนย์ซ่อมบำรุง):
+        // - กรองขบวนรถศูนย์ซ่อมบำรุง/รถเปล่า (เช่น YL00, PK00) ออกทั้งหมด
+        // - ช่วงเวลาปิดให้บริการ ไม่อนุญาตให้นำขบวนหลอก (ETA <= 0 หรือ status arriving) มาแสดงเป็น "กำลังเข้า"
         // - "--" และไม่มีความจำ (เช่นเพิ่งเปิดเว็บครั้งแรก) → ตัดทิ้ง ขบวนถัดไปเลื่อนขึ้นมาแทน
         // - "--" มีความจำ แต่มีขบวนอื่นที่เวลาจริง "น้อยกว่า" ค่าที่จำไว้ → ขบวนนี้ออกไปแล้ว
         //   (ขบวนหลังแซงขบวนหน้าไม่ได้บนรางเดียวกัน) ความจำเก่าเกินจริง ตัดทิ้งเช่นกัน
         // ผลคือบางชานชาลาอาจแสดงแค่ 1-2 ขบวน — ดีกว่าโชว์กล่อง "--" ที่ไม่บอกอะไร
         function displayTrains(stationKey, platform, list, fetchedAt) {
+            const st = App.findStation(stationKey);
+            const lineId = st ? st.StationLineId : 0;
+            const isOperating = isTransitOperatingHours(lineId);
             const out = [];
             for (const t of list || []) {
+                // 1. กรองขบวนศูนย์ซ่อมบำรุง/รถเปล่า (Depot / Non-passenger Trains) เช่น YL00, PK00
+                const isDepotTrain = (t.station_key && /^[A-Z]{1,3}00$/i.test(t.station_key))
+                    || (t.trainNo && /depot|test|empty/i.test(t.trainNo));
+                if (isDepotTrain) continue;
+
+                // 2. ช่วงเวลาปิดให้บริการ ไม่อนุญาตให้ขบวนรถหลอก/Telemetry ค้างแสดงเป็น "กำลังเข้า" (status 'arriving' หรือ ETA 0)
+                if (!isOperating && (t.status === 'arriving' || t.time_come === '0' || t.time_come_double === 0)) {
+                    continue;
+                }
+
                 if (t.status !== 'pending') { out.push(t); continue; }   // มาแล้ว/จอดอยู่ — แสดงเสมอ
                 if (t.time_come !== '--' && t.time_come_double != null) { out.push(t); continue; }
                 const eta = bestEta(stationKey, platform, t, fetchedAt);
@@ -7156,11 +7195,11 @@ gQIDAQAB
             return ensureTwoPlatformsForTerminal(station, platforms || []);
         }
 
-        // error จาก TTA ที่แปลว่า "นอกเวลาให้บริการ" ไม่ใช่เน็ตล่ม — ช่วงกลางคืน (เช่น 1–5 am)
+        // error จาก TTA ที่แปลว่า "นอกเวลาให้บริการ" ไม่ใช่เน็ตล่ม — ช่วงกลางคืน (เช่น 00:30–05:25 น.)
         // API จะตอบทำนอง "this Line is unavailable" หรืออยู่ในช่วงที่ไม่มีรถวิ่งจริง ๆ
         function isOffServiceError(msg) {
             const nowMin = new Date().getHours() * 60 + new Date().getMinutes();
-            const inOffWindow = nowMin >= 60 && nowMin < 300; // 01:00–05:00
+            const inOffWindow = nowMin >= 30 && nowMin < 325; // 00:30–05:25 นอกเวลาเดินรถของ กทม.
             // อย่าตีความว่า network error หรือ Failed to fetch คือนอกเวลาให้บริการ
             const isNetErr = /failed to fetch|network|connectfail|abort|timeout/i.test(msg || '');
             if (isNetErr) return false;
@@ -7183,6 +7222,19 @@ gQIDAQAB
             const platforms = visiblePlatformsForStation(station, arr.platforms || []);
             if (!platforms.length)
                 return offHoursNote;
+
+            // ตรวจสอบว่าอยู่ในช่วงเวลาปิดให้บริการหรือไม่
+            const isOperating = isTransitOperatingHours(station?.StationLineId);
+            if (!isOperating) {
+                // หากอยู่นอกเวลาให้บริการ และไม่มีขบวนรถรับส่งผู้โดยสารจริงที่ใช้งานได้เลย → แสดง offHoursNote ทันที
+                const hasValidPassengerTrains = platforms.some(p => {
+                    const valid = displayTrains(station.StationKey, p.platform, p.train_list, arr.fetchedAt);
+                    return valid.length > 0;
+                });
+                if (!hasValidPassengerTrains) {
+                    return offHoursNote;
+                }
+            }
 
             // จัดกลุ่มชานชาลาตาม LineId (สถานีทั่วไป = กลุ่มเดียว, สยาม = 2 กลุ่ม)
             const groups = [];

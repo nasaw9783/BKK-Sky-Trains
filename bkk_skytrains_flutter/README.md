@@ -19,6 +19,7 @@
    - รองรับมาตรฐานไอคอนรูปรถไฟประจำสายสีเฉพาะ (`getLineIconSvg`)
    - รองรับมาตรฐานการจัดกึ่งกลางของกรอบข้อความและสัญลักษณ์ (Station Codes, Line Badges, Control Buttons)
    - ผสานการทำงานร่วมกับไลบรารี `JSEncrypt` (`assets/www/js/jsencrypt.min.js`) สำหรับความปลอดภัยของข้อมูล
+   - ระบบกรองขบวนรถศูนย์ซ่อมบำรุง/รถเปล่า (`YL00`, `PK00`) และตรวจสอบเวลาเปิดให้บริการ (Operating Hours Validation)
 4. **Clean Platform Footprint**:
    - รองรับเฉพาะ **Android** และ **iOS**
    - ตัดโฟลเดอร์ boilerplate ที่ไม่จำเป็น (Linux, macOS, Windows Desktop) ออกทั้งหมด เพื่อลดขนาดโปรเจกต์และประหยัดพื้นที่จัดเก็บ

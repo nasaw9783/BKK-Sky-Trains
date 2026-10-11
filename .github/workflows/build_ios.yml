@@ -8,7 +8,7 @@ on:
         type: boolean
         default: true
       custom_tag:
-        description: 'Custom tag name (optional, e.g. v1.3.3)'
+        description: 'Custom tag name (optional, e.g. v1.3.4)'
         required: false
         type: string
         default: ''
@@ -130,6 +130,17 @@ jobs:
           prerelease: false
           make_latest: true
           fail_on_unmatched_files: false
+          body: |
+            ### 🚆 BKK SkyTrains Production Release
+            - **iOS App**: Production Release IPA (`BKK_SkyTrains_iOS_v${{ steps.app_version.outputs.version_base }}.ipa`, `BKK_SkyTrains_iOS_latest.ipa`, `BKK_SkyTrains_iOS_unsigned.ipa`)
+            - **Android App**: Production Release APK (`BKK_SkyTrains_Android_latest.apk`)
+            - **Key Highlights**:
+              - Depot & maintenance train telemetry filtering (`YL00`, `PK00`).
+              - Real-time transit operating hours validation (05:30/06:00 - 24:00).
+              - Nearest alternate stations smooth horizontal scrolling on mobile displays.
+              - Unified element centering and train line icon standards.
+              - Service worker cache updated (`bts-v49`).
+            - **Integrity**: SHA-256 checksums provided for all distribution packages.
           files: |
             bkk_skytrains_flutter/BKK_SkyTrains_iOS_latest.ipa
             bkk_skytrains_flutter/BKK_SkyTrains_iOS_latest.ipa.sha256

@@ -137,3 +137,5 @@ flutter build apk --release
    - สคริปต์ PowerShell ทั้งหมดต้องบันทึกด้วยรูปแบบ **UTF-8 with BOM**
 3. **Automated CI/CD**:
    - ฝั่ง iOS รองรับการบิลด์ไฟล์ `.ipa` อัตโนมัติผ่าน GitHub Actions (`.github/workflows/build_ios.yml`) บน macOS runner พร้อมดึงเวอร์ชันจาก `pubspec.yaml` อัตโนมัติ, สร้างไฟล์แพ็กเกจ `BKK_SkyTrains_iOS_latest.ipa` และ `BKK_SkyTrains_iOS_v*.ipa`, สร้าง SHA-256 Checksum และเผยแพร่ลง GitHub Releases อัตโนมัติ
+4. **Zero-Waste Pruning & Workspace Cleanliness**:
+   - ถ้าไฟล์หรือแอพไหนไม่สำคัญต่อระบบแล้ว และไม่ทำลายระบบให้เสียหาย ให้ลบทิ้งได้ทันทีหลังแก้ไขหรือทดสอบไฟล์ทุกครั้ง เพื่อรักษาความสะอาดของ Workspace และความปลอดภัยของระบบ

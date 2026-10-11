@@ -5538,6 +5538,7 @@ gQIDAQAB
             updatePopupDistance(station) {
                 const targetStation = station || this.popupStation || this.pinnedStation();
                 if (!targetStation) return;
+                const chipEl = document.getElementById('nearestPopupDistanceChip');
                 const distEl = document.getElementById('nearestPopupDistance');
                 const distLbl = document.getElementById('nearestPopupDistLbl');
                 if (!distEl && !distLbl) return;
@@ -5549,6 +5550,9 @@ gQIDAQAB
                     : null);
 
                 const isAtStation = km != null && km <= 0.12;
+                if (chipEl) {
+                    chipEl.classList.toggle('at-station', isAtStation);
+                }
                 if (distEl) {
                     distEl.innerHTML = km != null
                         ? (isAtStation ? `${getUiIcon('pin', 13, '#10b981')} ${T('atStation')}` : fmtDist(km))
@@ -5597,7 +5601,7 @@ gQIDAQAB
 
             pinStation(key) {
                 this.pinnedKey = key;
-                this.renderNearest();
+                this.renderNearest(true);
                 this.renderTraffic();
                 const pinned = this.pinnedStation();
                 if (pinned) {
@@ -5809,8 +5813,9 @@ gQIDAQAB
             },
 
             /* ---------- render: nearest card ---------- */
-            renderNearest() {
+            renderNearest(scrollActiveChip = false) {
                 const el = document.getElementById('nearestBody');
+                if (!el) return;
                 if (this.locating && !this.nearest) {
                     el.innerHTML = `<button class="btn btn-big" onclick="App.locate(true)"><span class="spin"></span> ${T('locating')}</button>`;
                     return;
@@ -5826,6 +5831,9 @@ gQIDAQAB
                 const color = s.StationLineColor || '#7AB420';
                 const arr = this.arrivals[s.StationKey];
                 const staticTime = usesStaticTimetable(s);
+
+                const prevAltRow = el.querySelector('.alt-row');
+                const prevScrollLeft = prevAltRow ? prevAltRow.scrollLeft : null;
 
                 const chips = this.nearestList.map(r => {
                     const isSel = r.station.StationKey === this.pinnedKey;
@@ -5867,17 +5875,58 @@ gQIDAQAB
                         ${distChip}
                     </div>
                     ${this.renderCrowdGauge(s)}
-                    <div class="alt-row">${chips}</div>
+                    <div class="alt-row" id="nearestAltRow">${chips}</div>
                     ${renderPlatformSection(s, arr)}
                     ${renderRouteSection(s)}`;
+
+                const newAltRow = document.getElementById('nearestAltRow');
+                const activeChip = newAltRow ? newAltRow.querySelector('.alt-chip.on') : null;
+                if (newAltRow && activeChip) {
+                    requestAnimationFrame(() => {
+                        const chipLeft = activeChip.offsetLeft;
+                        const chipWidth = activeChip.offsetWidth;
+                        const containerWidth = newAltRow.clientWidth;
+                        const targetScroll = Math.max(0, chipLeft - (containerWidth / 2) + (chipWidth / 2));
+                        if (scrollActiveChip) {
+                            newAltRow.scrollTo({
+                                left: targetScroll,
+                                behavior: 'smooth'
+                            });
+                        } else if (prevScrollLeft != null) {
+                            newAltRow.scrollLeft = prevScrollLeft;
+                        } else if (targetScroll > 0) {
+                            newAltRow.scrollLeft = targetScroll;
+                        }
+                    });
+                } else if (newAltRow && prevScrollLeft != null) {
+                    newAltRow.scrollLeft = prevScrollLeft;
+                }
+
                 this.updatePopupDistance(s);
             },
 
             /* ---------- render: line tabs ---------- */
             renderTabs() {
                 if (!this.lines.length) return;
+                const tabsEl = document.getElementById('lineTabs');
+                if (!tabsEl) return;
                 const allLines = [...this.lines, ...MRT_STATIC_DB.lines];
-                document.getElementById('lineTabs').innerHTML = allLines.map(l => {
+                const existingTabs = tabsEl.querySelectorAll('.tab');
+                if (existingTabs.length === allLines.length) {
+                    existingTabs.forEach((tabBtn, idx) => {
+                        const l = allLines[idx];
+                        const on = l.LineId === this.activeLine;
+                        const st = this.traffic?.lines?.find(x => x.LineId === l.LineId);
+                        const warn = st && st.TrafficStatus !== 1 ? ` ${getUiIcon('alert', 12, '#ef4444')}` : '';
+                        tabBtn.className = `tab ${on ? 'on' : ''}`;
+                        tabBtn.style.background = on ? l.LineColor : '';
+                        tabBtn.innerHTML = `
+                            ${getLineIconSvg(l.LineId, on, 18)}
+                            <span>${esc(shortLineName(l))}${warn}</span>`;
+                    });
+                    return;
+                }
+                tabsEl.innerHTML = allLines.map(l => {
                     const on = l.LineId === this.activeLine;
                     const st = this.traffic?.lines?.find(x => x.LineId === l.LineId);
                     const warn = st && st.TrafficStatus !== 1 ? ` ${getUiIcon('alert', 12, '#ef4444')}` : '';

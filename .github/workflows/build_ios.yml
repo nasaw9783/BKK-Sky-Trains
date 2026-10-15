@@ -1,4 +1,4 @@
-﻿name: Build iOS & Android Apps
+name: Build iOS & Android Apps
 
 on:
   workflow_dispatch:
@@ -89,9 +89,9 @@ jobs:
           VERSION_BASE="${{ steps.app_version.outputs.version_base }}"
           echo "Building Android APK for release v${VERSION_BASE}..."
           flutter build apk --release
-          mkdir -p ../releases
-          cp build/app/outputs/flutter-apk/app-release.apk "../releases/BKK_SkyTrains_V.${VERSION_BASE}.apk"
-          shasum -a 256 "../releases/BKK_SkyTrains_V.${VERSION_BASE}.apk" > "../releases/BKK_SkyTrains_V.${VERSION_BASE}.apk.sha256"
+          mkdir -p ../releases/.apk-.aab
+          cp build/app/outputs/flutter-apk/app-release.apk "../releases/.apk-.aab/BKK_SkyTrains_V.${VERSION_BASE}.apk"
+          shasum -a 256 "../releases/.apk-.aab/BKK_SkyTrains_V.${VERSION_BASE}.apk" > "../releases/.apk-.aab/BKK_SkyTrains_V.${VERSION_BASE}.apk.sha256"
 
       - name: Build Android App Bundle (AAB Release)
         working-directory: bkk_skytrains_flutter
@@ -99,9 +99,9 @@ jobs:
           VERSION_BASE="${{ steps.app_version.outputs.version_base }}"
           echo "Building Android App Bundle for release v${VERSION_BASE}..."
           flutter build appbundle --release
-          mkdir -p ../releases
-          cp build/app/outputs/bundle/release/app-release.aab "../releases/BKK_SkyTrains_V.${VERSION_BASE}.aab"
-          shasum -a 256 "../releases/BKK_SkyTrains_V.${VERSION_BASE}.aab" > "../releases/BKK_SkyTrains_V.${VERSION_BASE}.aab.sha256"
+          mkdir -p ../releases/.apk-.aab
+          cp build/app/outputs/bundle/release/app-release.aab "../releases/.apk-.aab/BKK_SkyTrains_V.${VERSION_BASE}.aab"
+          shasum -a 256 "../releases/.apk-.aab/BKK_SkyTrains_V.${VERSION_BASE}.aab" > "../releases/.apk-.aab/BKK_SkyTrains_V.${VERSION_BASE}.aab.sha256"
 
       - name: Build iOS (Release without Codesign)
         working-directory: bkk_skytrains_flutter
@@ -113,9 +113,9 @@ jobs:
           VERSION_BASE="${{ steps.app_version.outputs.version_base }}"
           mkdir -p Payload
           cp -r build/ios/iphoneos/Runner.app Payload/
-          mkdir -p ../releases
-          zip -r -9 "../releases/BKK_SkyTrains_V.${VERSION_BASE}.ipa" Payload
-          shasum -a 256 "../releases/BKK_SkyTrains_V.${VERSION_BASE}.ipa" > "../releases/BKK_SkyTrains_V.${VERSION_BASE}.ipa.sha256"
+          mkdir -p ../releases/IPA
+          zip -r -9 "../releases/IPA/BKK_SkyTrains_V.${VERSION_BASE}.ipa" Payload
+          shasum -a 256 "../releases/IPA/BKK_SkyTrains_V.${VERSION_BASE}.ipa" > "../releases/IPA/BKK_SkyTrains_V.${VERSION_BASE}.ipa.sha256"
           rm -rf Payload
 
       - name: Upload Release Artifacts
@@ -123,12 +123,12 @@ jobs:
         with:
           name: BKK_SkyTrains_Release_Packages
           path: |
-            releases/BKK_SkyTrains_V.*.ipa
-            releases/BKK_SkyTrains_V.*.ipa.sha256
-            releases/BKK_SkyTrains_V.*.apk
-            releases/BKK_SkyTrains_V.*.apk.sha256
-            releases/BKK_SkyTrains_V.*.aab
-            releases/BKK_SkyTrains_V.*.aab.sha256
+            releases/IPA/BKK_SkyTrains_V.*.ipa
+            releases/IPA/BKK_SkyTrains_V.*.ipa.sha256
+            releases/.apk-.aab/BKK_SkyTrains_V.*.apk
+            releases/.apk-.aab/BKK_SkyTrains_V.*.apk.sha256
+            releases/.apk-.aab/BKK_SkyTrains_V.*.aab
+            releases/.apk-.aab/BKK_SkyTrains_V.*.aab.sha256
           retention-days: 14
 
       - name: Clean up older releases (if requested)
@@ -182,12 +182,12 @@ jobs:
               - Unified element centering and train line icon standards.
             - **Security & Integrity**: Cryptographic SHA-256 checksums provided for all distribution packages.
           files: |
-            releases/BKK_SkyTrains_V.*.ipa
-            releases/BKK_SkyTrains_V.*.ipa.sha256
-            releases/BKK_SkyTrains_V.*.apk
-            releases/BKK_SkyTrains_V.*.apk.sha256
-            releases/BKK_SkyTrains_V.*.aab
-            releases/BKK_SkyTrains_V.*.aab.sha256
+            releases/IPA/BKK_SkyTrains_V.*.ipa
+            releases/IPA/BKK_SkyTrains_V.*.ipa.sha256
+            releases/.apk-.aab/BKK_SkyTrains_V.*.apk
+            releases/.apk-.aab/BKK_SkyTrains_V.*.apk.sha256
+            releases/.apk-.aab/BKK_SkyTrains_V.*.aab
+            releases/.apk-.aab/BKK_SkyTrains_V.*.aab.sha256
           generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

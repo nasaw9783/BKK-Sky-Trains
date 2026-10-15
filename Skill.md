@@ -41,10 +41,9 @@ C:\Users\Administrator\Documents\BKK Sky Trains\
 │   └── pubspec.yaml                # Flutter dependencies (Android & iOS v1.3.6+10)
 │
 ├── [3. Releases & CI/CD]
-│   ├── releases/                   # แหล่งเก็บตัวติดตั้ง (.apk, .aab, .ipa, .sha256)
-│   │   ├── BKK_SkyTrains_V.xxxx.apk
-│   │   ├── BKK_SkyTrains_V.xxxx.aab
-│   │   └── BKK_SkyTrains_V.xxxx.ipa
+│   ├── releases/                   # แหล่งเก็บตัวติดตั้ง (แบ่งแยกเป็น .apk-.aab และ IPA)
+│   │   ├── .apk-.aab/              # BKK_SkyTrains_V.xxxx.apk, .aab (.sha256)
+│   │   └── IPA/                    # BKK_SkyTrains_V.xxxx.ipa (.sha256)
 │   └── .github/workflows/          # CI/CD Workflows (build_ios.yml สำหรับบิลด์ iOS .ipa และ Android .apk อัตโนมัติ)
 │
 └── [4. Documentation & Specifications]
@@ -134,8 +133,8 @@ flutter clean
 flutter pub get
 flutter analyze
 flutter build apk --release
-# คัดลอกผลลัพธ์ไปยัง releases/
-Copy-Item -Path "build\app\outputs\flutter-apk\app-release.apk" -Destination "..\releases\BKK_SkyTrains_V.1.3.6.apk" -Force
+# คัดลอกผลลัพธ์ไปยัง releases/.apk-.aab/
+Copy-Item -Path "build\app\outputs\flutter-apk\app-release.apk" -Destination "..\releases\.apk-.aab\BKK_SkyTrains_V.1.3.6.apk" -Force
 flutter clean
 cd ..
 ```

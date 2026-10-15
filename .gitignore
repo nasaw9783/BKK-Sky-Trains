@@ -29,6 +29,11 @@ Desktop.ini
 .gemini/
 
 # Release packages / binaries
-releases/*.apk
-releases/*.aab
-releases/*.ipa
+!releases/.apk-.aab/
+!releases/**/
+releases/*/*.apk
+releases/*/*.aab
+releases/*/*.ipa
+releases/BKK_SkyTrains_*.apk
+releases/BKK_SkyTrains_*.aab
+releases/BKK_SkyTrains_*.ipa

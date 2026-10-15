@@ -1545,27 +1545,43 @@ gQIDAQAB
             return postJSON(TTA_URL(), { data: bodyBase64, lang: 'th' }, { 'Authkey': authKey }, 5000);
         }
 
+        const _inFlightArrivals = new Map();
+
         async function fetchArrivals(station) {
-            const payload = { StationId: station.StationId, StationKey: station.StationKey };
-            const order = [ttaMode, ...TTA_MODES.filter(m => m !== ttaMode)];
-            let lastErr = null;
-            for (const mode of order) {
-                let res;
-                try { res = await attemptTTA(mode, payload); }
-                catch (e) { lastErr = e; continue; }   // ช่องทางนี้ล่ม/CORS → ลองช่องทางถัดไป
-                if (res.status === 200 && res.data?.ErrMessage === 'Success') {
-                    rememberTtaMode(mode);
-                    return res.data.data; // { StationName_TH, StationKey, time, platform_list: [...] }
-                }
-                // ได้คำตอบจริงจาก API แต่ไม่ Success (เช่น "this Line is unavailable")
-                // = ช่องทางใช้ได้ ไม่ต้องลองช่องทางอื่นให้เสียเวลา
-                if (res.status === 200 && res.data && res.data.ErrCode !== undefined) {
-                    rememberTtaMode(mode);
-                    throw new Error(res.data.ErrMessage || 'API error');
-                }
-                lastErr = new Error(T('connectFail', res.status));
+            if (!station) throw new Error('station required');
+            const key = station.StationKey;
+            if (_inFlightArrivals.has(key)) {
+                return _inFlightArrivals.get(key);
             }
-            throw lastErr || new Error(T('connectFail', '?'));
+            const promise = (async () => {
+                const payload = { StationId: station.StationId, StationKey: station.StationKey };
+                const order = [ttaMode, ...TTA_MODES.filter(m => m !== ttaMode)];
+                let lastErr = null;
+                for (const mode of order) {
+                    let res;
+                    try { res = await attemptTTA(mode, payload); }
+                    catch (e) { lastErr = e; continue; }   // ช่องทางนี้ล่ม/CORS → ลองช่องทางถัดไป
+                    if (res.status === 200 && res.data?.ErrMessage === 'Success') {
+                        rememberTtaMode(mode);
+                        return res.data.data; // { StationName_TH, StationKey, time, platform_list: [...] }
+                    }
+                    // ได้คำตอบจริงจาก API แต่ไม่ Success (เช่น "this Line is unavailable")
+                    // = ช่องทางใช้ได้ ไม่ต้องลองช่องทางอื่นให้เสียเวลา
+                    if (res.status === 200 && res.data && res.data.ErrCode !== undefined) {
+                        rememberTtaMode(mode);
+                        throw new Error(res.data.ErrMessage || 'API error');
+                    }
+                    lastErr = new Error(T('connectFail', res.status));
+                }
+                throw lastErr || new Error(T('connectFail', '?'));
+            })();
+
+            _inFlightArrivals.set(key, promise);
+            try {
+                return await promise;
+            } finally {
+                _inFlightArrivals.delete(key);
+            }
         }
 
         // เส้นทาง from→to: คืน data.RoutesMap = [{RoutesJorney, TotalTime, TotalKm,
@@ -1697,12 +1713,26 @@ gQIDAQAB
             return Number(id) === GOLD_LINE_ID;
         }
 
+        function isPinkLineId(id) {
+            return Number(id) === 5;
+        }
+
+        function isPinkStationKey(key) {
+            return typeof key === 'string' && (key.startsWith('PK') || key.startsWith('MT'));
+        }
+
         function isMrtStationKey(key) {
             return !!MRT_STATION_BY_KEY[key] || key.startsWith('RN') || key.startsWith('RW') || key.startsWith('A') || key.startsWith('B') || key.startsWith('OR');
         }
 
         function usesStaticTimetable(station) {
-            return !!station && (station.StaticJourney === true || isMrtStationKey(station.StationKey) || isGoldLineId(station.StationLineId));
+            return !!station && (
+                station.StaticJourney === true ||
+                isMrtStationKey(station.StationKey) ||
+                isGoldLineId(station.StationLineId) ||
+                isPinkLineId(station.StationLineId) ||
+                isPinkStationKey(station.StationKey)
+            );
         }
 
         const SRT_RED_STATION_INDEX = {
@@ -6377,18 +6407,18 @@ setOriginFromActionSheet() {
 
                 this.updatePopupDistance(station);
 
-                // เรนเดอร์ชานชาลา & เวลาเดินรถสด แบบเดียวกันกับที่แสดงตรงสถานีใกล้คุณที่สุด ทันที!
+                // เรนเดอร์ชานชาลา & เวลาเดินรถสด และตำแหน่งขบวนรถ (route map) แบบพร้อมกันทันที
                 if (platContainer) {
                     const arr = this.arrivals[station.StationKey];
                     if (arr && arr.platforms && arr.platforms.length) {
-                        platContainer.innerHTML = renderPlatformSection(station, arr);
+                        platContainer.innerHTML = renderPlatformSection(station, arr) + renderRouteSection(station);
                     } else {
                         platContainer.innerHTML = `<div class="empty-note" style="padding:14px"><span class="spin dark"></span><br>${T('loadingTrains')}</div>`;
                         this.loadArrivals(station, true).then(() => {
                             const freshArr = this.arrivals[station.StationKey];
                             const curPlat = document.getElementById('nearestPopupPlatforms');
                             if (curPlat && this.popupStation?.StationKey === station.StationKey) {
-                                curPlat.innerHTML = renderPlatformSection(station, freshArr);
+                                curPlat.innerHTML = renderPlatformSection(station, freshArr) + renderRouteSection(station);
                             }
                         });
                     }
@@ -6430,6 +6460,7 @@ setOriginFromActionSheet() {
                 if (modal) {
                     modal.style.display = 'none';
                 }
+                this.popupStation = null;
             },
 
             selectNearestFromPopup() {
@@ -6479,39 +6510,75 @@ setOriginFromActionSheet() {
                 if (!station) return;
                 const key = station.StationKey;
                 const cur = this.arrivals[key];
+                const isTargetVisible = (this.pinnedStation()?.StationKey === key
+                    || this.expandedKey === key
+                    || this.popupStation?.StationKey === key);
+
                 if (usesStaticTimetable(station)) {
                     const data = generateTimetableArrivals(station);
                     if (data) {
                         this.storeArrivals(key, data);
-                        if ((this.pinnedStation()?.StationKey === key || this.expandedKey === key)
-                            && this.arrivals[key].platforms.length)
-                            this.loadRoute(station);
+                        if (isTargetVisible && this.arrivals[key].platforms.length) {
+                            // ดึงตำแหน่งขบวนรถ (route map) แบบพร้อมกันทันที
+                            await this.loadRoute(station);
+                        }
                     } else {
                         this.arrivals[key] = { ...(cur || {}), loading: false, error: null, fetchedAt: Date.now(), time: null, platforms: [] };
                     }
                     this.renderArrivalTargets(key);
                     return;
                 }
-                if (cur?.loading) return;
+
+                if (cur?.loading) {
+                    if (isTargetVisible && (!this.routes[key] || !this.routes[key].ready)) {
+                        this.loadRoute(station);
+                    }
+                    return;
+                }
+
                 if (!force && cur && Date.now() - cur.fetchedAt < 8000 && !cur.error) {
+                    if (isTargetVisible && (!this.routes[key] || !this.routes[key].ready)) {
+                        this.loadRoute(station);
+                    }
                     this.renderArrivalTargets(key);
                     return;
                 }
+
                 this.arrivals[key] = { ...(cur || {}), loading: true };
                 this.renderArrivalTargets(key);
-                try {
-                    const data = await fetchArrivals(station);
-                    this.storeArrivals(key, data);
-                    // โหลดตำแหน่งขบวนรอบสถานี (route map) เฉพาะสถานีที่กำลังแสดงอยู่
-                    if ((this.pinnedStation()?.StationKey === key || this.expandedKey === key)
-                        && this.arrivals[key].platforms.length)
-                        this.loadRoute(station);
-                } catch (e) {
-                    this.arrivals[key] = {
-                        ...(cur || {}), loading: false,
-                        error: e.message || T('connectFail', '?')
-                    };
-                }
+
+                // ดึงเวลาเดินรถ (arrival) และตำแหน่งขบวนรอบสถานี (route map) แบบพร้อมกันทันที (Concurrent Execution)
+                const routePromise = isTargetVisible ? this.loadRoute(station) : Promise.resolve();
+
+                const arrivalPromise = (async () => {
+                    try {
+                        let data = await fetchArrivals(station);
+                        const hasTrains = Array.isArray(data?.platform_list) && data.platform_list.some(p => Array.isArray(p.train_list) && p.train_list.length > 0);
+                        if (!hasTrains && isTransitOperatingHours(station.StationLineId)) {
+                            const fallbackData = generateTimetableArrivals(station);
+                            if (fallbackData?.platform_list?.length) {
+                                data = fallbackData;
+                            }
+                        }
+                        this.storeArrivals(key, data);
+                    } catch (e) {
+                        let fallbackData = null;
+                        if (isTransitOperatingHours(station.StationLineId)) {
+                            fallbackData = generateTimetableArrivals(station);
+                        }
+                        if (fallbackData?.platform_list?.length) {
+                            this.storeArrivals(key, fallbackData);
+                        } else {
+                            this.arrivals[key] = {
+                                ...(cur || {}), loading: false,
+                                error: e.message || T('connectFail', '?')
+                            };
+                        }
+                    }
+                    this.renderArrivalTargets(key);
+                })();
+
+                await Promise.all([arrivalPromise, routePromise]);
                 this.renderArrivalTargets(key);
             },
 
@@ -6558,22 +6625,37 @@ setOriginFromActionSheet() {
 
             // ดึงเวลารถของสถานีอื่นแบบเงียบ ๆ (ใช้กับสถานีข้างเคียงของ route map)
             async ensureArrivals(station) {
+                if (!station) return [];
+                const k = station.StationKey;
                 if (usesStaticTimetable(station)) {
-                    const k = station.StationKey;
                     if (!this.arrivals[k] || !this.arrivals[k].platforms || !this.arrivals[k].platforms.length) {
                         const data = generateTimetableArrivals(station);
                         if (data) this.storeArrivals(k, data);
                     }
                     return (this.arrivals[k] && this.arrivals[k].platforms) || [];
                 }
-                const k = station.StationKey, cur = this.arrivals[k];
+                const cur = this.arrivals[k];
                 if (cur && !cur.loading && !cur.error && Date.now() - cur.fetchedAt < 10000)
                     return cur.platforms || [];
                 try {
-                    const d = await fetchArrivals(station);
+                    let d = await fetchArrivals(station);
+                    const hasTrains = Array.isArray(d?.platform_list) && d.platform_list.some(p => Array.isArray(p.train_list) && p.train_list.length > 0);
+                    if (!hasTrains && isTransitOperatingHours(station.StationLineId)) {
+                        const fallbackData = generateTimetableArrivals(station);
+                        if (fallbackData?.platform_list?.length) {
+                            d = fallbackData;
+                        }
+                    }
                     this.storeArrivals(k, d);
                     return this.arrivals[k].platforms;
                 } catch (e) {
+                    if (isTransitOperatingHours(station.StationLineId)) {
+                        const fallbackData = generateTimetableArrivals(station);
+                        if (fallbackData?.platform_list?.length) {
+                            this.storeArrivals(k, fallbackData);
+                            return this.arrivals[k].platforms;
+                        }
+                    }
                     return (cur && cur.platforms) || [];
                 }
             },
@@ -6596,25 +6678,28 @@ setOriginFromActionSheet() {
             },
 
             // โหลดข้อมูลสถานีข้างเคียง (prev/next ของทุกสายที่ผ่านสถานีนี้) เพื่อวาดตำแหน่งขบวน
+            // ดึงสถานีข้างเคียงทุกสายแบบพร้อมกันคู่ขนาน (Promise.all)
             // เก็บข้อมูลเดิมไว้จนกว่าชุดใหม่จะพร้อม (atomic swap) — ขบวนบน map จะไม่กระพริบหาย
             async loadRoute(station) {
+                if (!station) return;
                 const key = station.StationKey;
                 if (this.routes[key]?.loading) return;
                 this.routes[key] = { ...(this.routes[key] || {}), loading: true };
-                const blocks = [];
                 const allLines = this.getAllLines();
-                for (const line of allLines) {
+                const linePromises = allLines.map(async line => {
                     const list = line.StationList;
                     const idx = list.findIndex(s => s.StationKey === key);
-                    if (idx < 0) continue;
+                    if (idx < 0) return null;
                     const prev = idx > 0 ? list[idx - 1] : null;
                     const next = idx < list.length - 1 ? list[idx + 1] : null;
                     const adj = {};
-                    await Promise.all([prev, next].filter(Boolean).map(async s => {
+                    const neighbors = [prev, next].filter(Boolean);
+                    await Promise.all(neighbors.map(async s => {
                         adj[s.StationKey] = await this.ensureArrivals(s);
                     }));
-                    blocks.push({ lineId: line.LineId, color: line.LineColor, list, idx, prev, next, adj });
-                }
+                    return { lineId: line.LineId, color: line.LineColor, list, idx, prev, next, adj };
+                });
+                const blocks = (await Promise.all(linePromises)).filter(Boolean);
                 this.routes[key] = { loading: false, ready: true, at: Date.now(), blocks };
                 this.renderArrivalTargets(key);
             },
@@ -6653,7 +6738,7 @@ setOriginFromActionSheet() {
                     const platContainer = document.getElementById('nearestPopupPlatforms');
                     if (platContainer) {
                         const s = this.popupStation;
-                        platContainer.innerHTML = renderPlatformSection(s, this.arrivals[key]);
+                        platContainer.innerHTML = renderPlatformSection(s, this.arrivals[key]) + renderRouteSection(s);
                     }
                 }
             },
@@ -6833,6 +6918,50 @@ setOriginFromActionSheet() {
                 }).join('');
             },
 
+            getLineRepresentativeStation(lineId) {
+                const allLines = this.getAllLines();
+                const line = allLines.find(l => l.LineId === lineId);
+                if (!line || !line.StationList || !line.StationList.length) return null;
+                const stations = line.StationList;
+                const pin = this.pinnedStation();
+                if (pin && stations.some(s => s.StationKey === pin.StationKey)) {
+                    return pin;
+                }
+                if (this.userPos && this.userPos.lat && this.userPos.lon) {
+                    let best = null, bestDist = Infinity;
+                    for (const s of stations) {
+                        if (s.Latitude && s.Longitude) {
+                            const d = haversineKm(this.userPos.lat, this.userPos.lon, s.Latitude, s.Longitude);
+                            if (d < bestDist) {
+                                bestDist = d;
+                                best = s;
+                            }
+                        }
+                    }
+                    if (best) return best;
+                }
+                const keyStationMap = {
+                    1: 'CEN',   // Sukhumvit -> Siam
+                    2: 'CEN',   // Silom -> Siam
+                    3: 'G1',    // Gold -> Krung Thon Buri
+                    4: 'YL01',  // Yellow -> Lat Phrao
+                    5: 'PK16',  // Pink -> Wat Phra Sri Mahathat
+                    101: 'BL15',// Blue -> Lat Phrao
+                    102: 'PP16',// Purple -> Tao Poon
+                    103: 'RN01',// Dark Red -> Bang Sue
+                    105: 'RW01',// Light Red -> Bang Sue
+                    104: 'A1',  // ARL -> Suvarnabhumi
+                    201: 'B1',  // BRT -> Sathorn
+                    106: 'OR01' // Orange -> Bang Khun Non
+                };
+                const prefKey = keyStationMap[lineId];
+                if (prefKey) {
+                    const st = stations.find(s => s.StationKey === prefKey);
+                    if (st) return st;
+                }
+                return stations[0];
+            },
+
             setLine(id) {
                 this.userPickedLineManually = true;
                 this.activeLine = id;
@@ -6841,6 +6970,12 @@ setOriginFromActionSheet() {
                 this.renderStrip();
                 this.syncUrl();
                 this.scrollActiveTabIntoView();
+                // ดึงเวลาและตำแหน่งขบวนรถของสถานีตัวแทนประจำสายแบบพร้อมกันล่วงหน้า (Concurrent Pre-fetch)
+                const repStation = this.getLineRepresentativeStation(id);
+                if (repStation) {
+                    this.loadArrivals(repStation);
+                    this.loadRoute(repStation);
+                }
             },
 
             scrollActiveTabIntoView(smooth = true) {
@@ -7343,7 +7478,103 @@ setOriginFromActionSheet() {
                 });
             }
 
-            // 7. สายสีน้ำเงิน (LineId: 101) — BL01..BL38
+            // 7. MRT สายสีชมพู (LineId: 5) — PK01 (ศูนย์ราชการนนทบุรี) <-> PK30 (มีนบุรี)
+            else if (isPinkLineId(lineId) || (key && (key.startsWith('PK') || key.startsWith('MT')))) {
+                const pinkColor = station.StationLineColor || LINE_BRAND_COLORS[5] || '#D76886';
+                if (key.startsWith('MT')) {
+                    const isTerm1 = (key === 'MT02');
+                    const dest1 = getDestPair('MT02', 'ทะเลสาบเมืองทองธานี', 'Lake Muang Thong Thani');
+                    const dest2 = getDestPair('PK10', 'เมืองทองธานี', 'Muang Thong Thani');
+                    platforms.push({
+                        platform: 1,
+                        LineId: 5,
+                        LineColor: pinkColor,
+                        DestinationStation: dest1,
+                        DestinationStation_key: 'MT02',
+                        isDropOffOnly: isTerm1,
+                        train_list: makeTrains(1, dest1, 'MT02', key === 'MT01' ? 0 : 2.5, isTerm1)
+                    });
+                    platforms.push({
+                        platform: 2,
+                        LineId: 5,
+                        LineColor: pinkColor,
+                        DestinationStation: dest2,
+                        DestinationStation_key: 'PK10',
+                        isDropOffOnly: false,
+                        train_list: makeTrains(2, dest2, 'PK10', (key === 'MT02' ? 0 : 2.5) + (interval * 0.5), false)
+                    });
+                } else {
+                    const num = parseInt(key.replace(/\D/g, ''), 10) || 1;
+                    const idx = Math.max(0, Math.min(29, num - 1));
+                    const travelPerStation = 1.76;
+
+                    // Platform 1: ไปมีนบุรี (PK30)
+                    const isTerm1 = (key === 'PK30');
+                    const offset1 = idx * travelPerStation;
+                    const dest1 = getDestPair('PK30', 'มีนบุรี', 'Min Buri');
+                    platforms.push({
+                        platform: 1,
+                        LineId: 5,
+                        LineColor: pinkColor,
+                        DestinationStation: dest1,
+                        DestinationStation_key: 'PK30',
+                        isDropOffOnly: isTerm1,
+                        train_list: makeTrains(1, dest1, 'PK30', offset1, isTerm1)
+                    });
+
+                    // Platform 2: ไปศูนย์ราชการนนทบุรี (PK01)
+                    const isTerm2 = (key === 'PK01');
+                    const offset2 = (29 - idx) * travelPerStation + (interval * 0.5);
+                    const dest2 = getDestPair('PK01', 'ศูนย์ราชการนนทบุรี', 'Nonthaburi Civic Center');
+                    platforms.push({
+                        platform: 2,
+                        LineId: 5,
+                        LineColor: pinkColor,
+                        DestinationStation: dest2,
+                        DestinationStation_key: 'PK01',
+                        isDropOffOnly: isTerm2,
+                        train_list: makeTrains(2, dest2, 'PK01', offset2, isTerm2)
+                    });
+                }
+            }
+
+            // 8. MRT สายสีเหลือง (LineId: 4) — YL01 (ลาดพร้าว) <-> YL23 (สำโรง)
+            else if (lineId === 4 || (key && key.startsWith('YL'))) {
+                const yellowColor = station.StationLineColor || LINE_BRAND_COLORS[4] || '#FAD53D';
+                const num = parseInt(key.replace(/\D/g, ''), 10) || 1;
+                const idx = Math.max(0, Math.min(22, num - 1));
+                const travelPerStation = 1.95;
+
+                // Platform 1: ไปสำโรง (YL23)
+                const isTerm1 = (key === 'YL23');
+                const offset1 = idx * travelPerStation;
+                const dest1 = getDestPair('YL23', 'สำโรง', 'Samrong');
+                platforms.push({
+                    platform: 1,
+                    LineId: 4,
+                    LineColor: yellowColor,
+                    DestinationStation: dest1,
+                    DestinationStation_key: 'YL23',
+                    isDropOffOnly: isTerm1,
+                    train_list: makeTrains(1, dest1, 'YL23', offset1, isTerm1)
+                });
+
+                // Platform 2: ไปลาดพร้าว (YL01)
+                const isTerm2 = (key === 'YL01');
+                const offset2 = (22 - idx) * travelPerStation + (interval * 0.5);
+                const dest2 = getDestPair('YL01', 'ลาดพร้าว', 'Lat Phrao');
+                platforms.push({
+                    platform: 2,
+                    LineId: 4,
+                    LineColor: yellowColor,
+                    DestinationStation: dest2,
+                    DestinationStation_key: 'YL01',
+                    isDropOffOnly: isTerm2,
+                    train_list: makeTrains(2, dest2, 'YL01', offset2, isTerm2)
+                });
+            }
+
+            // 9. สายสีน้ำเงิน (LineId: 101) — BL01..BL38
             else {
                 const blueLine = MRT_STATIC_DB.lines.find(l => l.LineId === MRT_LINE_IDS.BLUE);
                 const list = blueLine?.StationList || [];
@@ -7955,7 +8186,13 @@ setOriginFromActionSheet() {
                     ? offHoursNote
                     : `<div class="err-box">${esc(arr.error)}
                     <button class="btn btn-ghost" onclick="App.loadArrivals(App.findStation('${esc(station.StationKey)}'), true)">${T('retry')}</button></div>`;
-            const platforms = visiblePlatformsForStation(station, arr.platforms || []);
+            let platforms = visiblePlatformsForStation(station, arr.platforms || []);
+            if (!platforms.length && isTransitOperatingHours(station?.StationLineId)) {
+                const fb = generateTimetableArrivals(station);
+                if (fb?.platform_list?.length) {
+                    platforms = visiblePlatformsForStation(station, fb.platform_list);
+                }
+            }
             if (!platforms.length)
                 return offHoursNote;
 

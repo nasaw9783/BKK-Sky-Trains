@@ -2312,8 +2312,8 @@ gQIDAQAB
                 peakFreqEN: '2.30 - 3.50 min',
                 offPeakFreqTH: '5.00 - 8.00 นาที',
                 offPeakFreqEN: '5.00 - 8.00 min',
-                dir1: { toTH: 'คูคต (Khu Khot)', toEN: 'Khu Khot', first: '05:15', last: '23:30' },
-                dir2: { toTH: 'เคหะฯ (Kheha)', toEN: 'Kheha', first: '05:15', last: '23:30' }
+                dir1: { code: 'N24', toTH: 'คูคต', toEN: 'Khu Khot', first: '05:15', last: '23:30' },
+                dir2: { code: 'E23', toTH: 'เคหะฯ', toEN: 'Kheha', first: '05:15', last: '23:30' }
             },
             {
                 id: 2,
@@ -2338,8 +2338,8 @@ gQIDAQAB
                 peakFreqEN: '3.45 min',
                 offPeakFreqTH: '6.00 - 8.00 นาที',
                 offPeakFreqEN: '6.00 - 8.00 min',
-                dir1: { toTH: 'สนามกีฬาแห่งชาติ (National Stadium)', toEN: 'National Stadium', first: '05:30', last: '24:00' },
-                dir2: { toTH: 'บางหว้า (Bang Wa)', toEN: 'Bang Wa', first: '05:30', last: '24:00' }
+                dir1: { code: 'W1', toTH: 'สนามกีฬาแห่งชาติ', toEN: 'National Stadium', first: '05:30', last: '24:00' },
+                dir2: { code: 'S12', toTH: 'บางหว้า', toEN: 'Bang Wa', first: '05:30', last: '24:00' }
             },
             {
                 id: 3,
@@ -2364,8 +2364,8 @@ gQIDAQAB
                 peakFreqEN: '8.00 min',
                 offPeakFreqTH: '10.00 - 15.00 นาที',
                 offPeakFreqEN: '10.00 - 15.00 min',
-                dir1: { toTH: 'กรุงธนบุรี (Krung Thon Buri)', toEN: 'Krung Thon Buri', first: '06:00', last: '24:00' },
-                dir2: { toTH: 'คลองสาน (Khlong San)', toEN: 'Khlong San', first: '06:00', last: '24:00' }
+                dir1: { code: 'G1', toTH: 'กรุงธนบุรี', toEN: 'Krung Thon Buri', first: '06:00', last: '24:00' },
+                dir2: { code: 'G3', toTH: 'คลองสาน', toEN: 'Khlong San', first: '06:00', last: '24:00' }
             },
             {
                 id: 4,
@@ -2390,8 +2390,8 @@ gQIDAQAB
                 peakFreqEN: '5.00 min',
                 offPeakFreqTH: '10.00 นาที',
                 offPeakFreqEN: '10.00 min',
-                dir1: { toTH: 'ลาดพร้าว (Lat Phrao)', toEN: 'Lat Phrao', first: '06:00', last: '24:00' },
-                dir2: { toTH: 'สำโรง (Samrong)', toEN: 'Samrong', first: '06:00', last: '24:00' }
+                dir1: { code: 'YL01', toTH: 'ลาดพร้าว', toEN: 'Lat Phrao', first: '06:00', last: '24:00' },
+                dir2: { code: 'YL23', toTH: 'สำโรง', toEN: 'Samrong', first: '06:00', last: '24:00' }
             },
             {
                 id: 5,
@@ -2416,8 +2416,8 @@ gQIDAQAB
                 peakFreqEN: '5.00 min',
                 offPeakFreqTH: '10.00 นาที',
                 offPeakFreqEN: '10.00 min',
-                dir1: { toTH: 'ศูนย์ราชการนนทบุรี (Nonthaburi Civic Center)', toEN: 'Nonthaburi Civic Center', first: '06:00', last: '24:00' },
-                dir2: { toTH: 'มีนบุรี (Min Buri)', toEN: 'Min Buri', first: '06:00', last: '24:00' }
+                dir1: { code: 'PK01', toTH: 'ศูนย์ราชการนนทบุรี', toEN: 'Nonthaburi Civic Center', first: '06:00', last: '24:00' },
+                dir2: { code: 'PK30', toTH: 'มีนบุรี', toEN: 'Min Buri', first: '06:00', last: '24:00' }
             },
             {
                 id: 101,
@@ -2442,8 +2442,8 @@ gQIDAQAB
                 peakFreqEN: '3.30 - 4.00 min',
                 offPeakFreqTH: '5.00 - 8.00 นาที',
                 offPeakFreqEN: '5.00 - 8.00 min',
-                dir1: { toTH: 'ท่าพระ (ผ่านบางซื่อ)', toEN: 'Tha Phra (via Bang Sue)', first: '05:30', last: '23:30' },
-                dir2: { toTH: 'หลักสอง (ผ่านหัวลำโพง)', toEN: 'Lak Song (via Hua Lamphong)', first: '05:30', last: '23:30' }
+                dir1: { code: 'BL01', toTH: 'ท่าพระ (ผ่านบางซื่อ)', toEN: 'Tha Phra (via Bang Sue)', first: '05:30', last: '23:30' },
+                dir2: { code: 'BL38', toTH: 'หลักสอง (ผ่านหัวลำโพง)', toEN: 'Lak Song (via Hua Lamphong)', first: '05:30', last: '23:30' }
             },
             {
                 id: 102,
@@ -2468,8 +2468,8 @@ gQIDAQAB
                 peakFreqEN: '4.30 - 6.00 min',
                 offPeakFreqTH: '7.00 - 9.00 นาที',
                 offPeakFreqEN: '7.00 - 9.00 min',
-                dir1: { toTH: 'เตาปูน (Tao Poon)', toEN: 'Tao Poon', first: '05:30', last: '23:25' },
-                dir2: { toTH: 'คลองบางไผ่ (Khlong Bang Phai)', toEN: 'Khlong Bang Phai', first: '06:00', last: '23:55' }
+                dir1: { code: 'PP16', toTH: 'เตาปูน', toEN: 'Tao Poon', first: '05:30', last: '23:25' },
+                dir2: { code: 'PP01', toTH: 'คลองบางไผ่', toEN: 'Khlong Bang Phai', first: '06:00', last: '23:55' }
             },
             {
                 id: 103,
@@ -2494,8 +2494,8 @@ gQIDAQAB
                 peakFreqEN: '10.00 min',
                 offPeakFreqTH: '20.00 นาที',
                 offPeakFreqEN: '20.00 min',
-                dir1: { toTH: 'รังสิต (Rangsit)', toEN: 'Rangsit', first: '05:00', last: '24:00' },
-                dir2: { toTH: 'กรุงเทพอภิวัฒน์ (Krung Thep Aphiwat)', toEN: 'Krung Thep Aphiwat', first: '05:00', last: '24:00' }
+                dir1: { code: 'RN10', toTH: 'รังสิต', toEN: 'Rangsit', first: '05:00', last: '24:00' },
+                dir2: { code: 'RN01', toTH: 'กรุงเทพอภิวัฒน์', toEN: 'Krung Thep Aphiwat', first: '05:00', last: '24:00' }
             },
             {
                 id: 105,
@@ -2520,8 +2520,8 @@ gQIDAQAB
                 peakFreqEN: '20.00 min',
                 offPeakFreqTH: '30.00 นาที',
                 offPeakFreqEN: '30.00 min',
-                dir1: { toTH: 'ตลิ่งชัน (Taling Chan)', toEN: 'Taling Chan', first: '05:00', last: '24:00' },
-                dir2: { toTH: 'กรุงเทพอภิวัฒน์ (Krung Thep Aphiwat)', toEN: 'Krung Thep Aphiwat', first: '05:00', last: '24:00' }
+                dir1: { code: 'RW04', toTH: 'ตลิ่งชัน', toEN: 'Taling Chan', first: '05:00', last: '24:00' },
+                dir2: { code: 'RW01', toTH: 'กรุงเทพอภิวัฒน์', toEN: 'Krung Thep Aphiwat', first: '05:00', last: '24:00' }
             },
             {
                 id: 104,
@@ -2546,8 +2546,8 @@ gQIDAQAB
                 peakFreqEN: '9.00 min',
                 offPeakFreqTH: '10.00 - 15.00 นาที',
                 offPeakFreqEN: '10.00 - 15.00 min',
-                dir1: { toTH: 'สุวรรณภูมิ (Suvarnabhumi Airport)', toEN: 'Suvarnabhumi Airport', first: '05:30', last: '24:00' },
-                dir2: { toTH: 'พญาไท (Phaya Thai)', toEN: 'Phaya Thai', first: '05:30', last: '24:00' }
+                dir1: { code: 'A1', toTH: 'สุวรรณภูมิ', toEN: 'Suvarnabhumi Airport', first: '05:30', last: '24:00' },
+                dir2: { code: 'A8', toTH: 'พญาไท', toEN: 'Phaya Thai', first: '05:30', last: '24:00' }
             },
             {
                 id: 201,
@@ -2572,8 +2572,8 @@ gQIDAQAB
                 peakFreqEN: '5.00 - 7.00 min',
                 offPeakFreqTH: '10.00 - 15.00 นาที',
                 offPeakFreqEN: '10.00 - 15.00 min',
-                dir1: { toTH: 'ราชพฤกษ์ (Ratchaphruek)', toEN: 'Ratchaphruek', first: '06:00', last: '24:00' },
-                dir2: { toTH: 'สาทร (Sathorn)', toEN: 'Sathorn', first: '06:00', last: '24:00' }
+                dir1: { code: 'B12', toTH: 'ราชพฤกษ์', toEN: 'Ratchaphruek', first: '06:00', last: '24:00' },
+                dir2: { code: 'B1', toTH: 'สาทร', toEN: 'Sathorn', first: '06:00', last: '24:00' }
             },
             {
                 id: 106,
@@ -2598,8 +2598,8 @@ gQIDAQAB
                 peakFreqEN: 'Not in service',
                 offPeakFreqTH: 'ยังไม่เปิดให้บริการ',
                 offPeakFreqEN: 'Not in service',
-                dir1: { toTH: 'แยกร่มเกล้า (ยังไม่เปิดให้บริการ)', toEN: 'Yaek Rom Klao (Not in Service)', first: '-', last: '-' },
-                dir2: { toTH: 'บางขุนนนท์ (ยังไม่เปิดให้บริการ)', toEN: 'Bang Khun Non (Not in Service)', first: '-', last: '-' }
+                dir1: { code: 'OR28', toTH: 'แยกร่มเกล้า (ยังไม่เปิดให้บริการ)', toEN: 'Yaek Rom Klao (Not in Service)', first: '-', last: '-' },
+                dir2: { code: 'OR01', toTH: 'บางขุนนนท์ (ยังไม่เปิดให้บริการ)', toEN: 'Bang Khun Non (Not in Service)', first: '-', last: '-' }
             }
         ];
 
@@ -3635,21 +3635,29 @@ gQIDAQAB
             /* ---------- THE SKYTRAINs: Interactive Transit Network Map ---------- */
             zoomMap(factor) {
                 this.mapZoom = Math.min(2.5, Math.max(0.6, (this.mapZoom || 1.0) * factor));
-                const svg = document.querySelector('#networkMapContainer svg');
-                if (svg) svg.style.transform = `scale(${this.mapZoom})`;
+                const container = document.getElementById('networkMapContainer');
+                if (container) container.style.transform = `scale(${this.mapZoom})`;
             },
 
             resetMapZoom() {
                 this.mapZoom = 1.0;
-                const svg = document.querySelector('#networkMapContainer svg');
-                if (svg) {
-                    svg.style.transform = 'scale(1)';
+                const container = document.getElementById('networkMapContainer');
+                if (container) {
+                    container.style.transform = 'scale(1)';
                     const vp = document.getElementById('mapViewport');
                     if (vp) {
-                        const targetX = (740 / 1600) * vp.scrollWidth - (vp.clientWidth / 2);
-                        const targetY = (635 / 1200) * vp.scrollHeight - (vp.clientHeight / 2);
-                        vp.scrollLeft = Math.max(0, targetX);
-                        vp.scrollTop = Math.max(0, targetY);
+                        const targetX = (850 / 1672) * vp.scrollWidth - (vp.clientWidth / 2);
+                        const targetY = (920 / 1672) * vp.scrollHeight - (vp.clientHeight / 2);
+                        if (typeof vp.scrollTo === 'function') {
+                            vp.scrollTo({
+                                left: Math.max(0, targetX),
+                                top: Math.max(0, targetY),
+                                behavior: 'smooth'
+                            });
+                        } else {
+                            vp.scrollLeft = Math.max(0, targetX);
+                            vp.scrollTop = Math.max(0, targetY);
+                        }
                     }
                 }
             },
@@ -3682,8 +3690,45 @@ gQIDAQAB
 
             setMapZoomDirect(zoomLevel) {
                 this.mapZoom = Math.min(2.5, Math.max(0.6, zoomLevel));
+                const container = document.getElementById('networkMapContainer');
+                if (container) container.style.transform = `scale(${this.mapZoom})`;
                 const svg = document.querySelector('#networkMapContainer svg');
-                if (svg) svg.style.transform = `scale(${this.mapZoom})`;
+                if (svg && svg.style.transform) svg.style.transform = '';
+            },
+
+            handleMapDoubleTapZoom(clientX, clientY) {
+                const vp = document.getElementById('mapViewport');
+                const container = document.getElementById('networkMapContainer');
+                if (!vp || !container) return;
+
+                const curZoom = this.mapZoom || 1.0;
+                // สลับระดับการซูม: หากซูมขยายอยู่ (>= 1.45) ให้ย่อกลับเป็น 1.0 หากอยู่ที่ 1.0 ให้ขยายเป็น 1.85
+                const targetZoom = (curZoom >= 1.45) ? 1.0 : 1.85;
+
+                const vpRect = vp.getBoundingClientRect();
+                const tapX = clientX - vpRect.left;
+                const tapY = clientY - vpRect.top;
+
+                // พิกัดจริงบนแผนผังก่อนการซูม (Unscaled content coordinate)
+                const contentX = (vp.scrollLeft + tapX) / curZoom;
+                const contentY = (vp.scrollTop + tapY) / curZoom;
+
+                this.setMapZoomDirect(targetZoom);
+
+                // เลื่อนหน้าจอให้จุดที่ดับเบิ้ลคลิก/แตะสองครั้งอยู่กึ่งกลางสายตาอย่างนุ่มนวล
+                const targetScrollLeft = (contentX * targetZoom) - (vp.clientWidth / 2);
+                const targetScrollTop = (contentY * targetZoom) - (vp.clientHeight / 2);
+
+                if (typeof vp.scrollTo === 'function') {
+                    vp.scrollTo({
+                        left: Math.max(0, targetScrollLeft),
+                        top: Math.max(0, targetScrollTop),
+                        behavior: 'smooth'
+                    });
+                } else {
+                    vp.scrollLeft = Math.max(0, targetScrollLeft);
+                    vp.scrollTop = Math.max(0, targetScrollTop);
+                }
             },
 
             setupMapGestureHandlers() {
@@ -3733,12 +3778,24 @@ gQIDAQAB
                     isMouseDragging = false;
                 });
 
-                // --- Touch Pan (1 finger) & Pinch-to-zoom (2 fingers) ---
+                // --- Desktop Mouse Double-Click Zoom (ซูม ย่อ-ขยาย แผนที่เมื่อดับเบิ้ลคลิก) ---
+                vp.addEventListener('dblclick', (e) => {
+                    e.preventDefault();
+                    vp._preventClick = true;
+                    this.closeMapActionSheet();
+                    setTimeout(() => { vp._preventClick = false; }, 320);
+                    this.handleMapDoubleTapZoom(e.clientX, e.clientY);
+                });
+
+                // --- Touch Pan (1 finger), Pinch-to-zoom (2 fingers) & Double-tap zoom (แตะสองครั้ง) ---
                 let touchStartX = 0, touchStartY = 0;
                 let touchScrollLeft = 0, touchScrollTop = 0;
                 let isTouchDragging = false;
                 let initialDist = 0;
                 let initialZoom = 1;
+                let lastTapTime = 0;
+                let lastTapX = 0;
+                let lastTapY = 0;
 
                 vp.addEventListener('touchstart', (e) => {
                     if (e.touches.length === 1) {
@@ -3747,9 +3804,20 @@ gQIDAQAB
                         touchStartY = e.touches[0].clientY;
                         touchScrollLeft = vp.scrollLeft;
                         touchScrollTop = vp.scrollTop;
+
+                        const now = Date.now();
+                        if (now - lastTapTime < 320) {
+                            const dist = Math.hypot(touchStartX - lastTapX, touchStartY - lastTapY);
+                            if (dist < 40) {
+                                // Double tap in progress: immediately suppress station sheet
+                                vp._preventClick = true;
+                                this.closeMapActionSheet();
+                            }
+                        }
                     } else if (e.touches.length === 2) {
                         e.preventDefault();
                         isTouchDragging = false;
+                        lastTapTime = 0;
                         initialDist = Math.hypot(
                             e.touches[0].clientX - e.touches[1].clientX,
                             e.touches[0].clientY - e.touches[1].clientY
@@ -3764,6 +3832,7 @@ gQIDAQAB
                         const dy = e.touches[0].clientY - touchStartY;
                         if (!isTouchDragging && (Math.abs(dx) > 3 || Math.abs(dy) > 3)) {
                             isTouchDragging = true;
+                            lastTapTime = 0;
                         }
                         if (isTouchDragging) {
                             e.preventDefault();
@@ -3772,6 +3841,7 @@ gQIDAQAB
                         }
                     } else if (e.touches.length === 2 && initialDist > 0) {
                         e.preventDefault();
+                        lastTapTime = 0;
                         const currentDist = Math.hypot(
                             e.touches[0].clientX - e.touches[1].clientX,
                             e.touches[0].clientY - e.touches[1].clientY
@@ -3786,6 +3856,26 @@ gQIDAQAB
                         if (isTouchDragging) {
                             vp._preventClick = true;
                             setTimeout(() => { vp._preventClick = false; }, 120);
+                            lastTapTime = 0;
+                        } else if (e.changedTouches && e.changedTouches.length === 1) {
+                            const touch = e.changedTouches[0];
+                            const now = Date.now();
+                            const timeDiff = now - lastTapTime;
+                            const dist = Math.hypot(touch.clientX - lastTapX, touch.clientY - lastTapY);
+
+                            if (timeDiff > 40 && timeDiff < 320 && dist < 40) {
+                                // Double tap triggered!
+                                e.preventDefault();
+                                vp._preventClick = true;
+                                this.closeMapActionSheet();
+                                setTimeout(() => { vp._preventClick = false; }, 350);
+                                this.handleMapDoubleTapZoom(touch.clientX, touch.clientY);
+                                lastTapTime = 0;
+                            } else {
+                                lastTapTime = now;
+                                lastTapX = touch.clientX;
+                                lastTapY = touch.clientY;
+                            }
                         }
                         isTouchDragging = false;
                         initialDist = 0;
@@ -4601,14 +4691,29 @@ setOriginFromActionSheet() {
                         terminusHtml = esc(tRaw);
                     }
 
-                    // Parse terminal directions with compact station badges
-                    const d1 = parseStationCodeAndName(isEn ? activeLine.dir1.toEN || activeLine.dir1.toTH : activeLine.dir1.toTH);
-                    const d2 = parseStationCodeAndName(isEn ? activeLine.dir2.toEN || activeLine.dir2.toTH : activeLine.dir2.toTH);
+                    // ข้อมูลทิศทางปลายทางและรหัสสถานี
+                    const d1Code = activeLine.dir1?.code || '';
+                    const d1Name = isEn ? (activeLine.dir1?.toEN || '') : (activeLine.dir1?.toTH || '');
+                    const d2Code = activeLine.dir2?.code || '';
+                    const d2Name = isEn ? (activeLine.dir2?.toEN || '') : (activeLine.dir2?.toTH || '');
+
+                    const d1First = activeLine.dir1?.first ? `${activeLine.dir1.first}${activeLine.dir1.first !== '-' ? ' น.' : ''}` : '-';
+                    const d1Last = activeLine.dir1?.last ? `${activeLine.dir1.last}${activeLine.dir1.last !== '-' ? ' น.' : ''}` : '-';
+                    const d2First = activeLine.dir2?.first ? `${activeLine.dir2.first}${activeLine.dir2.first !== '-' ? ' น.' : ''}` : '-';
+                    const d2Last = activeLine.dir2?.last ? `${activeLine.dir2.last}${activeLine.dir2.last !== '-' ? ' น.' : ''}` : '-';
 
                     // คำนวณความถี่สด
                     const liveFreq = getCurrentMrtFreq(activeLine.id);
                     let liveFreqHtml = '';
-                    if (liveFreq) {
+                    if (activeLine.id === 106) {
+                        // สายสีส้ม ยังไม่เปิดให้บริการ
+                        liveFreqHtml = `
+                            <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(245,130,32,0.15);color:#ea580c;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap;border:1px solid rgba(245,130,32,0.3);">
+                                <span>🚧</span>
+                                <span>${isEn ? 'Orange Line (Not in Service)' : 'สายสีส้ม (ยังไม่เปิดให้บริการ)'}</span>
+                            </div>
+                        `;
+                    } else if (liveFreq) {
                         const cleanLabel = String(liveFreq.label || '').replace(/^~/, '');
                         liveFreqHtml = `
                             <div style="display:inline-flex;align-items:center;gap:6px;background:#22c55e18;color:#16a34a;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap;">
@@ -4625,29 +4730,45 @@ setOriginFromActionSheet() {
                         `;
                     }
 
-                    // ขบวนแรก-สุดท้ายแยกทิศทาง พร้อมป้ายรหัสสถานีขนาดกะทัดรัด
+                    // ขบวนแรก-สุดท้ายแยกทิศทาง พร้อมป้ายรหัสสถานีและการจัดช่องเวลาให้สวยงาม ไม่หลุดกรอบ/ตกบรรทัด
                     const dirCards = `
                         <div class="dir-timetables-grid">
                             <div class="dir-time-card">
-                                <div class="dir-title">
-                                    <span style="font-size:11.5px;color:var(--muted);">${isEn ? 'Towards' : 'ทิศทางมุ่งหน้า'}</span>
-                                    ${d1.code ? `<span class="stn-code-badge" style="background:${activeLine.color}">${esc(d1.code)}</span>` : ''}
-                                    <b style="color:var(--ink);">${esc(d1.name)}</b>
+                                <div class="dir-card-header">
+                                    <span class="dir-label">${isEn ? 'Towards Direction' : 'ทิศทางมุ่งหน้า'}</span>
+                                    <div class="dir-dest-wrap">
+                                        ${d1Code ? `<span class="stn-code-badge" style="background:${activeLine.color}">${esc(d1Code)}</span>` : ''}
+                                        <b class="dir-dest-title">${esc(d1Name)}</b>
+                                    </div>
                                 </div>
-                                <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:13px;white-space:nowrap;">
-                                    <div style="white-space:nowrap;"><span style="font-size:11px;color:var(--muted)">${isEn ? 'First Train:' : 'ขบวนแรก:'}</span> <b style="color:${activeLine.color}">${activeLine.dir1.first} น.</b></div>
-                                    <div style="white-space:nowrap;"><span style="font-size:11px;color:var(--muted)">${isEn ? 'Last Train:' : 'ขบวนสุดท้าย:'}</span> <b>${activeLine.dir1.last} น.</b></div>
+                                <div class="dir-times-grid">
+                                    <div class="dir-time-item">
+                                        <span class="dir-time-sub">${isEn ? 'First Train' : 'ขบวนแรก'}</span>
+                                        <b class="dir-time-num" style="color:${activeLine.color}">${esc(d1First)}</b>
+                                    </div>
+                                    <div class="dir-time-item">
+                                        <span class="dir-time-sub">${isEn ? 'Last Train' : 'ขบวนสุดท้าย'}</span>
+                                        <b class="dir-time-num">${esc(d1Last)}</b>
+                                    </div>
                                 </div>
                             </div>
                             <div class="dir-time-card">
-                                <div class="dir-title">
-                                    <span style="font-size:11.5px;color:var(--muted);">${isEn ? 'Towards' : 'ทิศทางมุ่งหน้า'}</span>
-                                    ${d2.code ? `<span class="stn-code-badge" style="background:${activeLine.color}">${esc(d2.code)}</span>` : ''}
-                                    <b style="color:var(--ink);">${esc(d2.name)}</b>
+                                <div class="dir-card-header">
+                                    <span class="dir-label">${isEn ? 'Towards Direction' : 'ทิศทางมุ่งหน้า'}</span>
+                                    <div class="dir-dest-wrap">
+                                        ${d2Code ? `<span class="stn-code-badge" style="background:${activeLine.color}">${esc(d2Code)}</span>` : ''}
+                                        <b class="dir-dest-title">${esc(d2Name)}</b>
+                                    </div>
                                 </div>
-                                <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:13px;white-space:nowrap;">
-                                    <div style="white-space:nowrap;"><span style="font-size:11px;color:var(--muted)">${isEn ? 'First Train:' : 'ขบวนแรก:'}</span> <b style="color:${activeLine.color}">${activeLine.dir2.first} น.</b></div>
-                                    <div style="white-space:nowrap;"><span style="font-size:11px;color:var(--muted)">${isEn ? 'Last Train:' : 'ขบวนสุดท้าย:'}</span> <b>${activeLine.dir2.last} น.</b></div>
+                                <div class="dir-times-grid">
+                                    <div class="dir-time-item">
+                                        <span class="dir-time-sub">${isEn ? 'First Train' : 'ขบวนแรก'}</span>
+                                        <b class="dir-time-num" style="color:${activeLine.color}">${esc(d2First)}</b>
+                                    </div>
+                                    <div class="dir-time-item">
+                                        <span class="dir-time-sub">${isEn ? 'Last Train' : 'ขบวนสุดท้าย'}</span>
+                                        <b class="dir-time-num">${esc(d2Last)}</b>
+                                    </div>
                                 </div>
                             </div>
                         </div>

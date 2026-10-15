@@ -112,24 +112,27 @@ c:\Users\Administrator\Documents\BKK Sky Trains/
 node -e "require('child_process').execSync('powershell ./Start-BKK-Transit.ps1', {stdio: 'inherit'})"
 ```
 
-### วิธีที่ 3: ติดตั้งแอปพลิเคชัน Android (.apk)
-สามารถนำไฟล์ตัวติดตั้ง Android ล่าสุดจากโฟลเดอร์ `releases/` หรือจากหน้า GitHub Releases ไปติดตั้งบนสมาร์ตโฟน Android ได้ทันที:
-- `releases/BKK_SkyTrains_Android_latest.apk` (พร้อมไฟล์ตรวจสอบ SHA-256 Checksum)
+### วิธีที่ 3: ติดตั้งแอปพลิเคชัน Android (.apk / .aab)
+สามารถนำไฟล์ตัวติดตั้ง Android ล่าสุดจากโฟลเดอร์ `releases/` หรือจากหน้า GitHub Releases ไปติดตั้งหรือใช้งานได้ทันที:
+- `releases/BKK_SkyTrains_Android_latest.apk` (APK สำหรับติดตั้งบนสมาร์ตโฟน Android ทันที พร้อม SHA-256 Checksum)
+- `releases/BKK_SkyTrains_Android_latest.aab` (Android App Bundle สำหรับการแจกจ่ายบน Google Play Store พร้อม SHA-256 Checksum)
 
 ### วิธีที่ 4: ติดตั้งแอปพลิเคชัน iOS (.ipa)
 สามารถนำไฟล์ตัวติดตั้ง iOS ล่าสุดจากหน้า GitHub Releases ไป Sideload ติดตั้งบน iPhone/iPad:
 - `BKK_SkyTrains_iOS_latest.ipa` และ `BKK_SkyTrains_iOS_v*.ipa` (รองรับการติดตั้งผ่าน AltStore, Sideloadly, หรือ TrollStore พร้อมตรวจสอบ SHA-256 Checksum)
 
 ### วิธีที่ 5: บิลด์และดีพลอยอัตโนมัติด้วยสคริปต์ `Deploy-BKK-SkyTrains.ps1`
-สคริปต์รวมกระบวนการพัฒนาและปล่อยเวอร์ชันใหม่ ทำงานตามลำดับ 5 ขั้นตอน:
+สคริปต์รวมกระบวนการพัฒนาและปล่อยเวอร์ชันใหม่ ทำงานตามลำดับ 7 ขั้นตอนอย่างเคร่งครัด:
 ```powershell
 .\Deploy-BKK-SkyTrains.ps1
 ```
 1. **จัดระเบียบไฟล์:** `C:\Users\Administrator\Documents\BKK Sky Trains` จากเครื่องให้เป็นระเบียบ พร้อมจัดหมวดหมู่/Folder ถ้าไฟล์หรือแอพไหนไม่สำคัญต่อระบบแล้ว และไม่ทำลายระบบให้เสียหาย ให้ลบทิ้งได้ทันที
 2. **Update .yml ทั้งหมด:** ตรวจสอบและอัปเดตไฟล์คอนฟิก CI/CD (`.github/workflows/*.yml`) ให้สอดคล้องกับเวอร์ชันปัจจุบัน
 3. **Update .md ทั้งหมด:** ตรวจสอบและอัปเดตเอกสารทุกไฟล์ (`README.md`, `PRD.md`, `AGENTS.md`, `GEMINI.md`, `Skill.md`) ให้ตรงตามเว็บ/แอพ 100%
-4. **ทำแอพ Android:** รันการตรวจสอบคุณภาพโค้ด (node --check, flutter analyze, flutter test) และคอมไพล์ Android Release APK พร้อมคำนวณ SHA-256 Checksum และเคลียร์แคชบิลด์
-5. **ลบข้อมูลเก่าที่ไม่จำเป็น บน Github ออก และ Upload ขึ้น Github ทำแอพ IOS เวอร์ชั่นที่ทำใหม่:** ล้าง Releases เก่าบน GitHub, Commit, Tag และ Push เพื่อทริกเกอร์ GitHub Actions บิลด์ iOS IPA
+4. **ทำแอพ Android:** รันการตรวจสอบคุณภาพโค้ด (node --check, flutter analyze, flutter test) และคอมไพล์ Android Release APK พร้อมคำนวณ SHA-256 Checksum
+5. **ต้องการให้ทำเป็น App Bundle:** คอมไพล์ Android App Bundle (`.aab`) สำหรับการแจกจ่ายบน Google Play Store พร้อมคำนวณ SHA-256 Checksum และเคลียร์แคชบิลด์
+6. **ทำแอพ IOS:** ตรวจสอบโครงสร้าง Native iOS (Info.plist, Podfile, AppIcons) และคอมไพล์ iOS IPA (บน macOS) หรือเตรียมส่งต่อให้ Cloud Runner
+7. **ลบข้อมูลเก่าที่ไม่จำเป็น บน Github ออก และ Upload ขึ้น Github ทำแอพ IOS เวอร์ชั่นที่ทำใหม่:** ล้าง Releases เก่าบน GitHub, Commit, Tag และ Push เพื่อทริกเกอร์ GitHub Actions บิลด์ iOS IPA
 
 ### วิธีที่ 6: รันหรือบิลด์แอปพลิเคชัน Flutter แบบแมนนวล
 เข้าไปที่โฟลเดอร์ `bkk_skytrains_flutter/`:
@@ -138,9 +141,13 @@ cd bkk_skytrains_flutter
 flutter pub get
 flutter run
 ```
-บิลด์ APK สำหรับติดตั้งจริง:
+บิลด์ APK สำหรับติดตั้งบนเครื่อง:
 ```bash
 flutter build apk --release
+```
+บิลด์ App Bundle (.aab) สำหรับ Google Play Store:
+```bash
+flutter build appbundle --release
 ```
 
 ---
@@ -154,6 +161,6 @@ flutter build apk --release
    - ตรวจสอบโค้ด Flutter/Dart: `flutter analyze` ในโฟลเดอร์ `bkk_skytrains_flutter` (ต้องได้ 0 issues)
    - สคริปต์ PowerShell ทั้งหมดต้องบันทึกด้วยรูปแบบ **UTF-8 with BOM**
 3. **Automated CI/CD (iOS & Android)**:
-   - ระบบ CI/CD บน GitHub Actions (`.github/workflows/build_ios.yml` - "Build iOS & Android Apps") รันบน macOS runner รองรับการคอมไพล์และสร้างตัวติดตั้งทั้งสองระบบพร้อมกัน: iOS IPA (`BKK_SkyTrains_iOS_latest.ipa`, `v*.ipa`, `unsigned.ipa`) และ Android APK (`BKK_SkyTrains_Android_latest.apk`, `v*.apk`) พร้อมสร้าง SHA-256 Checksum และเผยแพร่ลง GitHub Releases อัตโนมัติ
+   - ระบบ CI/CD บน GitHub Actions (`.github/workflows/build_ios.yml` - "Build iOS & Android Apps") รันบน macOS runner รองรับการคอมไพล์และสร้างตัวติดตั้งทั้งสองระบบพร้อมกัน: iOS IPA (`BKK_SkyTrains_iOS_latest.ipa`, `v*.ipa`, `unsigned.ipa`), Android APK (`BKK_SkyTrains_Android_latest.apk`, `v*.apk`) และ Android App Bundle (`BKK_SkyTrains_Android_latest.aab`, `v*.aab`) พร้อมสร้าง SHA-256 Checksum และเผยแพร่ลง GitHub Releases อัตโนมัติ
 4. **Zero-Waste Pruning & Workspace Cleanliness**:
    - ถ้าไฟล์หรือแอพไหนไม่สำคัญต่อระบบแล้ว และไม่ทำลายระบบให้เสียหาย ให้ลบทิ้งได้ทันทีหลังแก้ไขหรือทดสอบไฟล์ทุกครั้ง เพื่อรักษาความสะอาดของ Workspace และความปลอดภัยของระบบ

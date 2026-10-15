@@ -339,10 +339,10 @@ if ($BuildIOS) {
         Write-Host "   -> สภาพแวดล้อม Windows: ตรวจสอบโครงสร้างและ Assets ของ Native iOS..." -ForegroundColor Gray
         $iosDir = Join-Path $Workspace "bkk_skytrains_flutter\ios"
         $iosPlist = Join-Path $iosDir "Runner\Info.plist"
-        $iosPodfile = Join-Path $iosDir "Podfile"
+        $iosProj = Join-Path $iosDir "Runner.xcodeproj"
 
-        if ((Test-Path $iosPlist) -and (Test-Path $iosPodfile)) {
-            Write-Host "   ✓ โครงสร้าง Native iOS (Info.plist, Podfile, LaunchScreen, AppIcons) สมบูรณ์ 100%" -ForegroundColor Green
+        if ((Test-Path $iosPlist) -and (Test-Path $iosProj)) {
+            Write-Host "   ✓ โครงสร้าง Native iOS (Info.plist, Xcode Project, LaunchScreen, AppIcons) สมบูรณ์ 100%" -ForegroundColor Green
             Write-Host "   ℹ️ หมายเหตุ: การคอมไพล์ไบนารี iOS IPA จำเป็นต้องใช้สภาพแวดล้อม macOS & Xcode" -ForegroundColor Yellow
             Write-Host "      ระบบจะส่งต่อการบิลด์ iOS IPA ไปทำงานบน Cloud macOS Runner อัตโนมัติใน Step 7" -ForegroundColor Cyan
         } else {

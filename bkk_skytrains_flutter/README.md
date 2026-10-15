@@ -12,6 +12,7 @@
    - ทำงานผ่าน `webview_flutter` โดยโหลดเว็บแอปพลิเคชันเวอร์ชันออฟไลน์จาก `assets/www/index.html` ภายในเครื่องโดยตรง
    - มีระบบ `clearCache()` ก่อนโหลด เพื่อให้แน่ใจว่าได้ใช้ไฟล์ asset ล่าสุดเสมอ
    - ให้ประสิทธิภาพสูง โหลดหน้าจอได้ทันที 0ms โดยไม่ต้องพึ่งพาเซิร์ฟเวอร์ภายนอกสำหรับ UI
+   - มาพร้อมแผนผังโครงข่ายรถไฟฟ้าเวกเตอร์แบบพิมพ์เขียว (Transit Blueprint Vector Map) สลับธีมมืด/สว่างอัตโนมัติ (`bkk_transit_map.svg`, `bkk_transit_map_dark.svg`) พร้อมจุดฮอตสปอตสถานีแบบโต้ตอบ (`MAP_STATION_HOTSPOTS`)
 2. **Native Geolocation Bridge (`geolocator`)**:
    - เชื่อมต่อการขอสิทธิ์ GPS และพิกัดตำแหน่งของผู้ใช้งานผ่าน Native Android/iOS API
    - ส่งต่อพิกัดความแม่นยำสูงเข้าไปยัง JavaScript ในหน้าเว็บแบบเรียลไทม์ผ่าน `JavaScriptChannel`
@@ -20,6 +21,7 @@
    - รองรับมาตรฐานการจัดกึ่งกลางของกรอบข้อความและสัญลักษณ์ (Station Codes, Line Badges, Control Buttons)
    - ผสานการทำงานร่วมกับไลบรารี `JSEncrypt` (`assets/www/js/jsencrypt.min.js`) สำหรับความปลอดภัยของข้อมูล
    - ระบบกรองขบวนรถศูนย์ซ่อมบำรุง/รถเปล่า (`YL00`, `PK00`) และตรวจสอบเวลาเปิดให้บริการ (Operating Hours Validation)
+   - หน้าต่างคำอธิบายสัญลักษณ์สายและจุดเชื่อมต่อ (Transit Legend) และแคช Service Worker `bts-v52`
 4. **Clean Platform Footprint**:
    - รองรับเฉพาะ **Android** และ **iOS**
    - ตัดโฟลเดอร์ boilerplate ที่ไม่จำเป็น (Linux, macOS, Windows Desktop) ออกทั้งหมด เพื่อลดขนาดโปรเจกต์และประหยัดพื้นที่จัดเก็บ
@@ -40,7 +42,10 @@ bkk_skytrains_flutter/
 │       ├── js/
 │       │   ├── app.js
 │       │   └── jsencrypt.min.js
-│       ├── sw.js
+│       ├── sw.js               # Service Worker (bts-v52)
+│       ├── bkk_transit_map.svg # เวกเตอร์แผนที่โหมดสว่าง
+│       ├── bkk_transit_map_dark.svg # เวกเตอร์แผนที่โหมดมืด
+│       ├── bkk_transit_map.jpg # รูปภาพสำรอง
 │       └── *.png, *.svg
 ├── lib/                        # โค้ด Flutter Dart
 │   ├── main.dart               # จุดเริ่มต้นของแอปพลิเคชัน
@@ -59,7 +64,7 @@ bkk_skytrains_flutter/
 │   │   └── app_theme.dart            # การตั้งค่าธีมสีและสไตล์ของแอป
 │   └── widgets/                      # วิดเจ็ตที่ใช้ร่วมกัน
 ├── test/                       # Unit & Widget Tests
-└── pubspec.yaml                # การตั้งค่า Dependencies และ Assets (Android & iOS)
+└── pubspec.yaml                # การตั้งค่า Dependencies และ Assets (Android & iOS v1.3.6+10)
 ```
 
 ---

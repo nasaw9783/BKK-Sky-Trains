@@ -15,6 +15,8 @@ Directives and mandatory standards for AI Agents working within `C:\Users\Admini
    - `icon-192.png`, `icon-512.png`, `icon.svg`, `favicon.*`, `apple-touch-icon.png`: Application branding and icons.
    - `robots.txt`, `sitemap.xml`: Web SEO metadata.
    - `Start-BKK-Transit.ps1`: Local development server and reverse-proxy runner (UTF-8 with BOM).
+   - `Deploy-BKK-SkyTrains.ps1`: Automated release cleanup, Android build, and GitHub deployment runner (UTF-8 with BOM).
+   - `bkk_transit_map.svg`, `bkk_transit_map_dark.svg`, `bkk_transit_map.jpg`: High-resolution vector blueprint transit network maps.
 
 2. **Mobile App (Flutter Multi-platform in `bkk_skytrains_flutter/`)**:
    - `android/`: Android native project configuration, launcher icons, manifest, and Gradle build files.

@@ -18,13 +18,17 @@ Skill นี้ออกแบบมาเพื่อให้ AI Agent (Antigr
 ```text
 C:\Users\Administrator\Documents\BKK Sky Trains\
 ├── [1. Web App & PWA] (Root)
-│   ├── index.html                  # Frontend หลักของระบบ (Transit UI)
+│   ├── index.html                  # Frontend หลักของระบบ (Transit UI & Blueprint Map)
 │   ├── js/
-│   │   ├── app.js                  # Client Logic, Live TTA, Router, GPS, Fares, Timetables
+│   │   ├── app.js                  # Client Logic, Live TTA, Router, GPS, Fares, Hotspots
 │   │   └── jsencrypt.min.js        # RSA cryptographic client library สำหรับ API Security
-│   ├── sw.js                       # Service Worker แคช PWA สำหรับ Offline Support
+│   ├── sw.js                       # Service Worker แคช PWA สำหรับ Offline Support (bts-v52)
 │   ├── manifest.json               # Web App Manifest สำหรับติดตั้งบนหน้าจอมือถือ
 │   ├── Start-BKK-Transit.ps1       # สคริปต์เซิร์ฟเวอร์ทดสอบในเครื่อง + BTS Live Reverse Proxy (UTF-8 BOM)
+│   ├── Deploy-BKK-SkyTrains.ps1    # สคริปต์บิลด์ Android APK, ล้างข้อมูลเก่าบน GitHub และ Push อัตโนมัติ (UTF-8 BOM)
+│   ├── bkk_transit_map.svg         # เวกเตอร์แผนผังรถไฟฟ้าโหมดสว่าง (Light Blueprint)
+│   ├── bkk_transit_map_dark.svg    # เวกเตอร์แผนผังรถไฟฟ้าโหมดมืด (Dark Blueprint)
+│   ├── bkk_transit_map.jpg         # รูปภาพสำรองแผนผังรถไฟฟ้า
 │   ├── robots.txt, sitemap.xml     # ข้อมูล SEO
 │   └── *.png, *.svg, *.ico         # ไอคอนระบบและ Web Assets
 │
@@ -34,11 +38,13 @@ C:\Users\Administrator\Documents\BKK Sky Trains\
 │   ├── lib/                        # Flutter Dart source code (WebView, Services, Themes)
 │   ├── test/                       # Flutter widget test suite
 │   ├── assets/www/                 # ไฟล์เว็บแคชออฟไลน์ในตัวแอป (ซิงค์ตรงกับ Root 100%)
-│   └── pubspec.yaml                # Flutter dependencies (Android & iOS เท่านั้น)
+│   └── pubspec.yaml                # Flutter dependencies (Android & iOS v1.3.6+10)
 │
 ├── [3. Releases & CI/CD]
 │   ├── releases/                   # แหล่งเก็บตัวติดตั้ง (.apk, .ipa, .sha256)
-│   └── .github/workflows/          # CI/CD Workflows (build_ios.yml สำหรับบิลด์ iOS .ipa อัตโนมัติ)
+│   │   ├── BKK_SkyTrains_Android_latest.apk
+│   │   └── BKK_SkyTrains_iOS_latest.ipa
+│   └── .github/workflows/          # CI/CD Workflows (build_ios.yml สำหรับบิลด์ iOS .ipa และ Android .apk อัตโนมัติ)
 │
 └── [4. Documentation & Specifications]
     ├── README.md                   # คู่มือระบบและภาพรวมโปรเจกต์
@@ -140,7 +146,14 @@ cd ..
   - iOS IPA: `BKK_SkyTrains_iOS_latest.ipa`, `BKK_SkyTrains_iOS_v${VERSION_BASE}.ipa`, `BKK_SkyTrains_iOS_unsigned.ipa` + `.sha256`
   - Android APK: `BKK_SkyTrains_Android_latest.apk`, `BKK_SkyTrains_Android_v${VERSION_BASE}.apk` + `.sha256`
 - เผยแพร่ขึ้น GitHub Releases (Production / Official) แบบ Unified Release พร้อมแนบไฟล์ตัวติดตั้งและ SHA-256 Checksum ครบถ้วน
-- ในเครื่องพัฒนา สามารถคอมไพล์ APK ได้ด้วย `flutter build apk --release` และเก็บไว้ที่ `releases/BKK_SkyTrains_Android_latest.apk` พร้อม `.sha256`
+### SOP-5: การใช้งานสคริปต์ Release & Deploy (`Deploy-BKK-SkyTrains.ps1`)
+รันคำสั่งเดียวเพื่อซิงค์ Asset, ตรวจสอบ Lint, คอมไพล์ Android APK, ล้าง Releases เก่าบน GitHub, และ Push ขึ้น GitHub เพื่อบิลด์ iOS:
+```powershell
+.\Deploy-BKK-SkyTrains.ps1
+```
+- ล้างไฟล์ตัวติดตั้งซ้ำซ้อนใน `releases/` อัตโนมัติ (เก็บเฉพาะ `*_latest.*`)
+- หากต้องการให้ลบ Releases เก่าบน GitHub ผ่าน REST API ให้ส่งพารามิเตอร์ `-GitHubToken <TOKEN> -PurgeRemoteReleases`
+- หลังรันเสร็จ GitHub Actions จะเริ่มบิลด์ตัวติดตั้ง iOS IPA บน macOS Runner อัตโนมัติ
 
 ---
 

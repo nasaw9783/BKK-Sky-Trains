@@ -660,7 +660,16 @@ gQIDAQAB
             clipboard: (s, c, cls) => `<svg class="ui-ic ui-ic-clipboard ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || 'currentColor'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/></svg>`,
 
             // ✓ Checkmark (Show Both / All / Selected)
-            check: (s, c, cls) => `<svg class="ui-ic ui-ic-check ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || 'currentColor'}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>`
+            check: (s, c, cls) => `<svg class="ui-ic ui-ic-check ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || 'currentColor'}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>`,
+
+            // ⛵ Boat / Pier
+            boat: (s, c, cls) => `<svg class="ui-ic ui-ic-boat ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || '#0284c7'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 21c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.5 0 2.5 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M19.38 20A11.6 11.6 0 0 0 21 14l-9-4-9 4c0 2.9.94 5.34 2.81 7.76"/><path d="M12 2v8"/></svg>`,
+
+            // 🚌 Bus / Terminal
+            bus: (s, c, cls) => `<svg class="ui-ic ui-ic-bus ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || '#f59e0b'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6v6"/><path d="M16 6v6"/><path d="M4 6h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-1H7v1a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2Z"/><circle cx="7" cy="15" r="1" fill="${c || '#f59e0b'}"/><circle cx="17" cy="15" r="1" fill="${c || '#f59e0b'}"/></svg>`,
+
+            // 🅿️ Park & Ride
+            parking: (s, c, cls) => `<svg class="ui-ic ui-ic-parking ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || '#3b82f6'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="4"/><path d="M9 17V7h4a3 3 0 0 1 0 6H9"/></svg>`
         };
 
         function getUiIcon(name, size = 18, color = '', extraClass = '') {
@@ -897,6 +906,27 @@ gQIDAQAB
                 mapZoomIn: `${getUiIcon('zoomIn', 13, 'currentColor')} ขยาย`,
                 mapZoomOut: `${getUiIcon('zoomOut', 13, 'currentColor')} ย่อ`,
                 mapReset: `${getUiIcon('resetZoom', 13, 'currentColor')} กลาง`,
+                mapLegendBtn: 'สัญลักษณ์',
+                legTitle: 'สัญลักษณ์สายรถไฟฟ้า (Transit Lines)',
+                legSukhumvit: 'สายสุขุมวิท',
+                legSilom: 'สายสีลม',
+                legGold: 'สายสีทอง',
+                legBlue: 'สายสีน้ำเงิน (เฉลิมรัชมงคล)',
+                legPurple: 'สายสีม่วง (ฉลองรัชธรรม)',
+                legBrt: 'รถโดยสารด่วนพิเศษ BRT',
+                legPink: 'สายสีชมพู (วิวัฒน์นคร)',
+                legYellow: 'สายสีเหลือง (นัคราพิพัฒน์)',
+                legDarkRed: 'สายสีแดงเข้ม (ธานีรัถยา)',
+                legLightRed: 'สายสีแดงอ่อน (นครวิถี)',
+                legArl: 'แอร์พอร์ต ลิงก์',
+                legOrange: 'สายสีส้ม (กำลังก่อสร้าง)',
+                legInter: 'จุดเชื่อมต่อข้ามสาย (Interchange)',
+                legAirport: 'เชื่อมต่อท่าอากาศยาน (สนามบิน)',
+                legBoat: 'ท่าเรือเชื่อมต่อ (เรือด่วน/คลอง)',
+                legTrain: 'เชื่อมต่อรถไฟทางไกล (SRT)',
+                legBus: 'สถานีขนส่งผู้โดยสาร (Bus)',
+                legPark: 'อาคารจอดแล้วจร (Park & Ride)',
+                legTap: 'แตะที่สถานีเพื่อเลือกเป็นจุดเริ่มต้น/ปลายทาง',
                 mapHint: `<span class="map-hint-icon">${getUiIcon('bulb', 15, '#f59e0b')}</span><div class="map-hint-body"><span class="map-hint-phrase"><b>วิธีใช้งาน:</b> แตะที่จุดสถานีใดๆ บนแผนผัง</span> <span class="map-hint-phrase">เพื่อเลือกเป็น <b>สถานีต้นทาง</b>,</span> <span class="map-hint-phrase"><b>สถานีปลายทาง</b></span> <span class="map-hint-phrase">หรือดู <b>ข้อมูลทางออก</b> ได้ทันที</span></div>`,
                 sheetOrigin: 'ตั้งเป็นสถานีต้นทาง (Set Origin)',
                 sheetOriginSub: 'คำนวณเส้นทางจากสถานีนี้',
@@ -1137,6 +1167,27 @@ gQIDAQAB
                 mapZoomIn: `${getUiIcon('zoomIn', 13, 'currentColor')} Zoom In`,
                 mapZoomOut: `${getUiIcon('zoomOut', 13, 'currentColor')} Zoom Out`,
                 mapReset: `${getUiIcon('resetZoom', 13, 'currentColor')} Reset`,
+                mapLegendBtn: 'Legend',
+                legTitle: 'Transit Network Legend',
+                legSukhumvit: 'Sukhumvit Line',
+                legSilom: 'Silom Line',
+                legGold: 'Gold Line',
+                legBlue: 'Blue Line (Chaloem Ratchamongkhon)',
+                legPurple: 'Purple Line (Chalong Ratchatham)',
+                legBrt: 'BRT Express Bus',
+                legPink: 'Pink Line (Wiwat Nakhon)',
+                legYellow: 'Yellow Line (Nakhara Phiphat)',
+                legDarkRed: 'SRT Dark Red Line (Thani Ratthaya)',
+                legLightRed: 'SRT Light Red Line (Nakhon Withi)',
+                legArl: 'Airport Rail Link',
+                legOrange: 'Orange Line (Under Construction)',
+                legInter: 'Interchange Station',
+                legAirport: 'Airport Rail Connection',
+                legBoat: 'Pier Connection (Express Boat/Canal)',
+                legTrain: 'Intercity Train Connection (SRT)',
+                legBus: 'Bus Terminal Connection',
+                legPark: 'Park & Ride',
+                legTap: 'Tap station to set Origin or Destination',
                 mapHint: `<span class="map-hint-icon">${getUiIcon('bulb', 15, '#f59e0b')}</span><div class="map-hint-body"><span class="map-hint-phrase"><b>How to use:</b> Tap any station on the map</span> <span class="map-hint-phrase">to set as <b>Origin</b>,</span> <span class="map-hint-phrase"><b>Destination</b></span> <span class="map-hint-phrase">or view <b>Exit Directory</b>.</span></div>`,
                 sheetOrigin: 'Set as Origin Station',
                 sheetOriginSub: 'Plan journey starting from this station',
@@ -2598,8 +2649,91 @@ gQIDAQAB
             return mrtLine ? mrtLine.StationList : [];
         }
 
+        /* ---------- MAP STATION COORDINATES (10 LINES OVERLAY) ---------- */
+        const MAP_STATION_HOTSPOTS = {
+    // BTS Sukhumvit Line
+    CEN: [850.39, 1020.47, 9.92], E1: [892.9, 1020.48, 8.51], E2: [926.88, 1020.48, 8.51],
+    E3: [961, 1020.48, 8.51], E4: [994.99, 1020.5, 8.51], E5: [1029.7, 1020.5, 8.51],
+    E6: [1068.67, 1020.5, 8.51], E7: [1102.65, 1030.24, 8.51], E8: [1126.37, 1048.83, 8.51],
+    E9: [1142.37, 1074.75, 8.51], E10: [1148.04, 1105.52, 8.51], E11: [1148.04, 1139.53, 8.51],
+    E12: [1148.04, 1173.55, 8.51], E13: [1148.04, 1207.57, 8.51], E14: [1148.04, 1241.58, 8.51],
+    E15: [1148.04, 1275.6, 8.51], E16: [1148.04, 1307.49, 8.51], E17: [1148.04, 1339.38, 8.51],
+    E18: [1148.04, 1371.27, 8.51], E19: [1148.04, 1403.16, 8.51], E20: [1148.04, 1435.05, 8.51],
+    E21: [1148.04, 1466.94, 8.51], E22: [1148.04, 1498.83, 8.51], E23: [1148.04, 1530.72, 8.51],
+    N1: [836.23, 958.12, 8.51], N2: [836.23, 895.75, 8.51], N3: [836.23, 864, 8.51],
+    N4: [836.23, 832.25, 8.51], N5: [836.23, 800.5, 8.51], N7: [836.23, 737, 8.51],
+    N8: [836.23, 708.66, 8.51], N9: [836.23, 666.66, 8.51], N10: [836.23, 623.61, 8.51],
+    N11: [836.23, 585.35, 8.51], N12: [836.23, 547.88, 8.51], N13: [836.23, 510.32, 8.51],
+    N14: [836.23, 475.31, 8.51], N15: [836.23, 441.3, 8.51], N16: [836.23, 407.08, 8.51],
+    N17: [836.23, 368.51, 7.5], N18: [836.23, 312, 8.51], N19: [845.59, 275.8, 8.51],
+    N20: [871.66, 248.03, 8.51], N21: [900, 219.69, 8.51], N22: [928.36, 191.34, 8.51],
+    N23: [956.84, 163, 8.51], N24: [1006.31, 141.73, 8.51],
+    // BTS Silom Line
+    S1: [864.56, 1063, 8.51], S2: [864.59, 1124.74, 8.51], S3: [863.48, 1162.21, 8.51],
+    S4: [851.18, 1193.88, 8.51], S5: [820.15, 1222.71, 8.51], S6: [779.63, 1233.04, 8.51],
+    S7: [709.73, 1233.04, 8.51], S8: [644.88, 1233.04, 8.51], S9: [581.21, 1233.04, 8.51],
+    S10: [524.39, 1233.04, 8.51], S11: [467.86, 1218.9, 8.51], S12: [434.31, 1184.9, 8.51],
+    W1: [792.25, 1020.48, 8.51],
+    // BTS Gold Line
+    G1: [716.11, 1218.9, 8.51], G2: [711.06, 1190.61, 8.51], G3: [677.49, 1156.54, 8.51],
+    // MRT Yellow Line
+    YL01: [921.27, 659.74, 8.51], YL02: [977.96, 665.91, 8.51], YL03: [1034.04, 665.91, 8.51],
+    YL04: [1091.35, 665.91, 8.51], YL05: [1147.41, 665.91, 8.51], YL06: [1203.78, 665.91, 8.51],
+    YL07: [1261.42, 675.76, 8.51], YL08: [1295.44, 702.24, 8.51], YL09: [1318.04, 761.53, 8.51],
+    YL10: [1318.12, 814.37, 8.51], YL11: [1318.12, 918.42, 8.51], YL12: [1318.12, 954.86, 8.51],
+    YL13: [1318.12, 991.29, 8.51], YL14: [1318.12, 1027.73, 8.51], YL15: [1318.12, 1064.16, 8.51],
+    YL16: [1318.12, 1100.6, 8.51], YL17: [1318.12, 1137.03, 8.51], YL18: [1318.12, 1173.46, 8.51],
+    YL19: [1308.57, 1218.9, 8.51], YL20: [1284.1, 1251.18, 8.51], YL21: [1252.01, 1269.93, 8.51],
+    YL22: [1210.4, 1275.6, 8.51], YL23: [1166.46, 1275.6, 8.51],
+    // MRT Pink Line
+    MT01: [524.36, 297.19, 8.51], MT02: [524.36, 269.3, 8.51], PK01: [496.06, 515.9, 8.51],
+    PK02: [477.07, 491.23, 8.51], PK03: [453, 466.96, 8.51], PK04: [428.19, 442.2, 8.51],
+    PK05: [411.02, 415.5, 8.51], PK06: [411.02, 383.36, 8.51], PK07: [439.07, 368.5, 8.51],
+    PK08: [479.87, 368.5, 8.51], PK09: [520.37, 368.5, 8.51], PK10: [560.12, 363.34, 9],
+    PK11: [601.36, 368.5, 8.51], PK12: [641.85, 368.5, 8.51], PK13: [682.35, 368.5, 8.51],
+    PK14: [745.73, 368.5, 8.51], PK15: [790.87, 368.5, 8.51], PK16: [850.4, 368.51, 7.5],
+    PK17: [892.77, 368.5, 8.51], PK18: [949.75, 368.5, 8.51], PK19: [1006.16, 368.5, 8.51],
+    PK20: [1062.57, 368.5, 8.51], PK21: [1119.69, 368.5, 8.51], PK22: [1173.55, 368.5, 8.51],
+    PK23: [1227.41, 368.5, 8.51], PK24: [1281.74, 368.5, 8.51], PK25: [1335.12, 368.5, 8.51],
+    PK26: [1393.13, 386.82, 8.51], PK27: [1423.86, 417.56, 8.51], PK28: [1454.63, 448.25, 8.51],
+    PK29: [1485.38, 478.94, 8.51], PK30: [1516.53, 510.24, 8.51],
+    // MRT Purple Line
+    PP01: [136.06, 470.59, 8.51], PP02: [136.06, 504.56, 8.51], PP03: [155.91, 538.59, 8.51],
+    PP04: [197.72, 538.59, 8.51], PP05: [241.04, 538.59, 8.51], PP06: [283.46, 538.59, 8.51],
+    PP07: [326.05, 538.59, 8.51], PP08: [371.34, 538.59, 8.51], PP09: [411.02, 538.59, 8.51],
+    PP10: [453.25, 538.59, 8.51], PP11: [496.06, 538.59, 8.51], PP12: [545.46, 552.68, 8.51],
+    PP13: [578.63, 585.8, 8.51], PP14: [605.25, 623.63, 8.51], PP15: [609.46, 680.31, 8.51],
+    PP16: [616.54, 737, 7.51],
+    // MRT Blue Line
+    BL01: [471.78, 1129.77, 8.51], BL02: [443.26, 1088.04, 8.51], BL03: [439.34, 1028.63, 8.51],
+    BL04: [439.38, 969.24, 8.51], BL05: [439.34, 909.85, 8.51], BL06: [439.34, 850.45, 8.51],
+    BL07: [442.2, 800.13, 8.51], BL08: [464.25, 761.81, 8.51], BL09: [524.49, 737, 8.51],
+    BL10: [602.36, 737, 7.51], BL11: [688.09, 737, 8.51], BL12: [779.55, 733.59, 8.51],
+    BL13: [818.9, 708.66, 8.51], BL14: [864.56, 680, 8.51], BL15: [921.25, 677.49, 8.51],
+    BL16: [970.87, 693.7, 8.51], BL17: [998.01, 725.95, 8.51], BL18: [1006.3, 765.39, 8.51],
+    BL19: [1004.88, 807.99, 7.51], BL20: [1006.3, 850.25, 8.51], BL21: [1006.3, 921.26, 8.51],
+    BL22: [1006.3, 1003.05, 8.51], BL23: [994.99, 1065.25, 8.51], BL24: [966.98, 1094.99, 8.51],
+    BL25: [921.22, 1108.35, 8.51], BL26: [850.39, 1108.35, 8.51], BL27: [792.25, 1108.95, 8.51],
+    BL28: [722.84, 1091.59, 8.51], BL29: [666.14, 1052.06, 8.51], BL30: [609.46, 1050.36, 7.51],
+    BL31: [549.92, 1057.79, 8.51], BL32: [503.98, 1097.46, 8.51], BL33: [444.96, 1156.47, 8.51],
+    BL34: [416.7, 1184.9, 8.51], BL35: [368.17, 1204.59, 8.51], BL36: [326.05, 1204.59, 8.51],
+    BL37: [283.46, 1204.59, 8.51], BL38: [240.94, 1204.59, 8.51],
+    // SRT Dark Red Line
+    RN01: [724.68, 737.09, 7], RN02: [722.72, 651.98, 8.51], RN03: [722.72, 586, 8.51],
+    RN04: [722.72, 510.32, 8.51], RN05: [722.72, 441.11, 8.51], RN06: [722.84, 368.5, 8.51],
+    RN07: [722.72, 312, 8.51], RN08: [721.29, 254.94, 7.51], RN09: [722.72, 197.72, 8.51],
+    RN10: [721.29, 141.73, 7.51],
+    // SRT Light Red Line
+    RW02: [622.98, 663.53, 8.51], RW03: [374.95, 768.2, 8.51], RW04: [325.99, 849.03, 7.51],
+    // Airport Rail Link
+    A1: [1544.89, 961.21, 8.51], A2: [1516.54, 895.75, 8.51], A3: [1431.49, 895.75, 8.51],
+    A4: [1335.12, 895.75, 8.51], A5: [1166.17, 895.75, 8.51], A6: [993.62, 895.75, 8.51],
+    A7: [921.22, 895.75, 8.51], A8: [853.23, 895.75, 8.51],
+};
+
         /* ================= APP ================= */
         const App = {
+            mapStationHotspots: MAP_STATION_HOTSPOTS,
             lines: [],            // [{LineId, LineName_TH/EN, LineColor, StationList}]
             uniqueStations: [],   // dedupe ด้วย StationKey (สยามอยู่ 2 สาย) สำหรับหาสถานีใกล้สุด
             lineById: {},
@@ -2656,6 +2790,7 @@ gQIDAQAB
                     this.scrollActiveTabIntoView();
                 } else if (viewName === 'map') {
                     this.renderInteractiveMap();
+                    this.updateMapTheme();
                 } else if (viewName === 'exits') {
                     const fallback = this.pinnedStation()?.StationKey || this.nearest?.station?.StationKey || 'CEN';
                     this.renderExitsView(this.selectedExitKey || fallback);
@@ -3458,292 +3593,55 @@ gQIDAQAB
                 if (!container) return;
                 if (!force && container.innerHTML.trim() !== '') return;
 
-                const MAP_STATION_COORDS = {
-                    // 1. BTS Sukhumvit Line (N24 -> E23) [Green]
-                    'N24': [950, 40], 'N23': [920, 40], 'N22': [890, 40], 'N21': [860, 40],
-                    'N20': [830, 40], 'N19': [800, 40], 'N18': [770, 40],
-                    'N17': [740, 75], 'N16': [740, 110], 'N15': [740, 140], 'N14': [740, 170],
-                    'N13': [740, 200], 'N12': [740, 230], 'N11': [740, 260], 'N10': [740, 290],
-                    'N9':  [740, 320], 'N8':  [740, 355], 'N7':  [740, 395], 'N5':  [740, 435],
-                    'N4':  [740, 475], 'N3':  [740, 515], 'N2':  [740, 555], 'N1':  [740, 595],
-                    'CEN': [740, 635],
-                    'E1':  [780, 635], 'E2':  [820, 635], 'E3':  [860, 635], 'E4':  [900, 635],
-                    'E5':  [940, 635], 'E6':  [980, 635], 'E7':  [1020, 635], 'E8':  [1060, 635],
-                    'E9':  [1100, 650], 'E10': [1130, 680], 'E11': [1160, 710], 'E12': [1190, 740],
-                    'E13': [1220, 770], 'E14': [1250, 800], 'E15': [1280, 835], 'E16': [1280, 870],
-                    'E17': [1280, 905], 'E18': [1280, 940], 'E19': [1280, 975], 'E20': [1280, 1010],
-                    'E21': [1280, 1045], 'E22': [1280, 1080], 'E23': [1280, 1115],
+                const hotspotsSvg = Object.entries(MAP_STATION_HOTSPOTS).map(([key, coords]) => {
+                    const cx = coords[0];
+                    const cy = coords[1];
+                    const r = (coords[2] ? coords[2] + 2 : 10.5);
+                    return `<circle cx="${cx}" cy="${cy}" r="${r.toFixed(2)}" class="map-station-hotspot" data-key="${key}" onclick="App.onMapStationClick('${key}')" />`;
+                }).join('');
 
-                    // 2. BTS Silom Line (W1 -> S12) [Teal]
-                    'W1':  [695, 635], 'S1':  [740, 675], 'S2':  [740, 715],
-                    'S3':  [710, 745], 'S4':  [680, 775], 'S5':  [650, 805], 'S6':  [615, 835],
-                    'S7':  [555, 865], 'S8':  [510, 890], 'S9':  [465, 915], 'S10': [420, 940],
-                    'S11': [375, 965], 'S12': [325, 990],
+                const isDark = document.documentElement && document.documentElement.classList.contains('dark');
+                const mapSvg = isDark ? 'bkk_transit_map_dark.svg' : 'bkk_transit_map.svg';
 
-                    // 3. BTS Gold Line (G1 -> G3) [Gold]
-                    'G1':  [572, 878], 'G2':  [602, 908], 'G3':  [632, 938],
-
-                    // 4. SRT Dark Red Line (RN01 -> RN10) [Dark Red #B91C1C]
-                    'RN01': [565, 355], 'RN02': [610, 315], 'RN03': [610, 275], 'RN04': [610, 235],
-                    'RN05': [610, 195], 'RN06': [610, 155], 'RN07': [610, 120], 'RN08': [610, 85],
-                    'RN09': [610, 50],  'RN10': [610, 15],
-
-                    // 5. SRT Light Red Line (RN01 -> RW04) [Light Red #F87171]
-                    'RW02': [460, 315], 'RW03': [350, 355], 'RW04': [240, 355],
-
-                    // 6. MRT Blue Line (BL01 -> BL38) [Blue #0284C7]
-                    'BL11': [590, 355], 'BL12': [665, 355], 'BL13': [760, 355], 'BL14': [780, 335],
-                    'BL15': [845, 335], 'BL16': [900, 355], 'BL17': [900, 395], 'BL18': [900, 435],
-                    'BL19': [900, 475], 'BL20': [900, 515], 'BL21': [900, 560], 'BL22': [900, 655],
-                    'BL23': [900, 690], 'BL24': [870, 715], 'BL25': [815, 715], 'BL26': [760, 715],
-                    'BL27': [675, 715], 'BL28': [610, 715], 'BL29': [560, 715], 'BL30': [510, 715],
-                    'BL31': [460, 715], 'BL32': [410, 715], 'BL01': [365, 760], 'BL02': [365, 710],
-                    'BL03': [365, 660], 'BL04': [365, 610], 'BL05': [365, 560], 'BL06': [365, 510],
-                    'BL07': [375, 465], 'BL08': [395, 420], 'BL09': [425, 385], 'BL10': [460, 355],
-                    'BL33': [345, 870], 'BL34': [345, 990], 'BL35': [295, 1010], 'BL36': [245, 1030],
-                    'BL37': [195, 1050], 'BL38': [145, 1070],
-
-                    // 7. MRT Purple Line (PP01 -> PP16) [Purple #8A2C9B]
-                    'PP16': [440, 355], 'PP15': [440, 315], 'PP14': [415, 285], 'PP13': [380, 255],
-                    'PP12': [340, 225], 'PP11': [300, 195], 'PP10': [260, 180], 'PP09': [220, 165],
-                    'PP08': [180, 150], 'PP07': [150, 135], 'PP06': [125, 125], 'PP05': [100, 125],
-                    'PP04': [75, 125],  'PP03': [50, 125],  'PP02': [30, 100],  'PP01': [30, 70],
-
-                    // 8. MRT Pink Line (PK01 -> PK30, MT01, MT02) [Pink #EC4899]
-                    'PK01': [318, 195], 'PK02': [340, 155], 'PK03': [365, 155], 'PK04': [390, 155],
-                    'PK05': [415, 155], 'PK06': [440, 155], 'PK07': [465, 155], 'PK08': [490, 155],
-                    'PK09': [515, 155], 'MT01': [515, 120], 'MT02': [515, 85],  'PK10': [540, 155],
-                    'PK11': [563, 155], 'PK12': [584, 155], 'PK13': [605, 155], 'PK14': [625, 155],
-                    'PK15': [675, 115], 'PK16': [740, 95],  'PK17': [800, 75],  'PK18': [855, 75],
-                    'PK19': [910, 75],  'PK20': [965, 75],  'PK21': [1020, 75], 'PK22': [1075, 75],
-                    'PK23': [1130, 75], 'PK24': [1185, 75], 'PK25': [1240, 85], 'PK26': [1285, 105],
-                    'PK27': [1330, 130], 'PK28': [1370, 160], 'PK29': [1405, 190], 'PK30': [1435, 220],
-
-                    // 9. MRT Yellow Line (YL01 -> YL23) [Yellow #EAB308]
-                    'YL01': [865, 335], 'YL02': [905, 310], 'YL03': [950, 310], 'YL04': [995, 310],
-                    'YL05': [1040, 310], 'YL06': [1085, 310], 'YL07': [1130, 310], 'YL08': [1175, 325],
-                    'YL09': [1220, 355], 'YL10': [1235, 410], 'YL11': [1235, 470], 'YL12': [1235, 515],
-                    'YL13': [1235, 555], 'YL14': [1235, 595], 'YL15': [1235, 635], 'YL16': [1235, 675],
-                    'YL17': [1235, 715], 'YL18': [1235, 755], 'YL19': [1235, 790], 'YL20': [1235, 825],
-                    'YL21': [1235, 860], 'YL22': [1250, 885], 'YL23': [1260, 835],
-
-                    // 10. Airport Rail Link (A8 -> A1) [ARL #8A1538]
-                    'A8':   [760, 555], 'A7':   [830, 555], 'A6':   [920, 560], 'A5':   [1080, 515],
-                    'A4':   [1255, 470], 'A3':   [1370, 470], 'A2':   [1475, 470], 'A1':   [1560, 505]
-                };
-
-                const STATION_DIRS = {
-                    'N24':'tr45','N23':'br45','N22':'tr45','N21':'br45','N20':'tr45','N19':'br45','N18':'tr45',
-                    'N17':'tl','N16':'r','N15':'r','N14':'r','N13':'r','N12':'r','N11':'r','N10':'r','N9':'l',
-                    'N8':'l','N7':'r','N5':'r','N4':'r','N3':'r','N2':'l','N1':'r','CEN':'tr',
-                    'E1':'b','E2':'b','E3':'b','E4':'t','E5':'b','E6':'b','E7':'b','E8':'b',
-                    'E9':'br','E10':'br','E11':'br','E12':'br','E13':'br','E14':'br','E15':'r',
-                    'E16':'r','E17':'r','E18':'r','E19':'r','E20':'r','E21':'r','E22':'r','E23':'r',
-
-                    'W1':'t','S1':'l','S2':'l','S3':'r','S4':'r','S5':'r','S6':'r',
-                    'S7':'l','S8':'b','S9':'b','S10':'b','S11':'b','S12':'l',
-
-                    'G1':'r','G2':'r','G3':'r',
-
-                    'RN01':'l','RN02':'l','RN03':'l','RN04':'l','RN05':'l',
-                    'RN06':'l','RN07':'l','RN08':'l','RN09':'l','RN10':'l',
-
-                    'RW02':'t','RW03':'b','RW04':'l',
-
-                    'BL11':'r','BL12':'t','BL13':'r','BL14':'t','BL15':'l',
-                    'BL16':'r','BL17':'r','BL18':'r','BL19':'r','BL20':'r','BL21':'l','BL22':'b',
-                    'BL23':'r','BL24':'b','BL25':'b','BL26':'r','BL27':'b','BL28':'b','BL29':'b',
-                    'BL30':'b','BL31':'b','BL32':'b','BL01':'l','BL02':'l','BL03':'l','BL04':'l',
-                    'BL05':'l','BL06':'l','BL07':'l','BL08':'l','BL09':'l','BL10':'t',
-                    'BL33':'r','BL34':'r','BL35':'b','BL36':'b','BL37':'b','BL38':'b',
-
-                    'PP01':'t','PP02':'r','PP03':'tr45','PP04':'br45','PP05':'tr45','PP06':'br45','PP07':'t',
-                    'PP08':'t','PP09':'t','PP10':'t','PP11':'l','PP12':'l','PP13':'l','PP14':'l',
-                    'PP15':'l','PP16':'l',
-
-                    'PK01':'r','PK02':'tr45','PK03':'br45','PK04':'tr45','PK05':'br45','PK06':'tr45','PK07':'br45',
-                    'PK08':'tr45','PK09':'b','MT01':'r','MT02':'r','PK10':'tr45','PK11':'br45','PK12':'tr45',
-                    'PK13':'br45','PK14':'r','PK15':'tr','PK16':'b','PK17':'tr45','PK18':'br45','PK19':'tr45',
-                    'PK20':'br45','PK21':'tr45','PK22':'br45','PK23':'tr45','PK24':'br45','PK25':'tr','PK26':'tr',
-                    'PK27':'tr','PK28':'tr','PK29':'tr','PK30':'r',
-
-                    'YL01':'r','YL02':'t','YL03':'t','YL04':'t','YL05':'t','YL06':'t','YL07':'t',
-                    'YL08':'t','YL09':'r','YL10':'r','YL11':'l','YL12':'r','YL13':'r','YL14':'r',
-                    'YL15':'r','YL16':'r','YL17':'r','YL18':'r','YL19':'r','YL20':'r','YL21':'r',
-                    'YL22':'r','YL23':'l',
-
-                    'A8':'r','A7':'t','A6':'r','A5':'b','A4':'r','A3':'b','A2':'b','A1':'b'
-                };
-
-                const INTERCHANGE_PAIRS = [
-                    ['N8', 'BL13'], ['N9', 'BL14'], ['N2', 'A8'], ['E4', 'BL22'], ['E15', 'YL23'],
-                    ['S2', 'BL26'], ['S7', 'G1'], ['S12', 'BL34'], ['N17', 'PK16'], ['BL10', 'PP16'],
-                    ['RW02', 'PP15'], ['RN01', 'BL11'], ['RN06', 'PK14'], ['BL15', 'YL01'],
-                    ['BL21', 'A6'], ['YL11', 'A4'], ['PP11', 'PK01']
-                ];
-
-                const INTERCHANGE_SET = new Set(['CEN']);
-                INTERCHANGE_PAIRS.forEach(([a, b]) => {
-                    INTERCHANGE_SET.add(a);
-                    INTERCHANGE_SET.add(b);
-                });
-
-                const getStColor = (key) => {
-                    if (['RN01','RN02','RN03','RN04','RN05','RN06','RN07','RN08','RN09','RN10'].includes(key)) return '#B91C1C';
-                    if (['RW02','RW03','RW04'].includes(key)) return '#F87171';
-                    if (['PP01','PP02','PP03','PP04','PP05','PP06','PP07','PP08','PP09','PP10','PP11','PP12','PP13','PP14','PP15','PP16'].includes(key)) return '#8A2C9B';
-                    if (['PK01','PK02','PK03','PK04','PK05','PK06','PK07','PK08','PK09','MT01','MT02','PK10','PK11','PK12','PK13','PK14','PK15','PK16','PK17','PK18','PK19','PK20','PK21','PK22','PK23','PK24','PK25','PK26','PK27','PK28','PK29','PK30'].includes(key)) return '#EC4899';
-                    if (['YL01','YL02','YL03','YL04','YL05','YL06','YL07','YL08','YL09','YL10','YL11','YL12','YL13','YL14','YL15','YL16','YL17','YL18','YL19','YL20','YL21','YL22','YL23'].includes(key)) return '#EAB308';
-                    if (['A1','A2','A3','A4','A5','A6','A7','A8'].includes(key)) return '#8A1538';
-                    if (['G1','G2','G3'].includes(key)) return '#B89D18';
-                    if (['W1','S1','S2','S3','S4','S5','S6','S7','S8','S9','S10','S11','S12'].includes(key)) return '#00807D';
-                    if (key === 'CEN') return '#7AB420';
-                    if (key.startsWith('BL')) return '#0284C7';
-                    return '#7AB420';
-                };
-
-                const LINES = [
-                    { id: 'sukhumvit', color: '#7AB420', width: 7.5, stations: ['N24','N23','N22','N21','N20','N19','N18','N17','N16','N15','N14','N13','N12','N11','N10','N9','N8','N7','N5','N4','N3','N2','N1','CEN','E1','E2','E3','E4','E5','E6','E7','E8','E9','E10','E11','E12','E13','E14','E15','E16','E17','E18','E19','E20','E21','E22','E23'] },
-                    { id: 'silom', color: '#00807D', width: 7.5, stations: ['W1','CEN','S1','S2','S3','S4','S5','S6','S7','S8','S9','S10','S11','S12'] },
-                    { id: 'gold', color: '#B89D18', width: 5.5, stations: ['G1','G2','G3'] },
-                    { id: 'darkred', color: '#B91C1C', width: 6.5, stations: ['RN01','RN02','RN03','RN04','RN05','RN06','RN07','RN08','RN09','RN10'] },
-                    { id: 'lightred', color: '#F87171', width: 6.5, stations: ['RN01','RW02','RW03','RW04'] },
-                    { id: 'blue_loop', color: '#0284C7', width: 7.5, stations: ['BL11','BL12','BL13','BL14','BL15','BL16','BL17','BL18','BL19','BL20','BL21','BL22','BL23','BL24','BL25','BL26','BL27','BL28','BL29','BL30','BL31','BL32','BL01','BL02','BL03','BL04','BL05','BL06','BL07','BL08','BL09','BL10','BL11'] },
-                    { id: 'blue_spur', color: '#0284C7', width: 7.5, stations: ['BL01','BL33','BL34','BL35','BL36','BL37','BL38'] },
-                    { id: 'purple', color: '#8A2C9B', width: 6.5, stations: ['PP01','PP02','PP03','PP04','PP05','PP06','PP07','PP08','PP09','PP10','PP11','PP12','PP13','PP14','PP15','PP16'] },
-                    { id: 'pink_main', color: '#EC4899', width: 6.5, stations: ['PK01','PK02','PK03','PK04','PK05','PK06','PK07','PK08','PK09','PK10','PK11','PK12','PK13','PK14','PK15','PK16','PK17','PK18','PK19','PK20','PK21','PK22','PK23','PK24','PK25','PK26','PK27','PK28','PK29','PK30'] },
-                    { id: 'pink_branch', color: '#EC4899', width: 6.5, stations: ['PK09','MT01','MT02'] },
-                    { id: 'yellow', color: '#EAB308', width: 6.5, stations: ['YL01','YL02','YL03','YL04','YL05','YL06','YL07','YL08','YL09','YL10','YL11','YL12','YL13','YL14','YL15','YL16','YL17','YL18','YL19','YL20','YL21','YL22','YL23'] },
-                    { id: 'arl', color: '#8A1538', width: 6.5, stations: ['A8','A7','A6','A5','A4','A3','A2','A1'] }
-                ];
-
-                const mapLbl = (code) => {
-                    const s = this.findStation(code);
-                    const plane = (code === 'A1' || code === 'RN08') ? '✈ ' : '';
-                    if (s) {
-                        return `${plane}${stName(s)}`;
-                    }
-                    return `${plane}${code}`;
-                };
-
-                let svg = `
-                    <svg viewBox="0 0 1600 1200" style="transform-origin:0 0;transition:transform .2s ease;">
-                        <defs>
-                            <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-                                <feGaussianBlur stdDeviation="3" result="blur" />
-                                <feComposite in="SourceGraphic" in2="blur" operator="over" />
-                            </filter>
-                            <filter id="mapShadow" x="-10%" y="-10%" width="120%" height="120%">
-                                <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.10" />
-                            </filter>
-                        </defs>
-
-                        <!-- Background River (Chao Phraya) - Layered Soft Stream -->
-                        <path d="M 180,-10 C 190,130 380,240 405,370 C 435,490 385,630 430,705 C 485,780 575,815 575,860 C 575,930 520,1050 560,1210" fill="none" stroke="var(--map-river-glow, rgba(56,189,248,0.18))" stroke-width="48" stroke-linecap="round" />
-                        <path d="M 180,-10 C 190,130 380,240 405,370 C 435,490 385,630 430,705 C 485,780 575,815 575,860 C 575,930 520,1050 560,1210" fill="none" stroke="var(--map-river-stream, #38bdf8)" stroke-width="26" stroke-linecap="round" opacity="0.32" />
-                        <g transform="rotate(45 435 785)">
-                            <rect x="345" y="771" width="180" height="20" rx="10" fill="var(--map-canvas-bg, #f8fafc)" opacity="0.85" />
-                            <text x="435" y="785" fill="var(--sky, #0284c7)" font-family="var(--font-main)" font-size="11.5" font-weight="700" letter-spacing="0.5" text-anchor="middle" dominant-baseline="middle">แม่น้ำเจ้าพระยา (Chao Phraya)</text>
+                container.innerHTML = `
+                    <img src="${mapSvg}" 
+                         onerror="this.onerror=null;this.src='bkk_transit_map.jpg';" 
+                         alt="ผังโครงข่ายระบบขนส่งมวลชนกรุงเทพฯ 10 สาย" 
+                         id="networkMapImage" 
+                         class="network-map-image" 
+                         draggable="false" />
+                    <svg id="networkMapInteractiveOverlay" viewBox="0 0 1672.44 1672.44" class="network-map-overlay">
+                        <circle id="activeMapStationRing" cx="0" cy="0" r="14" class="map-active-ring" style="display:none;" />
+                        <g id="networkMapHotspots">
+                            ${hotspotsSvg}
                         </g>
-
-                        <!-- Interchange Connector Links (Clean Capsule Pill Style) -->
-                        ${INTERCHANGE_PAIRS.map(([a, b]) => {
-                            const [x1, y1] = MAP_STATION_COORDS[a];
-                            const [x2, y2] = MAP_STATION_COORDS[b];
-                            return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="var(--map-line-casing, #ffffff)" stroke-width="13" stroke-linecap="round" />
-                                    <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="var(--map-interchange-link, #64748b)" stroke-width="5" stroke-linecap="round" opacity="0.85" />
-                                    <line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="var(--map-line-casing, #ffffff)" stroke-width="2.5" stroke-linecap="round" />`;
-                        }).join('')}
-
-                        <!-- Transit Lines - Layer 1: Casing Underlay (Clean Track Separation) -->
-                        ${LINES.map(line => {
-                            const pts = line.stations.map(st => MAP_STATION_COORDS[st].join(',')).join(' ');
-                            return `<polyline points="${pts}" fill="none" stroke="var(--map-line-casing, #ffffff)" stroke-width="${line.width + 4.5}" stroke-linecap="round" stroke-linejoin="round" />`;
-                        }).join('')}
-
-                        <!-- Transit Lines - Layer 2: Vibrant Track Lines -->
-                        ${LINES.map(line => {
-                            const pts = line.stations.map(st => MAP_STATION_COORDS[st].join(',')).join(' ');
-                            return `<polyline points="${pts}" fill="none" stroke="${line.color}" stroke-width="${line.width}" stroke-linecap="round" stroke-linejoin="round" />`;
-                        }).join('')}
-
-                        <!-- Stations (Nodes & Labels) -->
-                        ${Object.entries(MAP_STATION_COORDS).map(([key, [cx, cy]]) => {
-                            const col = getStColor(key);
-                            const isInter = INTERCHANGE_SET.has(key);
-                            const dir = STATION_DIRS[key] || 'r';
-                            const is4 = key.length > 3;
-                            const codeFontSize = is4 ? '4.7' : (key.length === 3 ? '5.3' : '5.8');
-                            const nodeRadius = isInter ? 9.2 : (is4 ? 7.8 : 7.2);
-                            const offsetDist = nodeRadius + 3.8;
-
-                            let tx = cx, ty = cy, anchor = 'start', rot = 0;
-                            if (dir === 'r') {
-                                tx = cx + offsetDist; ty = cy + 3.2; anchor = 'start';
-                            } else if (dir === 'l') {
-                                tx = cx - offsetDist; ty = cy + 3.2; anchor = 'end';
-                            } else if (dir === 't') {
-                                tx = cx; ty = cy - (offsetDist + 1); anchor = 'middle';
-                            } else if (dir === 'b') {
-                                tx = cx; ty = cy + (offsetDist + 6.5); anchor = 'middle';
-                            } else if (dir === 'tr') {
-                                tx = cx + (offsetDist * 0.75); ty = cy - (offsetDist * 0.7); anchor = 'start';
-                            } else if (dir === 'br') {
-                                tx = cx + (offsetDist * 0.75); ty = cy + (offsetDist * 0.85); anchor = 'start';
-                            } else if (dir === 'tl') {
-                                tx = cx - (offsetDist * 0.75); ty = cy - (offsetDist * 0.7); anchor = 'end';
-                            } else if (dir === 'bl') {
-                                tx = cx - (offsetDist * 0.75); ty = cy + (offsetDist * 0.85); anchor = 'end';
-                            } else if (dir === 'tr45') {
-                                tx = cx + (offsetDist * 0.72); ty = cy - (offsetDist * 0.72); anchor = 'start'; rot = -45;
-                            } else if (dir === 'br45') {
-                                tx = cx + (offsetDist * 0.72); ty = cy + (offsetDist * 0.72); anchor = 'start'; rot = 45;
-                            } else if (dir === 'tl45') {
-                                tx = cx - (offsetDist * 0.72); ty = cy - (offsetDist * 0.72); anchor = 'end'; rot = 45;
-                            } else if (dir === 'bl45') {
-                                tx = cx - (offsetDist * 0.72); ty = cy + (offsetDist * 0.72); anchor = 'end'; rot = -45;
-                            }
-
-                            let circleSvg = '';
-                            if (key === 'CEN') {
-                                circleSvg = `
-                                    <circle cx="${cx}" cy="${cy}" r="11.5" fill="var(--map-line-casing, #ffffff)" stroke="var(--map-line-casing, #ffffff)" stroke-width="2.5" class="map-node" />
-                                    <circle cx="${cx}" cy="${cy}" r="10.2" fill="var(--map-node-bg, #ffffff)" stroke="#00807D" stroke-width="2.6" />
-                                    <circle cx="${cx}" cy="${cy}" r="8.2" fill="var(--map-node-bg, #ffffff)" stroke="#7AB420" stroke-width="1.6" />
-                                    <text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="central" fill="var(--map-node-text, #0f172a)" font-family="var(--font-main)" font-size="6.0" font-weight="900" letter-spacing="0" style="pointer-events:none;">CEN</text>`;
-                            } else if (isInter) {
-                                circleSvg = `
-                                    <circle cx="${cx}" cy="${cy}" r="${nodeRadius + 1.2}" fill="var(--map-line-casing, #ffffff)" stroke="var(--map-line-casing, #ffffff)" stroke-width="2" class="map-node" />
-                                    <circle cx="${cx}" cy="${cy}" r="${nodeRadius}" fill="var(--map-node-bg, #ffffff)" stroke="${col}" stroke-width="3" />
-                                    <text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="central" fill="var(--map-node-text, #0f172a)" font-family="var(--font-main)" font-size="${codeFontSize}" font-weight="800" letter-spacing="0" style="pointer-events:none;">${key}</text>`;
-                            } else {
-                                circleSvg = `
-                                    <circle cx="${cx}" cy="${cy}" r="${nodeRadius + 1.2}" fill="var(--map-line-casing, #ffffff)" stroke="var(--map-line-casing, #ffffff)" stroke-width="1.8" class="map-node" />
-                                    <circle cx="${cx}" cy="${cy}" r="${nodeRadius}" fill="var(--map-node-bg, #ffffff)" stroke="${col}" stroke-width="2.2" />
-                                    <text x="${cx}" y="${cy}" text-anchor="middle" dominant-baseline="central" fill="var(--map-node-text, #0f172a)" font-family="var(--font-main)" font-size="${codeFontSize}" font-weight="800" letter-spacing="0" style="pointer-events:none;">${key}</text>`;
-                            }
-
-                            const rotAttr = rot ? ` transform="rotate(${rot} ${tx} ${ty})"` : '';
-                            return `<g class="map-node-group" onclick="App.onMapStationClick('${key}')" style="cursor:pointer;" tabindex="0" role="button" aria-label="${esc(key)} ${esc(mapLbl(key))}">
-                                        ${circleSvg}
-                                        <text x="${tx}" y="${ty}"${rotAttr} class="map-label" text-anchor="${anchor}">${mapLbl(key)}</text>
-                                    </g>`;
-                        }).join('')}
-                    </svg>`;
-
-                container.innerHTML = svg;
+                    </svg>
+                `;
                 this.setupMapGestureHandlers();
-                if (!force) {
-                    const vp = document.getElementById('mapViewport');
-                    if (vp) {
-                        setTimeout(() => {
-                            const targetX = (740 / 1600) * vp.scrollWidth - (vp.clientWidth / 2);
-                            const targetY = (635 / 1200) * vp.scrollHeight - (vp.clientHeight / 2);
-                            vp.scrollLeft = Math.max(0, targetX);
-                            vp.scrollTop = Math.max(0, targetY);
-                        }, 50);
-                    }
+                const vp = document.getElementById('mapViewport');
+                if (vp) {
+                    setTimeout(() => {
+                        const targetX = (850 / 1672) * vp.scrollWidth - (vp.clientWidth / 2);
+                        const targetY = (920 / 1672) * vp.scrollHeight - (vp.clientHeight / 2);
+                        vp.scrollLeft = Math.max(0, targetX);
+                        vp.scrollTop = Math.max(0, targetY);
+                    }, 60);
                 }
+            },
+
+            updateMapTheme() {
+                const mapImg = document.getElementById('networkMapImage');
+                if (!mapImg) return;
+                const isDark = document.documentElement && document.documentElement.classList.contains('dark');
+                const targetSrc = isDark ? 'bkk_transit_map_dark.svg' : 'bkk_transit_map.svg';
+                const curSrc = mapImg.getAttribute('src') || '';
+                if (!curSrc.endsWith(targetSrc)) {
+                    mapImg.setAttribute('src', targetSrc);
+                }
+            },
+
+            setupMapProximityClick() {
+                // Restricted: Only direct taps/clicks on the station code hotspot are allowed
             },
 
             /* ---------- THE SKYTRAINs: Tap-to-Route Floating Action Sheet ---------- */
@@ -3756,6 +3654,19 @@ gQIDAQAB
                 if (!s) return;
 
                 const color = s.StationLineColor || '#7AB420';
+                const ring = document.getElementById('activeMapStationRing');
+                if (ring && typeof MAP_STATION_HOTSPOTS !== 'undefined' && MAP_STATION_HOTSPOTS[stationKey]) {
+                    const coords = MAP_STATION_HOTSPOTS[stationKey];
+                    const rx = coords[0];
+                    const ry = coords[1];
+                    const ringR = (coords[2] ? coords[2] + 4 : 14);
+                    ring.setAttribute('cx', rx);
+                    ring.setAttribute('cy', ry);
+                    ring.setAttribute('r', ringR);
+                    ring.setAttribute('stroke', color);
+                    ring.style.display = 'block';
+                }
+
                 const infoEl = document.getElementById('sheetStationInfo');
                 if (infoEl) {
                     const enName = s.StationName_EN || s.StationNameEN || '';
@@ -3778,9 +3689,11 @@ gQIDAQAB
                 const backdrop = document.getElementById('mapActionSheetBackdrop');
                 if (sheet) sheet.hidden = true;
                 if (backdrop) backdrop.hidden = true;
+                const ring = document.getElementById('activeMapStationRing');
+                if (ring) ring.style.display = 'none';
             },
 
-            setOriginFromActionSheet() {
+setOriginFromActionSheet() {
                 const key = this.selectedMapStationKey;
                 this.journey.from = key;
                 this.closeMapActionSheet();
@@ -4610,6 +4523,7 @@ gQIDAQAB
                 document.documentElement.classList.toggle('dark', next === 'dark');
                 try { localStorage.setItem('bts_theme', next); } catch (e) { }
                 this.updateThemeBtn();
+                this.updateMapTheme();
             },
 
             updateThemeBtn() {
@@ -4671,6 +4585,34 @@ gQIDAQAB
                 set('mapZoomOutBtn', T('mapZoomOut'));
                 set('mapResetBtn', T('mapReset'));
                 set('mapHintCard', T('mapHint'));
+                const mapLegendBtn = document.getElementById('mapLegendBtnText');
+                if (mapLegendBtn) {
+                    const sheet = document.getElementById('mapLegendSheet');
+                    const isActive = sheet && sheet.classList.contains('active');
+                    mapLegendBtn.textContent = isActive ? (lang === 'en' ? 'Close' : 'ปิดสัญลักษณ์') : T('mapLegendBtn');
+                }
+
+                // Map legend sheet
+                set('mapLegendSheetTitle', T('legTitle'));
+                set('legTxt1', T('legSukhumvit'));
+                set('legTxt2', T('legSilom'));
+                set('legTxt3', T('legGold'));
+                set('legTxt4', T('legBlue'));
+                set('legTxt5', T('legPurple'));
+                set('legTxtBrt', T('legBrt'));
+                set('legTxt6', T('legPink'));
+                set('legTxt7', T('legYellow'));
+                set('legTxt8', T('legDarkRed'));
+                set('legTxt9', T('legLightRed'));
+                set('legTxt10', T('legArl'));
+                set('legTxtOrange', T('legOrange'));
+                set('legTxtInter', T('legInter'));
+                set('legTxtAirport', T('legAirport'));
+                set('legTxtBoat', T('legBoat'));
+                set('legTxtTrain', T('legTrain'));
+                set('legTxtBus', T('legBus'));
+                set('legTxtPark', T('legPark'));
+                set('legTxtTap', T('legTap'));
 
                 // Map action sheet
                 set('sheetOriginTitle', T('sheetOrigin'));
@@ -4725,6 +4667,7 @@ gQIDAQAB
                 }
                 this.applyStaticLang();
                 this.updateThemeBtn();   // ธีมถูกตั้งไว้แล้วจากสคริปต์ใน <head> — ปรับไอคอนปุ่มให้ตรง
+                this.updateMapTheme();
                 this.startClock();
                 try {
                     localStorage.removeItem('bkk_geofence_enabled');

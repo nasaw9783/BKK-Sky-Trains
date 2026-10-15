@@ -21,33 +21,33 @@
    - สวยงาม คมชัดในรูปแบบ SVG Vector รองรับทุกความละเอียดหน้าจอ
 4. **🎯 มาตรฐานการจัดองค์ประกอบกึ่งกลาง (Project Element Centering Standard)**
    - ทุกกรอบข้อความ รหัสสถานี (Station Code เช่น `YL20`, `CEN`), ไอคอนสัญลักษณ์ (Icons / Symbols เช่น Theme Button, Line Icons, Badges), และปุ่มควบคุมแบบ Pill/Box ทั้งหมด ถูกจัดวางกึ่งกลางอย่างสมบูรณ์แบบทั้งแนวนอนและแนวตั้ง (Centering Layout)
-5. **🗺️ ผังสายรถไฟฟ้าแบบโต้ตอบ (Interactive Route Strip & Line Network)**
-   - แสดงแผนผังสถานีตามแนวเส้นทางครอบคลุมทุกโครงข่ายใน กทม.:
-     - BTS สายสุขุมวิท (สีเขียวอ่อน), BTS สายสีลม (สีเขียวเข้ม), BTS สายสีทอง
-     - MRT สายสีน้ำเงิน, MRT สายสีม่วง, MRT สายสีเหลือง, MRT สายสีชมพู
-     - SRTET รถไฟฟ้าชานเมืองสายสีแดง (ธานีรัถยา & นครวิถี)
-     - ARL รถไฟฟ้าแอร์พอร์ต เรล ลิงก์
-   - แตะที่สถานีใดๆ บนผังเส้นทางเพื่อดูเวลารถเข้าและข้อมูลทางออกได้ทันที
-5. **🧭 วางแผนการเดินทางอัจฉริยะ (Smart Journey Planner)**
+5. **🗺️ แผนผังโครงข่ายรถไฟฟ้าความละเอียดสูงแบบโต้ตอบ (Transit Blueprint Vector Map & Interactive Hotspots)**
+   - แผนที่โครงข่ายรวม 10 สายรถไฟฟ้า กทม. และปริมณฑล คมชัดระดับ Vector Blueprint สลับตามโหมดการแสดงผลอัตโนมัติ:
+     - โหมดสว่าง (Light Theme): `bkk_transit_map.svg`
+     - โหมดมืด (Dark Theme): `bkk_transit_map_dark.svg`
+   - จุดฮอตสปอตสถานีแบบโต้ตอบ (Interactive Station Hotspots): แตะที่สถานีใดๆ บนแผนที่เพื่อเลือกเป็น **สถานีต้นทาง**, **สถานีปลายทาง** หรือเปิดดู **ข้อมูลประตูทางออก** ได้ทันที
+   - หน้าต่างคำอธิบายสัญลักษณ์โครงข่าย (Transit Network Legend): แสดงสัญลักษณ์สายสีและจุดเชื่อมต่อสำคัญ เช่น ท่าอากาศยาน (Airport), ท่าเรือ (Pier/Boat), รถไฟทางไกล (SRT), สถานีขนส่งผู้โดยสาร (Bus Terminal), และอาคารจอดแล้วจร (Park & Ride)
+   - แคชออฟไลน์ระดับสูงด้วย Service Worker `bts-v52` พร้อมใช้งาน 100% แม้ไม่มีอินเทอร์เน็ต
+6. **🧭 วางแผนการเดินทางอัจฉริยะ (Smart Journey Planner)**
    - ค้นหาเส้นทางที่ดีที่สุดระหว่างสถานีต้นทางและสถานีปลายทาง
    - คำนวณเวลาเดินทางรวม, จำนวนสถานีที่ผ่าน, จุดเปลี่ยนสาย (Interchanges), และประมาณการค่าโดยสาร
-6. **🚪 ข้อมูลทางออกสถานี & จุดเชื่อมต่อ (Station Exits & Facilities)**
+7. **🚪 ข้อมูลทางออกสถานี & จุดเชื่อมต่อ (Station Exits & Facilities)**
    - ข้อมูลประตูทางออกแต่ละด้าน บันไดเลื่อน ลิฟต์ และสิ่งอำนวยความสะดวก
    - ข้อมูลสถานที่สำคัญ ห้างสรรพสินค้า อาคารสำนักงาน และการเชื่อมต่อระบบขนส่งสาธารณะอื่นๆ
-7. **💰 โครงสร้างและตารางค่าโดยสาร (Fares & Pricing Guide)**
+8. **💰 โครงสร้างและตารางค่าโดยสาร (Fares & Pricing Guide)**
    - แสดงตารางและอัตราค่าโดยสารแยกตามสายรถไฟฟ้า
    - สรุปอัตราเริ่มต้น อัตราสูงสุด และเงื่อนไขการคิดค่าโดยสาร
-8. **🕒 ตารางเวลาเดินรถ & ความถี่ (Timetables & Train Frequency)**
+9. **🕒 ตารางเวลาเดินรถ & ความถี่ (Timetables & Train Frequency)**
    - ตารางเวลาเดินรถเที่ยวแรก (First Train) และเที่ยวสุดท้าย (Last Train) ของแต่ละสาย
    - ความถี่ในการปล่อยขบวนรถ (Headway) ทั้งในช่วงเวลาเร่งด่วน (Peak) และช่วงเวลาปกติ (Off-Peak)
-9. **🟢 สถานะการเดินรถสด (Live Traffic Status)**
-   - ตรวจสอบสถานะการให้บริการและความล่าช้าของทุกสายรถไฟฟ้าจากศูนย์ควบคุม
-10. **🔒 ความปลอดภัยการสื่อสารระดับสูง (JSEncrypt API Security)**
+10. **🟢 สถานะการเดินรถสด (Live Traffic Status)**
+    - ตรวจสอบสถานะการให้บริการและความล่าช้าของทุกสายรถไฟฟ้าจากศูนย์ควบคุม
+11. **🔒 ความปลอดภัยการสื่อสารระดับสูง (JSEncrypt API Security)**
     - ผสานการทำงานร่วมกับไลบรารี `JSEncrypt` เพื่อเข้ารหัสข้อมูล (RSA Encryption) ในการส่งคำขอข้อมูลไปยัง API ป้องกันการดักจับข้อมูลและเพิ่มเสถียรภาพในการสื่อสาร
-11. **🌐 รองรับ 2 ภาษา & โหมดถนอมสายตา (Bilingual & Dark/Light Theme)**
+12. **🌐 รองรับ 2 ภาษา & โหมดถนอมสายตา (Bilingual & Dark/Light Theme)**
     - รองรับภาษาไทย (TH) และภาษาอังกฤษ (EN) เต็มรูปแบบ
     - สลับโหมดมืด (Dark Mode) และโหมดสว่าง (Light Mode) ได้อย่างราบรื่น
-12. **📱 ติดตั้งได้ทั้ง PWA และ แอปมือถือเนทีฟ (PWA & Flutter App)**
+13. **📱 ติดตั้งได้ทั้ง PWA และ แอปมือถือเนทีฟ (PWA & Flutter App)**
     - ติดตั้งเป็น Progressive Web App บนหน้าจอมือถือได้ทันที (Add to Home Screen)
     - รองรับแอปพลิเคชันมือถือ Android & iOS (Flutter) โหลดแคชไฟล์เว็บออฟไลน์ (`assets/www/`) ทำงานได้รวดเร็ว ลื่นไหล
 
@@ -60,36 +60,40 @@
 ```text
 c:\Users\Administrator\Documents\BKK Sky Trains/
 ├── [1. Web App & PWA] (Root)
-│   ├── index.html              # หน้าเว็บแอปพลิเคชันหลัก (World-Class Transit UI)
+│   ├── index.html                  # หน้าเว็บแอปพลิเคชันหลัก (Transit UI & Blueprint Map)
 │   ├── js/
-│   │   ├── app.js              # โค้ดควบคุมระบบหลัก (Live TTA, Planner, Routing, Fares, Timetables)
-│   │   └── jsencrypt.min.js    # ไลบรารีการเข้ารหัสความปลอดภัย API (RSA)
-│   ├── sw.js                   # Service Worker สำหรับแคช PWA & Offline Support
-│   ├── manifest.json           # PWA Web App Manifest สำหรับติดตั้งบนอุปกรณ์
-│   ├── Start-BKK-Transit.ps1   # สคริปต์เปิด Local Server + BTS Live API Reverse Proxy (UTF-8 BOM)
-│   ├── robots.txt, sitemap.xml # การตั้งค่า SEO
-│   └── *.png, *.svg, *.ico     # โลโก้และไอคอนแอปพลิเคชัน
+│   │   ├── app.js                  # โค้ดควบคุมระบบหลัก (Live TTA, Planner, Routing, Fares, Hotspots)
+│   │   └── jsencrypt.min.js        # ไลบรารีการเข้ารหัสความปลอดภัย API (RSA)
+│   ├── sw.js                       # Service Worker สำหรับแคช PWA & Offline Support (bts-v52)
+│   ├── manifest.json               # PWA Web App Manifest สำหรับติดตั้งบนอุปกรณ์
+│   ├── Start-BKK-Transit.ps1       # สคริปต์เปิด Local Server + BTS Live API Reverse Proxy (UTF-8 BOM)
+│   ├── Deploy-BKK-SkyTrains.ps1    # สคริปต์บิลด์ Android APK, ล้างข้อมูลเก่าบน GitHub และ Push อัตโนมัติ (UTF-8 BOM)
+│   ├── bkk_transit_map.svg         # เวกเตอร์แผนผังรถไฟฟ้าโหมดสว่าง (Light Vector Blueprint)
+│   ├── bkk_transit_map_dark.svg    # เวกเตอร์แผนผังรถไฟฟ้าโหมดมืด (Dark Vector Blueprint)
+│   ├── bkk_transit_map.jpg         # รูปภาพสำรองแผนผังรถไฟฟ้า
+│   ├── robots.txt, sitemap.xml     # การตั้งค่า SEO
+│   └── *.png, *.svg, *.ico         # โลโก้และไอคอนแอปพลิเคชัน
 │
 ├── [2. Mobile Flutter App] (bkk_skytrains_flutter/)
-│   ├── android/                # คอนฟิกูเรชันและ Build scripts ของระบบ Android
-│   ├── ios/                    # คอนฟิกูเรชัน, Storyboard และ Assets ของระบบ iOS
-│   ├── lib/                    # ซอร์สโค้ด Dart (BkkWebViewScreen, Theme, Services, Screens, Models)
-│   ├── test/                   # ชุดทดสอบ Unit & Widget Test
-│   ├── assets/www/             # ไฟล์เว็บแคชออฟไลน์ในตัวแอป (ซิงค์ตรงกับ Root 100%)
-│   └── pubspec.yaml            # รายการ Dependencies และการตั้งค่า Assets (Android & iOS)
+│   ├── android/                    # คอนฟิกูเรชันและ Build scripts ของระบบ Android
+│   ├── ios/                        # คอนฟิกูเรชัน, Storyboard และ Assets ของระบบ iOS
+│   ├── lib/                        # ซอร์สโค้ด Dart (BkkWebViewScreen, Theme, Services, Screens, Models)
+│   ├── test/                       # ชุดทดสอบ Unit & Widget Test
+│   ├── assets/www/                 # ไฟล์เว็บแคชออฟไลน์ในตัวแอป (ซิงค์ตรงกับ Root 100%)
+│   └── pubspec.yaml                # รายการ Dependencies และการตั้งค่า Assets (Android & iOS)
 │
 ├── [3. Releases & CI/CD]
-│   ├── releases/               # โฟลเดอร์เก็บไฟล์ตัวติดตั้งแอปพลิเคชัน (.apk, .ipa, .sha256)
+│   ├── releases/                   # โฟลเดอร์เก็บไฟล์ตัวติดตั้งแอปพลิเคชัน (.apk, .ipa, .sha256)
 │   │   ├── BKK_SkyTrains_Android_latest.apk
 │   │   └── BKK_SkyTrains_iOS_latest.ipa
-│   └── .github/workflows/      # GitHub Actions CI/CD (build_ios.yml สำหรับบิลด์ iOS .ipa และ Android .apk อัตโนมัติ)
+│   └── .github/workflows/          # GitHub Actions CI/CD (build_ios.yml สำหรับบิลด์ iOS .ipa และ Android .apk อัตโนมัติ)
 │
 └── [4. Documentation & Specifications]
-    ├── README.md               # คู่มือภาพรวมโปรเจกต์และวิธีใช้งาน
-    ├── PRD.md                  # Product Requirements Document
-    ├── Skill.md                # ข้อกำหนด Antigravity / Gemini Agent Skill
-    ├── AGENTS.md               # ข้อกำหนดและมาตรฐาน Agent ใน Workspace
-    └── GEMINI.md               # Directives & Protocols สำหรับ Gemini/Antigravity
+    ├── README.md                   # คู่มือภาพรวมโปรเจกต์และวิธีใช้งาน
+    ├── PRD.md                      # Product Requirements Document
+    ├── Skill.md                    # ข้อกำหนด Antigravity / Gemini Agent Skill
+    ├── AGENTS.md                   # ข้อกำหนดและมาตรฐาน Agent ใน Workspace
+    └── GEMINI.md                   # Directives & Protocols สำหรับ Gemini/Antigravity
 ```
 
 ---
@@ -110,13 +114,19 @@ node -e "require('child_process').execSync('powershell ./Start-BKK-Transit.ps1',
 
 ### วิธีที่ 3: ติดตั้งแอปพลิเคชัน Android (.apk)
 สามารถนำไฟล์ตัวติดตั้ง Android ล่าสุดจากโฟลเดอร์ `releases/` หรือจากหน้า GitHub Releases ไปติดตั้งบนสมาร์ตโฟน Android ได้ทันที:
-- `releases/BKK_SkyTrains_Android_latest.apk` และ `BKK_SkyTrains_Android_v*.apk` (พร้อมไฟล์ตรวจสอบ SHA-256 Checksum)
+- `releases/BKK_SkyTrains_Android_latest.apk` (พร้อมไฟล์ตรวจสอบ SHA-256 Checksum)
 
 ### วิธีที่ 4: ติดตั้งแอปพลิเคชัน iOS (.ipa)
-สามารถนำไฟล์ตัวติดตั้ง iOS ล่าสุดจากโฟลเดอร์ `releases/` หรือจากหน้า GitHub Releases ไป Sideload ติดตั้งบน iPhone/iPad:
-- `releases/BKK_SkyTrains_iOS_latest.ipa` และ `BKK_SkyTrains_iOS_v*.ipa` (รองรับการติดตั้งผ่าน AltStore, Sideloadly, หรือ TrollStore พร้อมตรวจสอบ SHA-256 Checksum)
+สามารถนำไฟล์ตัวติดตั้ง iOS ล่าสุดจากหน้า GitHub Releases ไป Sideload ติดตั้งบน iPhone/iPad:
+- `BKK_SkyTrains_iOS_latest.ipa` และ `BKK_SkyTrains_iOS_v*.ipa` (รองรับการติดตั้งผ่าน AltStore, Sideloadly, หรือ TrollStore พร้อมตรวจสอบ SHA-256 Checksum)
 
-### วิธีที่ 5: รันหรือบิลด์แอปพลิเคชัน Flutter (Android & iOS)
+### วิธีที่ 5: บิลด์และดีพลอยอัตโนมัติด้วยสคริปต์ `Deploy-BKK-SkyTrains.ps1`
+สคริปต์นี้จะซิงค์ไฟล์ Web Asset, รันการตรวจสอบคุณภาพโค้ด, คอมไพล์ Android APK, ล้างข้อมูลเก่าที่ไม่จำเป็นออก, และ Push ขึ้น GitHub เพื่อเริ่มการบิลด์ iOS บน macOS Runner:
+```powershell
+.\Deploy-BKK-SkyTrains.ps1
+```
+
+### วิธีที่ 6: รันหรือบิลด์แอปพลิเคชัน Flutter แบบแมนนวล
 เข้าไปที่โฟลเดอร์ `bkk_skytrains_flutter/`:
 ```bash
 cd bkk_skytrains_flutter
@@ -133,7 +143,7 @@ flutter build apk --release
 ## 🔄 มาตรฐานการพัฒนาและซิงค์ไฟล์ (Development Protocols)
 
 1. **Dual-Asset Synchronization**:
-   - หากมีการแก้ไข `index.html`, `js/app.js`, หรือ `js/jsencrypt.min.js` ที่โฟลเดอร์ Root ให้คัดลอกและซิงค์ไปยัง `bkk_skytrains_flutter/assets/www/` ให้ตรงกัน 100% เสมอ
+   - หากมีการแก้ไข `index.html`, `js/app.js`, `js/jsencrypt.min.js`, หรือไฟล์แผนที่ในโฟลเดอร์ Root ให้คัดลอกและซิงค์ไปยัง `bkk_skytrains_flutter/assets/www/` ให้ตรงกัน 100% เสมอ
 2. **Code Quality & Validation**:
    - ตรวจสอบไวยากรณ์ JavaScript: `node --check js/app.js`
    - ตรวจสอบโค้ด Flutter/Dart: `flutter analyze` ในโฟลเดอร์ `bkk_skytrains_flutter` (ต้องได้ 0 issues)

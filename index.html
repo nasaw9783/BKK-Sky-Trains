@@ -197,8 +197,8 @@
             /* Map Blueprint Theme (Dark) */
             --map-canvas-bg: #090e17;
             --map-line-casing: #090e17;
-            --map-label-color: #f1f5f9;
-            --map-label-halo: rgba(9, 14, 23, 0.96);
+            --map-label-color: #ffffff;
+            --map-label-halo: rgba(9, 14, 23, 0.94);
             --map-node-bg: #090e17;
             --map-node-text: #ffffff;
             --map-node-outer: #0f172a;
@@ -1323,6 +1323,24 @@
             gap: 6px;
             align-items: stretch;
             min-width: 0;
+        }
+
+        .no-trains-card {
+            width: 100%;
+            padding: 14px 8px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 13px;
+            font-weight: 600;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+            border: 1px dashed rgba(148, 163, 184, 0.2);
+            box-sizing: border-box;
+            letter-spacing: 0.1px;
         }
 
         .train {
@@ -2685,12 +2703,80 @@
             box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.4);
         }
 
-        .map-viewport svg {
+        #networkMapContainer {
+            position: relative;
+            display: inline-block;
             min-width: 1400px;
-            min-height: 1050px;
-            width: 1600px;
-            height: 1200px;
+            min-height: 1400px;
+            width: 1672px;
+            height: 1672px;
+            transform-origin: 0 0;
+            transition: transform .18s cubic-bezier(0.2, 0, 0, 1);
+            background-color: #ffffff;
+        }
+
+        html.dark #networkMapContainer,
+        html.dark .network-map-image {
+            background-color: #090e17;
+        }
+
+        html:not(.dark) #networkMapContainer,
+        html:not(.dark) .network-map-image {
+            background-color: #ffffff;
+        }
+
+        .map-viewport img,
+        .map-viewport .network-map-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             display: block;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        .map-viewport .network-map-overlay,
+        #networkMapInteractiveOverlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            pointer-events: none;
+        }
+
+        .map-station-hotspot {
+            fill: transparent;
+            stroke: transparent;
+            stroke-width: 0;
+            cursor: pointer;
+            pointer-events: auto;
+            -webkit-tap-highlight-color: rgba(2, 132, 199, 0.3);
+            transition: fill .15s ease, stroke .15s ease;
+        }
+
+        .map-station-hotspot:hover,
+        .map-station-hotspot:focus {
+            fill: rgba(2, 132, 199, 0.22);
+            stroke: rgba(2, 132, 199, 0.85);
+            stroke-width: 2.5px;
+        }
+
+        .map-active-ring {
+            fill: none;
+            stroke-width: 3.5px;
+            filter: drop-shadow(0 0 6px rgba(2, 132, 199, 0.8));
+            animation: mapRingPulse 1.6s infinite ease-in-out;
+            pointer-events: none;
+        }
+
+        @keyframes mapRingPulse {
+            0%, 100% { stroke-width: 3px; opacity: 0.85; r: 18px; }
+            50% { stroke-width: 4.5px; opacity: 1; r: 21px; }
         }
 
         .map-viewport:active {
@@ -2717,28 +2803,28 @@
 
         .map-label {
             font-family: var(--font-main);
-            font-size: 8.5px;
-            font-weight: 600;
+            font-size: 9.5px;
+            font-weight: 700;
             fill: var(--map-label-color, #0f172a);
             cursor: pointer;
             pointer-events: all;
             user-select: none;
             paint-order: stroke fill;
-            stroke: var(--map-label-halo, rgba(248, 250, 252, 0.95));
-            stroke-width: 3.2px;
+            stroke: var(--map-label-halo, rgba(255, 255, 255, 0.95));
+            stroke-width: 1.8px;
             stroke-linecap: round;
             stroke-linejoin: round;
-            letter-spacing: -0.1px;
+            letter-spacing: 0.1px;
             transition: font-weight 0.15s ease;
         }
 
         .map-node-group:hover .map-label {
-            font-weight: 700;
+            font-weight: 800;
         }
 
         html.dark .map-label {
-            fill: var(--map-label-color, #f8fafc);
-            stroke: var(--map-label-halo, rgba(9, 14, 23, 0.96));
+            fill: var(--map-label-color, #ffffff);
+            stroke: var(--map-label-halo, rgba(9, 14, 23, 0.94));
         }
 
         html.dark .map-legend rect {
@@ -2865,10 +2951,7 @@
             padding-top: 10px;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            gap: 7px;
+            gap: 8px;
             font-size: 10.5px;
             font-weight: 600;
             color: var(--muted);
@@ -2876,22 +2959,60 @@
             box-sizing: border-box;
         }
 
+        .legend-sub-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 7px 12px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
         .legend-sub-item {
             display: inline-flex;
             align-items: center;
-            justify-content: center;
-            text-align: center;
-            gap: 8px;
+            justify-content: flex-start;
+            text-align: left;
+            gap: 7px;
             width: 100%;
             box-sizing: border-box;
+            line-height: 1.2;
+            white-space: nowrap;
+        }
+
+        .legend-sub-item.legend-tap-hint {
+            justify-content: center;
+            text-align: center;
+            padding-top: 5px;
+            margin-top: 2px;
+            border-top: 1px dashed var(--line);
+        }
+
+        .legend-symbol-icon {
+            width: 16px;
+            height: 16px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            text-align: center;
             line-height: 1;
+            letter-spacing: 0;
+            box-sizing: border-box;
+        }
+
+        .legend-symbol-icon svg {
+            display: block;
+            margin: auto;
+            flex-shrink: 0;
         }
 
         .legend-inter-node {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 2px;
             flex-shrink: 0;
+            line-height: 1;
         }
 
         .legend-inter-node .dot {
@@ -2908,12 +3029,6 @@
             height: 3px;
             background: #64748b;
             border-radius: 2px;
-        }
-
-        .legend-plane {
-            color: #0284c7;
-            font-size: 12px;
-            flex-shrink: 0;
         }
 
         .legend-tip-dot {
@@ -5192,7 +5307,7 @@
                 <div class="map-toolbar">
                     <div style="display:flex;align-items:center;gap:8px">
                         <span style="font-weight:800;font-size:14.5px;color:var(--ink);display:inline-flex;align-items:center;gap:6px;" id="mapTitle"><svg class="ui-ic ui-ic-map" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--sky,#0284c7)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" x2="9" y1="3" y2="18"/><line x1="15" x2="15" y1="6" y2="21"/></svg> <span>ผังโครงข่ายรถไฟฟ้า 10 สาย</span></span>
-                        <span style="font-size:11px;font-weight:700;color:var(--accent);background:var(--accent-bg);padding:2px 8px;border-radius:var(--radius-full)">Tap-to-Route</span>
+                        <span style="font-size:11px;font-weight:700;color:var(--accent);background:var(--accent-bg);padding:2px 8px;border-radius:var(--radius-full)">ฉบับสมบูรณ์</span>
                     </div>
                     <div class="map-ctrl-group">
                         <button class="map-btn" id="mapToggleLegendBtn" onclick="App.toggleMapLegend()"><svg class="ui-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg> <span id="mapLegendBtnText">สัญลักษณ์</span></button>
@@ -5207,7 +5322,7 @@
             </div>
             <div class="card map-hint-card" id="mapHintCard">
                 <span class="map-hint-icon"><svg class="ui-ic" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg></span>
-                <div class="map-hint-body"><span class="map-hint-phrase"><b>วิธีใช้งาน:</b> แตะที่จุดสถานีใดๆ บนแผนผัง</span> <span class="map-hint-phrase">เพื่อเลือกเป็น <b>สถานีต้นทาง</b>,</span> <span class="map-hint-phrase"><b>สถานีปลายทาง</b></span> <span class="map-hint-phrase">หรือดู <b>ข้อมูลทางออก</b> ได้ทันที</span></div>
+                <div class="map-hint-body"><span class="map-hint-phrase"><b>วิธีใช้งาน:</b> แตะที่จุดสถานีใดๆ บนแผนผัง</span> <span class="map-hint-phrase">เพื่อดูข้อมูลสถานี, เลือกเป็น <b>สถานีต้นทาง/ปลายทาง</b></span> <span class="map-hint-phrase">หรือดู <b>ข้อมูลทางออก & เวลาขบวนรถ</b> ได้ทันที</span></div>
             </div>
             <!-- Floating Transit Lines Legend Modal (เปิด-ปิด ไม่บดบังสถานีบนแผนที่) -->
             <div class="map-legend-sheet" id="mapLegendSheet" onclick="if(event.target===this)App.toggleMapLegend()">
@@ -5226,6 +5341,7 @@
                             <div class="legend-line-row"><span class="legend-bar" style="background:#B89D18"></span> <span class="legend-txt" id="legTxt3">สายสีทอง</span></div>
                             <div class="legend-line-row"><span class="legend-bar" style="background:#0284C7"></span> <span class="legend-txt" id="legTxt4">สายสีน้ำเงิน (เฉลิมรัชมงคล)</span></div>
                             <div class="legend-line-row"><span class="legend-bar" style="background:#8A2C9B"></span> <span class="legend-txt" id="legTxt5">สายสีม่วง (ฉลองรัชธรรม)</span></div>
+                            <div class="legend-line-row"><span class="legend-bar" style="background:#82C341"></span> <span class="legend-txt" id="legTxtBrt">รถโดยสารด่วนพิเศษ BRT</span></div>
                         </div>
                         <div class="map-legend-col">
                             <div class="legend-line-row"><span class="legend-bar" style="background:#EC4899"></span> <span class="legend-txt" id="legTxt6">สายสีชมพู (วิวัฒน์นคร)</span></div>
@@ -5233,12 +5349,19 @@
                             <div class="legend-line-row"><span class="legend-bar" style="background:#B91C1C"></span> <span class="legend-txt" id="legTxt8">สายสีแดงเข้ม (ธานีรัถยา)</span></div>
                             <div class="legend-line-row"><span class="legend-bar" style="background:#F87171"></span> <span class="legend-txt" id="legTxt9">สายสีแดงอ่อน (นครวิถี)</span></div>
                             <div class="legend-line-row"><span class="legend-bar" style="background:#8A1538"></span> <span class="legend-txt" id="legTxt10">แอร์พอร์ต ลิงก์</span></div>
+                            <div class="legend-line-row"><span class="legend-bar" style="background:#F58220;border:1px dashed #ffffff"></span> <span class="legend-txt" id="legTxtOrange">สายสีส้ม (กำลังก่อสร้าง)</span></div>
                         </div>
                     </div>
                     <div class="map-legend-box-foot">
-                        <div class="legend-sub-item"><span class="legend-inter-node"><span class="dot"></span><span class="line"></span><span class="dot"></span></span> <span id="legTxtInter">จุดเชื่อมต่อข้ามสาย (Interchange)</span></div>
-                        <div class="legend-sub-item"><span class="legend-plane">✈</span> <span id="legTxtAirport">เชื่อมต่อท่าอากาศยาน (สนามบิน)</span></div>
-                        <div class="legend-sub-item"><span class="legend-tip-dot"></span> <span id="legTxtTap">แตะที่สถานีเพื่อเลือกเป็นจุดเริ่มต้น/ปลายทาง</span></div>
+                        <div class="legend-sub-grid">
+                            <div class="legend-sub-item"><span class="legend-inter-node"><span class="dot"></span><span class="line"></span><span class="dot"></span></span> <span id="legTxtInter">จุดเชื่อมต่อข้ามสาย (Interchange)</span></div>
+                            <div class="legend-sub-item"><span class="legend-symbol-icon" style="color:#0284c7"><svg class="ui-ic" width="13" height="13" viewBox="0 0 24 24" fill="currentColor" fill-opacity="0.2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3.5c-.5-.5-2.5 0-4 1.5L13.5 8.5 5.3 6.7c-.7-.1-1.3.2-1.6.8l-.5 1 5.3 3.5-3.2 3.2-2.3-.5c-.4-.1-.8.1-1 .5l-.3.6 2.8 1.8 1.8 2.8.6-.3c.4-.2.6-.6.5-1l-.5-2.3 3.2-3.2 3.5 5.3 1-.5c.6-.3.9-.9.8-1.6z"/></svg></span> <span id="legTxtAirport">เชื่อมต่อท่าอากาศยาน (สนามบิน)</span></div>
+                            <div class="legend-sub-item"><span class="legend-symbol-icon" style="color:#0284c7"><svg class="ui-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 21c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.5 0 2.5 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M19.38 20A11.6 11.6 0 0 0 21 14l-9-4-9 4c0 2.9.94 5.34 2.81 7.76"/><path d="M12 2v8"/></svg></span> <span id="legTxtBoat">ท่าเรือเชื่อมต่อ (เรือด่วน/คลอง)</span></div>
+                            <div class="legend-sub-item"><span class="legend-symbol-icon" style="color:#ef4444"><svg class="ui-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="16" height="15" x="4" y="3" rx="3.5"/><path d="M4 10.5h16"/><path d="M12 3v7.5"/><path d="m8 18-3 3"/><path d="m16 18 3 3"/><circle cx="8" cy="14.5" r="1.2" fill="currentColor"/><circle cx="16" cy="14.5" r="1.2" fill="currentColor"/></svg></span> <span id="legTxtTrain">เชื่อมต่อรถไฟทางไกล (SRT)</span></div>
+                            <div class="legend-sub-item"><span class="legend-symbol-icon" style="color:#f59e0b"><svg class="ui-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6v6"/><path d="M16 6v6"/><path d="M4 6h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-1H7v1a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2Z"/><circle cx="7" cy="15" r="1" fill="currentColor"/><circle cx="17" cy="15" r="1" fill="currentColor"/></svg></span> <span id="legTxtBus">สถานีขนส่งผู้โดยสาร (Bus)</span></div>
+                            <div class="legend-sub-item"><span class="legend-symbol-icon" style="color:#3b82f6"><svg class="ui-ic" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="4"/><path d="M9 17V7h4a3 3 0 0 1 0 6H9"/></svg></span> <span id="legTxtPark">อาคารจอดแล้วจร (Park & Ride)</span></div>
+                        </div>
+                        <div class="legend-sub-item legend-tap-hint"><span class="legend-tip-dot"></span> <span id="legTxtTap">แตะที่สถานีเพื่อเลือกเป็นจุดเริ่มต้น/ปลายทาง</span></div>
                     </div>
                 </div>
             </div>

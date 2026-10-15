@@ -18,6 +18,10 @@ C:\Users\Administrator\Documents\BKK Sky Trains\
 │   ├── sw.js                       # Offline service worker
 │   ├── manifest.json               # Web App Manifest
 │   ├── Start-BKK-Transit.ps1       # Local test server & reverse-proxy runner (UTF-8 with BOM)
+│   ├── Deploy-BKK-SkyTrains.ps1    # Automated release, cleanup & GitHub push runner (UTF-8 with BOM)
+│   ├── bkk_transit_map.svg         # Light theme vector blueprint transit map
+│   ├── bkk_transit_map_dark.svg    # Dark theme vector blueprint transit map
+│   ├── bkk_transit_map.jpg         # Fallback raster transit map
 │   ├── robots.txt, sitemap.xml     # SEO metadata
 │   └── *.png, *.svg, *.ico         # PWA icons and web assets
 │

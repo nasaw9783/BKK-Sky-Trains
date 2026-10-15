@@ -6,7 +6,7 @@
 | เอกสาร | รายละเอียด |
 | :--- | :--- |
 | **ชื่อผลิตภัณฑ์** | **BKK SKYTRAINs** (Bangkok SkyTrains & Mass Transit Companion) |
-| **เวอร์ชันเอกสาร** | 1.3.5 (Production Release) |
+| **เวอร์ชันเอกสาร** | 1.3.6 (Production Release) |
 | **สถานะ** | Active / Production |
 | **แพลตฟอร์มที่รองรับ** | Progressive Web App (PWA), Android (Native Hybrid APK), iOS (Native Hybrid IPA) |
 | **กลุ่มเป้าหมาย** | ผู้โดยสารรถไฟฟ้าในกรุงเทพฯ และปริมณฑล (คนไทย, ชาวต่างชาติ, นักท่องเที่ยว) |
@@ -249,7 +249,14 @@ flowchart LR
 
 ## 8. แผนการพัฒนาในอนาคต (Product Roadmap)
 
-- **v1.3.5 (Completed / Current Production Release):**
+- **v1.3.6 (Completed / Current Production Release):**
+  - แผนผังโครงข่ายรถไฟฟ้าความละเอียดสูงแบบเวกเตอร์พิมพ์เขียว (Transit Blueprint Vector Map) ครอบคลุม 10 สายรถไฟฟ้า กทม. และปริมณฑล รองรับการสลับโหมดมืด/สว่างอัตโนมัติ (`bkk_transit_map.svg`, `bkk_transit_map_dark.svg`)
+  - จุดฮอตสปอตสถานีแบบโต้ตอบบนแผนที่ (`MAP_STATION_HOTSPOTS`) แตะเลือกสถานีต้นทาง, ปลายทาง หรือเปิดดูข้อมูลประตูทางออกได้ทันที
+  - หน้าต่างคำอธิบายสัญลักษณ์โครงข่ายและจุดเชื่อมต่อ (Transit Network Legend: Airport, Pier/Boat, SRT, Bus, Park & Ride)
+  - อัปเกรด Service Worker แคชออฟไลน์ขั้นสูงเป็นเวอร์ชัน `bts-v52` พร้อมพรีแคชไฟล์เวกเตอร์แผนผังความละเอียดสูง
+  - สคริปต์รวมกระบวนการดีพลอยและบิลด์อัตโนมัติ (`Deploy-BKK-SkyTrains.ps1`) รองรับการล้างข้อมูลเก่าที่ไม่จำเป็นบน GitHub, ซิงค์ไฟล์ Web Assets, คอมไพล์ Android APK, และ Push ขึ้น GitHub เพื่อทริกเกอร์ CI/CD สร้างแอพ iOS
+  - คอมไพล์และบิลด์ตัวติดตั้ง Android APK รุ่นสมบูรณ์ (`BKK_SkyTrains_Android_latest.apk`) พร้อมสร้าง SHA-256 Checksum (`d8153cc44673...`)
+- **v1.3.5 (Completed):**
   - คอมไพล์และบิลด์ตัวติดตั้ง Android APK รุ่นสมบูรณ์ (`BKK_SkyTrains_Android_latest.apk`, `BKK_SkyTrains_Android_v1.3.5.apk`) พร้อมสร้าง SHA-256 Checksum (`FBACEE348015...`)
   - อัปเกรดระบบ CI/CD Workflow (`.github/workflows/build_ios.yml` - `Build iOS & Android Apps`) ให้คอมไพล์และสร้างแพ็กเกจทั้ง iOS IPA และ Android APK พร้อมสร้าง SHA-256 และเผยแพร่ลง GitHub Releases อัตโนมัติในครั้งเดียว
   - ทำความสะอาดระบบ Releases & Artifacts บน GitHub กำจัดข้อมูลเก่าที่ไม่จำเป็นออกทั้งหมดตามนโยบาย Zero-Waste Pruning

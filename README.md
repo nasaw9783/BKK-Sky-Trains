@@ -164,6 +164,6 @@ flutter build appbundle --release
    - ตรวจสอบโค้ด Flutter/Dart: `flutter analyze` ในโฟลเดอร์ `bkk_skytrains_flutter` (ต้องได้ 0 issues)
    - สคริปต์ PowerShell ทั้งหมดต้องบันทึกด้วยรูปแบบ **UTF-8 with BOM**
 3. **Automated CI/CD (iOS & Android)**:
-   - ระบบ CI/CD บน GitHub Actions (`.github/workflows/build_ios.yml` - "Build iOS & Android Apps") รันบน macOS runner รองรับการคอมไพล์และสร้างตัวติดตั้งทั้งสองระบบพร้อมกัน: iOS IPA (`BKK_SkyTrains_V.*.ipa`), Android APK (`BKK_SkyTrains_V.*.apk`) และ Android App Bundle (`BKK_SkyTrains_V.*.aab`) พร้อมสร้าง SHA-256 Checksum และเผยแพร่ลง GitHub Releases อัตโนมัติ
+   - ระบบ CI/CD บน GitHub Actions (`.github/workflows/build_ios.yml` - "Build iOS & Android Apps") รันบน macOS runner รองรับการคอมไพล์และสร้างตัวติดตั้งทั้งสองระบบพร้อมกัน: iOS IPA (`BKK_SkyTrains_V.*.ipa`), Android APK (`BKK_SkyTrains_V.*.apk`) และ Android App Bundle (`BKK_SkyTrains_V.*.aab`) พร้อมสร้าง SHA-256 Checksum และเผยแพร่ลง GitHub Releases อัตโนมัติ (หมายเหตุ: สำหรับ Private Repository บน GitHub จำเป็นต้องตั้งค่า Spending Limit สำหรับ Actions ให้มากกว่า $0 ในหน้า Settings > Billing & plans เพื่อให้ GitHub อนุญาตให้ใช้งาน macOS Runner)
 4. **Zero-Waste Pruning & Workspace Cleanliness**:
    - ถ้าไฟล์หรือแอพไหนไม่สำคัญต่อระบบแล้ว และไม่ทำลายระบบให้เสียหาย ให้ลบทิ้งได้ทันทีหลังแก้ไขหรือทดสอบไฟล์ทุกครั้ง เพื่อรักษาความสะอาดของ Workspace และความปลอดภัยของระบบ

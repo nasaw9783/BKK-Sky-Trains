@@ -110,7 +110,7 @@ flowchart TD
 - **Offline & PWA:** Service Worker (`sw.js`), Web App Manifest (`manifest.json`), LocalStorage Cache Engine.
 - **Mobile Platform:** Flutter 3.x Multi-platform (Dart), `webview_flutter`, `geolocator`, Android SDK 34+, iOS Xcode 15+.
 - **Backend / Reverse Proxy:** Node.js HTTP Server / PowerShell TCP Proxy (`Start-BKK-Transit.ps1`) สำหรับรับส่งข้อมูลข้าม CORS กับ API ของ BTS EBM.
-- **CI/CD & Cloud Build:** GitHub Actions (`.github/workflows/build_ios.yml`) บน macOS-14 Runner สร้างไฟล์ `.ipa` อัตโนมัติ.
+- **CI/CD & Cloud Build:** GitHub Actions (`.github/workflows/build_ios.yml`) บน macOS-14 Runner สร้างไฟล์ `.ipa` อัตโนมัติ (สำหรับ Private Repository ต้องตั้งค่า Spending Limit บน GitHub Actions ให้มากกว่า $0).
 
 ---
 

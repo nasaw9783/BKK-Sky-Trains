@@ -1376,12 +1376,38 @@ gQIDAQAB
             return typeof v === 'function' ? v(...args) : v;
         }
 
+        // ลบวงเล็บชื่อสายส่วนเกินออกจากชื่อสถานี เช่น (Gold Line), (สายสีทอง)
+        function cleanStationName(name) {
+            if (!name) return '';
+            return String(name).replace(/\s*[\(\[]\s*(?:Gold\s*Line|สายสีทอง)\s*[\)\]]/gi, '').trim();
+        }
+
+        // ล้างชื่อสถานีส่วนเกินในโครงสร้างข้อมูลสถานีทั้งหมด
+        function sanitizeStationData(list) {
+            if (!Array.isArray(list)) return list;
+            for (const item of list) {
+                if (item && item.StationList && Array.isArray(item.StationList)) {
+                    sanitizeStationData(item.StationList);
+                }
+                if (item && item.StationNameTH) item.StationNameTH = cleanStationName(item.StationNameTH);
+                if (item && item.StationNameEN) item.StationNameEN = cleanStationName(item.StationNameEN);
+                if (item && item.StationName_TH) item.StationName_TH = cleanStationName(item.StationName_TH);
+                if (item && item.StationName_EN) item.StationName_EN = cleanStationName(item.StationName_EN);
+                if (item && item.StationName) {
+                    const parts = String(item.StationName).split('|');
+                    item.StationName = parts.map(p => cleanStationName(p)).join(' | ');
+                }
+            }
+            return list;
+        }
+
         // ชื่อสถานีตามภาษาที่เลือก (EN ไม่มีข้อมูล → ใช้ไทยแทน)
         function stName(s) {
             if (!s) return '';
             const en = s.StationNameEN || s.StationName_EN || '';
             const th = s.StationNameTH || s.StationName_TH || s.StationName || '';
-            return lang === 'en' ? (en || th) : (th || en);
+            const raw = lang === 'en' ? (en || th) : (th || en);
+            return cleanStationName(raw);
         }
 
         // ข้อความจาก API รูปแบบ "เคหะฯ | Kheha" → เลือกฝั่งตามภาษา (ไม่มีฝั่ง EN → ใช้ไทย)
@@ -1567,28 +1593,29 @@ gQIDAQAB
             const cached = (() => {
                 try {
                     const c = JSON.parse(localStorage.getItem(CACHE_KEY));
-                    if (c && Date.now() - c.at < CACHE_TTL && Array.isArray(c.data)) return c.data;
+                    if (c && Date.now() - c.at < CACHE_TTL && Array.isArray(c.data)) return sanitizeStationData(c.data);
                 } catch (e) { }
                 if (typeof FALLBACK_STATION_LIST !== 'undefined' && Array.isArray(FALLBACK_STATION_LIST)) {
-                    return FALLBACK_STATION_LIST;
+                    return sanitizeStationData(FALLBACK_STATION_LIST);
                 }
                 return null;
             })();
             if (cached) {
                 refreshStationListInBackground();
-                return cached;
+                return sanitizeStationData(cached);
             }
             try {
                 const res = await postJSON(STATION_LIST_URL('en'), null, {}, 5000);
                 if (res.status === 200 && res.data?.ErrMessage === 'Success' && Array.isArray(res.data.data)) {
-                    localStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), data: res.data.data }));
-                    return res.data.data;
+                    const sanitized = sanitizeStationData(res.data.data);
+                    localStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), data: sanitized }));
+                    return sanitized;
                 }
             } catch (e) {
                 console.warn('Network station-list failed, using FALLBACK_STATION_LIST', e);
             }
             if (typeof FALLBACK_STATION_LIST !== 'undefined' && Array.isArray(FALLBACK_STATION_LIST)) {
-                return FALLBACK_STATION_LIST;
+                return sanitizeStationData(FALLBACK_STATION_LIST);
             }
             throw new Error(T('loadStationsFail'));
         }
@@ -1597,8 +1624,9 @@ gQIDAQAB
             try {
                 const res = await postJSON(STATION_LIST_URL('en'), null, {}, 5000);
                 if (res.status === 200 && res.data?.ErrMessage === 'Success') {
-                    localStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), data: res.data.data }));
-                    applyCrowdedUpdate(res.data.data);
+                    const sanitized = sanitizeStationData(res.data.data);
+                    localStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), data: sanitized }));
+                    applyCrowdedUpdate(sanitized);
                 }
             } catch (e) { }
         }
@@ -2875,12 +2903,25 @@ gQIDAQAB
         }
 
         function getLineStationsList(lineId) {
-            if (!lineId) return [];
-            if ([1, 2, 3, 4, 5].includes(lineId)) {
-                return (App.stations || []).filter(s => s.StationLineId === lineId);
+            const targetId = Number(lineId);
+            if (!targetId) return [];
+            const all = typeof allJourneyLines === 'function' ? allJourneyLines() : [];
+            const found = all.find(l => l && Number(l.LineId) === targetId);
+            if (found && Array.isArray(found.StationList) && found.StationList.length > 0) {
+                return found.StationList;
             }
-            const mrtLine = (MRT_STATIC_DB.lines || []).find(l => l.LineId === lineId);
-            return mrtLine ? mrtLine.StationList : [];
+            const appLines = (typeof App !== 'undefined' && App && Array.isArray(App.lines) && App.lines.length)
+                ? App.lines
+                : (typeof FALLBACK_STATION_LIST !== 'undefined' ? FALLBACK_STATION_LIST : []);
+            const bts = appLines.find(l => l && Number(l.LineId) === targetId);
+            if (bts && Array.isArray(bts.StationList) && bts.StationList.length > 0) {
+                return bts.StationList;
+            }
+            const mrt = (typeof MRT_STATIC_DB !== 'undefined' && MRT_STATIC_DB.lines || []).find(l => l && Number(l.LineId) === targetId);
+            if (mrt && Array.isArray(mrt.StationList)) {
+                return mrt.StationList;
+            }
+            return [];
         }
 
         /* ---------- MAP STATION COORDINATES (12 LINES OVERLAY) ---------- */
@@ -3287,7 +3328,7 @@ gQIDAQAB
                         const isSelected = s.StationKey === curKey;
                         const name = stName(s);
                         const nameLen = name.length;
-                        const sizeClass = nameLen > 18 ? 'chip-name-xlong' : (nameLen > 12 ? 'chip-name-long' : '');
+                        const sizeClass = nameLen > 20 ? 'chip-name-xxlong' : (nameLen > 15 ? 'chip-name-xlong' : (nameLen > 11 ? 'chip-name-long' : ''));
                         return `
                             <button type="button" class="station-picker-chip ${isSelected ? 'selected' : ''}"
                                 onclick="App.selectExitStation('${esc(s.StationKey)}')">
@@ -4766,30 +4807,39 @@ setOriginFromActionSheet() {
                     const lineStations = getLineStationsList(activeLine.id);
                     let stnDirectoryHtml = '';
                     if (lineStations && lineStations.length > 0) {
+                        const color = activeLine.color || '#7AB420';
+                        const isBright = isBrightColor(color);
+                        const codeTextColor = isBright ? '#0f172a' : '#ffffff';
+
+                        const stationChips = lineStations.map(s => {
+                            const sKey = s.StationKey;
+                            const sTh = s.StationNameTH || (s.StationName ? s.StationName.split('|')[0].trim() : '');
+                            const sEn = s.StationNameEN || s.StationName_EN || '';
+                            const name = isEn ? (sEn || sTh) : sTh;
+                            const nameLen = name.length;
+                            const sizeClass = nameLen > 20 ? 'chip-name-xxlong' : (nameLen > 15 ? 'chip-name-xlong' : (nameLen > 11 ? 'chip-name-long' : ''));
+                            return `
+                                <button type="button" class="station-picker-chip"
+                                    onclick="App.showNearestPopupFor(App.findStation('${esc(sKey)}') || { StationKey: '${esc(sKey)}', StationNameTH: '${esc(sTh)}', StationNameEN: '${esc(sEn)}', StationLineId: ${activeLine.id}, StationLineColor: '${esc(color)}' })"
+                                    title="${esc(name)}">
+                                    <span class="chip-code" style="background:${color};color:${codeTextColor}">${esc(sKey)}</span>
+                                    <span class="chip-name ${sizeClass}" title="${esc(name)}">${esc(name)}</span>
+                                </button>
+                            `;
+                        }).join('');
+
                         stnDirectoryHtml = `
                             <div class="info-card">
-                                <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;" onclick="App.toggleTimetableStations()">
-                                    <h3 style="margin:0;display:flex;align-items:center;gap:8px;">
-                                        <span>${getUiIcon('train', 16, activeLine.color)}</span>
+                                <div style="position:relative;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:2px 24px;text-align:center;" onclick="App.toggleTimetableStations()">
+                                    <h3 style="margin:0;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-align:center;">
+                                        <span style="display:inline-flex;align-items:center;justify-content:center;">${getLineIconSvg(activeLine.id, activeLine.color, 18)}</span>
                                         <span>${isEn ? `Stations on Line (${lineStations.length})` : `รายชื่อสถานี & รหัสสถานีในสายนี้ (${lineStations.length} สถานี)`}</span>
                                     </h3>
-                                    <span id="stnListChev" style="font-size:12px;color:var(--muted);transition:transform .2s ease;">▼</span>
+                                    <span id="stnListChev" style="position:absolute;right:0;font-size:12px;color:var(--muted);transition:transform .2s ease;display:inline-flex;align-items:center;justify-content:center;">▼</span>
                                 </div>
                                 <div id="stnListBody" style="display:none;margin-top:10px;">
-                                    <div style="display:grid;grid-template-columns:repeat(auto-fill, minmax(140px, 1fr));gap:6px;">
-                                        ${lineStations.map(s => {
-                                            const sKey = s.StationKey;
-                                            const sTh = s.StationNameTH || (s.StationName ? s.StationName.split('|')[0].trim() : '');
-                                            const sEn = s.StationNameEN || s.StationName_EN || '';
-                                            return `
-                                                <div style="display:flex;align-items:center;gap:6px;background:var(--bg-subtle);padding:6px 8px;border-radius:6px;border:1px solid var(--line);white-space:nowrap;overflow:hidden;">
-                                                    <span class="stn-code-badge" style="background:${activeLine.color}">${esc(sKey)}</span>
-                                                    <div style="overflow:hidden;text-overflow:ellipsis;min-width:0;">
-                                                        <div style="font-size:12px;font-weight:700;color:var(--ink);overflow:hidden;text-overflow:ellipsis;">${esc(isEn ? sEn || sTh : sTh)}</div>
-                                                    </div>
-                                                </div>
-                                            `;
-                                        }).join('')}
+                                    <div class="line-stations-grid">
+                                        ${stationChips}
                                     </div>
                                 </div>
                             </div>
@@ -5103,7 +5153,7 @@ setOriginFromActionSheet() {
                     }
                 });
                 try {
-                    this.lines = await fetchStationList();
+                    this.lines = sanitizeStationData(await fetchStationList());
                 } catch (e) {
                     document.getElementById('strip').innerHTML =
                         `<div class="err-box" style="margin:14px">${T('loadStationsFail')}
@@ -5775,7 +5825,7 @@ setOriginFromActionSheet() {
                         const isSelected = s.StationKey === selectedKey;
                         const name = stName(s);
                         const nameLen = name.length;
-                        const sizeClass = nameLen > 18 ? 'chip-name-xlong' : (nameLen > 12 ? 'chip-name-long' : '');
+                        const sizeClass = nameLen > 20 ? 'chip-name-xxlong' : (nameLen > 15 ? 'chip-name-xlong' : (nameLen > 11 ? 'chip-name-long' : ''));
                         return `
                             <button type="button" class="station-picker-chip ${isSelected ? 'selected' : ''}"
                                 onclick="App.pickJourneyStation('${esc(s.StationKey)}')">

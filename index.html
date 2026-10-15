@@ -622,6 +622,10 @@
                 font-size: 8.8px;
                 letter-spacing: -0.35px;
             }
+            .station-picker-chip .chip-name.chip-name-xxlong {
+                font-size: 8.2px;
+                letter-spacing: -0.45px;
+            }
         }
 
         /* ===== Modern Card Architecture ===== */
@@ -1867,7 +1871,9 @@
             margin: 6px 0 14px;
             width: 100%;
             box-sizing: border-box;
-            overflow: hidden;
+            overflow-x: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
         }
 
         .freq-tab-bar::-webkit-scrollbar {
@@ -1875,13 +1881,13 @@
         }
 
         .freq-tab-btn {
-            flex: 1 1 0%;
+            flex: 1 1 auto;
             min-width: 0;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 4px;
-            padding: 7px 6px;
+            gap: 5px;
+            padding: 7px 8px;
             font-size: 12px;
             font-weight: 700;
             color: var(--muted);
@@ -1892,8 +1898,7 @@
             transition: all .2s ease;
             white-space: nowrap;
             box-sizing: border-box;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            flex-shrink: 0;
         }
 
         .freq-tab-btn .lbl-short {
@@ -1901,19 +1906,22 @@
         }
         .freq-tab-btn .lbl-full {
             display: inline;
+            white-space: nowrap;
         }
 
         .freq-tab-btn .freq-tab-icon {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             flex-shrink: 0;
         }
 
         .freq-tab-btn .freq-tab-lbl {
-            overflow: hidden;
-            text-overflow: ellipsis;
             white-space: nowrap;
             min-width: 0;
+            display: inline-flex;
+            align-items: center;
+            letter-spacing: 0;
         }
 
         .freq-tab-btn:hover {
@@ -1942,6 +1950,7 @@
             line-height: 1.2;
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             flex-shrink: 0;
             white-space: nowrap;
         }
@@ -1951,26 +1960,28 @@
             color: #4ade80;
         }
 
-        @media (max-width: 480px) {
+        @media (max-width: 520px) {
             .freq-tab-bar {
                 padding: 3px;
                 gap: 3px;
                 border-radius: 10px;
             }
             .freq-tab-btn {
-                padding: 6px 3px;
+                padding: 6px 4px;
                 font-size: 11px;
                 gap: 3px;
                 border-radius: 7px;
+                flex: 1 1 auto;
             }
             .freq-tab-btn .lbl-full {
                 display: none;
             }
             .freq-tab-btn .lbl-short {
                 display: inline;
+                white-space: nowrap;
             }
             .freq-today-badge {
-                font-size: 8.5px;
+                font-size: 9px;
                 padding: 1px 4px;
                 border-radius: 4px;
             }
@@ -1979,7 +1990,7 @@
         @media (max-width: 360px) {
             .freq-tab-btn {
                 padding: 5px 2px;
-                font-size: 10px;
+                font-size: 10.5px;
                 gap: 2px;
             }
             .freq-tab-btn .freq-tab-icon {
@@ -1994,19 +2005,21 @@
             border-radius: 10px;
         }
         html.is-flutter-app .freq-tab-btn {
-            padding: 6px 3px;
+            padding: 6px 4px;
             font-size: 11px;
             gap: 3px;
             border-radius: 7px;
+            flex: 1 1 auto;
         }
         html.is-flutter-app .freq-tab-btn .lbl-full {
             display: none;
         }
         html.is-flutter-app .freq-tab-btn .lbl-short {
             display: inline;
+            white-space: nowrap;
         }
         html.is-flutter-app .freq-today-badge {
-            font-size: 8.5px;
+            font-size: 9px;
             padding: 1px 4px;
             border-radius: 4px;
         }
@@ -3917,17 +3930,10 @@
 
         .line-stations-grid {
             display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 6px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 6px 8px;
             width: 100%;
             box-sizing: border-box;
-        }
-
-        @media (max-width: 600px) {
-            .line-stations-grid {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 6px 8px;
-            }
         }
 
         .station-picker-chip {
@@ -3975,6 +3981,7 @@
             min-width: 30px;
             flex-shrink: 0;
             line-height: 1;
+            letter-spacing: 0;
             white-space: nowrap;
             overflow: hidden;
             box-sizing: border-box;
@@ -4000,6 +4007,11 @@
         .station-picker-chip .chip-name.chip-name-xlong {
             font-size: 9.2px;
             letter-spacing: -0.35px;
+        }
+
+        .station-picker-chip .chip-name.chip-name-xxlong {
+            font-size: 8.5px;
+            letter-spacing: -0.4px;
         }
 
         /* ===== Fares & Timetables View ===== */
@@ -4238,16 +4250,20 @@
 
         .dir-timetables-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 10px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
             margin: 10px 0 14px;
+        }
+
+        .dir-timetables-grid:has(> :only-child) {
+            grid-template-columns: 1fr;
         }
 
         .dir-time-card {
             background: var(--bg-subtle);
             border: 1px solid var(--line);
             border-radius: var(--radius-md);
-            padding: 12px 14px;
+            padding: 10px 8px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -4256,43 +4272,55 @@
         }
 
         .dir-time-card .dir-card-header {
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             min-width: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            width: 100%;
         }
 
         .dir-time-card .dir-label {
             font-size: 11px;
             font-weight: 700;
             color: var(--muted);
-            letter-spacing: 0.2px;
-            margin-bottom: 5px;
+            letter-spacing: 0;
+            margin-bottom: 4px;
             display: block;
+            text-align: center;
+            width: 100%;
+            white-space: nowrap;
         }
 
         .dir-time-card .dir-dest-wrap {
             display: flex;
             align-items: center;
-            gap: 7px;
+            justify-content: center;
+            gap: 6px;
             flex-wrap: nowrap;
             min-width: 0;
             width: 100%;
+            text-align: center;
         }
 
         .dir-time-card .dir-dest-title {
-            font-size: 13.5px;
+            font-size: 13px;
             font-weight: 800;
             color: var(--ink);
             line-height: 1.25;
             word-break: break-word;
             min-width: 0;
-            flex: 1;
+            flex: 0 1 auto;
+            text-align: center;
         }
 
         .dir-time-card .dir-times-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 8px;
-            padding-top: 10px;
+            gap: 4px;
+            padding-top: 8px;
             border-top: 1px solid var(--line);
         }
 
@@ -4302,11 +4330,12 @@
             gap: 2px;
             min-width: 0;
             align-items: center;
+            justify-content: center;
             text-align: center;
         }
 
         .dir-time-card .dir-time-sub {
-            font-size: 11px;
+            font-size: 10.5px;
             font-weight: 600;
             color: var(--muted);
             white-space: nowrap;
@@ -4314,7 +4343,7 @@
         }
 
         .dir-time-card .dir-time-num {
-            font-size: 13.5px;
+            font-size: 13px;
             font-weight: 800;
             color: var(--ink);
             white-space: nowrap;

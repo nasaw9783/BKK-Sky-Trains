@@ -543,8 +543,8 @@ const List<Station> kStaticStations = [
   ),
   Station(
     stationKey: 'G1',
-    nameTH: 'กรุงธนบุรี (Gold Line)',
-    nameEN: 'Krung Thon Buri (Gold Line)',
+    nameTH: 'กรุงธนบุรี',
+    nameEN: 'Krung Thon Buri',
     latitude: 13.72127,
     longitude: 100.5037,
     lineId: 3,

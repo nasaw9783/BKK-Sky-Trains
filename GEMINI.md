@@ -37,7 +37,7 @@ C:\Users\Administrator\Documents\BKK Sky Trains\
 │   ├── releases/                   # Distribution packages:
 │   │   ├── BKK_SkyTrains_V.xxxx.apk, .sha256
 │   │   ├── BKK_SkyTrains_V.xxxx.aab, .sha256
-│   │   └── BKK_SkyTrains_iOS_latest.ipa, .sha256
+│   │   └── BKK_SkyTrains_V.xxxx.ipa, .sha256
 │   └── .github/workflows/          # GitHub Actions workflows (build_ios.yml for automated iOS & Android builds & releases)
 │
 └── [Documentation & Specifications]

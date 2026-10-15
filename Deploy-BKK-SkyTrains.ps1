@@ -98,7 +98,9 @@ if (Test-Path $ReleasesDir) {
         "BKK_SkyTrains_Android_latest.apk",
         "BKK_SkyTrains_Android_latest.apk.sha256",
         "BKK_SkyTrains_Android_latest.aab",
-        "BKK_SkyTrains_Android_latest.aab.sha256"
+        "BKK_SkyTrains_Android_latest.aab.sha256",
+        "BKK_SkyTrains_iOS_latest.ipa",
+        "BKK_SkyTrains_iOS_latest.ipa.sha256"
     )
     foreach ($olf in $oldLatestFiles) {
         $p = Join-Path $ReleasesDir $olf
@@ -108,7 +110,6 @@ if (Test-Path $ReleasesDir) {
     $CurrentReleasePrefix = "BKK_SkyTrains_V.$Version"
     $oldInstallers = Get-ChildItem -Path $ReleasesDir | Where-Object {
         $_.Name -notlike "$CurrentReleasePrefix*" -and
-        $_.Name -notlike "*latest*" -and
         $_.Name -ne ".gitkeep"
     }
     foreach ($f in $oldInstallers) {
@@ -354,13 +355,23 @@ if ($BuildIOS) {
         if ($iosCode -eq 0) {
             mkdir -p Payload
             cp -r build/ios/iphoneos/Runner.app Payload/
-            zip -r -9 BKK_SkyTrains_iOS_latest.ipa Payload
-            $LatestIpa = Join-Path $ReleasesDir "BKK_SkyTrains_iOS_latest.ipa"
-            Copy-Item -LiteralPath "BKK_SkyTrains_iOS_latest.ipa" -Destination $LatestIpa -Force
-            $ipaHash = (Get-FileHash -LiteralPath $LatestIpa -Algorithm SHA256).Hash.ToLower()
-            "$ipaHash  BKK_SkyTrains_iOS_latest.ipa" | Set-Content -LiteralPath "$LatestIpa.sha256" -Encoding ASCII
+            $IpaFileName = "BKK_SkyTrains_V.$Version.ipa"
+            $TargetIpa = Join-Path $ReleasesDir $IpaFileName
+            $TargetIpaSha = Join-Path $ReleasesDir "$IpaFileName.sha256"
+
+            # ลบชื่อเดิม BKK_SkyTrains_iOS_latest.ipa หากมีอยู่
+            $OldLatestIpa = Join-Path $ReleasesDir "BKK_SkyTrains_iOS_latest.ipa"
+            $OldLatestIpaSha = Join-Path $ReleasesDir "BKK_SkyTrains_iOS_latest.ipa.sha256"
+            if (Test-Path $OldLatestIpa) { Remove-Item -LiteralPath $OldLatestIpa -Force -ErrorAction SilentlyContinue }
+            if (Test-Path $OldLatestIpaSha) { Remove-Item -LiteralPath $OldLatestIpaSha -Force -ErrorAction SilentlyContinue }
+
+            zip -r -9 $IpaFileName Payload
+            Copy-Item -LiteralPath $IpaFileName -Destination $TargetIpa -Force
+            $ipaHash = (Get-FileHash -LiteralPath $TargetIpa -Algorithm SHA256).Hash.ToLower()
+            "$ipaHash  $IpaFileName" | Set-Content -LiteralPath $TargetIpaSha -Encoding ASCII
             rm -rf Payload
-            Write-Host "   ✓ บิลด์ iOS IPA บน macOS สำเร็จ: $LatestIpa" -ForegroundColor Green
+            Remove-Item -LiteralPath $IpaFileName -Force -ErrorAction SilentlyContinue
+            Write-Host "   ✓ บิลด์ iOS IPA บน macOS สำเร็จ: $TargetIpa" -ForegroundColor Green
         }
         Pop-Location
     } else {

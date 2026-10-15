@@ -113,12 +113,9 @@ jobs:
           VERSION_BASE="${{ steps.app_version.outputs.version_base }}"
           mkdir -p Payload
           cp -r build/ios/iphoneos/Runner.app Payload/
-          zip -r -9 BKK_SkyTrains_iOS_latest.ipa Payload
-          cp BKK_SkyTrains_iOS_latest.ipa BKK_SkyTrains_iOS_unsigned.ipa
-          cp BKK_SkyTrains_iOS_latest.ipa "BKK_SkyTrains_iOS_v${VERSION_BASE}.ipa"
-          shasum -a 256 BKK_SkyTrains_iOS_latest.ipa > BKK_SkyTrains_iOS_latest.ipa.sha256
-          shasum -a 256 BKK_SkyTrains_iOS_unsigned.ipa > BKK_SkyTrains_iOS_unsigned.ipa.sha256
-          shasum -a 256 "BKK_SkyTrains_iOS_v${VERSION_BASE}.ipa" > "BKK_SkyTrains_iOS_v${VERSION_BASE}.ipa.sha256"
+          mkdir -p ../releases
+          zip -r -9 "../releases/BKK_SkyTrains_V.${VERSION_BASE}.ipa" Payload
+          shasum -a 256 "../releases/BKK_SkyTrains_V.${VERSION_BASE}.ipa" > "../releases/BKK_SkyTrains_V.${VERSION_BASE}.ipa.sha256"
           rm -rf Payload
 
       - name: Upload Release Artifacts
@@ -126,12 +123,8 @@ jobs:
         with:
           name: BKK_SkyTrains_Release_Packages
           path: |
-            bkk_skytrains_flutter/BKK_SkyTrains_iOS_latest.ipa
-            bkk_skytrains_flutter/BKK_SkyTrains_iOS_latest.ipa.sha256
-            bkk_skytrains_flutter/BKK_SkyTrains_iOS_unsigned.ipa
-            bkk_skytrains_flutter/BKK_SkyTrains_iOS_unsigned.ipa.sha256
-            bkk_skytrains_flutter/BKK_SkyTrains_iOS_v*.ipa
-            bkk_skytrains_flutter/BKK_SkyTrains_iOS_v*.ipa.sha256
+            releases/BKK_SkyTrains_V.*.ipa
+            releases/BKK_SkyTrains_V.*.ipa.sha256
             releases/BKK_SkyTrains_V.*.apk
             releases/BKK_SkyTrains_V.*.apk.sha256
             releases/BKK_SkyTrains_V.*.aab
@@ -175,7 +168,7 @@ jobs:
           fail_on_unmatched_files: false
           body: |
             ### 🚆 BKK SkyTrains Production Release v${{ steps.app_version.outputs.version_base }}
-            - **iOS Application**: Production IPA packages (`BKK_SkyTrains_iOS_v${{ steps.app_version.outputs.version_base }}.ipa`, `BKK_SkyTrains_iOS_latest.ipa`, `BKK_SkyTrains_iOS_unsigned.ipa`)
+            - **iOS Application**: Production IPA package (`BKK_SkyTrains_V.${{ steps.app_version.outputs.version_base }}.ipa`)
             - **Android Application**: Production APK & App Bundle packages (`BKK_SkyTrains_V.${{ steps.app_version.outputs.version_base }}.apk`, `BKK_SkyTrains_V.${{ steps.app_version.outputs.version_base }}.aab`)
             - **Key Features & Enhancements**:
               - High-resolution Transit Network Blueprint Map with interactive vector SVG overlay across 10 Bangkok transit lines (Sukhumvit, Silom, Gold, Blue, Purple, BRT, Pink, Yellow, Dark Red, Light Red, ARL, Orange).
@@ -189,12 +182,8 @@ jobs:
               - Unified element centering and train line icon standards.
             - **Security & Integrity**: Cryptographic SHA-256 checksums provided for all distribution packages.
           files: |
-            bkk_skytrains_flutter/BKK_SkyTrains_iOS_latest.ipa
-            bkk_skytrains_flutter/BKK_SkyTrains_iOS_latest.ipa.sha256
-            bkk_skytrains_flutter/BKK_SkyTrains_iOS_unsigned.ipa
-            bkk_skytrains_flutter/BKK_SkyTrains_iOS_unsigned.ipa.sha256
-            bkk_skytrains_flutter/BKK_SkyTrains_iOS_v*.ipa
-            bkk_skytrains_flutter/BKK_SkyTrains_iOS_v*.ipa.sha256
+            releases/BKK_SkyTrains_V.*.ipa
+            releases/BKK_SkyTrains_V.*.ipa.sha256
             releases/BKK_SkyTrains_V.*.apk
             releases/BKK_SkyTrains_V.*.apk.sha256
             releases/BKK_SkyTrains_V.*.aab

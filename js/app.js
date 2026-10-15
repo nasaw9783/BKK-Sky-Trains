@@ -34,8 +34,8 @@
         const YELLOW_MAP_SRC = 'เส้นทางและอัตราค่าโดยสาร_files/yellow-map.jpg';
         const GOLD_LINE_ID = 3;
         const MRT_BLUE_FARE_CHANGE_AT = new Date('2026-07-03T00:00:00+07:00').getTime();
-        const MRT_LINE_IDS = { BLUE: 101, PURPLE: 102, RED: 103, DARK_RED: 103, LIGHT_RED: 105, ARL: 104 };
-        const MRT_COLORS = { BLUE: '#0284c7', PURPLE: '#8a2c9b', RED: '#b91c1c', DARK_RED: '#b91c1c', LIGHT_RED: '#f87171', ARL: '#8a1538' };
+        const MRT_LINE_IDS = { BLUE: 101, PURPLE: 102, RED: 103, DARK_RED: 103, LIGHT_RED: 105, ARL: 104, BRT: 201, ORANGE: 106 };
+        const MRT_COLORS = { BLUE: '#0284c7', PURPLE: '#8a2c9b', RED: '#b91c1c', DARK_RED: '#b91c1c', LIGHT_RED: '#f87171', ARL: '#8a1538', BRT: '#82c341', ORANGE: '#f58220' };
 
         const MRT_STATIC_DB = {
             lines: [
@@ -165,7 +165,7 @@
                     LineColor: MRT_COLORS.LIGHT_RED,
                     StaticJourney: true,
                     StationList: [
-                        ['RN01', 'กรุงเทพอภิวัฒน์', 'Krung Thep Aphiwat', 13.805, 100.54166667],
+                        ['RW01', 'กรุงเทพอภิวัฒน์', 'Krung Thep Aphiwat', 13.805, 100.54166667],
                         ['RW02', 'บางซ่อน', 'Bang Son', 13.8221, 100.5342],
                         ['RW03', 'บางบำหรุ', 'Bang Bamru', 13.7918, 100.4776],
                         ['RW04', 'ตลิ่งชัน', 'Taling Chan', 13.7893, 100.4393]
@@ -205,6 +205,82 @@
                         Latitude: lat,
                         Longitude: lon
                     }))
+                },
+                {
+                    LineId: MRT_LINE_IDS.BRT,
+                    LineName_TH: 'BRT',
+                    LineName_EN: 'BRT',
+                    LineColor: MRT_COLORS.BRT,
+                    StaticJourney: true,
+                    StationList: [
+                        ['B1', 'สาทร', 'Sathorn', 13.7214, 100.5300],
+                        ['B2', 'อาคารสงเคราะห์', 'Akhan Songkhro', 13.7153, 100.5358],
+                        ['B3', 'เทคนิคกรุงเทพ', 'Technic Krungthep', 13.7107, 100.5398],
+                        ['B4', 'ถนนจันทน์', 'Thanon Chan', 13.7056, 100.5408],
+                        ['B5', 'นราราม 3', 'Nararam 3', 13.6961, 100.5422],
+                        ['B6', 'วัดด่าน', 'Wat Dan', 13.6828, 100.5385],
+                        ['B7', 'วัดปริวาส', 'Wat Pariwat', 13.6763, 100.5308],
+                        ['B8', 'วัดดอกไม้', 'Wat Dokmai', 13.6744, 100.5204],
+                        ['B9', 'สะพานพระราม 9', 'Rama IX Bridge', 13.6822, 100.5097],
+                        ['B10', 'เจริญราษฎร์', 'Charoen Rat', 13.6918, 100.5011],
+                        ['B11', 'สะพานพระราม 3', 'Rama III Bridge', 13.7001, 100.4935],
+                        ['B12', 'ราชพฤกษ์', 'Ratchaphruek', 13.7144, 100.4777]
+                    ].map(([key, th, en, lat, lon]) => ({
+                        StationKey: key,
+                        StationNameTH: th,
+                        StationNameEN: en,
+                        StationLineId: MRT_LINE_IDS.BRT,
+                        StationLineColor: MRT_COLORS.BRT,
+                        StaticJourney: true,
+                        Latitude: lat,
+                        Longitude: lon
+                    }))
+                },
+                {
+                    LineId: MRT_LINE_IDS.ORANGE,
+                    LineName_TH: 'สายสีส้ม (ยังไม่เปิดให้บริการ)',
+                    LineName_EN: 'Orange Line (Not in Service)',
+                    LineColor: MRT_COLORS.ORANGE,
+                    StaticJourney: true,
+                    StationList: [
+                        ['OR01', 'บางขุนนนท์', 'Bang Khun Non', 13.7632, 100.4733],
+                        ['OR02', 'ศิริราช', 'Siriraj', 13.7578, 100.4856],
+                        ['OR03', 'สนามหลวง', 'Sanam Luang', 13.7567, 100.4944],
+                        ['OR04', 'อนุสาวรีย์ประชาธิปไตย', 'Democracy Monument', 13.7565, 100.5020],
+                        ['OR05', 'หลานหลวง', 'Lan Luang', 13.7563, 100.5127],
+                        ['OR06', 'ยมราช', 'Yommarat', 13.7570, 100.5230],
+                        ['OR07', 'ราชเทวี', 'Ratchathewi', 13.7523, 100.5315],
+                        ['OR08', 'ประตูน้ำ', 'Pratu Nam', 13.7505, 100.5408],
+                        ['OR09', 'ราชปรารภ', 'Ratchaprarop', 13.7552, 100.5421],
+                        ['OR10', 'ดินแดง', 'Din Daeng', 13.7630, 100.5500],
+                        ['OR11', 'ประชาสงเคราะห์', 'Pracha Songkhro', 13.7680, 100.5600],
+                        ['OR12', 'ศูนย์วัฒนธรรมฯ', 'Thailand Cultural Centre', 13.7663, 100.5703],
+                        ['OR13', 'รฟม.', 'MRTA', 13.7632, 100.5828],
+                        ['OR14', 'วัดพระราม 9', 'Wat Phra Ram 9', 13.7580, 100.5960],
+                        ['OR15', 'รามคำแหง 12', 'Ramkhamhaeng 12', 13.7530, 100.6080],
+                        ['OR16', 'มหาวิทยาลัยรามคำแหง', 'Ramkhamhaeng University', 13.7560, 100.6190],
+                        ['OR17', 'การกีฬาแห่งประเทศไทย', 'Sports Authority of Thailand', 13.7585, 100.6270],
+                        ['OR18', 'รามคำแหง 34', 'Ramkhamhaeng 34', 13.7620, 100.6360],
+                        ['OR19', 'แยกลำสาลี', 'Yaek Lam Sali', 13.7650, 100.6450],
+                        ['OR20', 'ศรีบูรพา', 'Si Burapha', 13.7710, 100.6570],
+                        ['OR21', 'คลองบ้านม้า', 'Khlong Ban Ma', 13.7770, 100.6690],
+                        ['OR22', 'สัมมากร', 'Sammakon', 13.7830, 100.6810],
+                        ['OR23', 'น้อมเกล้า', 'Nom Klao', 13.7890, 100.6930],
+                        ['OR24', 'ราษฎร์พัฒนา', 'Rat Phatthana', 13.7950, 100.7040],
+                        ['OR25', 'มีนพัฒนา', 'Min Phatthana', 13.8010, 100.7160],
+                        ['OR26', 'เคหะรามคำแหง', 'Keha Ramkhamhaeng', 13.8070, 100.7280],
+                        ['OR27', 'มีนบุรี', 'Min Buri', 13.8130, 100.7400],
+                        ['OR28', 'แยกร่มเกล้า', 'Yaek Rom Klao', 13.8190, 100.7520]
+                    ].map(([key, th, en, lat, lon]) => ({
+                        StationKey: key,
+                        StationNameTH: th,
+                        StationNameEN: en,
+                        StationLineId: MRT_LINE_IDS.ORANGE,
+                        StationLineColor: MRT_COLORS.ORANGE,
+                        StaticJourney: true,
+                        Latitude: lat,
+                        Longitude: lon
+                    }))
                 }
             ],
             transfers: [
@@ -217,11 +293,22 @@
                 ['BL34', 'S12', 5],
                 ['PP11', 'PK01', 5],
                 ['RN01', 'BL11', 4],
+                ['RW01', 'RN01', 1],
+                ['RW01', 'BL11', 4],
                 ['RW02', 'PP15', 4],
                 ['RN06', 'PK14', 5],
                 ['A8', 'N2', 3],
                 ['A6', 'BL21', 5],
-                ['A4', 'YL11', 5]
+                ['A4', 'YL11', 5],
+                ['B1', 'S3', 3],
+                ['B12', 'S10', 4],
+                ['OR01', 'BL04', 3],
+                ['OR01', 'RW04', 5],
+                ['OR07', 'N1', 3],
+                ['OR09', 'A7', 3],
+                ['OR12', 'BL19', 3],
+                ['OR19', 'YL09', 4],
+                ['OR27', 'PK30', 4]
             ]
         };
         const MRT_LINE_BY_ID = Object.fromEntries(MRT_STATIC_DB.lines.map(l => [l.LineId, l]));
@@ -343,6 +430,31 @@
             ]
         };
 
+        const BRT_FREQ = {
+            weekday: [
+                [6, 0, 9, 0, '5.00–7.00', 6],
+                [9, 0, 16, 30, '10.00–12.00', 10],
+                [16, 30, 20, 0, '5.00–7.00', 6],
+                [20, 0, 24, 0, '12.00–15.00', 12]
+            ],
+            weekend: [
+                [6, 0, 24, 0, '10.00–12.00', 10]
+            ]
+        };
+
+        const MRT_ORANGE_FREQ = {
+            weekday: [
+                [5, 30, 7, 0, '6.00', 6],
+                [7, 0, 9, 0, '3.30', 3.5],
+                [9, 0, 16, 30, '6.00', 6],
+                [16, 30, 20, 0, '3.30', 3.5],
+                [20, 0, 24, 0, '7.00', 7]
+            ],
+            weekend: [
+                [6, 0, 24, 0, '7.00', 7]
+            ]
+        };
+
         function getBtsFreqData(lineId) {
             if (lineId === 1) return BTS_SUKHUMVIT_FREQ;
             if (lineId === 2) return BTS_SILOM_FREQ;
@@ -354,6 +466,8 @@
             if (lineId === MRT_LINE_IDS.BLUE) return MRT_BLUE_FREQ;
             if (lineId === MRT_LINE_IDS.PURPLE) return MRT_PURPLE_FREQ;
             if (lineId === 4 || lineId === 5) return MONORAIL_FREQ;
+            if (lineId === MRT_LINE_IDS.BRT) return BRT_FREQ;
+            if (lineId === MRT_LINE_IDS.ORANGE) return MRT_ORANGE_FREQ;
             return null;
         }
 
@@ -546,6 +660,8 @@ gQIDAQAB
             103: '#B91C1C',  // Dark Red (SRT Commuter - Dark Red / ธานีรัถยา)
             105: '#F87171',  // Light Red (SRT Commuter - Light Red / นครวิถี)
             104: '#8A1538',  // ARL (Airport Express)
+            201: '#82C341',  // BRT (Bus Rapid Transit)
+            106: '#F58220',  // Orange (MRT Orange Line)
             0: '#64748B'     // All lines
         };
 
@@ -734,10 +850,10 @@ gQIDAQAB
                 geoDenied: 'ไม่ได้รับอนุญาตให้ใช้ตำแหน่ง — เปิดสิทธิ์ Location ให้เว็บนี้แล้วลองใหม่',
                 geoFail: 'หาตำแหน่งไม่สำเร็จ ลองใหม่อีกครั้ง',
                 connectFail: s => `เชื่อมต่อไม่สำเร็จ (HTTP ${s})`,
-                footer: `<div class="footer-systems-title"><span class="footer-title-icon-pill" style="background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.28);color:#10b981">${getUiIcon('train', 16, '#10b981')}</span> โครงข่ายระบบรถไฟฟ้า 10 สายที่เชื่อมต่อข้อมูลในระบบ</div>
+                footer: `<div class="footer-systems-title"><span class="footer-title-icon-pill" style="background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.28);color:#10b981">${getUiIcon('train', 16, '#10b981')}</span> โครงข่ายระบบรถไฟฟ้า 12 สายที่เชื่อมต่อข้อมูลในระบบ</div>
 <div class="footer-slider-wrapper" id="footerSliderWrapper">
     <div class="footer-slider-track" id="footerSliderTrack">
-        <!-- Set 1 (10 Lines) -->
+        <!-- Set 1 (12 Lines) -->
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(1)" title="BTS สายสุขุมวิท (คูคต ↔ เคหะฯ)" aria-label="BTS สายสุขุมวิท">
             <div class="footer-card-icon" style="background:rgba(122,180,32,0.12);border-color:rgba(122,180,32,0.3)">${getLineIconSvg(1, false, 20)}</div>
             <div class="footer-card-info"><span class="footer-card-name">BTS สายสุขุมวิท</span><span class="footer-card-dot">·</span><span class="footer-card-route">คูคต ↔ เคหะฯ</span></div>
@@ -788,8 +904,18 @@ gQIDAQAB
             <div class="footer-card-info"><span class="footer-card-name">ARL แอร์พอร์ตลิงก์</span><span class="footer-card-dot">·</span><span class="footer-card-route">พญาไท ↔ สุวรรณภูมิ</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(201)" title="รถโดยสารด่วนพิเศษ BRT (สาทร ↔ ราชพฤกษ์)" aria-label="รถโดยสารด่วนพิเศษ BRT">
+            <div class="footer-card-icon" style="background:rgba(130,195,65,0.12);border-color:rgba(130,195,65,0.3)">${getLineIconSvg(201, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">BRT สาทร-ราชพฤกษ์</span><span class="footer-card-dot">·</span><span class="footer-card-route">สาทร ↔ ราชพฤกษ์</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(106)" title="MRT สายสีส้ม (บางขุนนนท์ ↔ แยกร่มเกล้า) (ยังไม่เปิดให้บริการ)" aria-label="MRT สายสีส้ม (ยังไม่เปิดให้บริการ)">
+            <div class="footer-card-icon" style="background:rgba(245,130,32,0.12);border-color:rgba(245,130,32,0.3)">${getLineIconSvg(106, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีส้ม <small style="font-size:10px;color:#f58220;font-weight:700;">(ยังไม่เปิดให้บริการ)</small></span><span class="footer-card-dot">·</span><span class="footer-card-route">บางขุนนนท์ ↔ แยกร่มเกล้า</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
 
-        <!-- Set 2 (10 Duplicate Lines for Seamless Infinite Loop) -->
+        <!-- Set 2 (12 Duplicate Lines for Seamless Infinite Loop) -->
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(1)" title="BTS สายสุขุมวิท (คูคต ↔ เคหะฯ)" aria-label="BTS สายสุขุมวิท" aria-hidden="true" tabindex="-1">
             <div class="footer-card-icon" style="background:rgba(122,180,32,0.12);border-color:rgba(122,180,32,0.3)">${getLineIconSvg(1, false, 20)}</div>
             <div class="footer-card-info"><span class="footer-card-name">BTS สายสุขุมวิท</span><span class="footer-card-dot">·</span><span class="footer-card-route">คูคต ↔ เคหะฯ</span></div>
@@ -840,17 +966,27 @@ gQIDAQAB
             <div class="footer-card-info"><span class="footer-card-name">ARL แอร์พอร์ตลิงก์</span><span class="footer-card-dot">·</span><span class="footer-card-route">พญาไท ↔ สุวรรณภูมิ</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(201)" title="รถโดยสารด่วนพิเศษ BRT (สาทร ↔ ราชพฤกษ์)" aria-label="รถโดยสารด่วนพิเศษ BRT" aria-hidden="true" tabindex="-1">
+            <div class="footer-card-icon" style="background:rgba(130,195,65,0.12);border-color:rgba(130,195,65,0.3)">${getLineIconSvg(201, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">BRT สาทร-ราชพฤกษ์</span><span class="footer-card-dot">·</span><span class="footer-card-route">สาทร ↔ ราชพฤกษ์</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(106)" title="MRT สายสีส้ม (บางขุนนนท์ ↔ แยกร่มเกล้า) (ยังไม่เปิดให้บริการ)" aria-label="MRT สายสีส้ม (ยังไม่เปิดให้บริการ)" aria-hidden="true" tabindex="-1">
+            <div class="footer-card-icon" style="background:rgba(245,130,32,0.12);border-color:rgba(245,130,32,0.3)">${getLineIconSvg(106, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีส้ม <small style="font-size:10px;color:#f58220;font-weight:700;">(ยังไม่เปิดให้บริการ)</small></span><span class="footer-card-dot">·</span><span class="footer-card-route">บางขุนนนท์ ↔ แยกร่มเกล้า</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
     </div>
 </div>
 <div class="footer-refresh-note">
-    ${getUiIcon('refresh', 14, 'var(--sky)')} ข้อมูลเรียลไทม์ · รีเฟรชอัตโนมัติทุก 20 วินาที · ครอบคลุมทั้ง 10 สายทั่วกรุงเทพฯ และปริมณฑล
+    ${getUiIcon('refresh', 14, 'var(--sky)')} ข้อมูลเรียลไทม์ · รีเฟรชอัตโนมัติทุก 20 วินาที · ครอบคลุมทั้ง 12 สายทั่วกรุงเทพฯ และปริมณฑล
 </div>
 <div class="footer-disclaimer-note">
     Unofficial app — พัฒนาเพื่ออำนวยความสะดวกในการเดินทาง ข้อมูลเวลาขบวนรถเป็นไปตามมาตรฐานการเดินรถ โปรดเผื่อเวลาเดินทาง
 </div>`,
                 langBtn: 'EN',
                 clockLocale: 'th-TH',
-                lines: { 1: 'สุขุมวิท', 2: 'สีลม', 3: 'สีทอง', 4: 'สีเหลือง', 5: 'สีชมพู', 101: 'สีน้ำเงิน', 102: 'สีม่วง', 103: 'สีแดงเข้ม', 105: 'สีแดงอ่อน', 104: 'แอร์พอร์ต ลิงก์' },
+                lines: { 1: 'สุขุมวิท', 2: 'สีลม', 3: 'สีทอง', 4: 'สีเหลือง', 5: 'สีชมพู', 101: 'สีน้ำเงิน', 102: 'สีม่วง', 103: 'สีแดงเข้ม', 105: 'สีแดงอ่อน', 104: 'แอร์พอร์ต ลิงก์', 201: 'BRT', 106: 'สีส้ม (ยังไม่เปิดให้บริการ)' },
                 timetableBadge: 'ตามตารางเวลา',
                 timetableSchedule: 'ดูตารางความถี่การเดินรถทางการ',
                 mrtFreqTitle: 'ความถี่ขบวนรถ',
@@ -885,6 +1021,8 @@ gQIDAQAB
                 jMrtPurpleFare: 'ค่าโดยสาร MRT สายสีม่วง',
                 jSrtRedFare: 'ค่าโดยสาร SRT สายสีแดง',
                 jArlFare: 'ค่าโดยสาร ARL',
+                jBrtFare: 'ค่าโดยสาร BRT',
+                jMrtOrangeFare: 'ค่าโดยสาร MRT สายสีส้ม',
                 jMap: 'ดูแผนที่เส้นทาง',
                 jSameStation: 'สถานีเดียวกัน',
                 jAlreadyAtStation: 'อยู่ที่สถานีปลายทางแล้ว',
@@ -892,7 +1030,7 @@ gQIDAQAB
                 jFail: 'ค้นหาเส้นทางไม่สำเร็จ ลองใหม่อีกครั้ง',
                 jSearching: 'กำลังค้นหาเส้นทาง…',
                 homeJourneyTitle: 'วางแผนการเดินทาง & เช็คค่าโดยสาร',
-                homeJourneySub: 'ค้นหาเส้นทาง คำนวณเวลา และราคาข้าม 10 สาย',
+                homeJourneySub: 'ค้นหาเส้นทาง คำนวณเวลา และราคาข้าม 12 สาย',
                 homeJourneyBtn: 'เปิด ➔',
                 navHome: 'หน้าแรก',
                 navMap: 'แผนที่',
@@ -902,7 +1040,7 @@ gQIDAQAB
                 navTimetables: 'เวลาเดินรถ',
                 faresTitle: 'อัตราค่าโดยสารรถไฟฟ้าตามสาย',
                 timetablesTitle: 'ตารางเวลาเดินรถ & ความถี่ตามสาย',
-                mapTitle: `${getUiIcon('map', 15, 'currentColor')} ผังโครงข่ายรถไฟฟ้า 10 สาย`,
+                mapTitle: `${getUiIcon('map', 15, 'currentColor')} ผังโครงข่ายรถไฟฟ้า 12 สาย`,
                 mapZoomIn: `${getUiIcon('zoomIn', 13, 'currentColor')} ขยาย`,
                 mapZoomOut: `${getUiIcon('zoomOut', 13, 'currentColor')} ย่อ`,
                 mapReset: `${getUiIcon('resetZoom', 13, 'currentColor')} กลาง`,
@@ -919,7 +1057,7 @@ gQIDAQAB
                 legDarkRed: 'สายสีแดงเข้ม (ธานีรัถยา)',
                 legLightRed: 'สายสีแดงอ่อน (นครวิถี)',
                 legArl: 'แอร์พอร์ต ลิงก์',
-                legOrange: 'สายสีส้ม (กำลังก่อสร้าง)',
+                legOrange: 'สายสีส้ม (ยังไม่เปิดให้บริการ)',
                 legInter: 'จุดเชื่อมต่อข้ามสาย (Interchange)',
                 legAirport: 'เชื่อมต่อท่าอากาศยาน (สนามบิน)',
                 legBoat: 'ท่าเรือเชื่อมต่อ (เรือด่วน/คลอง)',
@@ -995,10 +1133,10 @@ gQIDAQAB
                 geoDenied: 'Location permission denied — allow Location for this site and retry',
                 geoFail: 'Could not get your location, please retry',
                 connectFail: s => `Connection failed (HTTP ${s})`,
-                footer: `<div class="footer-systems-title"><span class="footer-title-icon-pill" style="background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.28);color:#10b981">${getUiIcon('train', 16, '#10b981')}</span> Connected Transit Network (All 10 Lines)</div>
+                footer: `<div class="footer-systems-title"><span class="footer-title-icon-pill" style="background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.28);color:#10b981">${getUiIcon('train', 16, '#10b981')}</span> Connected Transit Network (All 12 Lines)</div>
 <div class="footer-slider-wrapper" id="footerSliderWrapper">
     <div class="footer-slider-track" id="footerSliderTrack">
-        <!-- Set 1 (10 Lines) -->
+        <!-- Set 1 (12 Lines) -->
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(1)" title="BTS Sukhumvit Line (Khu Khot ↔ Kheha)" aria-label="BTS Sukhumvit Line">
             <div class="footer-card-icon" style="background:rgba(122,180,32,0.12);border-color:rgba(122,180,32,0.3)">${getLineIconSvg(1, false, 20)}</div>
             <div class="footer-card-info"><span class="footer-card-name">BTS Sukhumvit</span><span class="footer-card-dot">·</span><span class="footer-card-route">Khu Khot ↔ Kheha</span></div>
@@ -1049,8 +1187,18 @@ gQIDAQAB
             <div class="footer-card-info"><span class="footer-card-name">Airport Rail Link</span><span class="footer-card-dot">·</span><span class="footer-card-route">Phaya Thai ↔ Suvarnabhumi</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(201)" title="Bangkok BRT (Sathorn ↔ Ratchapruek)" aria-label="Bangkok BRT">
+            <div class="footer-card-icon" style="background:rgba(130,195,65,0.12);border-color:rgba(130,195,65,0.3)">${getLineIconSvg(201, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">Bangkok BRT</span><span class="footer-card-dot">·</span><span class="footer-card-route">Sathorn ↔ Ratchapruek</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(106)" title="MRT Orange Line (Bang Khun Non ↔ Yaek Rom Klao) (Not in Service)" aria-label="MRT Orange Line (Not in Service)">
+            <div class="footer-card-icon" style="background:rgba(245,130,32,0.12);border-color:rgba(245,130,32,0.3)">${getLineIconSvg(106, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT Orange Line <small style="font-size:10px;color:#f58220;font-weight:700;">(Not in Service)</small></span><span class="footer-card-dot">·</span><span class="footer-card-route">Bang Khun Non ↔ Yaek Rom Klao</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
 
-        <!-- Set 2 (10 Duplicate Lines for Seamless Infinite Loop) -->
+        <!-- Set 2 (12 Duplicate Lines for Seamless Infinite Loop) -->
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(1)" title="BTS Sukhumvit Line (Khu Khot ↔ Kheha)" aria-label="BTS Sukhumvit Line" aria-hidden="true" tabindex="-1">
             <div class="footer-card-icon" style="background:rgba(122,180,32,0.12);border-color:rgba(122,180,32,0.3)">${getLineIconSvg(1, false, 20)}</div>
             <div class="footer-card-info"><span class="footer-card-name">BTS Sukhumvit</span><span class="footer-card-dot">·</span><span class="footer-card-route">Khu Khot ↔ Kheha</span></div>
@@ -1101,17 +1249,27 @@ gQIDAQAB
             <div class="footer-card-info"><span class="footer-card-name">Airport Rail Link</span><span class="footer-card-dot">·</span><span class="footer-card-route">Phaya Thai ↔ Suvarnabhumi</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(201)" title="Bangkok BRT (Sathorn ↔ Ratchapruek)" aria-label="Bangkok BRT" aria-hidden="true" tabindex="-1">
+            <div class="footer-card-icon" style="background:rgba(130,195,65,0.12);border-color:rgba(130,195,65,0.3)">${getLineIconSvg(201, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">Bangkok BRT</span><span class="footer-card-dot">·</span><span class="footer-card-route">Sathorn ↔ Ratchapruek</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(106)" title="MRT Orange Line (Bang Khun Non ↔ Yaek Rom Klao) (Not in Service)" aria-label="MRT Orange Line (Not in Service)" aria-hidden="true" tabindex="-1">
+            <div class="footer-card-icon" style="background:rgba(245,130,32,0.12);border-color:rgba(245,130,32,0.3)">${getLineIconSvg(106, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT Orange Line <small style="font-size:10px;color:#f58220;font-weight:700;">(Not in Service)</small></span><span class="footer-card-dot">·</span><span class="footer-card-route">Bang Khun Non ↔ Yaek Rom Klao</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
     </div>
 </div>
 <div class="footer-refresh-note">
-    ${getUiIcon('refresh', 14, 'var(--sky)')} Real-time data · Auto-refresh every 20 seconds · Covering all 10 transit lines across BKK & Vicinity
+    ${getUiIcon('refresh', 14, 'var(--sky)')} Real-time data · Auto-refresh every 20 seconds · Covering all 12 transit lines across BKK & Vicinity
 </div>
 <div class="footer-disclaimer-note">
     Unofficial app — Built for daily commuters. Timetables & arrival estimates follow official headway schedules. Please allow extra travel time.
 </div>`,
                 langBtn: 'ไทย',
                 clockLocale: 'en-GB',
-                lines: { 1: 'Sukhumvit', 2: 'Silom', 3: 'Gold', 4: 'Yellow', 5: 'Pink', 101: 'Blue', 102: 'Purple', 103: 'Dark Red', 105: 'Light Red', 104: 'Airport Link' },
+                lines: { 1: 'Sukhumvit', 2: 'Silom', 3: 'Gold', 4: 'Yellow', 5: 'Pink', 101: 'Blue', 102: 'Purple', 103: 'Dark Red', 105: 'Light Red', 104: 'Airport Link', 201: 'BRT', 106: 'Orange (Not in Service)' },
                 timetableBadge: 'Timetable',
                 timetableSchedule: 'View Official Frequency Schedule',
                 mrtFreqTitle: 'Train frequency',
@@ -1146,6 +1304,8 @@ gQIDAQAB
                 jMrtPurpleFare: 'MRT Purple Line fare',
                 jSrtRedFare: 'SRT Red Line fare',
                 jArlFare: 'ARL fare',
+                jBrtFare: 'BRT fare',
+                jMrtOrangeFare: 'MRT Orange Line fare',
                 jMap: 'View route map',
                 jSameStation: 'Same Station',
                 jAlreadyAtStation: 'Already at destination',
@@ -1153,7 +1313,7 @@ gQIDAQAB
                 jFail: 'Could not find a route, please retry',
                 jSearching: 'Finding routes…',
                 homeJourneyTitle: 'Journey Planner & Fare Guide',
-                homeJourneySub: 'Find routes, estimate travel time & fares across 10 lines',
+                homeJourneySub: 'Find routes, estimate travel time & fares across 12 lines',
                 homeJourneyBtn: 'Open ➔',
                 navHome: 'Home',
                 navMap: 'Map',
@@ -1163,7 +1323,7 @@ gQIDAQAB
                 navTimetables: 'Timetable',
                 faresTitle: 'Transit Fares & Pricing by Line',
                 timetablesTitle: 'Train Timetables & Frequency by Line',
-                mapTitle: `${getUiIcon('map', 15, 'currentColor')} 10 Transit Lines Network Map`,
+                mapTitle: `${getUiIcon('map', 15, 'currentColor')} 12 Transit Lines Network Map`,
                 mapZoomIn: `${getUiIcon('zoomIn', 13, 'currentColor')} Zoom In`,
                 mapZoomOut: `${getUiIcon('zoomOut', 13, 'currentColor')} Zoom Out`,
                 mapReset: `${getUiIcon('resetZoom', 13, 'currentColor')} Reset`,
@@ -1180,7 +1340,7 @@ gQIDAQAB
                 legDarkRed: 'SRT Dark Red Line (Thani Ratthaya)',
                 legLightRed: 'SRT Light Red Line (Nakhon Withi)',
                 legArl: 'Airport Rail Link',
-                legOrange: 'Orange Line (Under Construction)',
+                legOrange: 'Orange Line (Not in Service)',
                 legInter: 'Interchange Station',
                 legAirport: 'Airport Rail Connection',
                 legBoat: 'Pier Connection (Express Boat/Canal)',
@@ -1502,7 +1662,7 @@ gQIDAQAB
         }
 
         function isMrtLineId(id) {
-            return id === MRT_LINE_IDS.BLUE || id === MRT_LINE_IDS.PURPLE || id === 103 || id === 105 || id === MRT_LINE_IDS.ARL;
+            return id === MRT_LINE_IDS.BLUE || id === MRT_LINE_IDS.PURPLE || id === 103 || id === 105 || id === MRT_LINE_IDS.ARL || id === MRT_LINE_IDS.BRT || id === MRT_LINE_IDS.ORANGE;
         }
 
         function isGoldLineId(id) {
@@ -1510,7 +1670,7 @@ gQIDAQAB
         }
 
         function isMrtStationKey(key) {
-            return !!MRT_STATION_BY_KEY[key] || key.startsWith('RN') || key.startsWith('RW') || key.startsWith('A');
+            return !!MRT_STATION_BY_KEY[key] || key.startsWith('RN') || key.startsWith('RW') || key.startsWith('A') || key.startsWith('B') || key.startsWith('OR');
         }
 
         function usesStaticTimetable(station) {
@@ -1518,7 +1678,7 @@ gQIDAQAB
         }
 
         const SRT_RED_STATION_INDEX = {
-            'RW04': 0, 'RW03': 1, 'RW02': 2, 'RN01': 3,
+            'RW04': 0, 'RW03': 1, 'RW02': 2, 'RN01': 3, 'RW01': 3,
             'RN02': 4, 'RN03': 5, 'RN04': 6, 'RN05': 7,
             'RN06': 8, 'RN07': 9, 'RN08': 10, 'RN09': 11,
             'RN10': 12
@@ -1590,6 +1750,10 @@ gQIDAQAB
             return MRT_PURPLE_FARES[Math.min(Math.max(0, stops), MRT_PURPLE_FARES.length - 1)];
         }
 
+        function mrtOrangeFare(stops) {
+            return MRT_BLUE_FARES_NEW[Math.min(Math.max(0, stops), MRT_BLUE_FARES_NEW.length - 1)] || 17;
+        }
+
         function firstLineEntry(key) {
             return (App.keyLines[key] || [])[0] || null;
         }
@@ -1598,6 +1762,8 @@ gQIDAQAB
             'RW04|RW03': 5, 'RW03|RW04': 5,
             'RW03|RW02': 7, 'RW02|RW03': 7,
             'RW02|RN01': 4, 'RN01|RW02': 4,
+            'RW02|RW01': 4, 'RW01|RW02': 4,
+            'RN01|RW01': 0, 'RW01|RN01': 0,
             'RN01|RN02': 3, 'RN02|RN01': 3,
             'RN02|RN03': 2, 'RN03|RN02': 2,
             'RN03|RN04': 2, 'RN04|RN03': 2,
@@ -1731,6 +1897,14 @@ gQIDAQAB
                     fare = mrtPurpleFare(segment.stops);
                     labelTh = `${I18N.th.jMrtPurpleFare} (${segment.stops} สถานี)`;
                     labelEn = `${I18N.en.jMrtPurpleFare} (${segment.stops} stations)`;
+                } else if (segment.kind === 'orange') {
+                    fare = mrtOrangeFare(segment.stops);
+                    labelTh = `${I18N.th.jMrtOrangeFare} (${segment.stops} สถานี)`;
+                    labelEn = `${I18N.en.jMrtOrangeFare} (${segment.stops} stations)`;
+                } else if (segment.kind === 'brt') {
+                    fare = 15;
+                    labelTh = `${I18N.th.jBrtFare} (${segment.stops} สถานี)`;
+                    labelEn = `${I18N.en.jBrtFare} (${segment.stops} stations)`;
                 } else if (segment.kind === 'red') {
                     fare = srtRedFareExact(segment.start, segment.end);
                     labelTh = `${I18N.th.jSrtRedFare} (${segment.stops} สถานี)`;
@@ -1761,8 +1935,10 @@ gQIDAQAB
                 }
                 const kind = e.lineId === MRT_LINE_IDS.BLUE ? 'blue'
                     : e.lineId === MRT_LINE_IDS.PURPLE ? 'purple'
-                        : (e.lineId === 103 || e.lineId === 105 || e.lineId === MRT_LINE_IDS.RED) ? 'red'
-                            : e.lineId === MRT_LINE_IDS.ARL ? 'arl' : 'live';
+                        : e.lineId === MRT_LINE_IDS.ORANGE ? 'orange'
+                            : e.lineId === MRT_LINE_IDS.BRT ? 'brt'
+                                : (e.lineId === 103 || e.lineId === 105 || e.lineId === MRT_LINE_IDS.RED) ? 'red'
+                                    : e.lineId === MRT_LINE_IDS.ARL ? 'arl' : 'live';
                 if (!segment || segment.kind !== kind) {
                     await closeSegment();
                     segment = { kind, start: path.keys[i], end: path.keys[i + 1], stops: 1 };
@@ -1882,6 +2058,12 @@ gQIDAQAB
             }
             if (lineId === 5) {
                 return { fare: 15, lineName }; // สายสีชมพู เริ่มต้น 15 บาท
+            }
+            if (lineId === MRT_LINE_IDS.BRT) {
+                return { fare: 15, lineName }; // BRT อัตราเดียว 15 บาท
+            }
+            if (lineId === MRT_LINE_IDS.ORANGE) {
+                return { fare: 17, lineName }; // สายสีส้ม เริ่มต้น 17 บาท
             }
 
             // 2. BTS Green Lines (Sukhumvit Line 1 / Silom Line 2)
@@ -2088,8 +2270,8 @@ gQIDAQAB
                 nameTH: 'ทั้งหมด',
                 nameEN: 'All Lines',
                 color: '#64748B',
-                operatorTH: 'โครงข่ายรถไฟฟ้า 10 สาย กทม. และปริมณฑล',
-                operatorEN: '10 Transit Lines Network in Bangkok',
+                operatorTH: 'โครงข่ายรถไฟฟ้า 12 สาย กทม. และปริมณฑล',
+                operatorEN: '12 Transit Lines Network in Bangkok',
                 terminusTH: 'ทุกเส้นทางครอบคลุมทั้งระบบ',
                 terminusEN: 'Comprehensive Network Coverage',
                 minFare: 12,
@@ -2366,6 +2548,58 @@ gQIDAQAB
                 offPeakFreqEN: '10.00 - 15.00 min',
                 dir1: { toTH: 'สุวรรณภูมิ (Suvarnabhumi Airport)', toEN: 'Suvarnabhumi Airport', first: '05:30', last: '24:00' },
                 dir2: { toTH: 'พญาไท (Phaya Thai)', toEN: 'Phaya Thai', first: '05:30', last: '24:00' }
+            },
+            {
+                id: 201,
+                nameTH: 'BRT สายสาทร–ราชพฤกษ์',
+                nameEN: 'BRT Sathorn–Ratchaphruek Line',
+                color: '#82C341',
+                operatorTH: 'กทม. / ระบบรถโดยสารด่วนพิเศษ BRT',
+                operatorEN: 'BMA / Bangkok BRT Express Bus',
+                terminusTH: 'สาทร ↔ ราชพฤกษ์ (12 สถานี)',
+                terminusEN: 'Sathorn ↔ Ratchaphruek (12 Stations)',
+                minFare: 15,
+                maxFare: 15,
+                pricingModelTH: 'ค่าโดยสารอัตราเดียว 15 บาทตลอดสาย (ผู้สูงอายุ 8 บาท)',
+                pricingModelEN: 'Flat Rate ฿15 regardless of distance (Senior ฿8)',
+                ticketsTH: 'บัตร Rabbit, บัตรโดยสารเที่ยวเดียว',
+                ticketsEN: 'Rabbit Card, Single Journey Ticket',
+                firstTrainTH: '06:00 น.',
+                firstTrainEN: '06:00',
+                lastTrainTH: '24:00 น.',
+                lastTrainEN: '24:00',
+                peakFreqTH: '5.00 - 7.00 นาที',
+                peakFreqEN: '5.00 - 7.00 min',
+                offPeakFreqTH: '10.00 - 15.00 นาที',
+                offPeakFreqEN: '10.00 - 15.00 min',
+                dir1: { toTH: 'ราชพฤกษ์ (Ratchaphruek)', toEN: 'Ratchaphruek', first: '06:00', last: '24:00' },
+                dir2: { toTH: 'สาทร (Sathorn)', toEN: 'Sathorn', first: '06:00', last: '24:00' }
+            },
+            {
+                id: 106,
+                nameTH: 'MRT สายสีส้ม (ยังไม่เปิดให้บริการ)',
+                nameEN: 'MRT Orange Line (Not in Service)',
+                color: '#F58220',
+                operatorTH: 'BEM / รฟม. (ยังไม่เปิดให้บริการ)',
+                operatorEN: 'BEM / MRTA (Not in Service)',
+                terminusTH: 'บางขุนนนท์ ↔ แยกร่มเกล้า (ยังไม่เปิดให้บริการ)',
+                terminusEN: 'Bang Khun Non ↔ Yaek Rom Klao (Not in Service)',
+                minFare: '-',
+                maxFare: '-',
+                pricingModelTH: 'ยังไม่เปิดให้บริการเดินรถแก่ประชาชน',
+                pricingModelEN: 'Not yet opened for commercial service',
+                ticketsTH: 'ยังไม่เปิดให้บริการ',
+                ticketsEN: 'Not in service',
+                firstTrainTH: 'ยังไม่เปิดให้บริการ',
+                firstTrainEN: 'Not in service',
+                lastTrainTH: 'ยังไม่เปิดให้บริการ',
+                lastTrainEN: 'Not in service',
+                peakFreqTH: 'ยังไม่เปิดให้บริการ',
+                peakFreqEN: 'Not in service',
+                offPeakFreqTH: 'ยังไม่เปิดให้บริการ',
+                offPeakFreqEN: 'Not in service',
+                dir1: { toTH: 'แยกร่มเกล้า (ยังไม่เปิดให้บริการ)', toEN: 'Yaek Rom Klao (Not in Service)', first: '-', last: '-' },
+                dir2: { toTH: 'บางขุนนนท์ (ยังไม่เปิดให้บริการ)', toEN: 'Bang Khun Non (Not in Service)', first: '-', last: '-' }
             }
         ];
 
@@ -2649,7 +2883,7 @@ gQIDAQAB
             return mrtLine ? mrtLine.StationList : [];
         }
 
-        /* ---------- MAP STATION COORDINATES (10 LINES OVERLAY) ---------- */
+        /* ---------- MAP STATION COORDINATES (12 LINES OVERLAY) ---------- */
         const MAP_STATION_HOTSPOTS = {
     // BTS Sukhumvit Line
     CEN: [850.39, 1020.47, 9.92], E1: [892.9, 1020.48, 8.51], E2: [926.88, 1020.48, 8.51],
@@ -2719,16 +2953,32 @@ gQIDAQAB
     BL34: [416.7, 1184.9, 8.51], BL35: [368.17, 1204.59, 8.51], BL36: [326.05, 1204.59, 8.51],
     BL37: [283.46, 1204.59, 8.51], BL38: [240.94, 1204.59, 8.51],
     // SRT Dark Red Line
-    RN01: [724.68, 737.09, 7], RN02: [722.72, 651.98, 8.51], RN03: [722.72, 586, 8.51],
+    RN01: [724.68, 737.09, 6.5], RN02: [722.72, 651.98, 8.51], RN03: [722.72, 586, 8.51],
     RN04: [722.72, 510.32, 8.51], RN05: [722.72, 441.11, 8.51], RN06: [722.84, 368.5, 8.51],
     RN07: [722.72, 312, 8.51], RN08: [721.29, 254.94, 7.51], RN09: [722.72, 197.72, 8.51],
     RN10: [721.29, 141.73, 7.51],
     // SRT Light Red Line
-    RW02: [622.98, 663.53, 8.51], RW03: [374.95, 768.2, 8.51], RW04: [325.99, 849.03, 7.51],
+    RW01: [712.64, 737.09, 6.5], RW02: [622.98, 663.53, 8.51], RW03: [374.95, 768.2, 8.51], RW04: [325.99, 849.03, 7.51],
     // Airport Rail Link
     A1: [1544.89, 961.21, 8.51], A2: [1516.54, 895.75, 8.51], A3: [1431.49, 895.75, 8.51],
     A4: [1335.12, 895.75, 8.51], A5: [1166.17, 895.75, 8.51], A6: [993.62, 895.75, 8.51],
     A7: [921.22, 895.75, 8.51], A8: [853.23, 895.75, 8.51],
+    // Bangkok BRT
+    B1: [882.13, 1166.13, 7.5], B2: [902.57, 1186.57, 6.0], B3: [918.13, 1202.27, 6.0],
+    B4: [921.25, 1225.98, 6.0], B5: [921.2, 1255.7, 6.0], B6: [909.92, 1292.59, 6.0],
+    B7: [875.76, 1326.61, 6.0], B8: [841.87, 1360.62, 6.0], B9: [779.46, 1377.63, 6.0],
+    B10: [751.18, 1349.29, 6.0], B11: [734.17, 1332.28, 6.0], B12: [526.36, 1249.03, 7.5],
+    // MRT Orange Line
+    OR01: [424.48, 992.24, 7.5], OR02: [507.4, 992.24, 7.5], OR03: [552.53, 992.12, 7.5],
+    OR04: [666.14, 992.12, 7.5], OR05: [739.84, 942.45, 7.5], OR06: [819.21, 942.45, 7.5],
+    OR07: [873.07, 942.52, 7.5], OR08: [921.26, 913.02, 7.5], OR09: [921.24, 851.3, 7.5],
+    OR10: [921.24, 828.22, 7.5], OR11: [949.6, 807.98, 7.5], OR12: [1004.88, 807.99, 7.5],
+    OR13: [1062.99, 807.98, 7.5], OR14: [1119.68, 807.98, 7.5], OR15: [1166.16, 807.98, 7.5],
+    OR16: [1219.07, 807.98, 7.5], OR17: [1261.75, 793.36, 7.5], OR18: [1286.92, 767.91, 7.5],
+    OR19: [1312.57, 742.52, 7.5], OR20: [1338.08, 717.01, 7.5], OR21: [1366.1, 689.02, 7.5],
+    OR22: [1392.78, 662.44, 7.5], OR23: [1420.15, 634.92, 7.5], OR24: [1446.85, 608.2, 7.5],
+    OR25: [1474.01, 581.1, 7.5], OR26: [1500.44, 554.65, 7.5], OR27: [1530.7, 524.4, 7.5],
+    OR28: [1561.07, 494.03, 7.5]
 };
 
         /* ================= APP ================= */
@@ -3606,7 +3856,7 @@ gQIDAQAB
                 container.innerHTML = `
                     <img src="${mapSvg}" 
                          onerror="this.onerror=null;this.src='bkk_transit_map.jpg';" 
-                         alt="ผังโครงข่ายระบบขนส่งมวลชนกรุงเทพฯ 10 สาย" 
+                         alt="ผังโครงข่ายระบบขนส่งมวลชนกรุงเทพฯ 12 สาย" 
                          id="networkMapImage" 
                          class="network-map-image" 
                          draggable="false" />
@@ -3670,11 +3920,16 @@ gQIDAQAB
                 const infoEl = document.getElementById('sheetStationInfo');
                 if (infoEl) {
                     const enName = s.StationName_EN || s.StationNameEN || '';
+                    const isOrange = (s.StationLineId === 106 || stationKey.startsWith('OR'));
+                    const statusBadge = isOrange
+                        ? `<div style="display:inline-block;margin-top:4px;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;background:rgba(245,130,32,0.15);color:#ea580c;border:1px solid rgba(245,130,32,0.3);">${this.lang === 'en' ? 'Orange Line (Not in Service)' : 'สายสีส้ม (ยังไม่เปิดให้บริการ)'}</div>`
+                        : '';
                     infoEl.innerHTML = `
                         <div class="sheet-badge" style="background:${color}">${esc(s.StationKey)}</div>
                         <div class="sheet-names">
                             <div class="th-name">${esc(stName(s))}</div>
                             <div class="en-name">${esc(enName)} ${connBadges(s.StationKey, s.StationLineId)}</div>
+                            ${statusBadge}
                         </div>`;
                 }
 
@@ -3795,7 +4050,7 @@ setOriginFromActionSheet() {
                         <div class="info-card">
                             <h3 style="display:flex;align-items:center;gap:8px">
                                 <span>${getUiIcon('card', 16, 'var(--primary,#0284c7)')}</span>
-                                <span>${isEn ? 'Fare Comparison across 10 Lines' : 'เปรียบเทียบอัตราค่าโดยสารทั้ง 10 สาย'}</span>
+                                <span>${isEn ? 'Fare Comparison across 12 Lines' : 'เปรียบเทียบอัตราค่าโดยสารทั้ง 12 สาย'}</span>
                             </h3>
                             <div style="font-size:12px;color:var(--muted);margin-bottom:8px">
                                 ${isEn ? 'Tap any line below or use the pills above to view detailed fare structure' : 'แตะที่สายรถไฟฟ้าหรือแถบด้านบนเพื่อดูตารางราคาแบบละเอียด'}
@@ -4086,6 +4341,58 @@ setOriginFromActionSheet() {
                                 </div>
                             </div>
                         `;
+                    } else if (activeId === 201) {
+                        // BRT
+                        specificContent = `
+                            <div class="info-card" style="background:linear-gradient(135deg,#82c34110,#82c34120);border-color:#82c34155">
+                                <span class="fare-badge-20" style="background:#82C341">฿15 ${isEn ? 'Flat Rate' : 'ราคาเดียวตลอดสาย'}</span>
+                                <h3 style="color:#5f9628">
+                                    <span>${isEn ? 'Flat 15 Baht Fare' : 'อัตราค่าโดยสาร 15 บาท ตลอดสาย'}</span>
+                                </h3>
+                                <div style="font-size:12.5px;color:var(--ink);line-height:1.6">
+                                    ${isEn
+                                        ? 'Bangkok BRT operates under a flat fare of <b>฿15</b> across all 12 stations (Sathorn ↔ Ratchaphruek). Thai seniors (60+) pay a discounted fare of only <b>฿8</b>.'
+                                        : 'รถโดยสารด่วนพิเศษ BRT คิดค่าโดยสารอัตราเดียว <b>15 บาท</b> ตลอดสายครอบคลุมทั้ง 12 สถานี (สาทร ↔ ราชพฤกษ์) โดยผู้สูงอายุสัญชาติไทย (60 ปีขึ้นไป) ได้รับส่วนลดเหลือเพียง <b>8 บาท</b>'
+                                    }
+                                </div>
+                            </div>
+                        `;
+                    } else if (activeId === 106) {
+                        // MRT Orange Line
+                        specificContent = `
+                            <div class="info-card">
+                                <h3>${getUiIcon('chart', 16, '#f58220')} ${isEn ? 'Station Count Fare Structure' : 'ตารางอัตราค่าโดยสารตามจำนวนสถานี'}</h3>
+                                <div class="fare-table-wrap">
+                                    <table class="fare-grid-table compact-table">
+                                        <thead>
+                                            <tr>
+                                                <th style="white-space:nowrap;">${isEn ? 'Stations' : 'จำนวนสถานี'}</th>
+                                                <th style="white-space:nowrap;">${isEn ? 'Adult' : 'บุคคลทั่วไป'}</th>
+                                                <th style="white-space:nowrap;">${isEn ? 'Student (-10%)' : 'นักเรียน/นักศึกษา (-10%)'}</th>
+                                                <th style="white-space:nowrap;">${isEn ? 'Children/Senior (-50%)' : 'เด็ก/ผู้สูงอายุ (-50%)'}</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${MRT_BLUE_FARES.map(r => `
+                                                <tr>
+                                                    <td style="white-space:nowrap;"><b>${esc(isEn ? r.stnEN : r.stnTH)}</b></td>
+                                                    <td style="white-space:nowrap;color:${activeLine.color}"><b>฿${r.adult}</b></td>
+                                                    <td style="white-space:nowrap;">฿${r.student}</td>
+                                                    <td style="white-space:nowrap;">฿${r.senior}</td>
+                                                </tr>
+                                            `).join('')}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div style="font-size:12px;color:var(--muted);margin-top:8px;line-height:1.5;">
+                                    ${getUiIcon('bulb', 14, '#f59e0b')} <b>${isEn ? 'Standard MRT Tariff:' : 'โครงสร้างราคามาตรฐาน รฟม.:'}</b>
+                                    ${isEn
+                                        ? 'Calculated based on distance traveled starting from ฿17 up to ฿44 maximum. Passengers with EMV Contactless cards receive transfer fee waivers when connecting to other MRT lines within 30 minutes.'
+                                        : 'คิดค่าโดยสารตามระยะทางเริ่มต้น 17 บาท สูงสุดไม่เกิน 44 บาท รองรับบัตร EMV Contactless และได้รับยกเว้นค่าแรกเข้าเมื่อเปลี่ยนถ่ายกับสายสีน้ำเงินหรือสายสีอื่นในระบบภายใน 30 นาที'
+                                    }
+                                </div>
+                            </div>
+                        `;
                     }
 
                     bodyHtml = `
@@ -4208,7 +4515,7 @@ setOriginFromActionSheet() {
                         <div class="info-card">
                             <h3 style="display:flex;align-items:center;gap:8px">
                                 <span>⏰</span>
-                                <span>${isEn ? 'First & Last Train Timetables across 10 Lines' : 'ตารางเวลาเดินรถขบวนแรกและขบวนสุดท้าย 10 สาย'}</span>
+                                <span>${isEn ? 'First & Last Train Timetables across 12 Lines' : 'ตารางเวลาเดินรถขบวนแรกและขบวนสุดท้าย 12 สาย'}</span>
                             </h3>
                             <div style="font-size:12px;color:var(--muted);margin-bottom:8px">
                                 ${isEn ? 'Tap any line below or use the pills above to view official frequency schedule table' : 'แตะที่สายรถไฟฟ้าหรือแถบด้านบนเพื่อดูตารางความถี่การเดินรถแบบละเอียด'}
@@ -4831,6 +5138,12 @@ setOriginFromActionSheet() {
 
                 window.addEventListener('touchstart', (e) => {
                     if (e.touches.length !== 1) return;
+                    // ป้องกันการรีเฟรชเมื่อเลื่อนหรือลากดูผังโครงข่ายรถไฟฟ้า 12 สาย
+                    if (this.currentView === 'map' || (e.target && e.target.closest('#viewMap, #interactiveMapContainer, #networkMapContainer, #mapViewport, .map-viewport, .map-card, .network-map-container'))) {
+                        isPullingTop = false;
+                        pullDistance = 0;
+                        return;
+                    }
                     startY = e.touches[0].clientY;
                     const scrollY = window.pageYOffset || document.documentElement.scrollTop;
                     isPullingTop = (scrollY <= 2);
@@ -4839,6 +5152,15 @@ setOriginFromActionSheet() {
 
                 window.addEventListener('touchmove', (e) => {
                     if (!isPullingTop) return;
+                    if (this.currentView === 'map' || (e.target && e.target.closest('#viewMap, #interactiveMapContainer, #networkMapContainer, #mapViewport, .map-viewport, .map-card, .network-map-container'))) {
+                        isPullingTop = false;
+                        pullDistance = 0;
+                        if (topIndicator) {
+                            topIndicator.style.transform = '';
+                            topIndicator.classList.remove('visible', 'refreshing');
+                        }
+                        return;
+                    }
                     const currentY = e.touches[0].clientY;
                     const dy = currentY - startY;
 
@@ -4857,6 +5179,15 @@ setOriginFromActionSheet() {
                 }, { passive: true });
 
                 window.addEventListener('touchend', () => {
+                    if (this.currentView === 'map') {
+                        isPullingTop = false;
+                        pullDistance = 0;
+                        if (topIndicator) {
+                            topIndicator.style.transform = '';
+                            topIndicator.classList.remove('visible', 'refreshing');
+                        }
+                        return;
+                    }
                     if (isPullingTop && pullDistance >= 45) {
                         if (topIndicator) {
                             topIndicator.classList.add('refreshing');
@@ -6664,12 +6995,12 @@ setOriginFromActionSheet() {
                 const isWest = (lineId === 105 || key.startsWith('RW'));
                 const travelPerStation = 2.4;
 
-                if (key === 'RN01') {
+                if (key === 'RN01' || key === 'RW01') {
                     // ชุมทางกลางกรุงเทพอภิวัฒน์
-                    if (lineId === 105) {
+                    if (lineId === 105 || key === 'RW01') {
                         // สายสีแดงอ่อน (นครวิถี) มุ่งหน้า ตลิ่งชัน
                         const dest1 = getDestPair('RW04', 'ตลิ่งชัน', 'Taling Chan');
-                        const dest2 = getDestPair('RN01', 'กรุงเทพอภิวัฒน์ (ขบวนสิ้นสุด)', 'Krung Thep Aphiwat (Terminating)');
+                        const dest2 = getDestPair('RW01', 'กรุงเทพอภิวัฒน์ (ขบวนสิ้นสุด)', 'Krung Thep Aphiwat (Terminating)');
                         platforms.push({
                             platform: 1,
                             LineId: 105,
@@ -6684,9 +7015,9 @@ setOriginFromActionSheet() {
                             LineId: 105,
                             LineColor: '#F87171',
                             DestinationStation: dest2,
-                            DestinationStation_key: 'RN01',
+                            DestinationStation_key: 'RW01',
                             isDropOffOnly: true,
-                            train_list: makeTrains(2, dest2, 'RN01', 0, true)
+                            train_list: makeTrains(2, dest2, 'RW01', 0, true)
                         });
                     } else if (lineId === 103) {
                         // สายสีแดงเข้ม (ธานีรัถยา) มุ่งหน้า รังสิต
@@ -6787,8 +7118,77 @@ setOriginFromActionSheet() {
                     });
                 }
             }
+            // 5. รถโดยสารด่วนพิเศษ BRT (LineId: 201) — B1 (สาทร) <-> B12 (ราชพฤกษ์)
+            else if (lineId === MRT_LINE_IDS.BRT) {
+                const num = parseInt(key.replace(/\D/g, ''), 10) || 1;
+                const idx = Math.max(0, Math.min(11, num - 1));
+                const travelPerStation = 2.5;
 
-            // 5. สายสีน้ำเงิน (LineId: 101) — BL01..BL38
+                // Platform 1: ไปราชพฤกษ์ (B12)
+                const isTerm1 = (key === 'B12');
+                const offset1 = idx * travelPerStation;
+                const dest1 = getDestPair('B12', 'ราชพฤกษ์', 'Ratchaphruek');
+                platforms.push({
+                    platform: 1,
+                    LineId: lineId,
+                    LineColor: color,
+                    DestinationStation: dest1,
+                    DestinationStation_key: 'B12',
+                    isDropOffOnly: isTerm1,
+                    train_list: makeTrains(1, dest1, 'B12', offset1, isTerm1)
+                });
+
+                // Platform 2: ไปสาทร (B1)
+                const isTerm2 = (key === 'B1');
+                const offset2 = (11 - idx) * travelPerStation + (interval * 0.5);
+                const dest2 = getDestPair('B1', 'สาทร', 'Sathorn');
+                platforms.push({
+                    platform: 2,
+                    LineId: lineId,
+                    LineColor: color,
+                    DestinationStation: dest2,
+                    DestinationStation_key: 'B1',
+                    isDropOffOnly: isTerm2,
+                    train_list: makeTrains(2, dest2, 'B1', offset2, isTerm2)
+                });
+            }
+
+            // 6. MRT สายสีส้ม (LineId: 106) — OR01 (บางขุนนนท์) <-> OR28 (แยกร่มเกล้า)
+            else if (lineId === MRT_LINE_IDS.ORANGE) {
+                const num = parseInt(key.replace(/\D/g, ''), 10) || 1;
+                const idx = Math.max(0, Math.min(27, num - 1));
+                const travelPerStation = 2.2;
+
+                // Platform 1: ไปแยกร่มเกล้า (OR28)
+                const isTerm1 = (key === 'OR28');
+                const offset1 = idx * travelPerStation;
+                const dest1 = getDestPair('OR28', 'แยกร่มเกล้า', 'Yaek Rom Klao');
+                platforms.push({
+                    platform: 1,
+                    LineId: lineId,
+                    LineColor: color,
+                    DestinationStation: dest1,
+                    DestinationStation_key: 'OR28',
+                    isDropOffOnly: isTerm1,
+                    train_list: makeTrains(1, dest1, 'OR28', offset1, isTerm1)
+                });
+
+                // Platform 2: ไปบางขุนนนท์ (OR01)
+                const isTerm2 = (key === 'OR01');
+                const offset2 = (27 - idx) * travelPerStation + (interval * 0.5);
+                const dest2 = getDestPair('OR01', 'บางขุนนนท์', 'Bang Khun Non');
+                platforms.push({
+                    platform: 2,
+                    LineId: lineId,
+                    LineColor: color,
+                    DestinationStation: dest2,
+                    DestinationStation_key: 'OR01',
+                    isDropOffOnly: isTerm2,
+                    train_list: makeTrains(2, dest2, 'OR01', offset2, isTerm2)
+                });
+            }
+
+            // 7. สายสีน้ำเงิน (LineId: 101) — BL01..BL38
             else {
                 const blueLine = MRT_STATIC_DB.lines.find(l => l.LineId === MRT_LINE_IDS.BLUE);
                 const list = blueLine?.StationList || [];
@@ -7126,6 +7526,29 @@ setOriginFromActionSheet() {
                     <path d="M12 11.8l1.6 2.6h2.2l-2.4 1.4 1 2.8-2.4-1.4-2.4 1.4 1-2.8-2.4-1.4h2.2z" fill="${c}" stroke-width="0.5"/>
                     <line x1="2" y1="21" x2="22" y2="21" stroke-width="2"/>
                 </svg>`;
+            } else if (id === 201) {
+                // Bangkok BRT: Bus Rapid Transit - Modern transit bus with dedicated lane
+                inner = `<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="${c}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:block;margin:auto;">
+                    <rect x="4" y="4" width="16" height="14" rx="3" fill="${c}" fill-opacity="0.22"/>
+                    <path d="M6 7.5h12v4.5H6z" rx="1" fill="${c}"/>
+                    <line x1="8" y1="5.2" x2="16" y2="5.2" stroke-width="1.5"/>
+                    <circle cx="7.5" cy="15" r="1.3" fill="${c}"/>
+                    <circle cx="16.5" cy="15" r="1.3" fill="${c}"/>
+                    <line x1="10" y1="15" x2="14" y2="15" stroke-width="1.5"/>
+                    <line x1="2" y1="21" x2="22" y2="21" stroke-width="2"/>
+                    <path d="M5 18v2M19 18v2" stroke-width="2"/>
+                </svg>`;
+            } else if (id === 106) {
+                // MRT Orange Line: Underground Tunnel Metro with modern aerodynamic front
+                inner = `<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="${c}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:block;margin:auto;">
+                    <path d="M3 19V10a9 9 0 0 1 18 0v9" stroke-width="1.5" opacity="0.6"/>
+                    <line x1="2" y1="21" x2="22" y2="21" stroke-width="2"/>
+                    <path d="M5 6.5h14c1 0 1.5.8 1.5 1.8v8.4c0 1-.5 1.5-1.5 1.5H5c-1 0-1.5-.5-1.5-1.5V8.3c0-1 .5-1.8 1.5-1.8z" fill="${c}" fill-opacity="0.22"/>
+                    <path d="M7 9h10c0 2-1 4-5 4s-5-2-5-4z" fill="${c}"/>
+                    <circle cx="7.5" cy="15" r="1.2" fill="${c}"/>
+                    <circle cx="16.5" cy="15" r="1.2" fill="${c}"/>
+                    <line x1="10" y1="15" x2="14" y2="15" stroke-width="1.4"/>
+                </svg>`;
             } else {
                 // All Lines (Line 0): Transit Network Hub
                 inner = `<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="${c}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -7359,6 +7782,14 @@ setOriginFromActionSheet() {
 
         // แสดงชานชาลาทั้งหมดของสถานี — จัดกลุ่มตามสาย (สยามมี 2 สาย × 2 ชานชาลา = 4)
         function renderPlatformSection(station, arr) {
+            if (station && (station.StationLineId === 106 || station.StationKey?.startsWith('OR'))) {
+                const isEn = (typeof lang !== 'undefined' && lang === 'en') || (App && App.lang === 'en');
+                return `<div class="empty-note" style="padding:24px 16px;text-align:center;">
+                    <div style="display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:50%;background:rgba(245,130,32,0.12);color:#f58220;margin-bottom:12px;font-size:24px;">🚧</div>
+                    <div style="font-size:16px;font-weight:800;color:var(--ink);margin-bottom:6px;">${isEn ? 'Orange Line (Not in Service)' : 'สายสีส้ม (ยังไม่เปิดให้บริการ)'}</div>
+                    <div style="font-size:13px;color:var(--muted);max-width:320px;margin:0 auto;line-height:1.5;">${isEn ? 'This line is currently under construction and testing. Commercial passenger service has not yet commenced.' : 'โครงการรถไฟฟ้าสายสีส้มอยู่ระหว่างการทดสอบระบบและดำเนินงานก่อสร้าง ยังไม่เปิดให้บริการเดินรถแก่ประชาชน'}</div>
+                </div>`;
+            }
             if (!arr || (arr.loading && !arr.platforms))
                 return `<div class="empty-note"><span class="spin dark"></span><br>${T('loadingTrains')}</div>`;
             // นอกเวลาให้บริการ → แสดงตารางความถี่ปกติแทนกล่อง error
@@ -7827,6 +8258,6 @@ setOriginFromActionSheet() {
 
         /* ================= START ================= */
         window.App = App;
-        window.__test = { bestEta, etaText, shortDest, mrtBlueFare, buildHybridJourney, displayTrains, generateTimetableArrivals, renderPlatformSection, renderRouteSection, TRANSIT_LINES_CATALOG, getLineScheduleTables, buildSameStationJourney };   // hook สำหรับ test-app.mjs
+        window.__test = { bestEta, etaText, shortDest, mrtBlueFare, mrtOrangeFare, buildHybridJourney, displayTrains, generateTimetableArrivals, renderPlatformSection, renderRouteSection, TRANSIT_LINES_CATALOG, getLineScheduleTables, buildSameStationJourney };   // hook สำหรับ test-app.mjs
         App.init();
     

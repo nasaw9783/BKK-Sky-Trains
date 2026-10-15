@@ -43,7 +43,7 @@ C:\Users\Administrator\Documents\BKK Sky Trains\
 ├── [3. Releases & CI/CD]
 │   ├── releases/                   # แหล่งเก็บตัวติดตั้ง (.apk, .aab, .ipa, .sha256)
 │   │   ├── BKK_SkyTrains_V.xxxx.apk
-│   │   ├── BKK_SkyTrains_Android_latest.aab
+│   │   ├── BKK_SkyTrains_V.xxxx.aab
 │   │   └── BKK_SkyTrains_iOS_latest.ipa
 │   └── .github/workflows/          # CI/CD Workflows (build_ios.yml สำหรับบิลด์ iOS .ipa และ Android .apk อัตโนมัติ)
 │
@@ -146,7 +146,7 @@ cd ..
 - สคริปต์ Workflow จะดึงเวอร์ชันจาก `pubspec.yaml` อัตโนมัติ และสร้างไฟล์แพ็กเกจ:
   - iOS IPA: `BKK_SkyTrains_iOS_latest.ipa`, `BKK_SkyTrains_iOS_v${VERSION_BASE}.ipa`, `BKK_SkyTrains_iOS_unsigned.ipa` + `.sha256`
   - Android APK: `BKK_SkyTrains_V.${VERSION_BASE}.apk` + `.sha256`
-  - Android App Bundle (AAB): `BKK_SkyTrains_Android_latest.aab`, `BKK_SkyTrains_Android_v${VERSION_BASE}.aab` + `.sha256`
+  - Android App Bundle (AAB): `BKK_SkyTrains_V.${VERSION_BASE}.aab` + `.sha256`
 - เผยแพร่ขึ้น GitHub Releases (Production / Official) แบบ Unified Release พร้อมแนบไฟล์ตัวติดตั้งและ SHA-256 Checksum ครบถ้วน
 
 ### SOP-5: การใช้งานสคริปต์ Release & Deploy (`Deploy-BKK-SkyTrains.ps1`)

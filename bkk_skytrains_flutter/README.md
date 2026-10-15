@@ -113,13 +113,13 @@ flutter build apk --release
 ```bash
 flutter build appbundle --release
 ```
-*ไฟล์ AAB ที่สร้างเสร็จแล้วจะอยู่ที่ `build/app/outputs/bundle/release/app-release.aab` และถูกคัดลอกไปไว้ที่โฟลเดอร์ `../releases/BKK_SkyTrains_Android_latest.aab` สำหรับการแจกจ่ายบน Google Play Store*
+*ไฟล์ AAB ที่สร้างเสร็จแล้วจะอยู่ที่ `build/app/outputs/bundle/release/app-release.aab` และถูกคัดลอกไปไว้ที่โฟลเดอร์ `../releases/BKK_SkyTrains_V.1.3.6.aab` สำหรับการแจกจ่ายบน Google Play Store*
 
 ### บิลด์ iOS Bundle / IPA:
 ```bash
 flutter build ipa --no-codesign
 ```
-*หรือใช้ระบบ **Automated iOS & Android CI/CD** ผ่าน GitHub Actions ใน `.github/workflows/build_ios.yml` เพื่อให้ GitHub macOS Runner บิลด์ทั้งไฟล์ `.ipa`, `.apk` และ `.aab` ให้อัตโนมัติในระบบคลาวด์ พร้อมแพ็กเกจ `BKK_SkyTrains_iOS_latest.ipa`, `BKK_SkyTrains_iOS_v*.ipa`, `BKK_SkyTrains_V.*.apk`, `BKK_SkyTrains_Android_latest.aab`, `BKK_SkyTrains_Android_v*.aab` พร้อมไฟล์ตรวจสอบ SHA-256 Checksum และอัปโหลดขึ้น GitHub Releases โดยตรง*
+*หรือใช้ระบบ **Automated iOS & Android CI/CD** ผ่าน GitHub Actions ใน `.github/workflows/build_ios.yml` เพื่อให้ GitHub macOS Runner บิลด์ทั้งไฟล์ `.ipa`, `.apk` และ `.aab` ให้อัตโนมัติในระบบคลาวด์ พร้อมแพ็กเกจ `BKK_SkyTrains_iOS_latest.ipa`, `BKK_SkyTrains_iOS_v*.ipa`, `BKK_SkyTrains_V.*.apk`, `BKK_SkyTrains_V.*.aab` พร้อมไฟล์ตรวจสอบ SHA-256 Checksum และอัปโหลดขึ้น GitHub Releases โดยตรง*
 
 ---
 

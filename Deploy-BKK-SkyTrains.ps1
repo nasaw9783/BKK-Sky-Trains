@@ -93,15 +93,21 @@ foreach ($cd in $cacheDirs) {
 # 1.3 ลบไฟล์ตัวติดตั้งเวอร์ชันเก่าที่ซ้ำซ้อนใน releases/ (เก็บเฉพาะ BKK_SkyTrains_V.$Version.*, *_latest.* และ .gitkeep)
 $ReleasesDir = Join-Path $Workspace "releases"
 if (Test-Path $ReleasesDir) {
-    # ลบ BKK_SkyTrains_Android_latest.apk ออกเนื่องจากเปลี่ยนไปใช้ BKK_SkyTrains_V.$Version.apk
-    $oldLatestApk = Join-Path $ReleasesDir "BKK_SkyTrains_Android_latest.apk"
-    $oldLatestSha = Join-Path $ReleasesDir "BKK_SkyTrains_Android_latest.apk.sha256"
-    if (Test-Path $oldLatestApk) { Remove-Item -LiteralPath $oldLatestApk -Force -ErrorAction SilentlyContinue }
-    if (Test-Path $oldLatestSha) { Remove-Item -LiteralPath $oldLatestSha -Force -ErrorAction SilentlyContinue }
+    # ลบไฟล์เวอร์ชัน latest เดิมออกเนื่องจากเปลี่ยนไปใช้ BKK_SkyTrains_V.$Version.*
+    $oldLatestFiles = @(
+        "BKK_SkyTrains_Android_latest.apk",
+        "BKK_SkyTrains_Android_latest.apk.sha256",
+        "BKK_SkyTrains_Android_latest.aab",
+        "BKK_SkyTrains_Android_latest.aab.sha256"
+    )
+    foreach ($olf in $oldLatestFiles) {
+        $p = Join-Path $ReleasesDir $olf
+        if (Test-Path $p) { Remove-Item -LiteralPath $p -Force -ErrorAction SilentlyContinue }
+    }
 
-    $CurrentApkPrefix = "BKK_SkyTrains_V.$Version"
+    $CurrentReleasePrefix = "BKK_SkyTrains_V.$Version"
     $oldInstallers = Get-ChildItem -Path $ReleasesDir | Where-Object {
-        $_.Name -notlike "$CurrentApkPrefix*" -and
+        $_.Name -notlike "$CurrentReleasePrefix*" -and
         $_.Name -notlike "*latest*" -and
         $_.Name -ne ".gitkeep"
     }
@@ -303,16 +309,23 @@ if ($BuildAppBundle) {
         exit $aabCode
     }
 
+    $AabFileName = "BKK_SkyTrains_V.$Version.aab"
     $BuiltAab = Join-Path $Workspace "bkk_skytrains_flutter\build\app\outputs\bundle\release\app-release.aab"
-    $LatestAab = Join-Path $ReleasesDir "BKK_SkyTrains_Android_latest.aab"
-    $LatestAabSha = Join-Path $ReleasesDir "BKK_SkyTrains_Android_latest.aab.sha256"
+    $TargetAab = Join-Path $ReleasesDir $AabFileName
+    $TargetAabSha = Join-Path $ReleasesDir "$AabFileName.sha256"
 
-    Copy-Item -LiteralPath $BuiltAab -Destination $LatestAab -Force
-    $aabHash = (Get-FileHash -LiteralPath $LatestAab -Algorithm SHA256).Hash.ToLower()
-    "$aabHash  BKK_SkyTrains_Android_latest.aab" | Set-Content -LiteralPath $LatestAabSha -Encoding ASCII
+    # ลบชื่อเดิม BKK_SkyTrains_Android_latest.aab หากมีอยู่
+    $OldLatestAab = Join-Path $ReleasesDir "BKK_SkyTrains_Android_latest.aab"
+    $OldLatestAabSha = Join-Path $ReleasesDir "BKK_SkyTrains_Android_latest.aab.sha256"
+    if (Test-Path $OldLatestAab) { Remove-Item -LiteralPath $OldLatestAab -Force -ErrorAction SilentlyContinue }
+    if (Test-Path $OldLatestAabSha) { Remove-Item -LiteralPath $OldLatestAabSha -Force -ErrorAction SilentlyContinue }
+
+    Copy-Item -LiteralPath $BuiltAab -Destination $TargetAab -Force
+    $aabHash = (Get-FileHash -LiteralPath $TargetAab -Algorithm SHA256).Hash.ToLower()
+    "$aabHash  $AabFileName" | Set-Content -LiteralPath $TargetAabSha -Encoding ASCII
 
     Write-Host "   ✓ บิลด์ Android App Bundle สำเร็จเรียบร้อย:" -ForegroundColor Green
-    Write-Host "     ไฟล์: $LatestAab" -ForegroundColor Gray
+    Write-Host "     ไฟล์: $TargetAab" -ForegroundColor Gray
     Write-Host "     SHA-256: $aabHash" -ForegroundColor Yellow
 
     # ล้างแคชบิลด์ทันทีตามนโยบาย Zero-Waste Pruning

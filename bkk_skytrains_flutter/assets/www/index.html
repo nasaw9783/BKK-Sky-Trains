@@ -4197,6 +4197,8 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            align-items: center;
+            text-align: center;
         }
 
         .line-metric-box .label {
@@ -4205,6 +4207,7 @@
             margin-bottom: 4px;
             font-weight: 600;
             white-space: nowrap;
+            text-align: center;
         }
 
         .line-metric-box .val {
@@ -4212,10 +4215,17 @@
             font-weight: 800;
             color: var(--ink);
             white-space: nowrap;
+            text-align: center;
         }
 
         .line-metric-box.full-col {
             grid-column: 1 / -1;
+            align-items: flex-start;
+            text-align: left;
+        }
+
+        .line-metric-box.full-col .label {
+            text-align: left;
         }
 
         .line-metric-box.full-col .val {
@@ -4223,6 +4233,7 @@
             font-size: 12px;
             font-weight: 600;
             line-height: 1.45;
+            text-align: left;
         }
 
         .dir-timetables-grid {
@@ -4262,16 +4273,19 @@
             display: flex;
             align-items: center;
             gap: 7px;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
             min-width: 0;
+            width: 100%;
         }
 
         .dir-time-card .dir-dest-title {
-            font-size: 14.5px;
+            font-size: 13.5px;
             font-weight: 800;
             color: var(--ink);
-            line-height: 1.35;
+            line-height: 1.25;
             word-break: break-word;
+            min-width: 0;
+            flex: 1;
         }
 
         .dir-time-card .dir-times-grid {
@@ -4287,6 +4301,8 @@
             flex-direction: column;
             gap: 2px;
             min-width: 0;
+            align-items: center;
+            text-align: center;
         }
 
         .dir-time-card .dir-time-sub {
@@ -4294,6 +4310,7 @@
             font-weight: 600;
             color: var(--muted);
             white-space: nowrap;
+            text-align: center;
         }
 
         .dir-time-card .dir-time-num {
@@ -4301,6 +4318,7 @@
             font-weight: 800;
             color: var(--ink);
             white-space: nowrap;
+            text-align: center;
         }
 
         /* ===== Floating Bottom Navigation Dock ===== */

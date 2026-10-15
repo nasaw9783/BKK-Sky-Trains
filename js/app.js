@@ -4488,12 +4488,12 @@ setOriginFromActionSheet() {
                     bodyHtml = `
                         <!-- Line Hero Card -->
                         <div class="line-hero-card" style="border-left:5px solid ${activeLine.color}">
-                            <div class="line-hero-header" style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
-                                <div style="display:flex;align-items:center;gap:10px;min-width:0;">
-                                    ${getLineIconSvg(activeLine.id, false, 28)}
-                                    <div style="min-width:0;">
-                                        <div style="font-size:16.5px;font-weight:800;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(lineName)}</div>
-                                        <div style="font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(operator)} · ${esc(terminus)}</div>
+                            <div class="line-hero-header" style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
+                                <div style="display:flex;align-items:flex-start;gap:10px;min-width:0;flex:1;">
+                                    <div style="flex-shrink:0;margin-top:2px;">${getLineIconSvg(activeLine.id, false, 28)}</div>
+                                    <div style="min-width:0;flex:1;">
+                                        <div style="font-size:16.5px;font-weight:800;color:var(--ink);line-height:1.3;word-break:break-word;">${esc(lineName)}</div>
+                                        <div style="font-size:12px;color:var(--muted);line-height:1.45;word-break:break-word;margin-top:3px;">${esc(operator)} · ${esc(terminus)}</div>
                                     </div>
                                 </div>
                                 <button type="button" class="btn btn-ghost" style="padding:5px 10px;font-size:11.5px;margin-left:auto;white-space:nowrap;flex-shrink:0;" onclick="App.setFaresLine(0)">
@@ -4671,25 +4671,9 @@ setOriginFromActionSheet() {
                     const lineName = isEn ? activeLine.nameEN : activeLine.nameTH;
                     const operator = isEn ? activeLine.operatorEN : activeLine.operatorTH;
 
-                    // Parse terminus with compact station badges
+                    // ปลายทางเส้นทาง
                     const tRaw = isEn ? activeLine.terminusEN : activeLine.terminusTH;
-                    const tParts = tRaw.split('–').map(s => s.trim());
-                    let terminusHtml = '';
-                    if (tParts.length === 2) {
-                        const t1 = parseStationCodeAndName(tParts[0]);
-                        const t2 = parseStationCodeAndName(tParts[1]);
-                        terminusHtml = `
-                            <span style="display:inline-flex;align-items:center;gap:4px;vertical-align:middle;">
-                                ${t1.code ? `<span class="stn-code-badge" style="background:${activeLine.color}">${esc(t1.code)}</span>` : ''}
-                                <span>${esc(t1.name)}</span>
-                                <span style="color:var(--muted)">⇄</span>
-                                ${t2.code ? `<span class="stn-code-badge" style="background:${activeLine.color}">${esc(t2.code)}</span>` : ''}
-                                <span>${esc(t2.name)}</span>
-                            </span>
-                        `;
-                    } else {
-                        terminusHtml = esc(tRaw);
-                    }
+                    const terminusHtml = esc(tRaw);
 
                     // ข้อมูลทิศทางปลายทางและรหัสสถานี
                     const d1Code = activeLine.dir1?.code || '';
@@ -4815,12 +4799,12 @@ setOriginFromActionSheet() {
                     bodyHtml = `
                         <!-- Line Hero Card -->
                         <div class="line-hero-card" style="border-left:5px solid ${activeLine.color}">
-                            <div class="line-hero-header" style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
-                                <div style="display:flex;align-items:center;gap:10px;min-width:0;">
-                                    ${getLineIconSvg(activeLine.id, false, 28)}
-                                    <div style="min-width:0;">
-                                        <div style="font-size:16.5px;font-weight:800;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(lineName)}</div>
-                                        <div style="font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(operator)} · ${terminusHtml}</div>
+                            <div class="line-hero-header" style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
+                                <div style="display:flex;align-items:flex-start;gap:10px;min-width:0;flex:1;">
+                                    <div style="flex-shrink:0;margin-top:2px;">${getLineIconSvg(activeLine.id, false, 28)}</div>
+                                    <div style="min-width:0;flex:1;">
+                                        <div style="font-size:16.5px;font-weight:800;color:var(--ink);line-height:1.3;word-break:break-word;">${esc(lineName)}</div>
+                                        <div style="font-size:12px;color:var(--muted);line-height:1.45;word-break:break-word;margin-top:3px;">${esc(operator)} · ${terminusHtml}</div>
                                     </div>
                                 </div>
                                 <button type="button" class="btn btn-ghost" style="padding:5px 10px;font-size:11.5px;margin-left:auto;white-space:nowrap;flex-shrink:0;" onclick="App.setTimetablesLine(0)">
@@ -4834,20 +4818,20 @@ setOriginFromActionSheet() {
 
                             <div class="line-metrics-grid">
                                 <div class="line-metric-box">
-                                    <div class="label" style="white-space:nowrap;">${isEn ? 'First Train Service' : 'เวลาขบวนแรก'}</div>
-                                    <div class="val" style="color:${activeLine.color};white-space:nowrap;">${esc(isEn ? activeLine.firstTrainEN : activeLine.firstTrainTH)}</div>
+                                    <div class="label">${isEn ? 'First Train Service' : 'เวลาขบวนแรก'}</div>
+                                    <div class="val" style="color:${activeLine.color};">${esc(isEn ? activeLine.firstTrainEN : activeLine.firstTrainTH)}</div>
                                 </div>
                                 <div class="line-metric-box">
-                                    <div class="label" style="white-space:nowrap;">${isEn ? 'Last Train Service' : 'เวลาขบวนสุดท้าย'}</div>
-                                    <div class="val" style="white-space:nowrap;">${esc(isEn ? activeLine.lastTrainEN : activeLine.lastTrainTH)}</div>
+                                    <div class="label">${isEn ? 'Last Train Service' : 'เวลาขบวนสุดท้าย'}</div>
+                                    <div class="val">${esc(isEn ? activeLine.lastTrainEN : activeLine.lastTrainTH)}</div>
                                 </div>
                                 <div class="line-metric-box">
-                                    <div class="label" style="white-space:nowrap;">${isEn ? 'Peak Hour Headway' : 'ความถี่ช่วงเร่งด่วน'}</div>
-                                    <div class="val" style="font-size:13px;color:${activeLine.color};white-space:nowrap;">${esc(isEn ? activeLine.peakFreqEN : activeLine.peakFreqTH)}</div>
+                                    <div class="label">${isEn ? 'Peak Hour Headway' : 'ความถี่ช่วงเร่งด่วน'}</div>
+                                    <div class="val" style="font-size:13px;color:${activeLine.color};">${esc(isEn ? activeLine.peakFreqEN : activeLine.peakFreqTH)}</div>
                                 </div>
                                 <div class="line-metric-box">
-                                    <div class="label" style="white-space:nowrap;">${isEn ? 'Off-Peak Headway' : 'ความถี่ช่วงปกติ'}</div>
-                                    <div class="val" style="font-size:13px;white-space:nowrap;">${esc(isEn ? activeLine.offPeakFreqEN : activeLine.offPeakFreqTH)}</div>
+                                    <div class="label">${isEn ? 'Off-Peak Headway' : 'ความถี่ช่วงปกติ'}</div>
+                                    <div class="val" style="font-size:13px;">${esc(isEn ? activeLine.offPeakFreqEN : activeLine.offPeakFreqTH)}</div>
                                 </div>
                             </div>
                         </div>

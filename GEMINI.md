@@ -35,11 +35,11 @@ C:\Users\Administrator\Documents\BKK Sky Trains\
 │
 ├── [Releases & CI/CD]
 │   ├── releases/                   # Distribution packages:
-│   │   ├── .apk-.aab/              # Android packages:
-│   │   │   ├── BKK_SkyTrains_V.xxxx.apk, .sha256
-│   │   │   └── BKK_SkyTrains_V.xxxx.aab, .sha256
-│   │   └── IPA/                    # iOS package:
-│   │       └── BKK_SkyTrains_V.xxxx.ipa, .sha256
+│   │   ├── Android/                # Android packages:
+│   │   │   ├── APK/                # BKK_SkyTrains_V.xxxx.apk, .sha256
+│   │   │   └── AAB/                # BKK_SkyTrains_V.xxxx.aab, .sha256
+│   │   └── Apple/                  # iOS package:
+│   │       └── IPA/                # BKK_SkyTrains_V.xxxx.ipa, .sha256
 │   └── .github/workflows/          # GitHub Actions workflows (build_ios.yml for automated iOS & Android builds & releases)
 │
 └── [Documentation & Specifications]
@@ -79,7 +79,7 @@ C:\Users\Administrator\Documents\BKK Sky Trains\
    - ไฟล์ขยะชั่วคราว: `.tmp`, `.bak`, `.old`, `.log`, `.swp`, `*~`
    - ไฟล์ assets ซ้ำซ้อนหรือไม่จำเป็น ที่ไม่ได้ถูกอ้างอิงในระบบ
    - จัดระเบียบไฟล์เอกสาร (`.md`) และสคริปต์ (`.ps1`) ให้อยู่เฉพาะในขอบเขต Workspace ของโปรเจกต์นี้เท่านั้น
-   - ไฟล์ตัวติดตั้งที่เสร็จสมบูรณ์ให้จัดเก็บไว้ในโฟลเดอร์ `releases/` (แบ่งแยกเป็นโฟลเดอร์ `.apk-.aab` และ `IPA`) เท่านั้น
+   - ไฟล์ตัวติดตั้งที่เสร็จสมบูรณ์ให้จัดเก็บไว้ในโฟลเดอร์ `releases/` (แบ่งแยกเป็นโฟลเดอร์ `Android/APK`, `Android/AAB` และ `Apple/IPA`) เท่านั้น
 
 4. **Automated Release & Deployment Sequence (ลำดับขั้นตอนสคริปต์ Deploy-BKK-SkyTrains.ps1)**:
    - สคริปต์ `Deploy-BKK-SkyTrains.ps1` และ Agent จะต้องทำงานตามลำดับ 7 ขั้นตอนดังนี้อย่างเคร่งครัด:

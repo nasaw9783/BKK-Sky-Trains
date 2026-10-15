@@ -90,20 +90,53 @@ foreach ($cd in $cacheDirs) {
     }
 }
 
-# 1.3 จัดระเบียบโฟลเดอร์ releases/ (แบ่งแยกเป็นโฟลเดอร์ .apk-.aab และ IPA)
+# 1.3 จัดระเบียบโฟลเดอร์ releases/ (แบ่งแยกเป็น Android/APK, Android/AAB และ Apple/IPA)
 $ReleasesDir = Join-Path $Workspace "releases"
-$ApkAabDir = Join-Path $ReleasesDir ".apk-.aab"
-$IpaDir = Join-Path $ReleasesDir "IPA"
+$AndroidDir = Join-Path $ReleasesDir "Android"
+$ApkDir = Join-Path $AndroidDir "APK"
+$AabDir = Join-Path $AndroidDir "AAB"
+$AppleDir = Join-Path $ReleasesDir "Apple"
+$IpaDir = Join-Path $AppleDir "IPA"
 
-if (-not (Test-Path $ReleasesDir)) { New-Item -ItemType Directory -Path $ReleasesDir -Force | Out-Null }
-if (-not (Test-Path $ApkAabDir)) { New-Item -ItemType Directory -Path $ApkAabDir -Force | Out-Null }
-if (-not (Test-Path $IpaDir)) { New-Item -ItemType Directory -Path $IpaDir -Force | Out-Null }
-if (-not (Test-Path (Join-Path $ApkAabDir ".gitkeep"))) { Set-Content -Path (Join-Path $ApkAabDir ".gitkeep") -Value "" }
-if (-not (Test-Path (Join-Path $IpaDir ".gitkeep"))) { Set-Content -Path (Join-Path $IpaDir ".gitkeep") -Value "" }
+$relDirs = @($ReleasesDir, $AndroidDir, $ApkDir, $AabDir, $AppleDir, $IpaDir)
+foreach ($d in $relDirs) {
+    if (-not (Test-Path $d)) { New-Item -ItemType Directory -Path $d -Force | Out-Null }
+    $gk = Join-Path $d ".gitkeep"
+    if (-not (Test-Path $gk)) { Set-Content -Path $gk -Value "" }
+}
+
+# ย้ายไฟล์ตกค้างจากโฟลเดอร์เดิม (.apk-.aab, ABB) เข้าโฟลเดอร์เป้าหมาย
+$oldApkAabDir = Join-Path $ReleasesDir ".apk-.aab"
+if (Test-Path $oldApkAabDir) {
+    Get-ChildItem -Path $oldApkAabDir -File | Where-Object { $_.Name -like "*.apk*" } | ForEach-Object {
+        Move-Item -LiteralPath $_.FullName -Destination (Join-Path $ApkDir $_.Name) -Force -ErrorAction SilentlyContinue
+    }
+    Get-ChildItem -Path $oldApkAabDir -File | Where-Object { $_.Name -like "*.aab*" } | ForEach-Object {
+        Move-Item -LiteralPath $_.FullName -Destination (Join-Path $AabDir $_.Name) -Force -ErrorAction SilentlyContinue
+    }
+    Remove-Item -LiteralPath $oldApkAabDir -Recurse -Force -ErrorAction SilentlyContinue
+}
+$oldAbbDir = Join-Path $AndroidDir "ABB"
+if (Test-Path $oldAbbDir) {
+    Get-ChildItem -Path $oldAbbDir -File | ForEach-Object {
+        Move-Item -LiteralPath $_.FullName -Destination (Join-Path $AabDir $_.Name) -Force -ErrorAction SilentlyContinue
+    }
+    Remove-Item -LiteralPath $oldAbbDir -Recurse -Force -ErrorAction SilentlyContinue
+}
+$oldRootIpaDir = Join-Path $ReleasesDir "IPA"
+if (Test-Path $oldRootIpaDir) {
+    Get-ChildItem -Path $oldRootIpaDir -File | ForEach-Object {
+        Move-Item -LiteralPath $_.FullName -Destination (Join-Path $IpaDir $_.Name) -Force -ErrorAction SilentlyContinue
+    }
+    Remove-Item -LiteralPath $oldRootIpaDir -Recurse -Force -ErrorAction SilentlyContinue
+}
 
 # ย้ายไฟล์ตกค้างจาก root releases เข้าโฟลเดอร์ย่อย
-Get-ChildItem -Path $ReleasesDir -File | Where-Object { $_.Name -like "*.apk*" -or $_.Name -like "*.aab*" } | ForEach-Object {
-    Move-Item -LiteralPath $_.FullName -Destination (Join-Path $ApkAabDir $_.Name) -Force -ErrorAction SilentlyContinue
+Get-ChildItem -Path $ReleasesDir -File | Where-Object { $_.Name -like "*.apk*" } | ForEach-Object {
+    Move-Item -LiteralPath $_.FullName -Destination (Join-Path $ApkDir $_.Name) -Force -ErrorAction SilentlyContinue
+}
+Get-ChildItem -Path $ReleasesDir -File | Where-Object { $_.Name -like "*.aab*" } | ForEach-Object {
+    Move-Item -LiteralPath $_.FullName -Destination (Join-Path $AabDir $_.Name) -Force -ErrorAction SilentlyContinue
 }
 Get-ChildItem -Path $ReleasesDir -File | Where-Object { $_.Name -like "*.ipa*" } | ForEach-Object {
     Move-Item -LiteralPath $_.FullName -Destination (Join-Path $IpaDir $_.Name) -Force -ErrorAction SilentlyContinue
@@ -111,21 +144,30 @@ Get-ChildItem -Path $ReleasesDir -File | Where-Object { $_.Name -like "*.ipa*" }
 
 $CurrentReleasePrefix = "BKK_SkyTrains_V.$Version"
 
-# ลบไฟล์ตัวติดตั้งเก่าใน .apk-.aab
-$oldApkFiles = Get-ChildItem -Path $ApkAabDir -File | Where-Object {
+# ลบไฟล์ตัวติดตั้งเก่าใน Android/APK
+$oldApkFiles = Get-ChildItem -Path $ApkDir -File | Where-Object {
     $_.Name -notlike "$CurrentReleasePrefix*" -and $_.Name -ne ".gitkeep"
 }
 foreach ($f in $oldApkFiles) {
-    Write-Host "   -> ลบไฟล์ตัวติดตั้งเก่าซ้ำซ้อนใน .apk-.aab: $($f.Name)" -ForegroundColor Gray
+    Write-Host "   -> ลบไฟล์ตัวติดตั้งเก่าซ้ำซ้อนใน Android/APK: $($f.Name)" -ForegroundColor Gray
     Remove-Item -LiteralPath $f.FullName -Force -ErrorAction SilentlyContinue
 }
 
-# ลบไฟล์ตัวติดตั้งเก่าใน IPA
+# ลบไฟล์ตัวติดตั้งเก่าใน Android/AAB
+$oldAabFiles = Get-ChildItem -Path $AabDir -File | Where-Object {
+    $_.Name -notlike "$CurrentReleasePrefix*" -and $_.Name -ne ".gitkeep"
+}
+foreach ($f in $oldAabFiles) {
+    Write-Host "   -> ลบไฟล์ตัวติดตั้งเก่าซ้ำซ้อนใน Android/AAB: $($f.Name)" -ForegroundColor Gray
+    Remove-Item -LiteralPath $f.FullName -Force -ErrorAction SilentlyContinue
+}
+
+# ลบไฟล์ตัวติดตั้งเก่าใน Apple/IPA
 $oldIpaFiles = Get-ChildItem -Path $IpaDir -File | Where-Object {
     $_.Name -notlike "$CurrentReleasePrefix*" -and $_.Name -ne ".gitkeep"
 }
 foreach ($f in $oldIpaFiles) {
-    Write-Host "   -> ลบไฟล์ตัวติดตั้งเก่าซ้ำซ้อนใน IPA: $($f.Name)" -ForegroundColor Gray
+    Write-Host "   -> ลบไฟล์ตัวติดตั้งเก่าซ้ำซ้อนใน Apple/IPA: $($f.Name)" -ForegroundColor Gray
     Remove-Item -LiteralPath $f.FullName -Force -ErrorAction SilentlyContinue
 }
 
@@ -282,12 +324,12 @@ if ($BuildAndroid) {
 
     $ApkFileName = "BKK_SkyTrains_V.$Version.apk"
     $BuiltApk = Join-Path $Workspace "bkk_skytrains_flutter\build\app\outputs\flutter-apk\app-release.apk"
-    $TargetApk = Join-Path $ApkAabDir $ApkFileName
-    $TargetSha = Join-Path $ApkAabDir "$ApkFileName.sha256"
+    $TargetApk = Join-Path $ApkDir $ApkFileName
+    $TargetSha = Join-Path $ApkDir "$ApkFileName.sha256"
 
     # ลบชื่อเดิม BKK_SkyTrains_Android_latest.apk หากมีอยู่
-    $OldLatestApk = Join-Path $ApkAabDir "BKK_SkyTrains_Android_latest.apk"
-    $OldLatestSha = Join-Path $ApkAabDir "BKK_SkyTrains_Android_latest.apk.sha256"
+    $OldLatestApk = Join-Path $ApkDir "BKK_SkyTrains_Android_latest.apk"
+    $OldLatestSha = Join-Path $ApkDir "BKK_SkyTrains_Android_latest.apk.sha256"
     if (Test-Path $OldLatestApk) { Remove-Item -LiteralPath $OldLatestApk -Force -ErrorAction SilentlyContinue }
     if (Test-Path $OldLatestSha) { Remove-Item -LiteralPath $OldLatestSha -Force -ErrorAction SilentlyContinue }
 
@@ -321,12 +363,12 @@ if ($BuildAppBundle) {
 
     $AabFileName = "BKK_SkyTrains_V.$Version.aab"
     $BuiltAab = Join-Path $Workspace "bkk_skytrains_flutter\build\app\outputs\bundle\release\app-release.aab"
-    $TargetAab = Join-Path $ApkAabDir $AabFileName
-    $TargetAabSha = Join-Path $ApkAabDir "$AabFileName.sha256"
+    $TargetAab = Join-Path $AabDir $AabFileName
+    $TargetAabSha = Join-Path $AabDir "$AabFileName.sha256"
 
     # ลบชื่อเดิม BKK_SkyTrains_Android_latest.aab หากมีอยู่
-    $OldLatestAab = Join-Path $ApkAabDir "BKK_SkyTrains_Android_latest.aab"
-    $OldLatestAabSha = Join-Path $ApkAabDir "BKK_SkyTrains_Android_latest.aab.sha256"
+    $OldLatestAab = Join-Path $AabDir "BKK_SkyTrains_Android_latest.aab"
+    $OldLatestAabSha = Join-Path $AabDir "BKK_SkyTrains_Android_latest.aab.sha256"
     if (Test-Path $OldLatestAab) { Remove-Item -LiteralPath $OldLatestAab -Force -ErrorAction SilentlyContinue }
     if (Test-Path $OldLatestAabSha) { Remove-Item -LiteralPath $OldLatestAabSha -Force -ErrorAction SilentlyContinue }
 

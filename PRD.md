@@ -255,7 +255,7 @@ flowchart LR
   - หน้าต่างคำอธิบายสัญลักษณ์โครงข่ายและจุดเชื่อมต่อ (Transit Network Legend: Airport, Pier/Boat, SRT, Bus, Park & Ride)
   - อัปเกรด Service Worker แคชออฟไลน์ขั้นสูงเป็นเวอร์ชัน `bts-v52` พร้อมพรีแคชไฟล์เวกเตอร์แผนผังความละเอียดสูง
   - สคริปต์รวมกระบวนการดีพลอยและบิลด์อัตโนมัติ (`Deploy-BKK-SkyTrains.ps1`) รองรับการทำงาน 7 ขั้นตอน: จัดระเบียบไฟล์, Update .yml ทั้งหมด, Update .md ทั้งหมด, ทำแอพ Android (Release APK), ทำเป็น App Bundle (.aab), ทำแอพ IOS, และล้างข้อมูลเก่าบน GitHub พร้อม Upload ทำแอพ IOS เวอร์ชันใหม่
-  - ปรับปรุงมาตรฐานการตั้งชื่อตัวติดตั้งและจัดระเบียบโฟลเดอร์ `releases/` แบ่งแยกเป็นโฟลเดอร์ `.apk-.aab` และ `IPA` เป็นระบบเดียวกันทุกแพลตฟอร์ม: Android APK (`releases/.apk-.aab/BKK_SkyTrains_V.1.3.6.apk`), Android App Bundle (`releases/.apk-.aab/BKK_SkyTrains_V.1.3.6.aab`) และ iOS IPA (`releases/IPA/BKK_SkyTrains_V.1.3.6.ipa`) พร้อมสร้าง SHA-256 Checksum ครบถ้วน
+  - ปรับปรุงมาตรฐานการตั้งชื่อตัวติดตั้งและจัดระเบียบโฟลเดอร์ `releases/` แบ่งแยกเป็นโฟลเดอร์ `Android/APK`, `Android/AAB` และ `Apple/IPA` เป็นระบบเดียวกันทุกแพลตฟอร์ม: Android APK (`releases/Android/APK/BKK_SkyTrains_V.1.3.6.apk`), Android App Bundle (`releases/Android/AAB/BKK_SkyTrains_V.1.3.6.aab`) และ iOS IPA (`releases/Apple/IPA/BKK_SkyTrains_V.1.3.6.ipa`) พร้อมสร้าง SHA-256 Checksum ครบถ้วน
 - **v1.3.5 (Completed):**
   - คอมไพล์และบิลด์ตัวติดตั้ง Android APK รุ่นสมบูรณ์ (`BKK_SkyTrains_Android_latest.apk`, `BKK_SkyTrains_Android_v1.3.5.apk`) พร้อมสร้าง SHA-256 Checksum (`FBACEE348015...`)
   - อัปเกรดระบบ CI/CD Workflow (`.github/workflows/build_ios.yml` - `Build iOS & Android Apps`) ให้คอมไพล์และสร้างแพ็กเกจทั้ง iOS IPA และ Android APK พร้อมสร้าง SHA-256 และเผยแพร่ลง GitHub Releases อัตโนมัติในครั้งเดียว

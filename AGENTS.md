@@ -28,7 +28,8 @@ Directives and mandatory standards for AI Agents working within `C:\Users\Admini
 
 3. **Releases & Deployment**:
    - `releases/`: Dedicated directory for built installer packages:
-     - `BKK_SkyTrains_Android_latest.apk`, `BKK_SkyTrains_Android_latest.apk.sha256`
+     - `BKK_SkyTrains_V.xxxx.apk`, `BKK_SkyTrains_V.xxxx.apk.sha256`
+     - `BKK_SkyTrains_Android_latest.aab`, `BKK_SkyTrains_Android_latest.aab.sha256`
      - `BKK_SkyTrains_iOS_latest.ipa`, `BKK_SkyTrains_iOS_latest.ipa.sha256`
    - `.github/workflows/build_ios.yml`: Automated Cloud CI/CD workflow for building, packaging, verifying SHA-256 checksums, and releasing both iOS `.ipa` and Android `.apk` versions on GitHub macOS runners.
 

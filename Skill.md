@@ -41,8 +41,9 @@ C:\Users\Administrator\Documents\BKK Sky Trains\
 │   └── pubspec.yaml                # Flutter dependencies (Android & iOS v1.3.6+10)
 │
 ├── [3. Releases & CI/CD]
-│   ├── releases/                   # แหล่งเก็บตัวติดตั้ง (.apk, .ipa, .sha256)
-│   │   ├── BKK_SkyTrains_Android_latest.apk
+│   ├── releases/                   # แหล่งเก็บตัวติดตั้ง (.apk, .aab, .ipa, .sha256)
+│   │   ├── BKK_SkyTrains_V.xxxx.apk
+│   │   ├── BKK_SkyTrains_Android_latest.aab
 │   │   └── BKK_SkyTrains_iOS_latest.ipa
 │   └── .github/workflows/          # CI/CD Workflows (build_ios.yml สำหรับบิลด์ iOS .ipa และ Android .apk อัตโนมัติ)
 │
@@ -134,7 +135,7 @@ flutter pub get
 flutter analyze
 flutter build apk --release
 # คัดลอกผลลัพธ์ไปยัง releases/
-Copy-Item -Path "build\app\outputs\flutter-apk\app-release.apk" -Destination "..\releases\BKK_SkyTrains_Android_latest.apk" -Force
+Copy-Item -Path "build\app\outputs\flutter-apk\app-release.apk" -Destination "..\releases\BKK_SkyTrains_V.1.3.6.apk" -Force
 flutter clean
 cd ..
 ```
@@ -144,7 +145,7 @@ cd ..
 - รันบน GitHub Runner `macos-14` อัตโนมัติเมื่อมีการ Push ไปยัง branch `main` หรือ Tag `v*`
 - สคริปต์ Workflow จะดึงเวอร์ชันจาก `pubspec.yaml` อัตโนมัติ และสร้างไฟล์แพ็กเกจ:
   - iOS IPA: `BKK_SkyTrains_iOS_latest.ipa`, `BKK_SkyTrains_iOS_v${VERSION_BASE}.ipa`, `BKK_SkyTrains_iOS_unsigned.ipa` + `.sha256`
-  - Android APK: `BKK_SkyTrains_Android_latest.apk`, `BKK_SkyTrains_Android_v${VERSION_BASE}.apk` + `.sha256`
+  - Android APK: `BKK_SkyTrains_V.${VERSION_BASE}.apk` + `.sha256`
   - Android App Bundle (AAB): `BKK_SkyTrains_Android_latest.aab`, `BKK_SkyTrains_Android_v${VERSION_BASE}.aab` + `.sha256`
 - เผยแพร่ขึ้น GitHub Releases (Production / Official) แบบ Unified Release พร้อมแนบไฟล์ตัวติดตั้งและ SHA-256 Checksum ครบถ้วน
 

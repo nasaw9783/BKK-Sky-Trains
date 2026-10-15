@@ -90,10 +90,8 @@ jobs:
           echo "Building Android APK for release v${VERSION_BASE}..."
           flutter build apk --release
           mkdir -p ../releases
-          cp build/app/outputs/flutter-apk/app-release.apk ../releases/BKK_SkyTrains_Android_latest.apk
-          cp build/app/outputs/flutter-apk/app-release.apk "../releases/BKK_SkyTrains_Android_v${VERSION_BASE}.apk"
-          shasum -a 256 ../releases/BKK_SkyTrains_Android_latest.apk > ../releases/BKK_SkyTrains_Android_latest.apk.sha256
-          shasum -a 256 "../releases/BKK_SkyTrains_Android_v${VERSION_BASE}.apk" > "../releases/BKK_SkyTrains_Android_v${VERSION_BASE}.apk.sha256"
+          cp build/app/outputs/flutter-apk/app-release.apk "../releases/BKK_SkyTrains_V.${VERSION_BASE}.apk"
+          shasum -a 256 "../releases/BKK_SkyTrains_V.${VERSION_BASE}.apk" > "../releases/BKK_SkyTrains_V.${VERSION_BASE}.apk.sha256"
 
       - name: Build Android App Bundle (AAB Release)
         working-directory: bkk_skytrains_flutter
@@ -136,10 +134,8 @@ jobs:
             bkk_skytrains_flutter/BKK_SkyTrains_iOS_unsigned.ipa.sha256
             bkk_skytrains_flutter/BKK_SkyTrains_iOS_v*.ipa
             bkk_skytrains_flutter/BKK_SkyTrains_iOS_v*.ipa.sha256
-            releases/BKK_SkyTrains_Android_latest.apk
-            releases/BKK_SkyTrains_Android_latest.apk.sha256
-            releases/BKK_SkyTrains_Android_v*.apk
-            releases/BKK_SkyTrains_Android_v*.apk.sha256
+            releases/BKK_SkyTrains_V.*.apk
+            releases/BKK_SkyTrains_V.*.apk.sha256
             releases/BKK_SkyTrains_Android_latest.aab
             releases/BKK_SkyTrains_Android_latest.aab.sha256
             releases/BKK_SkyTrains_Android_v*.aab
@@ -184,7 +180,7 @@ jobs:
           body: |
             ### 🚆 BKK SkyTrains Production Release v${{ steps.app_version.outputs.version_base }}
             - **iOS Application**: Production IPA packages (`BKK_SkyTrains_iOS_v${{ steps.app_version.outputs.version_base }}.ipa`, `BKK_SkyTrains_iOS_latest.ipa`, `BKK_SkyTrains_iOS_unsigned.ipa`)
-            - **Android Application**: Production APK & App Bundle packages (`BKK_SkyTrains_Android_v${{ steps.app_version.outputs.version_base }}.apk`, `BKK_SkyTrains_Android_latest.apk`, `BKK_SkyTrains_Android_latest.aab`)
+            - **Android Application**: Production APK & App Bundle packages (`BKK_SkyTrains_V.${{ steps.app_version.outputs.version_base }}.apk`, `BKK_SkyTrains_Android_latest.aab`)
             - **Key Features & Enhancements**:
               - High-resolution Transit Network Blueprint Map with interactive vector SVG overlay across 10 Bangkok transit lines (Sukhumvit, Silom, Gold, Blue, Purple, BRT, Pink, Yellow, Dark Red, Light Red, ARL, Orange).
               - Theme-aware vector SVG map auto-switching with high-contrast typography (Light / Dark mode).
@@ -203,10 +199,8 @@ jobs:
             bkk_skytrains_flutter/BKK_SkyTrains_iOS_unsigned.ipa.sha256
             bkk_skytrains_flutter/BKK_SkyTrains_iOS_v*.ipa
             bkk_skytrains_flutter/BKK_SkyTrains_iOS_v*.ipa.sha256
-            releases/BKK_SkyTrains_Android_latest.apk
-            releases/BKK_SkyTrains_Android_latest.apk.sha256
-            releases/BKK_SkyTrains_Android_v*.apk
-            releases/BKK_SkyTrains_Android_v*.apk.sha256
+            releases/BKK_SkyTrains_V.*.apk
+            releases/BKK_SkyTrains_V.*.apk.sha256
             releases/BKK_SkyTrains_Android_latest.aab
             releases/BKK_SkyTrains_Android_latest.aab.sha256
             releases/BKK_SkyTrains_Android_v*.aab

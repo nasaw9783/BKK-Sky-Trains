@@ -90,11 +90,20 @@ foreach ($cd in $cacheDirs) {
     }
 }
 
-# 1.3 ลบไฟล์ตัวติดตั้งเวอร์ชันเก่าที่ซ้ำซ้อนใน releases/ (เก็บเฉพาะ *_latest.* และ .gitkeep)
+# 1.3 ลบไฟล์ตัวติดตั้งเวอร์ชันเก่าที่ซ้ำซ้อนใน releases/ (เก็บเฉพาะ BKK_SkyTrains_V.$Version.*, *_latest.* และ .gitkeep)
 $ReleasesDir = Join-Path $Workspace "releases"
 if (Test-Path $ReleasesDir) {
+    # ลบ BKK_SkyTrains_Android_latest.apk ออกเนื่องจากเปลี่ยนไปใช้ BKK_SkyTrains_V.$Version.apk
+    $oldLatestApk = Join-Path $ReleasesDir "BKK_SkyTrains_Android_latest.apk"
+    $oldLatestSha = Join-Path $ReleasesDir "BKK_SkyTrains_Android_latest.apk.sha256"
+    if (Test-Path $oldLatestApk) { Remove-Item -LiteralPath $oldLatestApk -Force -ErrorAction SilentlyContinue }
+    if (Test-Path $oldLatestSha) { Remove-Item -LiteralPath $oldLatestSha -Force -ErrorAction SilentlyContinue }
+
+    $CurrentApkPrefix = "BKK_SkyTrains_V.$Version"
     $oldInstallers = Get-ChildItem -Path $ReleasesDir | Where-Object {
-        $_.Name -notlike "*latest*" -and $_.Name -ne ".gitkeep"
+        $_.Name -notlike "$CurrentApkPrefix*" -and
+        $_.Name -notlike "*latest*" -and
+        $_.Name -ne ".gitkeep"
     }
     foreach ($f in $oldInstallers) {
         Write-Host "   -> ลบไฟล์ตัวติดตั้งเก่าซ้ำซ้อน: $($f.Name)" -ForegroundColor Gray
@@ -255,16 +264,23 @@ if ($BuildAndroid) {
         exit $buildCode
     }
 
+    $ApkFileName = "BKK_SkyTrains_V.$Version.apk"
     $BuiltApk = Join-Path $Workspace "bkk_skytrains_flutter\build\app\outputs\flutter-apk\app-release.apk"
-    $LatestApk = Join-Path $ReleasesDir "BKK_SkyTrains_Android_latest.apk"
-    $LatestSha = Join-Path $ReleasesDir "BKK_SkyTrains_Android_latest.apk.sha256"
+    $TargetApk = Join-Path $ReleasesDir $ApkFileName
+    $TargetSha = Join-Path $ReleasesDir "$ApkFileName.sha256"
 
-    Copy-Item -LiteralPath $BuiltApk -Destination $LatestApk -Force
-    $hash = (Get-FileHash -LiteralPath $LatestApk -Algorithm SHA256).Hash.ToLower()
-    "$hash  BKK_SkyTrains_Android_latest.apk" | Set-Content -LiteralPath $LatestSha -Encoding ASCII
+    # ลบชื่อเดิม BKK_SkyTrains_Android_latest.apk หากมีอยู่
+    $OldLatestApk = Join-Path $ReleasesDir "BKK_SkyTrains_Android_latest.apk"
+    $OldLatestSha = Join-Path $ReleasesDir "BKK_SkyTrains_Android_latest.apk.sha256"
+    if (Test-Path $OldLatestApk) { Remove-Item -LiteralPath $OldLatestApk -Force -ErrorAction SilentlyContinue }
+    if (Test-Path $OldLatestSha) { Remove-Item -LiteralPath $OldLatestSha -Force -ErrorAction SilentlyContinue }
+
+    Copy-Item -LiteralPath $BuiltApk -Destination $TargetApk -Force
+    $hash = (Get-FileHash -LiteralPath $TargetApk -Algorithm SHA256).Hash.ToLower()
+    "$hash  $ApkFileName" | Set-Content -LiteralPath $TargetSha -Encoding ASCII
 
     Write-Host "   ✓ บิลด์ Android APK สำเร็จเรียบร้อย:" -ForegroundColor Green
-    Write-Host "     ไฟล์: $LatestApk" -ForegroundColor Gray
+    Write-Host "     ไฟล์: $TargetApk" -ForegroundColor Gray
     Write-Host "     SHA-256: $hash" -ForegroundColor Yellow
 } else {
     Write-Host "`n[Step 4/7] ⏩ ข้ามการบิลด์ Android APK ตามคำสั่ง (-BuildAndroid:`$false)" -ForegroundColor Yellow

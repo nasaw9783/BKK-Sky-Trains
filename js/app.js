@@ -6407,18 +6407,18 @@ setOriginFromActionSheet() {
 
                 this.updatePopupDistance(station);
 
-                // เรนเดอร์ชานชาลา & เวลาเดินรถสด และตำแหน่งขบวนรถ (route map) แบบพร้อมกันทันที
+                // เรนเดอร์ชานชาลา & เวลาเดินรถสดในป๊อปอัปสถานี
                 if (platContainer) {
                     const arr = this.arrivals[station.StationKey];
                     if (arr && arr.platforms && arr.platforms.length) {
-                        platContainer.innerHTML = renderPlatformSection(station, arr) + renderRouteSection(station);
+                        platContainer.innerHTML = renderPlatformSection(station, arr);
                     } else {
                         platContainer.innerHTML = `<div class="empty-note" style="padding:14px"><span class="spin dark"></span><br>${T('loadingTrains')}</div>`;
                         this.loadArrivals(station, true).then(() => {
                             const freshArr = this.arrivals[station.StationKey];
                             const curPlat = document.getElementById('nearestPopupPlatforms');
                             if (curPlat && this.popupStation?.StationKey === station.StationKey) {
-                                curPlat.innerHTML = renderPlatformSection(station, freshArr) + renderRouteSection(station);
+                                curPlat.innerHTML = renderPlatformSection(station, freshArr);
                             }
                         });
                     }
@@ -6554,25 +6554,34 @@ setOriginFromActionSheet() {
                     try {
                         let data = await fetchArrivals(station);
                         const hasTrains = Array.isArray(data?.platform_list) && data.platform_list.some(p => Array.isArray(p.train_list) && p.train_list.length > 0);
-                        if (!hasTrains && isTransitOperatingHours(station.StationLineId)) {
+                        if (!hasTrains && isTransitOperatingHours(station.StationLineId, station.StationKey)) {
                             const fallbackData = generateTimetableArrivals(station);
                             if (fallbackData?.platform_list?.length) {
                                 data = fallbackData;
                             }
                         }
+                        if (!data) data = { time: null, fetchedAt: Date.now(), platform_list: [] };
                         this.storeArrivals(key, data);
                     } catch (e) {
-                        let fallbackData = null;
-                        if (isTransitOperatingHours(station.StationLineId)) {
-                            fallbackData = generateTimetableArrivals(station);
-                        }
+                        let fallbackData = generateTimetableArrivals(station);
                         if (fallbackData?.platform_list?.length) {
                             this.storeArrivals(key, fallbackData);
                         } else {
-                            this.arrivals[key] = {
-                                ...(cur || {}), loading: false,
-                                error: e.message || T('connectFail', '?')
-                            };
+                            const isOff = isOffServiceError(e.message);
+                            if (isOff) {
+                                const ensuredPlats = visiblePlatformsForStation(station, []);
+                                this.arrivals[key] = {
+                                    ...(cur || {}), loading: false,
+                                    error: null,
+                                    fetchedAt: Date.now(),
+                                    platforms: ensuredPlats
+                                };
+                            } else {
+                                this.arrivals[key] = {
+                                    ...(cur || {}), loading: false,
+                                    error: e.message || T('connectFail', '?')
+                                };
+                            }
                         }
                     }
                     this.renderArrivalTargets(key);
@@ -6586,9 +6595,22 @@ setOriginFromActionSheet() {
             // จะได้แสดงเวลานับถอยหลังจากค่าเดิมแทน ไม่ให้ตัวเลขวูบหายจนผู้ใช้งง
             storeArrivals(key, data) {
                 const fetchedAt = data.fetchedAt || Date.now();
+                const st = this.findStation(key);
+                const lineId = st ? (st.StationLineId || st.LineId || 0) : 0;
+                const isOperating = isTransitOperatingHours(lineId, key);
+                let platList = data.platform_list || [];
+                if (st) {
+                    platList = visiblePlatformsForStation(st, platList);
+                }
+                // ช่วงเวลานอกการให้บริการ (Transit Closed): เคลียร์ขบวนรถออกทั้งหมด ไม่ให้จำ Telemetry ค้าง
+                if (!isOperating && Array.isArray(platList)) {
+                    for (const p of platList) {
+                        p.train_list = [];
+                    }
+                }
                 // พิเศษสำหรับ YL23: ขบวนรถวิ่งไป-กลับแค่ P2 ไม่เข้า P1 (เคลียร์ข้อมูลไม่ให้จำขบวนค้าง)
-                if (key === 'YL23' && Array.isArray(data.platform_list)) {
-                    for (const p of data.platform_list) {
+                if (key === 'YL23' && Array.isArray(platList)) {
+                    for (const p of platList) {
                         if (String(p.platform) === '1') {
                             p.train_list = [];
                             p.isDropOffOnly = true;
@@ -6597,7 +6619,7 @@ setOriginFromActionSheet() {
                         }
                     }
                 }
-                for (const p of data.platform_list || []) {
+                for (const p of platList) {
                     // กรองขบวนรถศูนย์ซ่อมบำรุง / ขบวนรถเปล่า (เช่น YL00, PK00) ออกตั้งแต่ต้น
                     if (Array.isArray(p.train_list)) {
                         p.train_list = p.train_list.filter(t => {
@@ -6606,12 +6628,19 @@ setOriginFromActionSheet() {
                             return !isDepot;
                         });
                     }
-                    for (const t of p.train_list || []) {
-                        const num = (t.time_come !== '--' && t.time_come != null) ? parseFloat(t.time_come) : NaN;
-                        const base = (!isNaN(num) && num >= 0) ? num : (t.time_come_double != null ? t.time_come_double : null);
-                        if (base != null)
-                            this.etaMem[key + '|' + p.platform + '|' + t.trainNo] =
-                                { base, at: fetchedAt };
+                    if (isOperating) {
+                        for (const t of p.train_list || []) {
+                            const num = (t.time_come !== '--' && t.time_come != null) ? parseFloat(t.time_come) : NaN;
+                            const base = (!isNaN(num) && num >= 0) ? num : (t.time_come_double != null ? t.time_come_double : null);
+                            if (base != null)
+                                this.etaMem[key + '|' + p.platform + '|' + t.trainNo] =
+                                    { base, at: fetchedAt };
+                        }
+                    }
+                }
+                if (!isOperating) {
+                    for (const k in this.etaMem) {
+                        if (k.startsWith(key + '|')) delete this.etaMem[k];
                     }
                 }
                 for (const k in this.etaMem)
@@ -6619,7 +6648,7 @@ setOriginFromActionSheet() {
                 this.arrivals[key] = {
                     loading: false, error: null, fetchedAt,
                     isTimetable: !!data.isTimetable,
-                    time: data.time, platforms: data.platform_list || []
+                    time: data.time, platforms: platList
                 };
             },
 
@@ -6640,7 +6669,7 @@ setOriginFromActionSheet() {
                 try {
                     let d = await fetchArrivals(station);
                     const hasTrains = Array.isArray(d?.platform_list) && d.platform_list.some(p => Array.isArray(p.train_list) && p.train_list.length > 0);
-                    if (!hasTrains && isTransitOperatingHours(station.StationLineId)) {
+                    if (!hasTrains && isTransitOperatingHours(station.StationLineId, station.StationKey)) {
                         const fallbackData = generateTimetableArrivals(station);
                         if (fallbackData?.platform_list?.length) {
                             d = fallbackData;
@@ -6649,7 +6678,7 @@ setOriginFromActionSheet() {
                     this.storeArrivals(k, d);
                     return this.arrivals[k].platforms;
                 } catch (e) {
-                    if (isTransitOperatingHours(station.StationLineId)) {
+                    if (isTransitOperatingHours(station.StationLineId, station.StationKey)) {
                         const fallbackData = generateTimetableArrivals(station);
                         if (fallbackData?.platform_list?.length) {
                             this.storeArrivals(k, fallbackData);
@@ -6738,22 +6767,24 @@ setOriginFromActionSheet() {
                     const platContainer = document.getElementById('nearestPopupPlatforms');
                     if (platContainer) {
                         const s = this.popupStation;
-                        platContainer.innerHTML = renderPlatformSection(s, this.arrivals[key]) + renderRouteSection(s);
+                        platContainer.innerHTML = renderPlatformSection(s, this.arrivals[key]);
                     }
                 }
             },
 
             /* ---------- countdown tick (อัปเดตตัวเลขโดยไม่ re-render ทั้งหน้า) ---------- */
             tickCountdowns() {
+                let hasExpired = false;
                 document.querySelectorAll('[data-eta-base]').forEach(el => {
                     const base = parseFloat(el.dataset.etaBase);
                     const at = parseInt(el.dataset.etaAt, 10);
                     if (isNaN(base) || isNaN(at)) return;
                     const approx = el.dataset.etaApprox === '1';
                     const remaining = base - (Date.now() - at) / 60000;
+                    if (remaining < -0.75) hasExpired = true;
                     if (el.dataset.etaFormat === 'chip') {
-                        const isNow = remaining <= 0.5;
-                        const disp = isNow ? '0m' : `${approx ? '~' : ''}${Math.max(0, Math.round(remaining))}m`;
+                        const isNow = remaining >= -0.75 && remaining <= 0.5;
+                        const disp = isNow ? '0m' : (remaining < -0.75 ? '--' : `${approx ? '~' : ''}${Math.max(0, Math.round(remaining))}m`);
                         el.textContent = disp;
                         const chipEl = el.closest('.rt-chip');
                         if (chipEl) chipEl.classList.toggle('at', isNow);
@@ -6765,6 +6796,10 @@ setOriginFromActionSheet() {
                     const btn = el.closest('.train');
                     if (btn) btn.classList.toggle('is-arriving', now);
                 });
+                if (hasExpired && (!this._lastExpireRefresh || Date.now() - this._lastExpireRefresh > 8000)) {
+                    this._lastExpireRefresh = Date.now();
+                    setTimeout(() => this.refreshAll(), 1000);
+                }
             },
 
             /* ---------- station train icon color dynamic transition ---------- */
@@ -7123,12 +7158,13 @@ setOriginFromActionSheet() {
             const key = station.StationKey;
             const freq = getCurrentMrtFreq(lineId, key);
             if (!freq) {
-                // นอกเวลาให้บริการ (เช่น 01:00–05:00)
+                // นอกเวลาให้บริการ (เช่น 01:00–05:00) ให้สร้างชานชาลามาตรฐานที่มี train_list: []
+                const emptyPlats = visiblePlatformsForStation(station, []);
                 return {
                     isTimetable: true,
                     time: null,
                     fetchedAt: Date.now(),
-                    platform_list: []
+                    platform_list: emptyPlats
                 };
             }
 
@@ -7986,6 +8022,7 @@ setOriginFromActionSheet() {
         // คืน {text, now} สำหรับ ETA (นาทีคงเหลือ ณ ตอนนี้) — approx = ค่าจากความจำ ใส่ ~ นำหน้า
         function etaText(mins, approx) {
             if (isNaN(mins)) return { text: '<small>--</small>', now: false };
+            if (mins < -0.75) return { text: '<small>--</small>', now: false }; // ขบวนออกไปแล้ว
             if (mins <= 0.5) return { text: T('arrived'), now: true };
             return { text: (approx ? '~' : '') + Math.round(mins) + `<small>${T('minUnit')}</small>`, now: false };
         }
@@ -7993,30 +8030,59 @@ setOriginFromActionSheet() {
         // เวลา "ที่ดีที่สุดที่รู้" ของขบวน: ใช้ค่าจาก API ถ้ามี — ถ้าตอบ "--" ใช้ค่าเลขรอบก่อน
         // จาก etaMem (นับถอยหลังต่อเนื่อง) จนกว่าจะได้เลขใหม่ ผู้ใช้จะไม่เห็นเวลาวูบหาย
         function bestEta(stationKey, platform, t, fetchedAt) {
+            const nowMs = Date.now();
             if (t.time_come !== '--' && t.time_come != null) {
                 const num = parseFloat(t.time_come);
                 const base = (!isNaN(num) && num >= 0) ? num : (t.time_come_double != null ? t.time_come_double : null);
-                if (base != null) return { base, at: fetchedAt, approx: false };
+                if (base != null) {
+                    const rem = base - (nowMs - fetchedAt) / 60000;
+                    if (rem > -0.75) return { base, at: fetchedAt, approx: false };
+                }
             }
-            if (t.time_come_double != null)
-                return { base: t.time_come_double, at: fetchedAt, approx: false };
+            if (t.time_come_double != null) {
+                const rem = t.time_come_double - (nowMs - fetchedAt) / 60000;
+                if (rem > -0.75) return { base: t.time_come_double, at: fetchedAt, approx: false };
+            }
+            if (t.status === 'arriving') {
+                const rem = 0 - (nowMs - fetchedAt) / 60000;
+                if (rem > -0.75) return { base: 0, at: fetchedAt, approx: false };
+            }
             const m = App.etaMem[stationKey + '|' + platform + '|' + t.trainNo];
-            if (m && (m.base - (Date.now() - m.at) / 60000) > -0.5)
+            if (m && (m.base - (nowMs - m.at) / 60000) > -0.75)
                 return { base: m.base, at: m.at, approx: true };
             return null;
         }
 
         // ตรวจสอบช่วงเวลาเปิดให้บริการจริงของสายรถไฟฟ้า (Transit Operating Hours)
         // เพื่อป้องกันไม่ให้นำ Telemetry ทดสอบในศูนย์ซ่อมบำรุงหรือข้อมูลค้างมาแสดงเป็นรถไฟจริง
-        function isTransitOperatingHours(lineId) {
+        function isTransitOperatingHours(lineId, stationKey) {
             const now = new Date();
             const nowMin = now.getHours() * 60 + now.getMinutes();
-            const id = Number(lineId) || 0;
+            let id = Number(lineId) || 0;
+            if (!id && stationKey) {
+                if (/^YL/i.test(stationKey)) id = 4;
+                else if (/^(PK|MT)/i.test(stationKey)) id = 5;
+                else if (/^G/i.test(stationKey)) id = 3;
+                else if (/^BL/i.test(stationKey)) id = 101;
+                else if (/^PP/i.test(stationKey)) id = 102;
+                else if (/^RN/i.test(stationKey)) id = 103;
+                else if (/^RW/i.test(stationKey)) id = 105;
+                else if (/^A/i.test(stationKey)) id = 104;
+                else if (/^B\d/i.test(stationKey)) id = 201;
+                else if (/^[NE]/i.test(stationKey)) id = 1;
+                else if (/^[SW]/i.test(stationKey)) id = 2;
+            }
             // สายสีเหลือง (4) และสายสีชมพู (5): ให้บริการ 06:00 - 24:00 น. (ปิด 00:30 - 05:25 น.)
             if (id === 4 || id === 5) {
                 if (nowMin >= 30 && nowMin < 325) return false;
+            } else if (id === 3) {
+                // สายสีทอง (3): ให้บริการ 06:00 - 24:00 น. (ปิด 00:20 - 05:45 น.)
+                if (nowMin >= 20 && nowMin < 345) return false;
+            } else if (id === 103 || id === 105) {
+                // รถไฟฟ้าชานเมืองสายสีแดง (103, 105): ให้บริการ 05:00 - 24:00 น. (ปิด 00:30 - 04:55 น.)
+                if (nowMin >= 30 && nowMin < 295) return false;
             } else {
-                // สายอื่นๆ ในกรุงเทพฯ (BTS/MRT): ให้บริการ 05:30 - 24:00 น. (ปิด 00:45 - 05:15 น.)
+                // สายอื่นๆ ในกรุงเทพฯ (BTS/MRT/ARL/BRT): ให้บริการ 05:30 - 24:00 น. (ปิด 00:45 - 05:15 น.)
                 if (nowMin >= 45 && nowMin < 315) return false;
             }
             return true;
@@ -8024,36 +8090,53 @@ setOriginFromActionSheet() {
 
         // กรองขบวนที่แสดงได้ของชานชาลา (จัดการขบวนที่ API ตอบ time_come = "--" หรือขบวนศูนย์ซ่อมบำรุง):
         // - กรองขบวนรถศูนย์ซ่อมบำรุง/รถเปล่า (เช่น YL00, PK00) ออกทั้งหมด
-        // - ช่วงเวลาปิดให้บริการ ไม่อนุญาตให้นำขบวนหลอก (ETA <= 0 หรือ status arriving) มาแสดงเป็น "กำลังเข้า"
+        // - ช่วงเวลานอกการให้บริการ (Transit Closed) ไม่อนุญาตให้นำขบวนหลอกหรือ Telemetry ค้างมาแสดงเป็นรถไฟ
+        // - กรองขบวนที่เวลาผ่านไปแล้ว (Departed / Expired) ออกทันที
         // - "--" และไม่มีความจำ (เช่นเพิ่งเปิดเว็บครั้งแรก) → ตัดทิ้ง ขบวนถัดไปเลื่อนขึ้นมาแทน
-        // - "--" มีความจำ แต่มีขบวนอื่นที่เวลาจริง "น้อยกว่า" ค่าที่จำไว้ → ขบวนนี้ออกไปแล้ว
-        //   (ขบวนหลังแซงขบวนหน้าไม่ได้บนรางเดียวกัน) ความจำเก่าเกินจริง ตัดทิ้งเช่นกัน
-        // ผลคือบางชานชาลาอาจแสดงแค่ 1-2 ขบวน — ดีกว่าโชว์กล่อง "--" ที่ไม่บอกอะไร
+        // - "--" มีความจำ แต่มีขบวนอื่นที่เวลาจริง "น้อยกว่า" ค่าที่จำไว้ → ขบวนนี้ออกไปแล้ว ตัดทิ้ง
         function displayTrains(stationKey, platform, list, fetchedAt) {
             const st = App.findStation(stationKey);
-            const lineId = st ? st.StationLineId : 0;
-            const isOperating = isTransitOperatingHours(lineId);
+            const lineId = st ? (st.StationLineId || st.LineId || 0) : 0;
+            const isOperating = isTransitOperatingHours(lineId, stationKey);
+
+            // 1. นอกเวลาให้บริการเดินรถโดยสาร (Transit Closed / Off-hours)
+            //    ไม่อนุญาตให้นำ Telemetry ค้างหรือขบวนทดสอบในศูนย์ซ่อมมาแสดงเป็นขบวนรถโดยสาร
+            if (!isOperating) {
+                return [];
+            }
+
             const out = [];
+            const nowMs = Date.now();
             for (const t of list || []) {
-                // 1. กรองขบวนศูนย์ซ่อมบำรุง/รถเปล่า (Depot / Non-passenger Trains) เช่น YL00, PK00
+                // 2. กรองขบวนศูนย์ซ่อมบำรุง/รถเปล่า (Depot / Non-passenger Trains) เช่น YL00, PK00
                 const isDepotTrain = (t.station_key && /^[A-Z]{1,3}00$/i.test(t.station_key))
                     || (t.trainNo && /depot|test|empty/i.test(t.trainNo));
                 if (isDepotTrain) continue;
 
-                // 2. ช่วงเวลาปิดให้บริการ ไม่อนุญาตให้ขบวนรถหลอก/Telemetry ค้างแสดงเป็น "กำลังเข้า" (status 'arriving' หรือ ETA 0)
-                if (!isOperating && (t.status === 'arriving' || t.time_come === '0' || t.time_come_double === 0)) {
+                // 3. คำนวณเวลา ETA ที่ดีที่สุด
+                const eta = bestEta(stationKey, platform, t, fetchedAt);
+
+                // 4. ตรวจสอบว่าขบวนออกไปแล้วหรือไม่ (หากเวลาติดลบเกิน 45 วินาที [-0.75 นาที] ขบวนออกไปแล้ว ตัดทิ้ง)
+                if (eta) {
+                    const remaining = eta.base - (nowMs - eta.at) / 60000;
+                    if (remaining < -0.75) continue;
+                } else if (t.status === 'arriving') {
+                    // status arriving แต่ไม่มี eta: ตรวจสอบ fetchedAt หากข้อมูลเก่าเกิน 3 นาที แสดงว่าค้าง
+                    if (fetchedAt && (nowMs - fetchedAt) > 180000) continue;
+                } else if (t.time_come === '--' && (t.time_come_double == null || isNaN(t.time_come_double))) {
+                    // ขบวน "--" ที่ไม่มีเวลาและไม่มีประวัติเดิม ตัดทิ้ง
                     continue;
                 }
 
-                if (t.status !== 'pending') { out.push(t); continue; }   // มาแล้ว/จอดอยู่ — แสดงเสมอ
-                if (t.time_come !== '--' && t.time_come_double != null) { out.push(t); continue; }
-                const eta = bestEta(stationKey, platform, t, fetchedAt);
-                if (!eta) continue;
-                const remaining = eta.base - (Date.now() - eta.at) / 60000;
-                const overtaken = (list || []).some(o => o !== t
-                    && o.time_come !== '--' && o.time_come_double != null
-                    && (o.time_come_double - (Date.now() - fetchedAt) / 60000) < remaining);
-                if (overtaken) continue;
+                // 5. ตรวจสอบการแซงของขบวน (บนรางเดียวกัน ขบวนหลังต้องไม่แซงขบวนหน้า)
+                if (eta) {
+                    const remaining = eta.base - (nowMs - eta.at) / 60000;
+                    const overtaken = (list || []).some(o => o !== t
+                        && o.time_come !== '--' && o.time_come_double != null
+                        && (o.time_come_double - (nowMs - fetchedAt) / 60000) < remaining);
+                    if (overtaken) continue;
+                }
+
                 out.push(t);
             }
             return out.slice(0, 3);
@@ -8072,54 +8155,88 @@ setOriginFromActionSheet() {
         function ensureTwoPlatformsForTerminal(station, platforms) {
             const result = [...(platforms || [])];
             const lineIds = [...new Set(result.map(p => p.LineId))];
-            if (!lineIds.length && station.StationLineId) {
+            if (station.StationKey === 'CEN') {
+                if (!lineIds.includes(1)) lineIds.push(1);
+                if (!lineIds.includes(2)) lineIds.push(2);
+            } else if (!lineIds.length && station.StationLineId) {
                 lineIds.push(station.StationLineId);
             }
 
             for (const lid of lineIds) {
-                const line = App.lineById[lid];
+                const line = (App.lineById && App.lineById[lid])
+                    || (typeof MRT_LINE_BY_ID !== 'undefined' ? MRT_LINE_BY_ID[lid] : null)
+                    || (App.getAllLines ? App.getAllLines().find(l => l.LineId === lid) : null);
                 if (!line || !line.StationList || line.StationList.length < 2) continue;
                 const list = line.StationList;
                 const idx = list.findIndex(s => s.StationKey === station.StationKey);
                 if (idx < 0) continue;
 
                 const linePlats = result.filter(p => p.LineId === lid);
-                const hasPlat1 = linePlats.some(p => String(p.platform) === '1');
-                const hasPlat2 = linePlats.some(p => String(p.platform) === '2');
+                const isSilom = (lid === 2);
+                const isPinkMuangThong = (lid === 5 && station.StationKey && station.StationKey.startsWith('MT'));
+                // สายสีลม (Line 2) และสายเมืองทอง (MT01-MT02) ใช้ชานชาลา 3 และ 4
+                const pNumA = (isSilom || isPinkMuangThong) ? 3 : 1;
+                const pNumB = (isSilom || isPinkMuangThong) ? 4 : 2;
 
-                const isTerminalStart = (idx === 0);
-                const isTerminalEnd = (idx === list.length - 1);
+                const hasPlatA = linePlats.some(p => String(p.platform) === String(pNumA));
+                const hasPlatB = linePlats.some(p => String(p.platform) === String(pNumB));
 
-                if (hasPlat1 && !hasPlat2) {
-                    const endStation = list[list.length - 1];
-                    const startStation = list[0];
-                    const isDropOff = isTerminalStart;
-                    const destName = isDropOff
+                let isDropOffA = false;
+                let destNameA = '';
+                let destKeyA = '';
+
+                let isDropOffB = false;
+                let destNameB = '';
+                let destKeyB = '';
+
+                if (isPinkMuangThong) {
+                    isDropOffA = (station.StationKey === 'MT02');
+                    destNameA = isDropOffA ? (station.StationNameTH || station.StationName || 'ทะเลสาบเมืองทองธานี') : 'ทะเลสาบเมืองทองธานี';
+                    destKeyA = 'MT02';
+
+                    isDropOffB = false;
+                    destNameB = 'อิมแพ็ค เมืองทองธานี';
+                    destKeyB = 'MT01';
+                } else {
+                    let endStation = list[list.length - 1];
+                    let startStation = list[0];
+                    if (lid === 5) {
+                        endStation = list.find(s => s.StationKey === 'PK30') || endStation;
+                        startStation = list.find(s => s.StationKey === 'PK01') || startStation;
+                    }
+
+                    isDropOffA = (station.StationKey === endStation.StationKey || idx === list.length - 1);
+                    destNameA = isDropOffA
                         ? (station.StationNameTH || station.StationName || 'สิ้นสุดปลายทาง')
-                        : (isTerminalEnd ? (startStation.StationNameTH || startStation.StationName) : (endStation.StationNameTH || endStation.StationName));
+                        : (endStation.StationNameTH || endStation.StationName);
+                    destKeyA = isDropOffA ? station.StationKey : endStation.StationKey;
+
+                    isDropOffB = (station.StationKey === startStation.StationKey || idx === 0);
+                    destNameB = isDropOffB
+                        ? (station.StationNameTH || station.StationName || 'สิ้นสุดปลายทาง')
+                        : (startStation.StationNameTH || startStation.StationName);
+                    destKeyB = isDropOffB ? station.StationKey : startStation.StationKey;
+                }
+
+                if (!hasPlatA) {
                     result.push({
-                        platform: 2,
+                        platform: pNumA,
                         LineId: lid,
                         LineColor: line.LineColor,
-                        DestinationStation: destName,
-                        DestinationStation_key: isDropOff ? station.StationKey : (isTerminalEnd ? startStation.StationKey : endStation.StationKey),
-                        isDropOffOnly: isDropOff,
+                        DestinationStation: destNameA,
+                        DestinationStation_key: destKeyA,
+                        isDropOffOnly: isDropOffA,
                         train_list: []
                     });
-                } else if (!hasPlat1 && hasPlat2) {
-                    const startStation = list[0];
-                    const endStation = list[list.length - 1];
-                    const isDropOff = isTerminalEnd;
-                    const destName = isDropOff
-                        ? (station.StationNameTH || station.StationName || 'สิ้นสุดปลายทาง')
-                        : (isTerminalStart ? (endStation.StationNameTH || endStation.StationName) : (startStation.StationNameTH || startStation.StationName));
-                    result.unshift({
-                        platform: 1,
+                }
+                if (!hasPlatB) {
+                    result.push({
+                        platform: pNumB,
                         LineId: lid,
                         LineColor: line.LineColor,
-                        DestinationStation: destName,
-                        DestinationStation_key: isDropOff ? station.StationKey : (isTerminalStart ? endStation.StationKey : startStation.StationKey),
-                        isDropOffOnly: isDropOff,
+                        DestinationStation: destNameB,
+                        DestinationStation_key: destKeyB,
+                        isDropOffOnly: isDropOffB,
                         train_list: []
                     });
                 }
@@ -8178,35 +8295,21 @@ setOriginFromActionSheet() {
             }
             if (!arr || (arr.loading && !arr.platforms))
                 return `<div class="empty-note"><span class="spin dark"></span><br>${T('loadingTrains')}</div>`;
-            // นอกเวลาให้บริการ → แสดงตารางความถี่ปกติแทนกล่อง error
-            const offHoursNote = `<div class="empty-note">${T('noTrainData')}<br><small>${T('offHours')}</small></div>`
-                + (usesStaticTimetable(station) ? renderMrtFrequency(station) : renderBtsFrequency(station));
-            if (arr.error && !arr.platforms)
-                return isOffServiceError(arr.error)
-                    ? offHoursNote
-                    : `<div class="err-box">${esc(arr.error)}
+            if (arr.error && (!arr.platforms || !arr.platforms.length)) {
+                if (!isOffServiceError(arr.error)) {
+                    return `<div class="err-box">${esc(arr.error)}
                     <button class="btn btn-ghost" onclick="App.loadArrivals(App.findStation('${esc(station.StationKey)}'), true)">${T('retry')}</button></div>`;
-            let platforms = visiblePlatformsForStation(station, arr.platforms || []);
-            if (!platforms.length && isTransitOperatingHours(station?.StationLineId)) {
+                }
+            }
+            let platforms = visiblePlatformsForStation(station, arr?.platforms || []);
+            if (!platforms.length) {
                 const fb = generateTimetableArrivals(station);
                 if (fb?.platform_list?.length) {
                     platforms = visiblePlatformsForStation(station, fb.platform_list);
                 }
             }
-            if (!platforms.length)
-                return offHoursNote;
-
-            // ตรวจสอบว่าอยู่ในช่วงเวลาปิดให้บริการหรือไม่
-            const isOperating = isTransitOperatingHours(station?.StationLineId);
-            if (!isOperating) {
-                // หากอยู่นอกเวลาให้บริการ และไม่มีขบวนรถรับส่งผู้โดยสารจริงที่ใช้งานได้เลย → แสดง offHoursNote ทันที
-                const hasValidPassengerTrains = platforms.some(p => {
-                    const valid = displayTrains(station.StationKey, p.platform, p.train_list, arr.fetchedAt);
-                    return valid.length > 0;
-                });
-                if (!hasValidPassengerTrains) {
-                    return offHoursNote;
-                }
+            if (!platforms.length) {
+                platforms = visiblePlatformsForStation(station, []);
             }
 
             // จัดกลุ่มชานชาลาตาม LineId (สถานีทั่วไป = กลุ่มเดียว, สยาม = 2 กลุ่ม)
@@ -8253,20 +8356,25 @@ setOriginFromActionSheet() {
 
             const trainBtn = (t, i) => {
                 const eta = bestEta(stationKey, p.platform, t, fetchedAt);
-                const init = t.status === 'arriving'
+                const rem = eta ? (eta.base - (Date.now() - eta.at) / 60000) : NaN;
+                const isArriving = t.status === 'arriving' && (isNaN(rem) || (rem >= -0.75 && rem <= 0.5));
+                const init = isArriving
                     ? { text: T('arrived'), now: true }
-                    : eta ? etaText(eta.base - (Date.now() - eta.at) / 60000, eta.approx) : etaText(NaN);
+                    : eta ? etaText(rem, eta.approx) : etaText(NaN);
                 // ขบวนนี้ปลายทางต่างจากปลายทางหลักของชานชาลา → ติดป้ายบอก
                 const diffDest = t.station_key && p.DestinationStation_key
                     && t.station_key !== p.DestinationStation_key;
                 const destTag = diffDest
                     ? `<span class="t-dest">→ ${esc(shortDest(destName(t.station)))}</span>` : '';
                 const sizeClass = i === 0 ? 'first' : i === 1 ? 'second' : 'third';
+                const baseVal = eta ? eta.base : (isArriving ? 0 : '');
+                const atVal = eta ? eta.at : (isArriving ? fetchedAt : '');
+                const hasEtaData = baseVal !== '' && atVal !== '';
                 return `<button class="train ${sizeClass} ${i === selIdx ? 'sel' : ''} ${init.now ? 'is-arriving' : ''}" style="color:${trainTextColor}"
                     onclick="App.selectTrain('${esc(stationKey)}','${esc(p.platform)}',${i},'${esc(t.trainNo)}')">
                     <span class="no">${destTag}</span>
                     <span class="eta ${init.now ? 'now' : ''}"
-                        ${eta && t.status !== 'arriving' ? `data-eta-base="${eta.base}" data-eta-at="${eta.at}" data-eta-approx="${eta.approx ? '1' : ''}"` : ''}
+                        ${hasEtaData ? `data-eta-base="${baseVal}" data-eta-at="${atVal}" data-eta-approx="${eta?.approx ? '1' : ''}"` : ''}
                         >${init.text}</span></button>`;
             };
 
@@ -8434,8 +8542,8 @@ setOriginFromActionSheet() {
                     if (!next) return 'prev';
                 }
                 const pNum = parseInt(p.platform, 10);
-                if (pNum === 1) return 'prev';
-                if (pNum === 2) return 'next';
+                if (pNum === 1 || pNum === 3) return 'prev';
+                if (pNum === 2 || pNum === 4) return 'next';
                 return prev ? 'prev' : 'next';
             };
 
@@ -8470,7 +8578,7 @@ setOriginFromActionSheet() {
                     const eta = bestEta(station.StationKey, p.platform, t, arr.fetchedAt);
                     if (!eta) continue;
                     const m = eta.base - (Date.now() - eta.at) / 60000;
-                    if (m < -1 || m > 200) continue;
+                    if (m < -0.75 || m > 200) continue;
                     Z[from].push({ t, m, approx: eta.approx, eta });
                 }
             }
@@ -8650,6 +8758,6 @@ setOriginFromActionSheet() {
 
         /* ================= START ================= */
         window.App = App;
-        window.__test = { bestEta, etaText, shortDest, mrtBlueFare, mrtOrangeFare, buildHybridJourney, displayTrains, generateTimetableArrivals, renderPlatformSection, renderRouteSection, TRANSIT_LINES_CATALOG, getLineScheduleTables, buildSameStationJourney };   // hook สำหรับ test-app.mjs
+        window.__test = { bestEta, etaText, shortDest, mrtBlueFare, mrtOrangeFare, buildHybridJourney, displayTrains, generateTimetableArrivals, renderPlatformSection, renderRouteSection, visiblePlatformsForStation, ensureTwoPlatformsForTerminal, TRANSIT_LINES_CATALOG, getLineScheduleTables, buildSameStationJourney };   // hook สำหรับ test-app.mjs
         App.init();
     

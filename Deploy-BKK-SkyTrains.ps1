@@ -217,8 +217,9 @@ if (Test-Path $WorkflowFile) {
     # ตรวจสอบและอัปเดต custom_tag default
     $wfContent = [regex]::Replace($wfContent, "custom_tag:\s*\r?\n\s*description:[^\r\n]*\r?\n\s*required:[^\r\n]*\r?\n\s*type:[^\r\n]*\r?\n\s*default:\s*'[^\']*'", "custom_tag:`n        description: 'Custom tag name (optional, e.g. v$Version)'`n        required: false`n        type: string`n        default: ''")
 
-    # บันทึกไฟล์ UTF-8
-    [System.IO.File]::WriteAllText($WorkflowFile, $wfContent, [System.Text.Encoding]::UTF8)
+    # บันทึกไฟล์ UTF-8 without BOM (ป้องกันไม่ให้ GitHub Actions YAML Parser พังจาก BOM)
+    $utf8NoBom = [System.Text.UTF8Encoding]::new($false)
+    [System.IO.File]::WriteAllText($WorkflowFile, $wfContent, $utf8NoBom)
     Write-Host "   ✓ build_ios.yml ได้รับการอัปเดตและพร้อมใช้งาน" -ForegroundColor Green
 } else {
     Write-Warning "   ! ไม่พบไฟล์ $WorkflowFile"
@@ -235,7 +236,8 @@ if (Test-Path $PubspecFile) {
             $buildNum++
             $newVerLine = "version: $Version+$buildNum"
             $pubContent = [regex]::Replace($pubContent, "version:\s*[^\r\n]+", $newVerLine)
-            [System.IO.File]::WriteAllText($PubspecFile, $pubContent, [System.Text.Encoding]::UTF8)
+            $utf8NoBom = [System.Text.UTF8Encoding]::new($false)
+            [System.IO.File]::WriteAllText($PubspecFile, $pubContent, $utf8NoBom)
             Write-Host "   ✓ อัปเดต pubspec.yaml เป็น: $newVerLine" -ForegroundColor Green
         }
     }

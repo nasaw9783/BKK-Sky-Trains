@@ -6794,7 +6794,17 @@ setOriginFromActionSheet() {
                     el.innerHTML = text;
                     el.classList.toggle('now', now);
                     const btn = el.closest('.train');
-                    if (btn) btn.classList.toggle('is-arriving', now);
+                    if (btn) {
+                        btn.classList.toggle('is-arriving', now);
+                        if (btn.classList.contains('first')) {
+                            const lineCol = btn.style.getPropertyValue('--line-color') || '';
+                            if (now) {
+                                btn.style.borderColor = '';
+                            } else if (lineCol) {
+                                btn.style.borderColor = lineCol;
+                            }
+                        }
+                    }
                 });
                 if (hasExpired && (!this._lastExpireRefresh || Date.now() - this._lastExpireRefresh > 8000)) {
                     this._lastExpireRefresh = Date.now();
@@ -8031,21 +8041,22 @@ setOriginFromActionSheet() {
         // จาก etaMem (นับถอยหลังต่อเนื่อง) จนกว่าจะได้เลขใหม่ ผู้ใช้จะไม่เห็นเวลาวูบหาย
         function bestEta(stationKey, platform, t, fetchedAt) {
             const nowMs = Date.now();
+            const at = t?.syntheticAt || fetchedAt || nowMs;
             if (t.time_come !== '--' && t.time_come != null) {
                 const num = parseFloat(t.time_come);
                 const base = (!isNaN(num) && num >= 0) ? num : (t.time_come_double != null ? t.time_come_double : null);
                 if (base != null) {
-                    const rem = base - (nowMs - fetchedAt) / 60000;
-                    if (rem > -0.75) return { base, at: fetchedAt, approx: false };
+                    const rem = base - (nowMs - at) / 60000;
+                    if (rem > -0.75) return { base, at, approx: !!t.isApprox };
                 }
             }
             if (t.time_come_double != null) {
-                const rem = t.time_come_double - (nowMs - fetchedAt) / 60000;
-                if (rem > -0.75) return { base: t.time_come_double, at: fetchedAt, approx: false };
+                const rem = t.time_come_double - (nowMs - at) / 60000;
+                if (rem > -0.75) return { base: t.time_come_double, at, approx: !!t.isApprox };
             }
             if (t.status === 'arriving') {
-                const rem = 0 - (nowMs - fetchedAt) / 60000;
-                if (rem > -0.75) return { base: 0, at: fetchedAt, approx: false };
+                const rem = 0 - (nowMs - at) / 60000;
+                if (rem > -0.75) return { base: 0, at, approx: false };
             }
             const m = App.etaMem[stationKey + '|' + platform + '|' + t.trainNo];
             if (m && (m.base - (nowMs - m.at) / 60000) > -0.75)
@@ -8139,6 +8150,44 @@ setOriginFromActionSheet() {
 
                 out.push(t);
             }
+
+            // 6. เติมเวลานับถอยหลังของขบวนถัดไป (ขบวนที่ 2 และ 3) เสมอตามความถี่เดินรถ (Headway Interval)
+            // เพื่อให้ผู้ใช้เห็นเวลานับถอยหลังของขบวนถัดไปเสมอเหมือนภาพที่สอง
+            if (out.length > 0 && out.length < 3) {
+                const freq = getCurrentMrtFreq(lineId, stationKey);
+                const interval = (freq && Number(freq.minutes)) || 10;
+                const lastT = out[out.length - 1];
+                const lastEta = bestEta(stationKey, platform, lastT, fetchedAt);
+                let lastRem = 0;
+                if (lastEta) {
+                    lastRem = Math.max(0, lastEta.base - (nowMs - lastEta.at) / 60000);
+                } else if (lastT.status === 'arriving') {
+                    lastRem = 0;
+                } else {
+                    const parsed = parseFloat(lastT.time_come);
+                    lastRem = (!isNaN(parsed) && parsed >= 0) ? parsed : 0;
+                }
+
+                const dest = lastT.station || '';
+                const destKey = lastT.station_key || '';
+                let nextIdx = 1;
+                while (out.length < 3) {
+                    const nextEtaMin = (lastRem === 0 ? 0 : lastRem) + (interval * nextIdx);
+                    out.push({
+                        trainNo: lastT.trainNo ? `${lastT.trainNo}+${nextIdx}` : `T${platform}-${out.length + 1}`,
+                        platform: platform,
+                        status: 'pending',
+                        time_come: String(Math.max(1, Math.round(nextEtaMin))),
+                        time_come_double: nextEtaMin,
+                        station: dest,
+                        station_key: destKey,
+                        isApprox: false,
+                        syntheticAt: nowMs
+                    });
+                    nextIdx++;
+                }
+            }
+
             return out.slice(0, 3);
         }
 
@@ -8339,8 +8388,16 @@ setOriginFromActionSheet() {
         }
 
         function renderPlatform(p, fetchedAt, stationKey) {
+            let tList = p.train_list;
+            if ((!tList || !tList.length) && !p.isDropOffOnly && isTransitOperatingHours(p.LineId, stationKey)) {
+                const fb = generateTimetableArrivals(App.findStation(stationKey));
+                const fbPlat = fb?.platform_list?.find(fp => String(fp.platform) === String(p.platform));
+                if (fbPlat?.train_list?.length) {
+                    tList = fbPlat.train_list;
+                }
+            }
             // กรองขบวน "--" ที่ไม่มีข้อมูลพอจะแสดงออกก่อน (ดู displayTrains) — เหลือสูงสุด 3 ขบวน
-            const trains = displayTrains(stationKey, p.platform, p.train_list, fetchedAt);
+            const trains = displayTrains(stationKey, p.platform, tList, fetchedAt);
             // ขบวนที่ user เลือกไว้ (แตะขบวนเพื่อดูปลายทางของขบวนนั้น) — ตรวจ trainNo กันข้อมูล refresh แล้วลำดับเลื่อน
             const sel = App.selTrain[stationKey + '|' + p.platform];
             const selIdx = (sel && trains[sel.idx]?.trainNo === sel.trainNo) ? sel.idx : -1;
@@ -8370,7 +8427,8 @@ setOriginFromActionSheet() {
                 const baseVal = eta ? eta.base : (isArriving ? 0 : '');
                 const atVal = eta ? eta.at : (isArriving ? fetchedAt : '');
                 const hasEtaData = baseVal !== '' && atVal !== '';
-                return `<button class="train ${sizeClass} ${i === selIdx ? 'sel' : ''} ${init.now ? 'is-arriving' : ''}" style="color:${trainTextColor}"
+                const firstTrainBorder = (i === 0 && !init.now) ? `border: 2px solid ${p.LineColor};` : '';
+                return `<button class="train ${sizeClass} ${i === selIdx ? 'sel' : ''} ${init.now ? 'is-arriving' : ''}" style="color:${trainTextColor};--line-color:${p.LineColor};${firstTrainBorder}"
                     onclick="App.selectTrain('${esc(stationKey)}','${esc(p.platform)}',${i},'${esc(t.trainNo)}')">
                     <span class="no">${destTag}</span>
                     <span class="eta ${init.now ? 'now' : ''}"
@@ -8393,7 +8451,7 @@ setOriginFromActionSheet() {
             }
 
             return `
-                <div class="plat ${isEvenPlat ? 'mirror' : ''}">
+                <div class="plat ${isEvenPlat ? 'mirror' : ''}" style="--line-color:${p.LineColor};">
                     <div class="plat-head">
                         <span class="plat-no" style="background:${p.LineColor};color:${platTextColor}">${esc(p.platform)}</span>
                         <div class="plat-dest"><div class="l">${destLabel}</div>

@@ -1442,6 +1442,13 @@
             min-width: 0;
             padding: 8px 6px;
             background: linear-gradient(135deg, var(--card), var(--bg-subtle));
+            border: 2px solid var(--line-color, var(--line));
+            border-radius: 10px;
+        }
+
+        .train.first.is-arriving,
+        .train.first:has(.eta.now) {
+            border-color: rgba(244, 63, 94, 0.6) !important;
         }
 
         .train.first .eta {

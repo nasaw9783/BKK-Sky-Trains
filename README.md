@@ -208,8 +208,7 @@ c:\Users\Administrator\Documents\BKK Sky Trains/
 
 ### วิธีที่ 1: 🌐 ใช้งานผ่านหน้าเว็บออนไลน์ (Live Web PWA)
 สามารถเปิดใช้งานบนเว็บเบราว์เซอร์ได้ทันที ไม่ต้องติดตั้งโปรแกรม พร้อมรองรับการติดตั้งเป็น Progressive Web App (PWA):
-- 🔗 **GitHub Pages:** [https://nasaw9783.github.io/BKK-Sky-Trains/](https://nasaw9783.github.io/BKK-Sky-Trains/)
-- 🔗 **Official Web:** [https://bkkskytrain.online/](https://bkkskytrain.online/)
+- 🔗 **Web PWA (GitHub Pages):** [https://nasaw9783.github.io/BKK-Sky-Trains/](https://nasaw9783.github.io/BKK-Sky-Trains/)
 
 ### วิธีที่ 2: รันเว็บแอปผ่านสคริปต์ `Start-BKK-Transit.ps1` (แนะนำสำหรับนักพัฒนาในเครื่อง)
 สคริปต์จะเริ่ม Local Server พร้อมระบบ **BTS Live API Reverse Proxy** บนพอร์ต 3000 และเปิดเบราว์เซอร์ให้อัตโนมัติ:

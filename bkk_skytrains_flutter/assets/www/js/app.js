@@ -3,12 +3,11 @@
         /* ================= CONFIG ================= */
         const REMOTE_API = 'https://bkkskytrain.online/api/bts-proxy';
         const LOCAL_ORIGIN = 'http://localhost:3000';
-        // ตรวจสอบว่าโฮสต์ปัจจุบันมี local backend proxy จริงหรือไม่ (bkkskytrain.online หรือ Node บนพอร์ต 3000)
+        // ตรวจสอบว่าโฮสต์ปัจจุบันมี local backend proxy จริงหรือไม่ (Node บนพอร์ต 3000)
         // สำหรับทุกกรณีอื่น (WebView, file://, localhost พอร์ตอื่นๆ, GitHub Pages ฯลฯ) ชี้ตรงไปยัง REMOTE_API ทันที 0ms
         const hasLocalProxyHost = Boolean(
             (typeof location !== 'undefined') &&
-            ((location.hostname === 'bkkskytrain.online' || location.hostname.endsWith('.bkkskytrain.online')) ||
-             ((location.hostname === 'localhost' || location.hostname === '127.0.0.1') && location.port === '3000'))
+            ((location.hostname === 'localhost' || location.hostname === '127.0.0.1') && location.port === '3000')
         );
 
         let activeProxyBase = hasLocalProxyHost ? '/api/bts-proxy' : REMOTE_API;

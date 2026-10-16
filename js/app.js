@@ -308,7 +308,8 @@
                 ['OR09', 'A7', 3],
                 ['OR12', 'BL19', 3],
                 ['OR19', 'YL09', 4],
-                ['OR27', 'PK30', 4]
+                ['OR27', 'PK30', 4],
+                ['PK10', 'MT01', 3]
             ]
         };
         const MRT_LINE_BY_ID = Object.fromEntries(MRT_STATIC_DB.lines.map(l => [l.LineId, l]));
@@ -1853,6 +1854,8 @@ gQIDAQAB
                 for (let i = 1; i < line.StationList.length; i++) {
                     const a = line.StationList[i - 1].StationKey;
                     const b = line.StationList[i].StationKey;
+                    // MT01 เป็นส่วนต่อขยายแยกจาก PK10 ไม่ได้ต่อจาก PK30
+                    if (a === 'PK30' && b === 'MT01') continue;
                     let w = isMrtLineId(line.LineId) ? 2.2 : 2;
                     if (line.LineId === 103 || line.LineId === 105 || line.LineId === MRT_LINE_IDS.RED) {
                         w = SRT_RED_TRAVEL_TIMES[`${a}|${b}`] || 2;
@@ -1987,7 +1990,8 @@ gQIDAQAB
 
             for (let i = 0; i < path.edges.length; i++) {
                 const e = path.edges[i];
-                if (e.type === 'transfer') {
+                const isBranchTransfer = (path.keys[i] === 'PK10' && path.keys[i + 1] === 'MT01') || (path.keys[i] === 'MT01' && path.keys[i + 1] === 'PK10');
+                if (e.type === 'transfer' && !isBranchTransfer) {
                     await closeSegment();
                     continue;
                 }
@@ -2256,6 +2260,20 @@ gQIDAQAB
                 { exit: 2, facilities: ['elevator'], landmarks_th: 'ศูนย์ราชการจังหวัดนนทบุรี, อุทยานมกุฏรมยสราญ, สภ.เมืองนนทบุรี', landmarks_en: 'Nonthaburi Civic Center, City Hall, Makut Rommayasaran Park' },
                 { exit: 3, facilities: ['escalator'], landmarks_th: 'ถนนรัตนาธิเบศร์ ฝั่งขาเข้า มุ่งหน้าแคราย / แยกพงษ์เพชร', landmarks_en: 'Rattanathibet Road Inbound to Khae Rai' },
                 { exit: 4, facilities: ['skywalk'], landmarks_th: 'เอสพลานาด ซีนีเพล็กซ์ งามวงศ์วาน-แคราย, โลตัส รัตนาธิเบศร์', landmarks_en: 'Esplanade Cineplex Ngamwongwan-Khae Rai, Lotus\'s Rattanathibet' }
+            ],
+            'PK10': [
+                { exit: 1, facilities: ['skywalk', 'elevator', 'escalator'], landmarks_th: 'จุดเชื่อมต่อเปลี่ยนสาย ไปสายเมืองทองธานี (MT01 อิมแพ็ค, MT02 ทะเลสาบ)', landmarks_en: 'Transfer Link to Muang Thong Thani Branch (MT01 IMPACT, MT02 Lake)' },
+                { exit: 2, facilities: ['elevator'], landmarks_th: 'ถนนแจ้งวัฒนะ ขาเข้า มุ่งหน้าหลักสี่, สถาบันสิ่งแวดล้อมไทย', landmarks_en: 'Chaeng Watthana Road Inbound to Lak Si, TEI' },
+                { exit: 3, facilities: ['escalator'], landmarks_th: 'ถนนแจ้งวัฒนะ ขาออก มุ่งหน้าปากเกร็ด, ซอยแจ้งวัฒนะ-ปากเกร็ด 33 (ทางเข้าเมืองทองธานี)', landmarks_en: 'Chaeng Watthana Road Outbound to Pak Kret, Muang Thong Thani Entrance' },
+                { exit: 4, facilities: ['elevator'], landmarks_th: 'แม็คโคร แจ้งวัฒนะ, ไทวัสดุ แจ้งวัฒนะ', landmarks_en: 'Makro Chaeng Watthana, Thai Watsadu' }
+            ],
+            'MT01': [
+                { exit: 1, facilities: ['skywalk', 'elevator', 'escalator'], landmarks_th: 'อิมแพ็ค ชาเลนเจอร์ (Challenger Hall), อิมแพ็ค อารีน่า เมืองทองธานี', landmarks_en: 'IMPACT Challenger, IMPACT Arena Muang Thong Thani' },
+                { exit: 2, facilities: ['skywalk', 'elevator'], landmarks_th: 'โรงแรมโนโวเทล กรุงเทพ อิมแพ็ค, อาคาร เดอะ พอร์ทอล (The Portal)', landmarks_en: 'Novotel Bangkok IMPACT, The Portal Lifestyle Complex' }
+            ],
+            'MT02': [
+                { exit: 1, facilities: ['elevator', 'escalator'], landmarks_th: 'ทะเลสาบเมืองทองธานี (Muang Thong Thani Lakefront), ธันเดอร์โดม', landmarks_en: 'Muang Thong Thani Lakefront, Thunder Dome' },
+                { exit: 2, facilities: ['elevator'], landmarks_th: 'คอสโม บาซาร์ (Cosmo Bazaar), เอาท์เล็ท สแควร์ เมืองทองธานี', landmarks_en: 'Cosmo Bazaar, Outlet Square Muang Thong Thani' }
             ],
             'BL11': [
                 { exit: 1, facilities: ['skywalk', 'elevator', 'escalator'], landmarks_th: 'เชื่อมต่อ สถานีกลางกรุงเทพอภิวัฒน์ (รถไฟชานเมืองสายสีแดง & รถไฟทางไกล)', landmarks_en: 'Connecting to Krung Thep Aphiwat Central Terminal (SRT Red Line & Intercity)' },
@@ -5443,6 +5461,32 @@ setOriginFromActionSheet() {
                         }
                     }
                 }
+
+                // จุดเชื่อมต่อเปลี่ยนสาย เมืองทองธานี (PK10 <-> MT01, MT02)
+                (this.connections['PK10'] ??= []).push({
+                    key: 'MT01',
+                    lineId: 5,
+                    color: '#EC4899',
+                    isBranch: true,
+                    labelTh: 'เปลี่ยนสายไป MT01, MT02',
+                    labelEn: 'Transfer to MT01, MT02'
+                });
+                (this.connections['MT01'] ??= []).push({
+                    key: 'PK10',
+                    lineId: 5,
+                    color: '#EC4899',
+                    isBranch: true,
+                    labelTh: 'เปลี่ยนสายที่ PK10',
+                    labelEn: 'Transfer at PK10'
+                });
+                (this.connections['MT02'] ??= []).push({
+                    key: 'PK10',
+                    lineId: 5,
+                    color: '#EC4899',
+                    isBranch: true,
+                    labelTh: 'เปลี่ยนสายที่ PK10',
+                    labelEn: 'Transfer at PK10'
+                });
             },
 
             // กดป้ายเชื่อมต่อ → กระโดดไปสถานีนั้นบนอีกสาย
@@ -6742,6 +6786,8 @@ setOriginFromActionSheet() {
                         next = list.find(s => s.StationKey === 'MT02') || next;
                     } else if (key === 'MT02') {
                         prev = list.find(s => s.StationKey === 'MT01') || prev;
+                        next = null;
+                    } else if (key === 'PK30') {
                         next = null;
                     }
                     return { lineId: line.LineId, color: line.LineColor, list, idx, prev, next };
@@ -8642,7 +8688,26 @@ setOriginFromActionSheet() {
                 return `<div class="line-group">${head}<div class="plat-grid">${cards}</div></div>`;
             }).join('');
 
-            return platHtml;
+            let branchBanner = '';
+            if (station.StationKey === 'PK10') {
+                branchBanner = `<div style="margin-top:10px;padding:8px 12px;background:rgba(236,72,153,0.08);border:1px dashed rgba(236,72,153,0.3);border-radius:10px;display:flex;align-items:center;justify-content:space-between;gap:8px;box-sizing:border-box;">
+                    <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink);letter-spacing:0;">
+                        ${getLineIconSvg(5, false, 16)}
+                        <span>${lang === 'en' ? 'Transfer at PK10 to Muang Thong Thani Branch (MT01, MT02)' : 'จุดเชื่อมต่อเปลี่ยนสายไป MT01 (อิมแพ็ค) และ MT02 (ทะเลสาบเมืองทองธานี)'}</span>
+                    </div>
+                    <button class="btn btn-ghost" style="padding:4px 8px;font-size:11px;color:#EC4899;border:1px solid rgba(236,72,153,0.3);border-radius:6px;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;line-height:1;box-sizing:border-box;letter-spacing:0;" onclick="event.stopPropagation();App.jumpTo('MT01', 5)">${lang === 'en' ? 'Go to MT01 →' : 'ไป MT01 →'}</button>
+                </div>`;
+            } else if (station.StationKey === 'MT01' || station.StationKey === 'MT02') {
+                branchBanner = `<div style="margin-top:10px;padding:8px 12px;background:rgba(236,72,153,0.08);border:1px dashed rgba(236,72,153,0.3);border-radius:10px;display:flex;align-items:center;justify-content:space-between;gap:8px;box-sizing:border-box;">
+                    <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink);letter-spacing:0;">
+                        ${getLineIconSvg(5, false, 16)}
+                        <span>${lang === 'en' ? 'Transfer at PK10 (Muang Thong Thani) to Pink Line Main Line' : 'จุดเชื่อมต่อเปลี่ยนสายที่ PK10 (เมืองทองธานี) สู่สายสีชมพูสายหลัก'}</span>
+                    </div>
+                    <button class="btn btn-ghost" style="padding:4px 8px;font-size:11px;color:#EC4899;border:1px solid rgba(236,72,153,0.3);border-radius:6px;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;line-height:1;box-sizing:border-box;letter-spacing:0;" onclick="event.stopPropagation();App.jumpTo('PK10', 5)">${lang === 'en' ? 'Go to PK10 →' : 'ไป PK10 →'}</button>
+                </div>`;
+            }
+
+            return platHtml + branchBanner;
         }
 
         function renderPlatform(p, fetchedAt, stationKey) {
@@ -8733,15 +8798,18 @@ setOriginFromActionSheet() {
         }
 
         // ป้าย "เชื่อมต่อสาย X" สำหรับสถานีเปลี่ยนสาย — กดเพื่อกระโดดไปสายนั้น
-        // ctxLineId = สายที่กำลังแสดงอยู่ จะไม่โชว์ป้ายของสายตัวเอง (สยามดูจากสุขุมวิท → เห็น ⇄ สายสีลม)
+        // ctxLineId = สายที่กำลังแสดงอยู่ จะไม่โชว์ป้ายของสายตัวเอง (เว้นแต่เป็นสายแยก/สาขา isBranch เช่น เมืองทองธานี)
         function connBadges(stationKey, ctxLineId) {
             return (App.connections[stationKey] || [])
-                .filter(c => c.lineId !== ctxLineId)
+                .filter(c => c.isBranch || c.lineId !== ctxLineId)
                 .map(c => {
                     const line = App.lineById[c.lineId] || MRT_LINE_BY_ID[c.lineId];
-                    return ` <span class="badge conn-b" style="color:${c.color};background:${c.color}1f;display:inline-flex;align-items:center;gap:4px;"
+                    const label = c.isBranch
+                        ? ((typeof lang !== 'undefined' && lang === 'en') ? c.labelEn : c.labelTh)
+                        : T('connLine', esc(line ? shortLineName(line) : ''));
+                    return ` <span class="badge conn-b" style="color:${c.color};background:${c.color}1f;display:inline-flex;align-items:center;justify-content:center;gap:4px;line-height:1;box-sizing:border-box;letter-spacing:0;"
                     onclick="event.stopPropagation();App.jumpTo('${esc(c.key)}',${c.lineId})"
-                    title="${T('connTitle', esc(c.key))}">${getLineIconSvg(c.lineId, false, 14)} <span>${T('connLine', esc(line ? shortLineName(line) : ''))}</span></span>`;
+                    title="${T('connTitle', esc(c.key))}">${getLineIconSvg(c.lineId, false, 14)} <span>${label}</span></span>`;
                 }).join('');
         }
 
@@ -8775,8 +8843,13 @@ setOriginFromActionSheet() {
                 const prevPick = k > 0 ? picks[k - 1] : null;
                 const nextPick = k < steps.length - 1 ? picks[k + 1] : null;
 
-                const hasTransferBefore = prevPick && pick.lineId !== prevPick.lineId;
-                const hasTransferAfter = nextPick && pick.lineId !== nextPick.lineId;
+                const prevSt = k > 0 ? steps[k - 1] : null;
+                const nextSt = k < steps.length - 1 ? steps[k + 1] : null;
+                const isMtTransferBefore = prevSt && ((prevSt.StationCode === 'PK10' && st.StationCode === 'MT01') || (prevSt.StationCode === 'MT01' && st.StationCode === 'PK10'));
+                const isMtTransferAfter = nextSt && ((st.StationCode === 'PK10' && nextSt.StationCode === 'MT01') || (st.StationCode === 'MT01' && nextSt.StationCode === 'PK10'));
+
+                const hasTransferBefore = (prevPick && pick.lineId !== prevPick.lineId) || isMtTransferBefore;
+                const hasTransferAfter = (nextPick && pick.lineId !== nextPick.lineId) || isMtTransferAfter;
 
                 if (hasTransferBefore) {
                     rows.push(`<div class="j-transfer">${T('jTransfer')}</div>`);

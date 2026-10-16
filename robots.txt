@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://bkkskytrain.online/sitemap.xml
+Sitemap: https://nasaw9783.github.io/BKK-Sky-Trains/sitemap.xml

@@ -4,8 +4,8 @@
   "description": "BKK SKYTRAINs — เช็คเวลารถไฟฟ้า BTS/MRT/SRT/ARL แบบเรียลไทม์ ข้อมูลทางออกสถานี และวางแผนเส้นทางพร้อมค่าโดยสาร",
   "lang": "th",
   "dir": "ltr",
-  "start_url": "/",
-  "scope": "/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#0b1220",
@@ -13,19 +13,19 @@
   "categories": ["travel", "navigation", "utilities"],
   "icons": [
     {
-      "src": "/icon-192.png",
+      "src": "icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/icon-512.png",
+      "src": "icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/icon.svg",
+      "src": "icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"

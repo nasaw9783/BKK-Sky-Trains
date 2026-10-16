@@ -6621,11 +6621,9 @@ setOriginFromActionSheet() {
                 }
                 // พิเศษสำหรับ MT01 และ MT02:
                 // MT01 มี 2 ชานชาลา (3 และ 4)
-                // MT02 มี 2 ชานชาลา (3 และ 4) แต่ปัจจุบันเปิดใช้บริการ 1 ชานชาลา คือ (ชานชาลา 4)
-                if (key === 'MT01' && Array.isArray(platList)) {
+                // MT02 มี 2 ชานชาลา (3 และ 4)
+                if ((key === 'MT01' || key === 'MT02') && Array.isArray(platList)) {
                     platList = platList.filter(p => String(p.platform) === '3' || String(p.platform) === '4');
-                } else if (key === 'MT02' && Array.isArray(platList)) {
-                    platList = platList.filter(p => String(p.platform) === '4');
                 }
                 for (const p of platList) {
                     // กรองขบวนรถศูนย์ซ่อมบำรุง / ขบวนรถเปล่า (เช่น YL00, PK00) ออกตั้งแต่ต้น
@@ -6726,6 +6724,8 @@ setOriginFromActionSheet() {
                 const linePromises = allLines.map(async line => {
                     const list = line.StationList;
                     const idx = list.findIndex(s => s.StationKey === key);
+                    // กรองเฉพาะสายที่ผ่านสถานีนี้เท่านั้น ป้องกันการดึงตำแหน่งขบวนรถสีอื่นที่ไม่เกี่ยวข้องมาปนกัน
+                    if (idx < 0) return null;
                     let prev = idx > 0 ? list[idx - 1] : null;
                     let next = idx < list.length - 1 ? list[idx + 1] : null;
                     if (key === 'MT01') {
@@ -6735,12 +6735,7 @@ setOriginFromActionSheet() {
                         prev = list.find(s => s.StationKey === 'MT01') || prev;
                         next = null;
                     }
-                    const adj = {};
-                    const neighbors = [prev, next].filter(Boolean);
-                    await Promise.all(neighbors.map(async s => {
-                        adj[s.StationKey] = await this.ensureArrivals(s);
-                    }));
-                    return { lineId: line.LineId, color: line.LineColor, list, idx, prev, next, adj };
+                    return { lineId: line.LineId, color: line.LineColor, list, idx, prev, next };
                 });
                 const blocks = (await Promise.all(linePromises)).filter(Boolean);
                 this.routes[key] = { loading: false, ready: true, at: Date.now(), blocks };
@@ -7235,8 +7230,125 @@ setOriginFromActionSheet() {
             const color = station.StationLineColor || LINE_BRAND_COLORS[lineId] || '#64748B';
             const platforms = [];
 
+            // 0. BTS สถานีสยาม (CEN) — มีทั้งสายสุขุมวิท (ชานชาลา 1, 2) และสายสีลม (ชานชาลา 3, 4)
+            if (key === 'CEN') {
+                const sukColor = LINE_BRAND_COLORS[1] || '#7AB420';
+                const silomColor = LINE_BRAND_COLORS[2] || '#00807D';
+                const destE23 = getDestPair('E23', 'เคหะฯ', 'Kheha');
+                const destN24 = getDestPair('N24', 'คูคต', 'Khu Khot');
+                const destS12 = getDestPair('S12', 'บางหว้า', 'Bang Wa');
+                const destW1 = getDestPair('W1', 'สนามกีฬาแห่งชาติ', 'National Stadium');
+
+                platforms.push({
+                    platform: 1,
+                    LineId: 1,
+                    LineColor: sukColor,
+                    DestinationStation: destE23,
+                    DestinationStation_key: 'E23',
+                    isDropOffOnly: false,
+                    train_list: makeTrains(1, destE23, 'E23', 0, false)
+                });
+                platforms.push({
+                    platform: 2,
+                    LineId: 1,
+                    LineColor: sukColor,
+                    DestinationStation: destN24,
+                    DestinationStation_key: 'N24',
+                    isDropOffOnly: false,
+                    train_list: makeTrains(2, destN24, 'N24', interval * 0.5, false)
+                });
+                platforms.push({
+                    platform: 3,
+                    LineId: 2,
+                    LineColor: silomColor,
+                    DestinationStation: destS12,
+                    DestinationStation_key: 'S12',
+                    isDropOffOnly: false,
+                    train_list: makeTrains(3, destS12, 'S12', 0, false)
+                });
+                platforms.push({
+                    platform: 4,
+                    LineId: 2,
+                    LineColor: silomColor,
+                    DestinationStation: destW1,
+                    DestinationStation_key: 'W1',
+                    isDropOffOnly: false,
+                    train_list: makeTrains(4, destW1, 'W1', interval * 0.5, false)
+                });
+            }
+
+            // 0.1 BTS สายสุขุมวิท (LineId: 1) — N24 (คูคต) <-> E23 (เคหะฯ)
+            else if (lineId === 1 || (/^[NE]\d+$/i.test(key) && key !== 'CEN')) {
+                const sukColor = station.StationLineColor || LINE_BRAND_COLORS[1] || '#7AB420';
+                const sukLine = (App.lineById && App.lineById[1]) || (typeof FALLBACK_STATION_LIST !== 'undefined' ? FALLBACK_STATION_LIST.find(l => l.LineId === 1) : null);
+                const list = sukLine?.StationList || [];
+                const idx = Math.max(0, list.findIndex(s => s.StationKey === key));
+                const travelPerStation = 1.9;
+
+                // Platform 1: ไปเคหะฯ (E23)
+                const isTerm1 = (key === 'E23');
+                const dest1 = getDestPair('E23', 'เคหะฯ', 'Kheha');
+                platforms.push({
+                    platform: 1,
+                    LineId: 1,
+                    LineColor: sukColor,
+                    DestinationStation: dest1,
+                    DestinationStation_key: 'E23',
+                    isDropOffOnly: isTerm1,
+                    train_list: makeTrains(1, dest1, 'E23', idx * travelPerStation, isTerm1)
+                });
+
+                // Platform 2: ไปคูคต (N24)
+                const isTerm2 = (key === 'N24');
+                const dest2 = getDestPair('N24', 'คูคต', 'Khu Khot');
+                platforms.push({
+                    platform: 2,
+                    LineId: 1,
+                    LineColor: sukColor,
+                    DestinationStation: dest2,
+                    DestinationStation_key: 'N24',
+                    isDropOffOnly: isTerm2,
+                    train_list: makeTrains(2, dest2, 'N24', (Math.max(0, list.length - 1 - idx)) * travelPerStation + (interval * 0.5), isTerm2)
+                });
+            }
+
+            // 0.2 BTS สายสีลม (LineId: 2) — W1 (สนามกีฬาแห่งชาติ) <-> S12 (บางหว้า)
+            else if (lineId === 2 || (/^[SW]\d+$/i.test(key) && key !== 'CEN')) {
+                const silomColor = station.StationLineColor || LINE_BRAND_COLORS[2] || '#00807D';
+                const silomLine = (App.lineById && App.lineById[2]) || (typeof FALLBACK_STATION_LIST !== 'undefined' ? FALLBACK_STATION_LIST.find(l => l.LineId === 2) : null);
+                const list = silomLine?.StationList || [];
+                const idx = Math.max(0, list.findIndex(s => s.StationKey === key));
+                const travelPerStation = 2.0;
+
+                // Platform 3: ไปบางหว้า (S12)
+                const isTerm3 = (key === 'S12');
+                const dest3 = getDestPair('S12', 'บางหว้า', 'Bang Wa');
+                platforms.push({
+                    platform: 3,
+                    LineId: 2,
+                    LineColor: silomColor,
+                    DestinationStation: dest3,
+                    DestinationStation_key: 'S12',
+                    isDropOffOnly: isTerm3,
+                    train_list: makeTrains(3, dest3, 'S12', idx * travelPerStation, isTerm3)
+                });
+
+                // Platform 4: ไปสนามกีฬาแห่งชาติ (W1)
+                const isTerm4 = (key === 'W1');
+                const dest4 = getDestPair('W1', 'สนามกีฬาแห่งชาติ', 'National Stadium');
+                platforms.push({
+                    platform: 4,
+                    LineId: 2,
+                    LineColor: silomColor,
+                    DestinationStation: dest4,
+                    DestinationStation_key: 'W1',
+                    isDropOffOnly: isTerm4,
+                    train_list: makeTrains(4, dest4, 'W1', (Math.max(0, list.length - 1 - idx)) * travelPerStation + (interval * 0.5), isTerm4)
+                });
+            }
+
             // 1. สายสีทอง (LineId: 3) — G1 (กรุงธนบุรี) <-> G3 (คลองสาน)
-            if (isGoldLineId(lineId)) {
+            else if (isGoldLineId(lineId)) {
                 const orderMap = { 'G1': 0, 'G2': 1, 'G3': 2 };
                 const idx = orderMap[key] != null ? orderMap[key] : 1;
                 const travelPerStation = 1.8;
@@ -7564,8 +7676,18 @@ setOriginFromActionSheet() {
                         train_list: makeTrains(4, dest2, 'PK10', interval * 0.5, false)
                     });
                 } else if (key === 'MT02') {
-                    // MT02 มี 2 ชานชาลา ได้แก่ ชานชาลา 3 และ ชานชาลา 4 แต่ปัจจุบันเปิดใช้บริการ 1 ชานชาลา คือ (ชานชาลา 4)
+                    // MT02 มี 2 ชานชาลา ได้แก่ ชานชาลา 3 (สิ้นสุดสาย ส่งผู้โดยสารเท่านั้น) และ ชานชาลา 4 (ไปเมืองทองธานี)
+                    const dest1 = getDestPair('MT02', 'ทะเลสาบเมืองทองธานี', 'Lake Muang Thong Thani');
                     const dest2 = getDestPair('PK10', 'เมืองทองธานี', 'Muang Thong Thani');
+                    platforms.push({
+                        platform: 3,
+                        LineId: 5,
+                        LineColor: pinkColor,
+                        DestinationStation: dest1,
+                        DestinationStation_key: 'MT02',
+                        isDropOffOnly: true,
+                        train_list: []
+                    });
                     platforms.push({
                         platform: 4,
                         LineId: 5,
@@ -7647,7 +7769,8 @@ setOriginFromActionSheet() {
             }
 
             // 9. สายสีน้ำเงิน (LineId: 101) — BL01..BL38
-            else {
+            else if (lineId === MRT_LINE_IDS.BLUE || lineId === 101 || (key && key.startsWith('BL'))) {
+                const blueColor = station.StationLineColor || LINE_BRAND_COLORS[101] || '#0284c7';
                 const blueLine = MRT_STATIC_DB.lines.find(l => l.LineId === MRT_LINE_IDS.BLUE);
                 const list = blueLine?.StationList || [];
                 const idx = Math.max(0, list.findIndex(s => s.StationKey === key));
@@ -7659,8 +7782,8 @@ setOriginFromActionSheet() {
 
                 platforms.push({
                     platform: 1,
-                    LineId: lineId,
-                    LineColor: color,
+                    LineId: 101,
+                    LineColor: blueColor,
                     DestinationStation: dest1,
                     DestinationStation_key: 'BL38',
                     isDropOffOnly: isTerm1,
@@ -7668,13 +7791,15 @@ setOriginFromActionSheet() {
                 });
                 platforms.push({
                     platform: 2,
-                    LineId: lineId,
-                    LineColor: color,
+                    LineId: 101,
+                    LineColor: blueColor,
                     DestinationStation: dest2,
                     DestinationStation_key: 'BL01',
                     isDropOffOnly: false,
                     train_list: makeTrains(2, dest2, 'BL01', (Math.max(0, list.length - 1 - idx)) * travelPerStation + (interval * 0.5), false)
                 });
+            } else {
+                return null;
             }
 
             return {
@@ -8131,9 +8256,16 @@ setOriginFromActionSheet() {
         // - กรองขบวนที่เวลาผ่านไปแล้ว (Departed / Expired) ออกทันที
         // - "--" และไม่มีความจำ (เช่นเพิ่งเปิดเว็บครั้งแรก) → ตัดทิ้ง ขบวนถัดไปเลื่อนขึ้นมาแทน
         // - "--" มีความจำ แต่มีขบวนอื่นที่เวลาจริง "น้อยกว่า" ค่าที่จำไว้ → ขบวนนี้ออกไปแล้ว ตัดทิ้ง
-        function displayTrains(stationKey, platform, list, fetchedAt) {
-            const st = App.findStation(stationKey);
-            const lineId = st ? (st.StationLineId || st.LineId || 0) : 0;
+        function displayTrains(stationKey, platform, list, fetchedAt, targetLineId) {
+            let lineId = Number(targetLineId) || 0;
+            if (!lineId) {
+                if (stationKey === 'CEN') {
+                    lineId = (String(platform) === '3' || String(platform) === '4') ? 2 : 1;
+                } else {
+                    const st = App.findStation(stationKey);
+                    lineId = st ? (st.StationLineId || st.LineId || 0) : 0;
+                }
+            }
             const isOperating = isTransitOperatingHours(lineId, stationKey);
 
             // 1. นอกเวลาให้บริการเดินรถโดยสาร (Transit Closed / Off-hours)
@@ -8289,9 +8421,28 @@ setOriginFromActionSheet() {
                 }
 
                 if (station.StationKey === 'MT02') {
-                    // MT02 มี 2 ชานชาลา ได้แก่ ชานชาลา 3 และ ชานชาลา 4 แต่ปัจจุบันเปิดใช้บริการ 1 ชานชาลา คือ (ชานชาลา 4)
+                    // MT02 มี 2 ชานชาลา ได้แก่ ชานชาลา 3 (สิ้นสุดสาย ส่งผู้โดยสารเท่านั้น) และ ชานชาลา 4 (ไปเมืองทองธานี)
+                    const p3 = linePlats.find(p => String(p.platform) === '3');
                     const p4 = linePlats.find(p => String(p.platform) === '4');
+                    const dest1 = (typeof lang !== 'undefined' && lang === 'en') ? 'Lake Muang Thong Thani' : 'ทะเลสาบเมืองทองธานี';
                     const dest2 = (typeof lang !== 'undefined' && lang === 'en') ? 'Muang Thong Thani' : 'เมืองทองธานี';
+                    if (!p3) {
+                        result.push({
+                            platform: 3,
+                            LineId: lid,
+                            LineColor: line.LineColor,
+                            DestinationStation: dest1,
+                            DestinationStation_key: 'MT02',
+                            isDropOffOnly: true,
+                            train_list: []
+                        });
+                    } else {
+                        p3.isDropOffOnly = true;
+                        if (!p3.DestinationStation) {
+                            p3.DestinationStation = dest1;
+                            p3.DestinationStation_key = 'MT02';
+                        }
+                    }
                     if (!p4) {
                         result.push({
                             platform: 4,
@@ -8306,7 +8457,7 @@ setOriginFromActionSheet() {
                         p4.DestinationStation = dest2;
                         p4.DestinationStation_key = 'PK10';
                     }
-                    const filtered = result.filter(p => p.LineId !== lid || String(p.platform) === '4');
+                    const filtered = result.filter(p => p.LineId !== lid || String(p.platform) === '3' || String(p.platform) === '4');
                     result.length = 0;
                     result.push(...filtered);
                     continue;
@@ -8396,7 +8547,22 @@ setOriginFromActionSheet() {
         }
 
         function visiblePlatformsForStation(station, platforms) {
-            return ensureTwoPlatformsForTerminal(station, platforms || []);
+            if (!station) return platforms || [];
+            const validLines = new Set();
+            if (station.StationKey === 'CEN') {
+                validLines.add(1);
+                validLines.add(2);
+            } else {
+                if (station.StationLineId) validLines.add(Number(station.StationLineId));
+                if (station.LineId) validLines.add(Number(station.LineId));
+                if (typeof App !== 'undefined' && App.keyLines && App.keyLines[station.StationKey]) {
+                    for (const kl of App.keyLines[station.StationKey]) {
+                        if (kl.lineId) validLines.add(Number(kl.lineId));
+                    }
+                }
+            }
+            const cleanPlats = (platforms || []).filter(p => !p.LineId || validLines.size === 0 || validLines.has(Number(p.LineId)));
+            return ensureTwoPlatformsForTerminal(station, cleanPlats);
         }
 
         // error จาก TTA ที่แปลว่า "นอกเวลาให้บริการ" ไม่ใช่เน็ตล่ม — ช่วงกลางคืน (เช่น 00:30–05:25 น.)
@@ -8470,13 +8636,13 @@ setOriginFromActionSheet() {
             let tList = p.train_list;
             if ((!tList || !tList.length) && !p.isDropOffOnly && isTransitOperatingHours(p.LineId, stationKey)) {
                 const fb = generateTimetableArrivals(App.findStation(stationKey));
-                const fbPlat = fb?.platform_list?.find(fp => String(fp.platform) === String(p.platform));
+                const fbPlat = fb?.platform_list?.find(fp => Number(fp.LineId) === Number(p.LineId) && String(fp.platform) === String(p.platform));
                 if (fbPlat?.train_list?.length) {
                     tList = fbPlat.train_list;
                 }
             }
             // กรองขบวน "--" ที่ไม่มีข้อมูลพอจะแสดงออกก่อน (ดู displayTrains) — เหลือสูงสุด 3 ขบวน
-            const trains = displayTrains(stationKey, p.platform, tList, fetchedAt);
+            const trains = displayTrains(stationKey, p.platform, tList, fetchedAt, p.LineId);
             // ขบวนที่ user เลือกไว้ (แตะขบวนเพื่อดูปลายทางของขบวนนั้น) — ตรวจ trainNo กันข้อมูล refresh แล้วลำดับเลื่อน
             const sel = App.selTrain[stationKey + '|' + p.platform];
             const selIdx = (sel && trains[sel.idx]?.trainNo === sel.trainNo) ? sel.idx : -1;
@@ -8657,11 +8823,8 @@ setOriginFromActionSheet() {
         }
 
         function renderRouteBlock(station, block, arr) {
-            const { list, idx, prev, next, adj, color } = block;
-            const plats = visiblePlatformsForStation(
-                station,
-                arr.platforms.filter(p => p.LineId === block.lineId)
-            );
+            const { list, idx, prev, next, color } = block;
+            const plats = (arr.platforms || []).filter(p => Number(p.LineId) === Number(block.lineId));
             if (!plats.length) return '';
 
             // ทิศทางของแต่ละชานชาลา:
@@ -8704,7 +8867,7 @@ setOriginFromActionSheet() {
             const Z = { prev: [], next: [] };
             for (const p of plats) {
                 const from = fromOf(p);
-                for (const t of displayTrains(station.StationKey, p.platform, p.train_list, arr.fetchedAt)) {
+                for (const t of displayTrains(station.StationKey, p.platform, p.train_list, arr.fetchedAt, block.lineId)) {
                     if (t.status !== 'pending') {
                         Z[from].push({ t, m: 0, approx: false, eta: null });
                         continue;

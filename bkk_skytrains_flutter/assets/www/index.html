@@ -1703,15 +1703,21 @@
         }
 
         .st-row.branch-row {
-            padding-left: 8px;
-            background: rgba(215, 104, 134, 0.04);
-            border-left: 2px solid rgba(215, 104, 134, 0.4);
-            border-radius: 0 var(--radius-md) var(--radius-md) 0;
-            margin: 2px 0;
+            background: rgba(215, 104, 134, 0.035);
+            border-radius: var(--radius-md);
+            transition: background var(--transition-fast);
         }
 
-        .st-rail .track.branch-term {
-            bottom: 50% !important;
+        .st-row.branch-row:hover {
+            background: rgba(215, 104, 134, 0.07);
+        }
+
+        html.dark .st-row.branch-row {
+            background: rgba(215, 104, 134, 0.05);
+        }
+
+        html.dark .st-row.branch-row:hover {
+            background: rgba(215, 104, 134, 0.09);
         }
 
         @keyframes pulseRing {

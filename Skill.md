@@ -84,25 +84,26 @@ if (Test-Path "js\jsencrypt.min.js") { Copy-Item -Path "js\jsencrypt.min.js" -De
 ### 🚊 กฎข้อที่ 3: Project Train Icon Standard (มาตรฐานไอคอนรถไฟประจำสาย & สัญลักษณ์โครงข่าย)
 - สัญลักษณ์ระบุสายสี/ไลน์รถไฟฟ้าทั้งหมดในโปรเจกต์นี้ **จะต้องใช้ไอคอน SVG รูปรถไฟเฉพาะตามสายสีจากฟังก์ชัน `getLineIconSvg(lineId)` เสมอ**
 - **ห้าม** ใช้จุดกลม (●) หรือไอคอนรถไฟทั่วไปที่ไม่ตรงกับสายโดยเด็ดขาด:
-  - Line 1: BTS สายสุขุมวิท (`#7AB420`) — 🚆 Heavy Rail EMU บนทางยกระดับ
-  - Line 2: BTS สายสีลม (`#00807D`) — 🚆 Heavy Rail EMU บนทางยกระดับ
-  - Line 3: BTS สายสีทอง (`#C9A038`) — 🚝 APM People Mover ไร้คนขับ
-  - Line 4: MRT สายสีเหลือง (`#FFD100`) — 🚝 Straddle Monorail คอนกรีตเดี่ยว
-  - Line 5: MRT สายสีชมพู (`#EC4899`) — 🚝 Straddle Monorail คอนกรีตเดี่ยว
-  - Line 101: MRT สายสีน้ำเงิน (`#0284C7`) — 🚇 Underground Tunnel Metro อุโมงค์ใต้ดิน
-  - Line 102: MRT สายสีม่วง (`#8A2C9B`) — 🚆 Sustina Heavy Rail Metro ยกระดับ
-  - Line 103: SRTET สายสีแดงเข้ม (`#B91C1C`) — 🚆 Commuter EMU เสารับไฟ Overhead Pantograph
-  - Line 105: SRTET สายสีแดงอ่อน (`#F87171`) — 🚆 Light Commuter EMU แขนรับไฟ Single-arm Pantograph
-  - Line 104: ARL แอร์พอร์ตลิงก์ (`#8A1538`) — ✈️ Airport Express Bullet Train
-  - Line 201: BRT รถโดยสารด่วน (`#82C341`) — 🚌 Bus Rapid Transit ช่องทางเฉพาะ
-  - Line 106: MRT สายสีส้ม (`#F58220`) — 🚇 Orange Tunnel Metro
+  - Line 1: BTS สายสุขุมวิท (`#7AB420`) — <img src="icons/lines/line-1.svg" width="16" height="16" alt="BTS Sukhumvit" style="vertical-align:middle;"> Heavy Rail EMU บนทางยกระดับ
+  - Line 2: BTS สายสีลม (`#00807D`) — <img src="icons/lines/line-2.svg" width="16" height="16" alt="BTS Silom" style="vertical-align:middle;"> Heavy Rail EMU บนทางยกระดับ
+  - Line 3: BTS สายสีทอง (`#C9A038`) — <img src="icons/lines/line-3.svg" width="16" height="16" alt="APM Gold" style="vertical-align:middle;"> APM People Mover ไร้คนขับ
+  - Line 4: MRT สายสีเหลือง (`#FFD100`) — <img src="icons/lines/line-4.svg" width="16" height="16" alt="MRT Yellow" style="vertical-align:middle;"> Straddle Monorail คอนกรีตเดี่ยว
+  - Line 5: MRT สายสีชมพู (`#EC4899`) — <img src="icons/lines/line-5.svg" width="16" height="16" alt="MRT Pink" style="vertical-align:middle;"> Straddle Monorail คอนกรีตเดี่ยว (พร้อมสายแยกเมืองทอง MT01-MT02)
+  - Line 101: MRT สายสีน้ำเงิน (`#0284C7`) — <img src="icons/lines/line-101.svg" width="16" height="16" alt="MRT Blue" style="vertical-align:middle;"> Underground Tunnel Metro อุโมงค์ใต้ดิน
+  - Line 102: MRT สายสีม่วง (`#8A2C9B`) — <img src="icons/lines/line-102.svg" width="16" height="16" alt="MRT Purple" style="vertical-align:middle;"> Sustina Heavy Rail Metro ยกระดับ
+  - Line 103: SRTET สายสีแดงเข้ม (`#B91C1C`) — <img src="icons/lines/line-103.svg" width="16" height="16" alt="SRT Dark Red" style="vertical-align:middle;"> Commuter EMU เสารับไฟ Overhead Pantograph
+  - Line 105: SRTET สายสีแดงอ่อน (`#F87171`) — <img src="icons/lines/line-105.svg" width="16" height="16" alt="SRT Light Red" style="vertical-align:middle;"> Light Commuter EMU แขนรับไฟ Single-arm Pantograph
+  - Line 104: ARL แอร์พอร์ตลิงก์ (`#8A1538`) — <img src="icons/lines/line-104.svg" width="16" height="16" alt="ARL" style="vertical-align:middle;"> Airport Express Bullet Train
+  - Line 201: BRT รถโดยสารด่วน (`#82C341`) — <img src="icons/lines/line-201.svg" width="16" height="16" alt="BRT" style="vertical-align:middle;"> Bus Rapid Transit ช่องทางเฉพาะ
+  - Line 106: MRT สายสีส้ม (`#F58220`) — <img src="icons/lines/line-106.svg" width="16" height="16" alt="MRT Orange" style="vertical-align:middle;"> Orange Tunnel Metro
 - สัญลักษณ์โครงข่ายและการเชื่อมต่อ (Transit Network Legend):
-  - **⇄** จุดเชื่อมต่อข้ามสาย (Interchange)
-  - **✈️** เชื่อมต่อท่าอากาศยาน (Airport)
-  - **⛵** ท่าเรือเชื่อมต่อ เรือด่วน/คลอง (Pier / Boat)
-  - **🚆** เชื่อมต่อรถไฟทางไกล (SRT)
-  - **🚌** สถานีขนส่งผู้โดยสาร (Bus Terminal)
-  - **🅿️** อาคารจอดแล้วจร (Park & Ride)
+  - <img src="icons/legend/interchange.svg" width="30" height="15" alt="Interchange" style="vertical-align:middle;"> **จุดเชื่อมต่อข้ามสาย (Interchange)**: โหนดสถานีร่วมวงกลมคู่เชื่อมโยงกัน (`.legend-inter-node`)
+  - <img src="icons/legend/airport.svg" width="18" height="18" alt="Airport" style="vertical-align:middle;"> **เชื่อมต่อท่าอากาศยาน (Airport)**: ท่าอากาศยานสุวรรณภูมิ หรือดอนเมือง
+  - <img src="icons/legend/boat.svg" width="18" height="18" alt="Boat" style="vertical-align:middle;"> **ท่าเรือเชื่อมต่อ (Pier / Boat)**: เรือด่วนเจ้าพระยา หรือเรือคลองแสนแสบ
+  - <img src="icons/legend/train.svg" width="18" height="18" alt="Train" style="vertical-align:middle;"> **เชื่อมต่อรถไฟทางไกล (SRT)**: สถานีกลางกรุงเทพอภิวัฒน์ / หัวลำโพง
+  - <img src="icons/legend/bus.svg" width="18" height="18" alt="Bus" style="vertical-align:middle;"> **สถานีขนส่งผู้โดยสาร (Bus Terminal)**: สถานีขนส่งหมอชิต 2, เอกมัย, สายใต้
+  - <img src="icons/legend/parking.svg" width="18" height="18" alt="Parking" style="vertical-align:middle;"> **อาคารจอดแล้วจร (Park & Ride)**: ลานและอาคารจอดรถ
+  - <img src="icons/legend/branch.svg" width="90" height="16" alt="Branch" style="vertical-align:middle;"> **สายแยกเมืองทองธานี (Branch Line)**: ชานชาลาสายแยกอิมแพ็ค (PK10 ⇄ MT01, MT02)
 
 ### 🧹 กฎข้อที่ 4: Zero-Waste Pruning (ลบไฟล์และแอพที่ไม่สำคัญทิ้งทันที)
 ถ้าไฟล์หรือแอพไหนไม่สำคัญต่อระบบแล้ว และไม่ทำลายระบบให้เสียหาย ให้ลบทิ้งได้ทันทีหลังแก้ไขหรือทดสอบไฟล์ทุกครั้ง:

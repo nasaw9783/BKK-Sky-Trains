@@ -17,8 +17,8 @@
    - เชื่อมต่อการขอสิทธิ์ GPS และพิกัดตำแหน่งของผู้ใช้งานผ่าน Native Android/iOS API
    - ส่งต่อพิกัดความแม่นยำสูงเข้าไปยัง JavaScript ในหน้าเว็บแบบเรียลไทม์ผ่าน `JavaScriptChannel`
 3. **Train Icon Standard & Element Centering Standard**:
-   - รองรับมาตรฐานไอคอนรูปรถไฟประจำสายสีเฉพาะ 12 สายตามชนิดขบวนรถจริง (`getLineIconSvg`)
-   - รองรับสัญลักษณ์โครงข่ายและจุดเชื่อมต่อ (Transit Legend: ⇄ Interchange, ✈️ Airport, ⛵ Pier/Boat, 🚆 SRT, 🚌 Bus, 🅿️ Park & Ride)
+   - รองรับมาตรฐานไอคอนรูปรถไฟประจำสายสีเฉพาะ 12 สายตามชนิดขบวนรถจริง (`getLineIconSvg`) ด้วยไอคอนเวกเตอร์ SVG คมชัด
+   - รองรับสัญลักษณ์โครงข่ายและจุดเชื่อมต่อ (Transit Network Legend: โหนดเชื่อมต่อข้ามสาย Interchange, ท่าอากาศยาน Airport, ท่าเรือ Pier/Boat, รถไฟทางไกล SRT, สถานีขนส่ง Bus, ลานจอดแล้วจร Park & Ride และสายแยกเมืองทองธานี Branch Line)
    - รองรับมาตรฐานการจัดกึ่งกลางของกรอบข้อความและสัญลักษณ์ (Station Codes, Line Badges, Control Buttons)
    - ผสานการทำงานร่วมกับไลบรารี `JSEncrypt` (`assets/www/js/jsencrypt.min.js`) สำหรับความปลอดภัยของข้อมูล
    - ระบบกรองขบวนรถศูนย์ซ่อมบำรุง/รถเปล่า (`YL00`, `PK00`) และตรวจสอบเวลาเปิดให้บริการ (Operating Hours Validation)

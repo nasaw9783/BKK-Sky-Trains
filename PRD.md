@@ -1,4 +1,4 @@
-# 📋 Product Requirements Document (PRD)
+# <img src="icon.svg" width="36" height="36" alt="BKK SKYTRAINs Logo" style="vertical-align:middle;"> Product Requirements Document (PRD)
 ## BKK SKYTRAINs — Bangkok Transit Real-Time Web & Mobile Ecosystem
 
 ---
@@ -133,18 +133,18 @@ flowchart TD
 
 ### FR-3: ผังสายรถไฟฟ้าแบบโต้ตอบ (Interactive Route Strip & Line Network)
 - **FR-3.1:** แสดงผังเส้นทางเดินรถแบบ Strip ครอบคลุมโครงข่ายรถไฟฟ้าทั้งหมดในกรุงเทพฯ และปริมณฑล:
-  - 🚆 BTS สายสุขุมวิท (Light Green - LineId: 1, `#7AB420`)
-  - 🚆 BTS สายสีลม (Dark Green / Teal - LineId: 2, `#00807D`)
-  - 🚝 BTS สายสีทอง (Gold APM - LineId: 3, `#C9A038`)
-  - 🚝 MRT สายสีเหลือง (นัคราพิพัฒน์ - Yellow Monorail - LineId: 4, `#FFD100`)
-  - 🚝 MRT สายสีชมพู (วิวัฒน์นคร - Pink Monorail - LineId: 5, `#EC4899`)
-  - 🚇 MRT สายสีน้ำเงิน (เฉลิมรัชมงคล - Blue Metro - LineId: 101, `#0284C7`)
-  - 🚆 MRT สายสีม่วง (ฉลองรัชธรรม - Purple Heavy Rail - LineId: 102, `#8A2C9B`)
-  - 🚆 SRTET สายสีแดงเข้ม (ธานีรัถยา - Dark Red - LineId: 103, `#B91C1C`)
-  - 🚆 SRTET สายสีแดงอ่อน (นครวิถี - Light Red - LineId: 105, `#F87171`)
-  - ✈️ ARL รถไฟฟ้าแอร์พอร์ต เรล ลิงก์ (Airport Rail Link - LineId: 104, `#8A1538`)
-  - 🚌 BRT รถโดยสารด่วนพิเศษ (Bus Rapid Transit - LineId: 201, `#82C341`)
-  - 🚇 MRT สายสีส้ม (Orange Line - LineId: 106, `#F58220`, โครงการในอนาคต)
+  - <img src="icons/lines/line-1.svg" width="16" height="16" alt="BTS Sukhumvit" style="vertical-align:middle;"> BTS สายสุขุมวิท (Light Green - LineId: 1, `#7AB420`)
+  - <img src="icons/lines/line-2.svg" width="16" height="16" alt="BTS Silom" style="vertical-align:middle;"> BTS สายสีลม (Dark Green / Teal - LineId: 2, `#00807D`)
+  - <img src="icons/lines/line-3.svg" width="16" height="16" alt="APM Gold" style="vertical-align:middle;"> BTS สายสีทอง (Gold APM - LineId: 3, `#C9A038`)
+  - <img src="icons/lines/line-4.svg" width="16" height="16" alt="MRT Yellow" style="vertical-align:middle;"> MRT สายสีเหลือง (นัคราพิพัฒน์ - Yellow Monorail - LineId: 4, `#FFD100`)
+  - <img src="icons/lines/line-5.svg" width="16" height="16" alt="MRT Pink" style="vertical-align:middle;"> MRT สายสีชมพู (วิวัฒน์นคร - Pink Monorail - LineId: 5, `#EC4899`, พร้อมสายแยกเมืองทอง MT01-MT02)
+  - <img src="icons/lines/line-101.svg" width="16" height="16" alt="MRT Blue" style="vertical-align:middle;"> MRT สายสีน้ำเงิน (เฉลิมรัชมงคล - Blue Metro - LineId: 101, `#0284C7`)
+  - <img src="icons/lines/line-102.svg" width="16" height="16" alt="MRT Purple" style="vertical-align:middle;"> MRT สายสีม่วง (ฉลองรัชธรรม - Purple Heavy Rail - LineId: 102, `#8A2C9B`)
+  - <img src="icons/lines/line-103.svg" width="16" height="16" alt="SRT Dark Red" style="vertical-align:middle;"> SRTET สายสีแดงเข้ม (ธานีรัถยา - Dark Red - LineId: 103, `#B91C1C`)
+  - <img src="icons/lines/line-105.svg" width="16" height="16" alt="SRT Light Red" style="vertical-align:middle;"> SRTET สายสีแดงอ่อน (นครวิถี - Light Red - LineId: 105, `#F87171`)
+  - <img src="icons/lines/line-104.svg" width="16" height="16" alt="ARL" style="vertical-align:middle;"> ARL รถไฟฟ้าแอร์พอร์ต เรล ลิงก์ (Airport Rail Link - LineId: 104, `#8A1538`)
+  - <img src="icons/lines/line-201.svg" width="16" height="16" alt="BRT" style="vertical-align:middle;"> BRT รถโดยสารด่วนพิเศษ (Bus Rapid Transit - LineId: 201, `#82C341`)
+  - <img src="icons/lines/line-106.svg" width="16" height="16" alt="MRT Orange" style="vertical-align:middle;"> MRT สายสีส้ม (Orange Line - LineId: 106, `#F58220`, โครงการในอนาคต)
 - **FR-3.2:** ผู้ใช้สามารถแตะเลือกสถานีใดๆ บนผังเพื่อเปิดแผ่นข้อมูลรายละเอียด (Station Bottom Sheet) ได้ทันที
 - **FR-3.3 (Mandatory Icon Standard):** ทุกจุดที่แสดงสัญลักษณ์สายสี ต้องใช้ไอคอน SVG รูปรถไฟเฉพาะประจำสายสีผ่าน `getLineIconSvg(lineId)` ห้ามใช้จุดกลม (●) หรือไอคอนรถไฟทั่วไปที่ไม่ตรงกับสายเด็ดขาด
 
@@ -227,60 +227,92 @@ flowchart TD
 > ทุกจุดในระบบที่มีการแสดงผลสัญลักษณ์สายสี **ต้องเรียกใช้ไอคอน SVG รูปรถไฟเฉพาะสายจากฟังก์ชัน `getLineIconSvg(lineId)` เสมอ**
 > ห้ามใช้จุดกลม (●) หรือไอคอนรถไฟรูปทรงทั่วไปที่ไม่ตรงกับชนิดขบวนรถจริงโดยเด็ดขาด
 
-| Line ID | สายรถไฟฟ้า | รหัสสี (Hex) | สถาปัตยกรรมตัวรถในไอคอน SVG (getLineIconSvg Architecture) |
-| :---: | :--- | :---: | :--- |
-| **1, 2** | **BTS สุขุมวิท / สีลม** | `#7AB420` / `#00807D` | **Heavy Rail EMU on Elevated Viaduct:** รูปรถไฟฟ้า EMU วิ่งบนรางยกระดับ พร้อมกระจกหน้าทรงลู่ลม (Aerodynamic Windshield) และไฟหน้าคู่ |
-| **3** | **APM สายสีทอง** | `#C9A038` | **Automated People Mover (APM):** ขบวนรถนำทางอัตโนมัติไร้คนขับ กระจกพานอรามาขนาดใหญ่ และรางนำทางคอนกรีตล้อยาง |
-| **4, 5** | **MRT เหลือง / ชมพู** | `#FFD100` / `#EC4899` | **Straddle Monorail:** ขบวนรถไฟฟ้าโมโนเรลทรงแคปซูล ตัวรถคร่อมบนคานคอนกรีตเดี่ยว (Concrete Guide Beam) |
-| **101** | **MRT สายสีน้ำเงิน** | `#0284C7` | **Underground Tunnel Metro:** โครงสร้างอุโมงค์ขุดทรงโค้ง (Tunnel Arch) พร้อมขบวนรถไฟใต้ดินไฟหน้าเหลี่ยม |
-| **102** | **MRT สายสีม่วง** | `#8A2C9B` | **Elevated Sustina EMU:** ขบวนรถไฟฟ้า Heavy Rail เทคโนโลยี Sustina พร้อมทางวิ่งยกระดับและแถบข้างตัวรถ |
-| **103** | **SRT สายสีแดงเข้ม** | `#B91C1C` | **Commuter EMU (Hitachi):** ขบวนรถไฟชานเมือง พร้อมเสาและขารับกระแสไฟฟ้าเหนือหัว (Overhead Catenary Pantograph) |
-| **105** | **SRT สายสีแดงอ่อน** | `#F87171` | **Light Commuter EMU:** ขบวนรถไฟชานเมืองสายตะวันตก พร้อมแขนรับกระแสไฟฟ้าแบบแขนเดี่ยว (Single-Arm Pantograph) |
-| **104** | **ARL แอร์พอร์ตลิงก์** | `#8A1538` | **Airport Express Bullet Train:** ขบวนรถด่วนรูปทรงหัวกระสุน พร้อมสัญลักษณ์เครื่องบิน ✈️ ด้านหน้า |
-| **201** | **BRT รถโดยสารด่วน** | `#82C341` | **Bus Rapid Transit:** รถโดยสารปรับอากาศขนาดใหญ่ พร้อมช่องทางวิ่งเฉพาะ (Dedicated Lane) |
-| **106** | **MRT สายสีส้ม** | `#F58220` | **Orange Tunnel Metro:** ขบวนรถไฟฟ้าขนส่งมวลชนเชื่อมฝั่งเมืองตะวันออก-ตก |
+| Line ID | สายรถไฟฟ้า | รหัสสี (Hex) | ไอคอนเวกเตอร์ (Vector SVG) | สถาปัตยกรรมตัวรถในไอคอน SVG (getLineIconSvg Architecture) |
+| :---: | :--- | :---: | :---: | :--- |
+| **1** | **BTS สุขุมวิท** | `#7AB420` | <img src="icons/lines/line-1.svg" width="24" height="24" alt="BTS Sukhumvit" style="vertical-align:middle;"> | **Heavy Rail EMU on Elevated Viaduct:** รูปรถไฟฟ้า EMU วิ่งบนรางยกระดับ พร้อมกระจกหน้าทรงลู่ลม (Aerodynamic Windshield) และไฟหน้าคู่ |
+| **2** | **BTS สีลม** | `#00807D` | <img src="icons/lines/line-2.svg" width="24" height="24" alt="BTS Silom" style="vertical-align:middle;"> | **Heavy Rail EMU on Elevated Viaduct:** รูปรถไฟฟ้า EMU วิ่งบนรางยกระดับ พร้อมกระจกหน้าทรงลู่ลม (Aerodynamic Windshield) และไฟหน้าคู่ |
+| **3** | **APM สายสีทอง** | `#C9A038` | <img src="icons/lines/line-3.svg" width="24" height="24" alt="APM Gold" style="vertical-align:middle;"> | **Automated People Mover (APM):** ขบวนรถนำทางอัตโนมัติไร้คนขับ กระจกพานอรามาขนาดใหญ่ และรางนำทางคอนกรีตล้อยาง |
+| **4** | **MRT สายสีเหลือง** | `#FFD100` | <img src="icons/lines/line-4.svg" width="24" height="24" alt="MRT Yellow" style="vertical-align:middle;"> | **Straddle Monorail:** ขบวนรถไฟฟ้าโมโนเรลทรงแคปซูล ตัวรถคร่อมบนคานคอนกรีตเดี่ยว (Concrete Guide Beam) |
+| **5** | **MRT สายสีชมพู** | `#EC4899` | <img src="icons/lines/line-5.svg" width="24" height="24" alt="MRT Pink" style="vertical-align:middle;"> | **Straddle Monorail:** ขบวนรถไฟฟ้าโมโนเรลทรงแคปซูล ตัวรถคร่อมบนคานคอนกรีตเดี่ยว พร้อมชานชาลาสายแยกเมืองทองธานี |
+| **101** | **MRT สายสีน้ำเงิน** | `#0284C7` | <img src="icons/lines/line-101.svg" width="24" height="24" alt="MRT Blue" style="vertical-align:middle;"> | **Underground Tunnel Metro:** โครงสร้างอุโมงค์ขุดทรงโค้ง (Tunnel Arch) พร้อมขบวนรถไฟใต้ดินไฟหน้าเหลี่ยม |
+| **102** | **MRT สายสีม่วง** | `#8A2C9B` | <img src="icons/lines/line-102.svg" width="24" height="24" alt="MRT Purple" style="vertical-align:middle;"> | **Elevated Sustina EMU:** ขบวนรถไฟฟ้า Heavy Rail เทคโนโลยี Sustina พร้อมทางวิ่งยกระดับและแถบข้างตัวรถ |
+| **103** | **SRT สายสีแดงเข้ม** | `#B91C1C` | <img src="icons/lines/line-103.svg" width="24" height="24" alt="SRT Dark Red" style="vertical-align:middle;"> | **Commuter EMU (Hitachi):** ขบวนรถไฟชานเมือง พร้อมเสาและขารับกระแสไฟฟ้าเหนือหัว (Overhead Catenary Pantograph) |
+| **105** | **SRT สายสีแดงอ่อน** | `#F87171` | <img src="icons/lines/line-105.svg" width="24" height="24" alt="SRT Light Red" style="vertical-align:middle;"> | **Light Commuter EMU:** ขบวนรถไฟชานเมืองสายตะวันตก พร้อมแขนรับกระแสไฟฟ้าแบบแขนเดี่ยว (Single-Arm Pantograph) |
+| **104** | **ARL แอร์พอร์ตลิงก์** | `#8A1538` | <img src="icons/lines/line-104.svg" width="24" height="24" alt="ARL" style="vertical-align:middle;"> | **Airport Express Bullet Train:** ขบวนรถด่วนรูปทรงหัวกระสุน พร้อมสัญลักษณ์เครื่องบินด้านหน้า |
+| **201** | **BRT รถโดยสารด่วน** | `#82C341` | <img src="icons/lines/line-201.svg" width="24" height="24" alt="BRT" style="vertical-align:middle;"> | **Bus Rapid Transit:** รถโดยสารปรับอากาศขนาดใหญ่ พร้อมช่องทางวิ่งเฉพาะ (Dedicated Lane) |
+| **106** | **MRT สายสีส้ม** | `#F58220` | <img src="icons/lines/line-106.svg" width="24" height="24" alt="MRT Orange" style="vertical-align:middle;"> | **Orange Tunnel Metro:** ขบวนรถไฟฟ้าขนส่งมวลชนเชื่อมฝั่งเมืองตะวันออก-ตก (โครงการในอนาคต) |
+| **0** | **สถานีรวมทุกสาย** | `#64748B` | <img src="icons/lines/line-0.svg" width="24" height="24" alt="Transit Hub" style="vertical-align:middle;"> | **Transit Network Hub:** ชุมทางเชื่อมต่อโครงข่ายระบบรางทั้งหมด |
 
 ### 6.3 สัญลักษณ์โครงข่ายและจุดเชื่อมต่อ (Transit Network & Legend Symbols)
-สัญลักษณ์ทางเชื่อมต่อระบบขนส่งสาธารณะที่แสดงผลในหน้าต่างคำอธิบายโครงข่าย (Transit Legend Box):
-- **⇄ จุดเชื่อมต่อข้ามสาย (Interchange):** จุดสถานีร่วมสำหรับเปลี่ยนถ่ายเส้นทางข้ามสาย (`legend-inter-node`)
-- **✈️ เชื่อมต่อท่าอากาศยาน (Airport):** เชื่อมต่อไปยังสนามบินสุวรรณภูมิ (ARL) หรือสนามบินดอนเมือง (SRT Red Line)
-- **⛵ ท่าเรือเชื่อมต่อ (Pier / Boat):** เชื่อมต่อระบบเรือด่วนเจ้าพระยา และเรือโดยสารคลองแสนแสบ
-- **🚆 เชื่อมต่อรถไฟทางไกล (SRT):** เชื่อมต่อไปยังสถานีกลางกรุงเทพอภิวัฒน์ และสถานีรถไฟกรุงเทพ (หัวลำโพง)
-- **🚌 สถานีขนส่งผู้โดยสาร (Bus Terminal):** เชื่อมต่อสถานีขนส่งหมอชิต 2, เอกมัย หรือสายใต้
-- **🅿️ อาคารจอดแล้วจร (Park & Ride):** จุดบริการลานและอาคารจอดรถเพื่อเดินทางต่อด้วยระบบราง
+สัญลักษณ์ทางเชื่อมต่อระบบขนส่งสาธารณะที่แสดงผลในหน้าต่างคำอธิบายโครงข่าย (`#mapLegendSheet`):
 
-### 6.4 ระบบเวกเตอร์ไอคอนส่วนต่อประสาน (Modern Vector UI Icons System)
-ไอคอนทั้งหมดในระบบฝังตัวในออบเจกต์ `UI_ICONS` (`js/app.js`) เรนเดอร์เป็น SVG Inline เพื่อความเร็ว 0ms และความคมชัด 100%:
-- **📍 `pin`:** หมุดแสดงตำแหน่งสถานีใกล้คุณและสถานีบนแผนผัง
-- **🧭 `compass`:** เข็มทิศค้นหาตำแหน่ง GPS และแท็บวางแผนเดินทาง
-- **⏱️ `timer`:** ความถี่ปล่อยขบวนรถและเวลานับถอยหลัง TTA
-- **🕒 `clock`:** นาฬิกาบอกเวลา และช่วงเวลาเปิด-ปิดให้บริการ
-- **🚪 `door`:** ข้อมูลทางออกสถานีและสิ่งอำนวยความสะดวก
-- **🗺️ `map`:** แผนผังโครงข่ายรถไฟฟ้าเวกเตอร์แบบโต้ตอบ
-- **💳 `card`:** โครงสร้างอัตราค่าโดยสาร และระบบบัตร EMV Contactless
-- **💰 `coins`:** การคำนวณค่าโดยสารแบบรวมข้ามสาย
-- **🎟️ `ticket`:** บัตรโดยสารและตั๋วเที่ยวเดียว
-- **🌟 `star`:** สถานีชุมทางยอดนิยมสำหรับการเลือกด่วน
-- **💡 `bulb`:** ข้อแนะนำและเกร็ดความรู้การเดินทาง
-- **🗓️ `calendar`:** ตารางเวลาเดินรถแยกวันทำงานและวันหยุด
-- **🏁 `flag`:** ธงระบุสถานีปลายทาง
-- **🔍 `search`:** แถบค้นหาสถานีและรหัสสถานี
-- **✈️ `plane`:** รถไฟฟ้าแอร์พอร์ตลิงก์และจุดเชื่อมต่อสนามบิน
-- **🚶 `walk`:** ทางเดินเชื่อมและสกายวอล์ก (Skywalk)
-- **🛗 `elevator`:** ลิฟต์โดยสารสำหรับคนพิการและผู้สูงอายุ
-- **🪜 `escalator`:** บันไดเลื่อนประจำทางออก
-- **📏 `ruler`:** การวัดระยะห่างกิโลเมตรและเมตรจาก GPS
-- **👵 `senior`:** อัตราค่าโดยสารพิเศษสำหรับผู้สูงอายุ
-- **🎓 `student`:** อัตราค่าโดยสารพิเศษสำหรับนักเรียน/นักศึกษา
-- **👶 `child`:** อัตราค่าโดยสารและเกณฑ์ส่วนสูงสำหรับเด็ก
-- **⚠️ `warn`:** แถบประกาศแจ้งเตือนเหตุขัดข้องและสถานะการเดินรถ
-- **🚫 `ban`:** สัญลักษณ์ไม่มีข้อมูลขบวนรถ หรืออยู่นอกเวลาให้บริการ
-- **🌙 `moon`:** สวิตช์สลับเข้าสู่โหมดมืด (Dark Theme)
-- **☀️ `sun`:** สวิตช์สลับเข้าสู่โหมดสว่าง (Light Theme)
-- **🔄 `refresh`:** ปุ่มรีเฟรชข้อมูลสถานะและขบวนรถสด
-- **👥 `users`:** ระดับความหนาแน่นของผู้โดยสารบนสถานี
+| สัญลักษณ์เวกเตอร์ (Vector SVG) | ชื่อเรียก (Legend Name) | รายละเอียดและจุดเชื่อมต่อ (Connectivity) |
+| :---: | :--- | :--- |
+| <img src="icons/legend/interchange.svg" width="36" height="18" alt="Interchange" style="vertical-align:middle;"> | **จุดเชื่อมต่อข้ามสาย (Interchange)** | โหนดสถานีร่วมวงกลมคู่เชื่อมโยงกัน สำหรับเปลี่ยนขบวนรถข้ามสาย (`.legend-inter-node`) |
+| <img src="icons/legend/airport.svg" width="22" height="22" alt="Airport" style="vertical-align:middle;"> | **เชื่อมต่อท่าอากาศยาน (Airport)** | เชื่อมต่อไปยังสนามบินสุวรรณภูมิ (ARL) หรือสนามบินดอนเมือง (SRT Red Line) |
+| <img src="icons/legend/boat.svg" width="22" height="22" alt="Boat" style="vertical-align:middle;"> | **ท่าเรือเชื่อมต่อ (Pier / Boat)** | เชื่อมต่อระบบเรือด่วนเจ้าพระยา และเรือโดยสารคลองแสนแสบ |
+| <img src="icons/legend/train.svg" width="22" height="22" alt="Train" style="vertical-align:middle;"> | **เชื่อมต่อรถไฟทางไกล (SRT)** | เชื่อมต่อไปยังสถานีกลางกรุงเทพอภิวัฒน์ และสถานีรถไฟกรุงเทพ (หัวลำโพง) |
+| <img src="icons/legend/bus.svg" width="22" height="22" alt="Bus" style="vertical-align:middle;"> | **สถานีขนส่งผู้โดยสาร (Bus Terminal)** | เชื่อมต่อสถานีขนส่งหมอชิต 2, เอกมัย หรือสายใต้ |
+| <img src="icons/legend/parking.svg" width="22" height="22" alt="Parking" style="vertical-align:middle;"> | **อาคารจอดแล้วจร (Park & Ride)** | จุดบริการลานและอาคารจอดรถเพื่อเดินทางต่อด้วยระบบราง |
+| <img src="icons/legend/branch.svg" width="120" height="22" alt="Branch" style="vertical-align:middle;"> | **สายแยกเมืองทองธานี (Branch Line)** | จุดเชื่อมต่อและชานชาลาสายแยกอิมแพ็ค-ทะเลสาบเมืองทองธานี (PK10 ⇄ MT01, MT02) |
 
-### 6.5 มาตรฐานการจัดองค์ประกอบกึ่งกลาง (Project Element Centering Standard)
+### 6.4 สัญลักษณ์แถบนำทางด้านล่าง (Floating Bottom Navigation Dock Icons)
+ไอคอนควบคุมมุมมองหลักทั้ง 5 หน้าจอในแถบนำทางด้านล่าง (`nav.bottom-nav`):
+
+| ไอคอนเวกเตอร์ (Vector SVG) | ชื่อแท็บ (Tab Name) | รหัสแท็บ (Tab ID) | การทำงานในระบบ (Functionality) |
+| :---: | :--- | :---: | :--- |
+| <img src="icons/nav/home.svg" width="22" height="22" alt="Home" style="vertical-align:middle;"> | **หน้าแรก (Home)** | `tab-home` | กระดานสด TTA Countdown, สถานีใกล้คุณ, ค้นหาสถานี และผังเส้นทาง Strip |
+| <img src="icons/nav/map.svg" width="22" height="22" alt="Map" style="vertical-align:middle;"> | **แผนที่ (Map)** | `tab-map` | แผนผังโครงข่ายรถไฟฟ้าเวกเตอร์พิมพ์เขียว 12 สาย พร้อมจุดฮอตสปอตโต้ตอบ Tap-to-Route |
+| <img src="icons/nav/planner.svg" width="22" height="22" alt="Planner" style="vertical-align:middle;"> | **วางแผน (Planner)** | `tab-planner` | วางแผนการเดินทางอัจฉริยะ คำนวณเวลา ค่าโดยสาร และจุดเปลี่ยนสายข้ามทุกระบบ |
+| <img src="icons/nav/fares.svg" width="22" height="22" alt="Fares" style="vertical-align:middle;"> | **ค่าโดยสาร (Fares)** | `tab-fares` | ตารางอัตราค่าโดยสารแต่ละสาย นโยบายส่วนลด และการชำระเงิน EMV Contactless |
+| <img src="icons/nav/timetables.svg" width="22" height="22" alt="Timetables" style="vertical-align:middle;"> | **เวลาเดินรถ (Timetables)** | `tab-timetables` | ตารางเวลาเดินรถขบวนแรก-สุดท้าย และความถี่การปล่อยขบวนรถแยกวันทำงาน/วันหยุด |
+
+### 6.5 ระบบเวกเตอร์ไอคอนส่วนต่อประสาน (Modern Vector UI Icons System)
+ไอคอนทั้งหมดในระบบฝังตัวในออบเจกต์ `UI_ICONS` (`js/app.js`) ทั้ง 40 รายการ เรนเดอร์เป็น SVG Inline เพื่อความเร็ว 0ms และความคมชัด 100%:
+
+| ไอคอนเวกเตอร์ (Vector SVG) | คีย์ (Icon Key) | การใช้งานในระบบ (Usage) |
+| :---: | :--- | :--- |
+| <img src="icons/ui/pin.svg" width="20" height="20" alt="pin" style="vertical-align:middle;"> | `pin` | หมุดระบุสถานีใกล้เคียง และตำแหน่งสถานีบนแผนผัง |
+| <img src="icons/ui/compass.svg" width="20" height="20" alt="compass" style="vertical-align:middle;"> | `compass` | ปุ่มค้นหาตำแหน่งปัจจุบัน (GPS) และแท็บวางแผนการเดินทาง |
+| <img src="icons/ui/timer.svg" width="20" height="20" alt="timer" style="vertical-align:middle;"> | `timer` | ความถี่ในการปล่อยขบวนรถ (Headway Frequency) และเวลานับถอยหลัง |
+| <img src="icons/ui/clock.svg" width="20" height="20" alt="clock" style="vertical-align:middle;"> | `clock` | นาฬิกาแบบเรียลไทม์ และเวลาเปิด-ปิดการให้บริการ |
+| <img src="icons/ui/door.svg" width="20" height="20" alt="door" style="vertical-align:middle;"> | `door` | ไดเรกทอรีข้อมูลประตูทางออกสถานีและจุดเชื่อมต่อ |
+| <img src="icons/ui/map.svg" width="20" height="20" alt="map" style="vertical-align:middle;"> | `map` | แผนผังโครงข่ายรถไฟฟ้าเวกเตอร์แบบโต้ตอบ |
+| <img src="icons/ui/card.svg" width="20" height="20" alt="card" style="vertical-align:middle;"> | `card` | แท็บข้อมูลโครงสร้างและตารางค่าโดยสาร (EMV / Contactless) |
+| <img src="icons/ui/coins.svg" width="20" height="20" alt="coins" style="vertical-align:middle;"> | `coins` | การคำนวณค่าโดยสารแบบไดนามิกระหว่างสถานี |
+| <img src="icons/ui/ticket.svg" width="20" height="20" alt="ticket" style="vertical-align:middle;"> | `ticket` | ประเภทตั๋วโดยสารเที่ยวเดียวและบัตรโดยสาร |
+| <img src="icons/ui/star.svg" width="20" height="20" alt="star" style="vertical-align:middle;"> | `star` | รายการสถานีชุมทางยอดนิยม (Popular Interchange Hubs) |
+| <img src="icons/ui/bulb.svg" width="20" height="20" alt="bulb" style="vertical-align:middle;"> | `bulb` | คำแนะนำการใช้งานและเกร็ดความรู้การเดินทาง |
+| <img src="icons/ui/calendar.svg" width="20" height="20" alt="calendar" style="vertical-align:middle;"> | `calendar` | ตารางการเดินรถแยกวันธรรมดา (Weekday) และวันหยุด (Weekend) |
+| <img src="icons/ui/flag.svg" width="20" height="20" alt="flag" style="vertical-align:middle;"> | `flag` | หมุดระบุสถานีปลายทางในการวางแผนเส้นทาง |
+| <img src="icons/ui/search.svg" width="20" height="20" alt="search" style="vertical-align:middle;"> | `search` | กล่องค้นหารายชื่อสถานีและรหัสสถานี |
+| <img src="icons/ui/plane.svg" width="20" height="20" alt="plane" style="vertical-align:middle;"> | `plane` | สัญลักษณ์รถไฟฟ้าแอร์พอร์ต เรล ลิงก์ และจุดเชื่อมสนามบิน |
+| <img src="icons/ui/chart.svg" width="20" height="20" alt="chart" style="vertical-align:middle;"> | `chart` | แผนภูมิสถิติระดับความหนาแน่นของผู้โดยสาร |
+| <img src="icons/ui/walk.svg" width="20" height="20" alt="walk" style="vertical-align:middle;"> | `walk` | ทางเดินเชื่อมและสะพานลอยคนเดิน (Skywalk) |
+| <img src="icons/ui/elevator.svg" width="20" height="20" alt="elevator" style="vertical-align:middle;"> | `elevator` | สิ่งอำนวยความสะดวก: ลิฟต์โดยสารสำหรับผู้พิการและผู้สูงอายุ |
+| <img src="icons/ui/escalator.svg" width="20" height="20" alt="escalator" style="vertical-align:middle;"> | `escalator` | สิ่งอำนวยความสะดวก: บันไดเลื่อนประจำทางออก |
+| <img src="icons/ui/ruler.svg" width="20" height="20" alt="ruler" style="vertical-align:middle;"> | `ruler` | การวัดระยะห่างกิโลเมตรและเมตรจากพิกัด GPS |
+| <img src="icons/ui/senior.svg" width="20" height="20" alt="senior" style="vertical-align:middle;"> | `senior` | ส่วนลดค่าโดยสารสำหรับผู้สูงอายุ (Senior Concession) |
+| <img src="icons/ui/student.svg" width="20" height="20" alt="student" style="vertical-align:middle;"> | `student` | ส่วนลดค่าโดยสารสำหรับนักเรียน/นักศึกษา (Student Concession) |
+| <img src="icons/ui/child.svg" width="20" height="20" alt="child" style="vertical-align:middle;"> | `child` | ส่วนลดและเกณฑ์ค่าโดยสารสำหรับเด็ก (Child Concession) |
+| <img src="icons/ui/warn.svg" width="20" height="20" alt="warn" style="vertical-align:middle;"> | `warn` | แถบประกาศแจ้งเตือนเหตุขัดข้องและสถานะการเดินรถสด |
+| <img src="icons/ui/ban.svg" width="20" height="20" alt="ban" style="vertical-align:middle;"> | `ban` | สัญลักษณ์แจ้งไม่มีข้อมูลขบวนรถ หรืออยู่นอกเวลาให้บริการ |
+| <img src="icons/ui/moon.svg" width="20" height="20" alt="moon" style="vertical-align:middle;"> | `moon` | ปุ่มสลับชุดสีเข้าสู่โหมดมืด (Dark Theme) |
+| <img src="icons/ui/sun.svg" width="20" height="20" alt="sun" style="vertical-align:middle;"> | `sun` | ปุ่มสลับชุดสีเข้าสู่โหมดสว่าง (Light Theme) |
+| <img src="icons/ui/refresh.svg" width="20" height="20" alt="refresh" style="vertical-align:middle;"> | `refresh` | ปุ่มรีเฟรชข้อมูลขบวนรถและสถานะการเดินรถแบบทันที |
+| <img src="icons/ui/users.svg" width="20" height="20" alt="users" style="vertical-align:middle;"> | `users` | ข้อมูลระดับความหนาแน่นของผู้โดยสารบนสถานี |
+| <img src="icons/ui/zoomIn.svg" width="20" height="20" alt="zoomIn" style="vertical-align:middle;"> | `zoomIn` | ปุ่มขยายมุมมองแผนผังโครงข่ายรถไฟฟ้า |
+| <img src="icons/ui/zoomOut.svg" width="20" height="20" alt="zoomOut" style="vertical-align:middle;"> | `zoomOut` | ปุ่มย่อมุมมองแผนผังโครงข่ายรถไฟฟ้า |
+| <img src="icons/ui/resetZoom.svg" width="20" height="20" alt="resetZoom" style="vertical-align:middle;"> | `resetZoom` | ปุ่มคืนค่ามุมมองกึ่งกลางแผนผังโครงข่าย |
+| <img src="icons/ui/briefcase.svg" width="20" height="20" alt="briefcase" style="vertical-align:middle;"> | `briefcase` | ตารางเวลาเดินรถช่วงวันทำงานปกติ (Weekday) |
+| <img src="icons/ui/beach.svg" width="20" height="20" alt="beach" style="vertical-align:middle;"> | `beach` | ตารางเวลาเดินรถช่วงวันหยุดสุดสัปดาห์ (Weekend / Holiday) |
+| <img src="icons/ui/clipboard.svg" width="20" height="20" alt="clipboard" style="vertical-align:middle;"> | `clipboard` | รายการตารางเวลาและความถี่การเดินรถประจำสาย |
+| <img src="icons/ui/check.svg" width="20" height="20" alt="check" style="vertical-align:middle;"> | `check` | เครื่องหมายเลือกสถานี หรือแสดงผลชานชาลาทั้งหมด |
+| <img src="icons/ui/boat.svg" width="20" height="20" alt="boat" style="vertical-align:middle;"> | `boat` | จุดเชื่อมต่อท่าเรือโดยสารแม่น้ำเจ้าพระยาและคลอง |
+| <img src="icons/ui/bus.svg" width="20" height="20" alt="bus" style="vertical-align:middle;"> | `bus` | จุดเชื่อมต่อสถานีขนส่งผู้โดยสารและรถประจำทาง |
+| <img src="icons/ui/parking.svg" width="20" height="20" alt="parking" style="vertical-align:middle;"> | `parking` | จุดบริการอาคารและลานจอดแล้วจร (Park & Ride) |
+
+### 6.6 มาตรฐานการจัดองค์ประกอบกึ่งกลาง (Project Element Centering Standard)
 > [!IMPORTANT]
 > ทุกกรอบข้อความ รหัสสถานี (Station Code เช่น `YL20`, `CEN`), ไอคอนสัญลักษณ์ (Icons / Symbols เช่น Theme Button, Line Icons, Badges), และปุ่มควบคุมแบบ Pill/Box ทั้งหมดในระบบ จะต้องถูกจัดให้อยู่ **"กึ่งกลาง" (Centered ทั้งแนวนอน Horizontal และแนวตั้ง Vertical)** เสมอ
 > - ต้องใช้ `display: inline-flex` หรือ `display: flex` พร้อมด้วย `align-items: center; justify-content: center; text-align: center; line-height: 1; box-sizing: border-box;` และ `letter-spacing: 0;` (เพื่อไม่ให้ trailing space ดันตัวอักษรเอียง)

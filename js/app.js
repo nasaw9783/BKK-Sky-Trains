@@ -6619,6 +6619,14 @@ setOriginFromActionSheet() {
                         }
                     }
                 }
+                // พิเศษสำหรับ MT01 และ MT02:
+                // MT01 มี 2 ชานชาลา (3 และ 4)
+                // MT02 มี 2 ชานชาลา (3 และ 4) แต่ปัจจุบันเปิดใช้บริการ 1 ชานชาลา คือ (ชานชาลา 4)
+                if (key === 'MT01' && Array.isArray(platList)) {
+                    platList = platList.filter(p => String(p.platform) === '3' || String(p.platform) === '4');
+                } else if (key === 'MT02' && Array.isArray(platList)) {
+                    platList = platList.filter(p => String(p.platform) === '4');
+                }
                 for (const p of platList) {
                     // กรองขบวนรถศูนย์ซ่อมบำรุง / ขบวนรถเปล่า (เช่น YL00, PK00) ออกตั้งแต่ต้น
                     if (Array.isArray(p.train_list)) {
@@ -6718,9 +6726,15 @@ setOriginFromActionSheet() {
                 const linePromises = allLines.map(async line => {
                     const list = line.StationList;
                     const idx = list.findIndex(s => s.StationKey === key);
-                    if (idx < 0) return null;
-                    const prev = idx > 0 ? list[idx - 1] : null;
-                    const next = idx < list.length - 1 ? list[idx + 1] : null;
+                    let prev = idx > 0 ? list[idx - 1] : null;
+                    let next = idx < list.length - 1 ? list[idx + 1] : null;
+                    if (key === 'MT01') {
+                        prev = list.find(s => s.StationKey === 'PK10') || prev;
+                        next = list.find(s => s.StationKey === 'MT02') || next;
+                    } else if (key === 'MT02') {
+                        prev = list.find(s => s.StationKey === 'MT01') || prev;
+                        next = null;
+                    }
                     const adj = {};
                     const neighbors = [prev, next].filter(Boolean);
                     await Promise.all(neighbors.map(async s => {
@@ -7527,27 +7541,39 @@ setOriginFromActionSheet() {
             // 7. MRT สายสีชมพู (LineId: 5) — PK01 (ศูนย์ราชการนนทบุรี) <-> PK30 (มีนบุรี)
             else if (isPinkLineId(lineId) || (key && (key.startsWith('PK') || key.startsWith('MT')))) {
                 const pinkColor = station.StationLineColor || LINE_BRAND_COLORS[5] || '#D76886';
-                if (key.startsWith('MT')) {
-                    const isTerm1 = (key === 'MT02');
+                if (key === 'MT01') {
+                    // MT01 มี 2 ชานชาลา ได้แก่ ชานชาลา 3 (ไปทะเลสาบเมืองทองธานี) และ ชานชาลา 4 (ไปเมืองทองธานี)
                     const dest1 = getDestPair('MT02', 'ทะเลสาบเมืองทองธานี', 'Lake Muang Thong Thani');
                     const dest2 = getDestPair('PK10', 'เมืองทองธานี', 'Muang Thong Thani');
                     platforms.push({
-                        platform: 1,
+                        platform: 3,
                         LineId: 5,
                         LineColor: pinkColor,
                         DestinationStation: dest1,
                         DestinationStation_key: 'MT02',
-                        isDropOffOnly: isTerm1,
-                        train_list: makeTrains(1, dest1, 'MT02', key === 'MT01' ? 0 : 2.5, isTerm1)
+                        isDropOffOnly: false,
+                        train_list: makeTrains(3, dest1, 'MT02', 0, false)
                     });
                     platforms.push({
-                        platform: 2,
+                        platform: 4,
                         LineId: 5,
                         LineColor: pinkColor,
                         DestinationStation: dest2,
                         DestinationStation_key: 'PK10',
                         isDropOffOnly: false,
-                        train_list: makeTrains(2, dest2, 'PK10', (key === 'MT02' ? 0 : 2.5) + (interval * 0.5), false)
+                        train_list: makeTrains(4, dest2, 'PK10', interval * 0.5, false)
+                    });
+                } else if (key === 'MT02') {
+                    // MT02 มี 2 ชานชาลา ได้แก่ ชานชาลา 3 และ ชานชาลา 4 แต่ปัจจุบันเปิดใช้บริการ 1 ชานชาลา คือ (ชานชาลา 4)
+                    const dest2 = getDestPair('PK10', 'เมืองทองธานี', 'Muang Thong Thani');
+                    platforms.push({
+                        platform: 4,
+                        LineId: 5,
+                        LineColor: pinkColor,
+                        DestinationStation: dest2,
+                        DestinationStation_key: 'PK10',
+                        isDropOffOnly: false,
+                        train_list: makeTrains(4, dest2, 'PK10', 0, false)
                     });
                 } else {
                     const num = parseInt(key.replace(/\D/g, ''), 10) || 1;
@@ -8221,11 +8247,75 @@ setOriginFromActionSheet() {
                 if (idx < 0) continue;
 
                 const linePlats = result.filter(p => p.LineId === lid);
+
+                if (station.StationKey === 'MT01') {
+                    // MT01 มี 2 ชานชาลา ได้แก่ ชานชาลา 3 (ไปทะเลสาบเมืองทองธานี) และ ชานชาลา 4 (ไปเมืองทองธานี)
+                    const p3 = linePlats.find(p => String(p.platform) === '3');
+                    const p4 = linePlats.find(p => String(p.platform) === '4');
+                    const dest1 = (typeof lang !== 'undefined' && lang === 'en') ? 'Lake Muang Thong Thani' : 'ทะเลสาบเมืองทองธานี';
+                    const dest2 = (typeof lang !== 'undefined' && lang === 'en') ? 'Muang Thong Thani' : 'เมืองทองธานี';
+                    if (!p3) {
+                        result.push({
+                            platform: 3,
+                            LineId: lid,
+                            LineColor: line.LineColor,
+                            DestinationStation: dest1,
+                            DestinationStation_key: 'MT02',
+                            isDropOffOnly: false,
+                            train_list: []
+                        });
+                    } else if (!p3.DestinationStation) {
+                        p3.DestinationStation = dest1;
+                        p3.DestinationStation_key = 'MT02';
+                    }
+                    if (!p4) {
+                        result.push({
+                            platform: 4,
+                            LineId: lid,
+                            LineColor: line.LineColor,
+                            DestinationStation: dest2,
+                            DestinationStation_key: 'PK10',
+                            isDropOffOnly: false,
+                            train_list: []
+                        });
+                    } else if (!p4.DestinationStation) {
+                        p4.DestinationStation = dest2;
+                        p4.DestinationStation_key = 'PK10';
+                    }
+                    const filtered = result.filter(p => p.LineId !== lid || String(p.platform) === '3' || String(p.platform) === '4');
+                    result.length = 0;
+                    result.push(...filtered);
+                    continue;
+                }
+
+                if (station.StationKey === 'MT02') {
+                    // MT02 มี 2 ชานชาลา ได้แก่ ชานชาลา 3 และ ชานชาลา 4 แต่ปัจจุบันเปิดใช้บริการ 1 ชานชาลา คือ (ชานชาลา 4)
+                    const p4 = linePlats.find(p => String(p.platform) === '4');
+                    const dest2 = (typeof lang !== 'undefined' && lang === 'en') ? 'Muang Thong Thani' : 'เมืองทองธานี';
+                    if (!p4) {
+                        result.push({
+                            platform: 4,
+                            LineId: lid,
+                            LineColor: line.LineColor,
+                            DestinationStation: dest2,
+                            DestinationStation_key: 'PK10',
+                            isDropOffOnly: false,
+                            train_list: []
+                        });
+                    } else if (!p4.DestinationStation) {
+                        p4.DestinationStation = dest2;
+                        p4.DestinationStation_key = 'PK10';
+                    }
+                    const filtered = result.filter(p => p.LineId !== lid || String(p.platform) === '4');
+                    result.length = 0;
+                    result.push(...filtered);
+                    continue;
+                }
+
                 const isSilom = (lid === 2);
-                const isPinkMuangThong = (lid === 5 && station.StationKey && station.StationKey.startsWith('MT'));
-                // สายสีลม (Line 2) และสายเมืองทอง (MT01-MT02) ใช้ชานชาลา 3 และ 4
-                const pNumA = (isSilom || isPinkMuangThong) ? 3 : 1;
-                const pNumB = (isSilom || isPinkMuangThong) ? 4 : 2;
+                // สายสีลม (Line 2) ใช้ชานชาลา 3 และ 4
+                const pNumA = isSilom ? 3 : 1;
+                const pNumB = isSilom ? 4 : 2;
 
                 const hasPlatA = linePlats.some(p => String(p.platform) === String(pNumA));
                 const hasPlatB = linePlats.some(p => String(p.platform) === String(pNumB));
@@ -8237,16 +8327,6 @@ setOriginFromActionSheet() {
                 let isDropOffB = false;
                 let destNameB = '';
                 let destKeyB = '';
-
-                if (isPinkMuangThong) {
-                    isDropOffA = (station.StationKey === 'MT02');
-                    destNameA = isDropOffA ? (station.StationNameTH || station.StationName || 'ทะเลสาบเมืองทองธานี') : 'ทะเลสาบเมืองทองธานี';
-                    destKeyA = 'MT02';
-
-                    isDropOffB = false;
-                    destNameB = 'อิมแพ็ค เมืองทองธานี';
-                    destKeyB = 'MT01';
-                } else {
                     let endStation = list[list.length - 1];
                     let startStation = list[0];
                     if (lid === 5) {
@@ -8265,7 +8345,6 @@ setOriginFromActionSheet() {
                         ? (station.StationNameTH || station.StationName || 'สิ้นสุดปลายทาง')
                         : (startStation.StationNameTH || startStation.StationName);
                     destKeyB = isDropOffB ? station.StationKey : startStation.StationKey;
-                }
 
                 if (!hasPlatA) {
                     result.push({
@@ -8672,8 +8751,14 @@ setOriginFromActionSheet() {
                     pTop = plats[0];
                     pBtm = plats[1];
                 }
-            } else {
-                if (!pTop && plats.length > 0) pTop = plats[0];
+            } else if (plats.length === 1) {
+                if (fromOf(plats[0]) === 'prev') {
+                    pTop = plats[0];
+                    pBtm = null;
+                } else {
+                    pTop = null;
+                    pBtm = plats[0];
+                }
             }
 
             const topLabel = pTop ? formatPlatLabel(pTop, next || list[list.length - 1]) : '';

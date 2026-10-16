@@ -127,12 +127,14 @@ jobs:
             releases/Android/AAB/BKK_SkyTrains_V.*.aab.sha256
           retention-days: 14
 
-      - name: Clean up older releases (if requested)
-        if: github.event_name == 'workflow_dispatch' && inputs.cleanup_old_releases == true
+      - name: Clean up older releases on GitHub
+        if: startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && inputs.publish_release == true)
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
+            const currentTag = "${{ (github.event_name == 'workflow_dispatch' && inputs.custom_tag != null && inputs.custom_tag != '') && inputs.custom_tag || (startsWith(github.ref, 'refs/tags/v') && github.ref_name || format('v{0}', steps.app_version.outputs.version_base)) }}";
+            console.log(`Current release tag: ${currentTag}. Cleaning up older releases on GitHub...`);
             const releases = await github.rest.repos.listReleases({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -140,16 +142,18 @@ jobs:
             });
             console.log(`Found ${releases.data.length} releases.`);
             for (const r of releases.data) {
-              console.log(`Deleting old release ${r.name} (${r.tag_name})...`);
-              try {
-                await github.rest.repos.deleteRelease({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  release_id: r.id
-                });
-                console.log(`Successfully deleted release id ${r.id}`);
-              } catch (err) {
-                console.warn(`Failed to delete release id ${r.id}:`, err.message);
+              if (r.tag_name !== currentTag && r.tag_name !== 'latest') {
+                console.log(`Deleting old release ${r.name} (tag: ${r.tag_name}, id: ${r.id})...`);
+                try {
+                  await github.rest.repos.deleteRelease({
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    release_id: r.id
+                  });
+                  console.log(`Successfully deleted release id ${r.id}`);
+                } catch (err) {
+                  console.warn(`Failed to delete release id ${r.id}:`, err.message);
+                }
               }
             }
 

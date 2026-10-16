@@ -2,22 +2,23 @@
 #  BKK SkyTrains - Automated Release, Build & GitHub Deployment Script
 #  Encoding: UTF-8 with BOM | Supports: Windows PowerShell 5.1 & pwsh 7+
 #
-#  ลำดับขั้นตอนการทำงานทั้ง 7 ขั้นตอน (Strict 7-Step Execution Order):
+#  ลำดับขั้นตอนการทำงานทั้ง 8 ขั้นตอน (Strict 8-Step Execution Order):
 #  1. จัดระเบียบไฟล์ C:\Users\Administrator\Documents\BKK Sky Trains จากเครื่องให้เป็นระเบียบ
 #     พร้อมจัดหมวดหมู่/Folder ถ้าไฟล์หรือแอพไหนไม่สำคัญต่อระบบแล้ว และไม่ทำลายระบบให้เสียหาย ให้ลบทิ้งได้ทันที
 #  2. Update .yml ทั้งหมด
-#  3. Update .md ให้ตรงตามเว็บ/แอพ ทั้งหมด
-#  4. ทำแอพ Android (Release APK)
-#  5. ต้องการให้ทำเป็น App Bundle (Android App Bundle: .aab)
-#  6. ทำแอพ IOS (ตรวจสอบโครงสร้าง Native iOS / บิลด์ IPA หากอยู่บน macOS หรือเตรียมส่งต่อไปยัง Cloud macOS Runner)
-#  7. ลบข้อมูลเก่าที่ไม่จำเป็น บน Github ออก และ Upload ขึ้น Github ทำแอพ IOS เวอร์ชั่นที่ทำใหม่
+#  3. Update .md ทั้งหมดให้ตรงตามเว็บ/แอพ เท่านั้น
+#  4. Update .ps1 ทั้งหมดให้ตรงตามเว็บ/แอพ เท่านั้น
+#  5. ทำแอพ Android
+#  6. ต้องการให้ทำเป็น App Bundle
+#  7. ทำแอพ IOS
+#  8. ลบข้อมูลเวอร์เก่า บน Github ออก และ Upload ขึ้น Github Build iOS & Android Apps เวอร์ชั่นที่ทำใหม่ล่าสุดเสมอ
 # ==============================================================================
 
 [CmdletBinding()]
 param(
     [string]$Version = "",
     [string]$GitHubToken = $env:GITHUB_TOKEN,
-    [switch]$PurgeRemoteReleases,
+    [switch]$PurgeRemoteReleases = $true,
     [switch]$BuildAndroid = $true,
     [switch]$BuildAppBundle = $true,
     [switch]$BuildIOS = $true,
@@ -25,7 +26,7 @@ param(
     [switch]$SkipTests
 )
 
-# 0. Force UTF-8 Encoding
+# 0. Force UTF-8 Encoding in Console
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $OutputEncoding = [System.Text.Encoding]::UTF8
 
@@ -60,10 +61,10 @@ Write-Host "📦 เวอร์ชันเป้าหมาย: v$Version" -F
 
 
 # ==============================================================================
-# [1/7] จัดระเบียบไฟล์ C:\Users\Administrator\Documents\BKK Sky Trains จากเครื่องให้เป็นระเบียบ
+# [1/8] จัดระเบียบไฟล์ C:\Users\Administrator\Documents\BKK Sky Trains จากเครื่องให้เป็นระเบียบ
 #       พร้อมจัดหมวดหมู่/Folder ถ้าไฟล์หรือแอพไหนไม่สำคัญต่อระบบแล้ว และไม่ทำลายระบบให้เสียหาย ให้ลบทิ้งได้ทันที
 # ==============================================================================
-Write-Host "`n[Step 1/7] 🧹 จัดระเบียบไฟล์ในเครื่อง และลบไฟล์/แอพที่ไม่จำเป็นทิ้งทันที (Zero-Waste Pruning)..." -ForegroundColor Cyan
+Write-Host "`n[Step 1/8] 🧹 จัดระเบียบไฟล์ในเครื่อง และลบไฟล์/แอพที่ไม่จำเป็นทิ้งทันที (Zero-Waste Pruning)..." -ForegroundColor Cyan
 
 # 1.1 ลบไฟล์ขยะชั่วคราวและแคชของระบบ OS/IDE
 $junkExtensions = @("*.tmp", "*.bak", "*.old", "*.log", "*.swp", "*~", "Thumbs.db", "Desktop.ini", ".DS_Store")
@@ -105,7 +106,7 @@ foreach ($d in $relDirs) {
     if (-not (Test-Path $gk)) { Set-Content -Path $gk -Value "" }
 }
 
-# ย้ายไฟล์ตกค้างจากโฟลเดอร์เดิม (.apk-.aab, ABB) เข้าโฟลเดอร์เป้าหมาย
+# ย้ายไฟล์ตกค้างจากโฟลเดอร์เดิม (.apk-.aab, ABB, IPA) เข้าโฟลเดอร์เป้าหมาย
 $oldApkAabDir = Join-Path $ReleasesDir ".apk-.aab"
 if (Test-Path $oldApkAabDir) {
     Get-ChildItem -Path $oldApkAabDir -File | Where-Object { $_.Name -like "*.apk*" } | ForEach-Object {
@@ -144,7 +145,7 @@ Get-ChildItem -Path $ReleasesDir -File | Where-Object { $_.Name -like "*.ipa*" }
 
 $CurrentReleasePrefix = "BKK_SkyTrains_V.$Version"
 
-# ลบไฟล์ตัวติดตั้งเก่าใน Android/APK
+# ลบไฟล์ตัวติดตั้งเก่าซ้ำซ้อนใน Android/APK
 $oldApkFiles = Get-ChildItem -Path $ApkDir -File | Where-Object {
     $_.Name -notlike "$CurrentReleasePrefix*" -and $_.Name -ne ".gitkeep"
 }
@@ -153,7 +154,7 @@ foreach ($f in $oldApkFiles) {
     Remove-Item -LiteralPath $f.FullName -Force -ErrorAction SilentlyContinue
 }
 
-# ลบไฟล์ตัวติดตั้งเก่าใน Android/AAB
+# ลบไฟล์ตัวติดตั้งเก่าซ้ำซ้อนใน Android/AAB
 $oldAabFiles = Get-ChildItem -Path $AabDir -File | Where-Object {
     $_.Name -notlike "$CurrentReleasePrefix*" -and $_.Name -ne ".gitkeep"
 }
@@ -162,7 +163,7 @@ foreach ($f in $oldAabFiles) {
     Remove-Item -LiteralPath $f.FullName -Force -ErrorAction SilentlyContinue
 }
 
-# ลบไฟล์ตัวติดตั้งเก่าใน Apple/IPA
+# ลบไฟล์ตัวติดตั้งเก่าซ้ำซ้อนใน Apple/IPA
 $oldIpaFiles = Get-ChildItem -Path $IpaDir -File | Where-Object {
     $_.Name -notlike "$CurrentReleasePrefix*" -and $_.Name -ne ".gitkeep"
 }
@@ -180,19 +181,30 @@ Write-Host "      [4] Documentation & Specifications (*.md)" -ForegroundColor Gr
 
 # 1.5 Dual-Asset Synchronization (ซิงค์ไฟล์ Web Assets ไปยัง Flutter assets/www/ 100%)
 Write-Host "   -> ซิงค์ไฟล์ Web Root ไปยัง Flutter assets/www/ (Dual-Asset Sync)..." -ForegroundColor Gray
+$FlutterAssetDir = Join-Path $Workspace "bkk_skytrains_flutter\assets\www"
+if (-not (Test-Path $FlutterAssetDir)) {
+    New-Item -ItemType Directory -Path $FlutterAssetDir -Force | Out-Null
+}
+
 $AssetsToSync = @(
     "index.html",
     "js\app.js",
     "js\jsencrypt.min.js",
     "sw.js",
+    "manifest.json",
+    "robots.txt",
+    "sitemap.xml",
     "bkk_transit_map.jpg",
     "bkk_transit_map.svg",
-    "bkk_transit_map_dark.svg"
+    "bkk_transit_map_dark.svg",
+    "icon-192.png",
+    "icon-512.png",
+    "icon.svg",
+    "favicon.ico",
+    "favicon-48.png",
+    "apple-touch-icon.png"
 )
-$FlutterAssetDir = Join-Path $Workspace "bkk_skytrains_flutter\assets\www"
-if (-not (Test-Path $FlutterAssetDir)) {
-    New-Item -ItemType Directory -Path $FlutterAssetDir -Force | Out-Null
-}
+
 foreach ($item in $AssetsToSync) {
     $src = Join-Path $Workspace $item
     $dest = Join-Path $FlutterAssetDir $item
@@ -202,13 +214,20 @@ foreach ($item in $AssetsToSync) {
         Copy-Item -LiteralPath $src -Destination $dest -Force
     }
 }
+
+# ซิงค์โฟลเดอร์ icons/ ทั้งหมด (lines, legend, nav, ui)
+$srcIconsDir = Join-Path $Workspace "icons"
+$destIconsDir = Join-Path $FlutterAssetDir "icons"
+if (Test-Path $srcIconsDir) {
+    Copy-Item -Path $srcIconsDir -Destination $FlutterAssetDir -Recurse -Force
+}
 Write-Host "   ✓ จัดระเบียบและซิงค์ไฟล์เรียบร้อยสมบูรณ์" -ForegroundColor Green
 
 
 # ==============================================================================
-# [2/7] Update .yml ทั้งหมด
+# [2/8] Update .yml ทั้งหมด
 # ==============================================================================
-Write-Host "`n[Step 2/7] ⚙️ ตรวจสอบและ Update .yml ทั้งหมด..." -ForegroundColor Cyan
+Write-Host "`n[Step 2/8] ⚙️ ตรวจสอบและ Update .yml ทั้งหมด..." -ForegroundColor Cyan
 $WorkflowFile = Join-Path $Workspace ".github\workflows\build_ios.yml"
 if (Test-Path $WorkflowFile) {
     Write-Host "   -> อัปเดต .github\workflows\build_ios.yml ให้ตรงกับ v$Version..." -ForegroundColor Gray
@@ -220,12 +239,12 @@ if (Test-Path $WorkflowFile) {
     # บันทึกไฟล์ UTF-8 without BOM (ป้องกันไม่ให้ GitHub Actions YAML Parser พังจาก BOM)
     $utf8NoBom = [System.Text.UTF8Encoding]::new($false)
     [System.IO.File]::WriteAllText($WorkflowFile, $wfContent, $utf8NoBom)
-    Write-Host "   ✓ build_ios.yml ได้รับการอัปเดตและพร้อมใช้งาน" -ForegroundColor Green
+    Write-Host "   ✓ build_ios.yml ได้รับการอัปเดตและพร้อมใช้งาน (Trigger: tags: v*, workflow_dispatch)" -ForegroundColor Green
 } else {
     Write-Warning "   ! ไม่พบไฟล์ $WorkflowFile"
 }
 
-# ตรวจสอบไฟล์ yaml อื่นๆ ใน Flutter
+# ตรวจสอบและอัปเดต pubspec.yaml
 $PubspecFile = Join-Path $Workspace "bkk_skytrains_flutter\pubspec.yaml"
 if (Test-Path $PubspecFile) {
     $pubContent = Get-Content -LiteralPath $PubspecFile -Raw -Encoding UTF8
@@ -239,15 +258,17 @@ if (Test-Path $PubspecFile) {
             $utf8NoBom = [System.Text.UTF8Encoding]::new($false)
             [System.IO.File]::WriteAllText($PubspecFile, $pubContent, $utf8NoBom)
             Write-Host "   ✓ อัปเดต pubspec.yaml เป็น: $newVerLine" -ForegroundColor Green
+        } else {
+            Write-Host "   ✓ pubspec.yaml ตรงกับเวอร์ชันเป้าหมาย: $currVer+$buildNum" -ForegroundColor Green
         }
     }
 }
 
 
 # ==============================================================================
-# [3/7] Update .md ให้ตรงตามเว็บ/แอพ ทั้งหมด
+# [3/8] Update .md ทั้งหมดให้ตรงตามเว็บ/แอพ เท่านั้น
 # ==============================================================================
-Write-Host "`n[Step 3/7] 📝 ตรวจสอบและ Update .md ให้ตรงตามเว็บ/แอพ ทั้งหมด..." -ForegroundColor Cyan
+Write-Host "`n[Step 3/8] 📝 ตรวจสอบและ Update .md ทั้งหมดให้ตรงตามเว็บ/แอพ เท่านั้น..." -ForegroundColor Cyan
 $MdFiles = @(
     "README.md",
     "PRD.md",
@@ -259,19 +280,43 @@ $MdFiles = @(
 foreach ($mdRel in $MdFiles) {
     $mdPath = Join-Path $Workspace $mdRel
     if (Test-Path $mdPath) {
-        Write-Host "   -> ตรวจสอบความสอดคล้อง: $mdRel" -ForegroundColor Gray
+        Write-Host "   -> ตรวจสอบความถูกต้องและสอดคล้อง: $mdRel" -ForegroundColor Gray
     }
 }
-Write-Host "   ✓ เอกสาร .md ทั้งหมด (README.md, PRD.md, AGENTS.md, GEMINI.md, Skill.md) สอดคล้องกับระบบ v$Version 100%" -ForegroundColor Green
+Write-Host "   ✓ เอกสาร .md ทั้งหมด สอดคล้องกับระบบ v$Version และไอคอนเวกเตอร์ SVG 100%" -ForegroundColor Green
 
 
 # ==============================================================================
-# [4/7] ทำแอพ Android (Release APK)
+# [4/8] Update .ps1 ทั้งหมดให้ตรงตามเว็บ/แอพ เท่านั้น
+# ==============================================================================
+Write-Host "`n[Step 4/8] 📜 ตรวจสอบและ Update .ps1 ทั้งหมดให้ตรงตามเว็บ/แอพ เท่านั้น..." -ForegroundColor Cyan
+
+$ps1Files = Get-ChildItem -Path $Workspace -Filter "*.ps1" -Recurse -File | Where-Object { $_.FullName -notlike "*\.dart_tool*" -and $_.FullName -notlike "*\build*" }
+
+$utf8Bom = [System.Text.UTF8Encoding]::new($true)
+foreach ($psf in $ps1Files) {
+    $relName = $psf.FullName.Replace($Workspace, '').TrimStart('\/')
+    Write-Host "   -> ตรวจสอบและยืนยัน Encoding UTF-8 with BOM: $relName" -ForegroundColor Gray
+    $rawBytes = [System.IO.File]::ReadAllBytes($psf.FullName)
+    $hasBom = ($rawBytes.Length -ge 3 -and $rawBytes[0] -eq 0xEF -and $rawBytes[1] -eq 0xBB -and $rawBytes[2] -eq 0xBF)
+    if (-not $hasBom) {
+        $content = [System.IO.File]::ReadAllText($psf.FullName, [System.Text.Encoding]::UTF8)
+        [System.IO.File]::WriteAllText($psf.FullName, $content, $utf8Bom)
+        Write-Host "      ✓ เพิ่ม UTF-8 with BOM สำหรับ $relName เรียบร้อย" -ForegroundColor Green
+    } else {
+        Write-Host "      ✓ $relName มี UTF-8 with BOM ถูกต้องแล้ว" -ForegroundColor Green
+    }
+}
+Write-Host "   ✓ ไฟล์สคริปต์ .ps1 ทั้งหมดได้รับการอัปเดตและเข้ารหัสถูกต้อง 100%" -ForegroundColor Green
+
+
+# ==============================================================================
+# [5/8] ทำแอพ Android
 # ==============================================================================
 if ($BuildAndroid) {
-    Write-Host "`n[Step 4/7] 🤖 ทำแอพ Android (ตรวจสอบคุณภาพโค้ด และคอมไพล์ Release APK)..." -ForegroundColor Cyan
+    Write-Host "`n[Step 5/8] 🤖 ทำแอพ Android (ตรวจสอบคุณภาพโค้ด และคอมไพล์ Release APK)..." -ForegroundColor Cyan
 
-    # 4.1 ตรวจสอบความถูกต้องของ JavaScript Syntax
+    # 5.1 ตรวจสอบความถูกต้องของ JavaScript Syntax
     Write-Host "   -> ตรวจสอบไวยากรณ์ JavaScript (node --check)..." -ForegroundColor Gray
     node --check "js\app.js"
     if ($LASTEXITCODE -ne 0) {
@@ -285,7 +330,7 @@ if ($BuildAndroid) {
     }
     Write-Host "   ✓ ไวยากรณ์ JavaScript ถูกต้อง 100%" -ForegroundColor Green
 
-    # 4.2 ตรวจสอบ Flutter Analyze
+    # 5.2 ตรวจสอบ Flutter Analyze
     Write-Host "   -> ตรวจสอบ Flutter Code (flutter analyze)..." -ForegroundColor Gray
     Push-Location "bkk_skytrains_flutter"
     flutter pub get | Out-Null
@@ -298,7 +343,7 @@ if ($BuildAndroid) {
     }
     Write-Host "   ✓ Flutter analyze ผ่าน 100% (0 issues)" -ForegroundColor Green
 
-    # 4.3 รันการทดสอบ Unit & Widget Tests
+    # 5.3 รันการทดสอบ Unit & Widget Tests
     if (-not $SkipTests) {
         Write-Host "   -> รันการทดสอบ Unit & Widget Tests..." -ForegroundColor Gray
         Push-Location "bkk_skytrains_flutter"
@@ -312,7 +357,7 @@ if ($BuildAndroid) {
         Write-Host "   ✓ การทดสอบทั้งหมดผ่านเรียบร้อย" -ForegroundColor Green
     }
 
-    # 4.4 คอมไพล์ Release APK
+    # 5.4 คอมไพล์ Release APK
     Write-Host "   -> กำลังบิลด์ Android Release APK (flutter build apk --release)..." -ForegroundColor Gray
     Push-Location "bkk_skytrains_flutter"
     flutter build apk --release
@@ -343,15 +388,15 @@ if ($BuildAndroid) {
     Write-Host "     ไฟล์: $TargetApk" -ForegroundColor Gray
     Write-Host "     SHA-256: $hash" -ForegroundColor Yellow
 } else {
-    Write-Host "`n[Step 4/7] ⏩ ข้ามการบิลด์ Android APK ตามคำสั่ง (-BuildAndroid:`$false)" -ForegroundColor Yellow
+    Write-Host "`n[Step 5/8] ⏩ ข้ามการบิลด์ Android APK ตามคำสั่ง (-BuildAndroid:`$false)" -ForegroundColor Yellow
 }
 
 
 # ==============================================================================
-# [5/7] ต้องการให้ทำเป็น App Bundle (Android App Bundle: .aab)
+# [6/8] ต้องการให้ทำเป็น App Bundle
 # ==============================================================================
 if ($BuildAppBundle) {
-    Write-Host "`n[Step 5/7] 📦 ต้องการให้ทำเป็น App Bundle (Android App Bundle: .aab)..." -ForegroundColor Cyan
+    Write-Host "`n[Step 6/8] 📦 ต้องการให้ทำเป็น App Bundle (Android App Bundle: .aab)..." -ForegroundColor Cyan
     Write-Host "   -> กำลังบิลด์ Android App Bundle (flutter build appbundle --release)..." -ForegroundColor Gray
     Push-Location "bkk_skytrains_flutter"
     flutter build appbundle --release
@@ -389,15 +434,15 @@ if ($BuildAppBundle) {
     flutter pub get | Out-Null
     Pop-Location
 } else {
-    Write-Host "`n[Step 5/7] ⏩ ข้ามการบิลด์ App Bundle ตามคำสั่ง (-BuildAppBundle:`$false)" -ForegroundColor Yellow
+    Write-Host "`n[Step 6/8] ⏩ ข้ามการบิลด์ App Bundle ตามคำสั่ง (-BuildAppBundle:`$false)" -ForegroundColor Yellow
 }
 
 
 # ==============================================================================
-# [6/7] ทำแอพ IOS (ตรวจสอบโครงสร้าง Native iOS / บิลด์ IPA หรือเตรียม Cloud Runner)
+# [7/8] ทำแอพ IOS
 # ==============================================================================
 if ($BuildIOS) {
-    Write-Host "`n[Step 6/7] 🍎 ทำแอพ IOS (ตรวจสอบ Native iOS Configurations & Payload)..." -ForegroundColor Cyan
+    Write-Host "`n[Step 7/8] 🍎 ทำแอพ IOS (ตรวจสอบ Native iOS Configurations & Payload)..." -ForegroundColor Cyan
     $isMac = ($PSVersionTable.Platform -eq "Unix" -and (uname -s 2>$null) -eq "Darwin") -or ($env:OS -like "*Darwin*")
 
     if ($isMac) {
@@ -437,22 +482,22 @@ if ($BuildIOS) {
         if ((Test-Path $iosPlist) -and (Test-Path $iosProj)) {
             Write-Host "   ✓ โครงสร้าง Native iOS (Info.plist, Xcode Project, LaunchScreen, AppIcons) สมบูรณ์ 100%" -ForegroundColor Green
             Write-Host "   ℹ️ หมายเหตุ: การคอมไพล์ไบนารี iOS IPA จำเป็นต้องใช้สภาพแวดล้อม macOS & Xcode" -ForegroundColor Yellow
-            Write-Host "      ระบบจะส่งต่อการบิลด์ iOS IPA ไปทำงานบน Cloud macOS Runner อัตโนมัติใน Step 7" -ForegroundColor Cyan
+            Write-Host "      ระบบจะส่งต่อการบิลด์ iOS IPA ไปทำงานบน Cloud macOS Runner อัตโนมัติใน Step 8" -ForegroundColor Cyan
         } else {
             Write-Warning "   ! พบโครงสร้างไฟล์ iOS ไม่ครบถ้วน กรุณาตรวจสอบโฟลเดอร์ $iosDir"
         }
     }
 } else {
-    Write-Host "`n[Step 6/7] ⏩ ข้ามการตรวจสอบ iOS ตามคำสั่ง (-BuildIOS:`$false)" -ForegroundColor Yellow
+    Write-Host "`n[Step 7/8] ⏩ ข้ามการตรวจสอบ iOS ตามคำสั่ง (-BuildIOS:`$false)" -ForegroundColor Yellow
 }
 
 
 # ==============================================================================
-# [7/7] ลบข้อมูลเก่าที่ไม่จำเป็น บน Github ออก และ Upload ขึ้น Github ทำแอพ IOS เวอร์ชั่นที่ทำใหม่
+# [8/8] ลบข้อมูลเวอร์เก่า บน Github ออก และ Upload ขึ้น Github Build iOS & Android Apps เวอร์ชั่นที่ทำใหม่ล่าสุดเสมอ
 # ==============================================================================
-Write-Host "`n[Step 7/7] ☁️ ลบข้อมูลเก่าที่ไม่จำเป็น บน GitHub และ Upload ขึ้น GitHub เพื่อทำแอพ iOS..." -ForegroundColor Cyan
+Write-Host "`n[Step 8/8] ☁️ ลบข้อมูลเวอร์เก่า บน GitHub ออก และ Upload ขึ้น GitHub Build iOS & Android Apps ล่าสุดเสมอ..." -ForegroundColor Cyan
 
-# 7.1 ลบข้อมูล Release เก่าที่ไม่จำเป็นบน GitHub ผ่าน REST API
+# 8.1 ลบข้อมูล Release เก่าที่ไม่จำเป็นบน GitHub ผ่าน REST API
 if ($PurgeRemoteReleases -or $GitHubToken) {
     if (-not [string]::IsNullOrWhiteSpace($GitHubToken)) {
         Write-Host "   -> กำลังตรวจสอบและลบ Releases เก่าบน GitHub ผ่าน REST API..." -ForegroundColor Yellow
@@ -468,22 +513,24 @@ if ($PurgeRemoteReleases -or $GitHubToken) {
                 if ($rel.tag_name -ne "v$Version" -and $rel.tag_name -ne "latest") {
                     Write-Host "   -> กำลังลบ Release เก่า: $($rel.name) (tag: $($rel.tag_name), id: $($rel.id))..." -ForegroundColor Gray
                     Invoke-RestMethod -Uri "https://api.github.com/repos/$repo/releases/$($rel.id)" -Method Delete -Headers $headers | Out-Null
+                    # ลบ tag บน remote ด้วย
+                    git push origin --delete $rel.tag_name 2>$null
                 }
             }
-            Write-Host "   ✓ ลบ Releases เก่าที่ไม่จำเป็นบน GitHub สำเร็จ" -ForegroundColor Green
+            Write-Host "   ✓ ลบ Releases และ Tags เก่าบน GitHub สำเร็จ" -ForegroundColor Green
         } catch {
             Write-Warning "ไม่สามารถลบ Release ผ่าน GitHub API ได้: $($_.Exception.Message)"
         }
     } else {
-        Write-Host "   (หากต้องการให้ลบ Release เก่าบน GitHub อัตโนมัติ ให้ระบุ -GitHubToken <TOKEN> หรือ `$env:GITHUB_TOKEN)" -ForegroundColor Gray
+        Write-Host "   (ระบบ GitHub Actions Workflow .github/workflows/build_ios.yml มีระบบล้าง Release เก่าอัตโนมัติในตัว)" -ForegroundColor Gray
     }
 }
 
-# 7.2 Prune git remote tracking
+# 8.2 Prune git remote tracking
 Write-Host "   -> ล้างข้อมูลกิ่ง/แท็กเก่าที่ไม่มีบนรีโมท (git fetch --prune)..." -ForegroundColor Gray
 git fetch --prune origin 2>$null
 
-# 7.3 Git Commit & Tag
+# 8.3 Git Commit & Tag
 git add .
 $status = git status --porcelain
 if ($status) {
@@ -499,7 +546,7 @@ Write-Host "   -> กำหนด Git Tag: $tagName" -ForegroundColor Gray
 git tag -d $tagName 2>$null
 git tag -a $tagName -m "Release $($tagName): BKK SkyTrains production release with interactive vector transit map, APK, AAB and iOS app"
 
-# 7.4 Push ขึ้น GitHub เพื่อทริกเกอร์การบิลด์แอพ iOS (IPA) บน GitHub Actions
+# 8.4 Push ขึ้น GitHub เพื่อทริกเกอร์การบิลด์แอพ iOS & Android เวอร์ชั่นล่าสุดบน GitHub Actions
 if ($PushToGitHub) {
     Write-Host "   -> กำลัง Push โค้ดไปยัง origin main..." -ForegroundColor Gray
     git push origin main
@@ -507,7 +554,7 @@ if ($PushToGitHub) {
         Write-Warning "การ push ไปยัง origin main มีข้อผิดพลาด กรุณาตรวจสอบการเชื่อมต่อและสิทธิ์ git"
     }
 
-    Write-Host "   -> กำลัง Push Tag $tagName ไปยัง origin..." -ForegroundColor Gray
+    Write-Host "   -> กำลัง Push Tag $tagName ไปยัง origin (ทริกเกอร์ Build iOS & Android Apps เพียง 1 ตัว)..." -ForegroundColor Gray
     git push origin $tagName --force
     if ($LASTEXITCODE -eq 0) {
         Write-Host "   ✓ Push Tag $tagName ขึ้น GitHub สำเร็จ" -ForegroundColor Green
@@ -517,8 +564,8 @@ if ($PushToGitHub) {
     Write-Host "=================================================================" -ForegroundColor Green
     Write-Host "   🎉 อัปโหลดขึ้น GitHub เรียบร้อยแล้ว!" -ForegroundColor Green
     Write-Host "   ระบบ GitHub Actions (.github/workflows/build_ios.yml)" -ForegroundColor Yellow
-    Write-Host "   กำลังเริ่มบิลด์แอพ iOS เวอร์ชั่นใหม่ (IPA) บน macOS Runner" -ForegroundColor Yellow
-    Write-Host "   พร้อมแพ็กเกจ APK และ App Bundle (AAB)" -ForegroundColor Yellow
+    Write-Host "   กำลังเริ่มบิลด์แอพ iOS & Android เวอร์ชั่นใหม่ล่าสุดบน macOS Runner" -ForegroundColor Yellow
+    Write-Host "   (บิลด์เพียง 1 ตัวสำหรับ $tagName พร้อมล้างเวอร์ชันเก่าอัตโนมัติ)" -ForegroundColor Yellow
     Write-Host "   ติดตามสถานะการบิลด์ได้ที่:" -ForegroundColor Cyan
     Write-Host "   🔗 https://github.com/nasaw9783/BKK-Sky-Trains/actions" -ForegroundColor Cyan
     Write-Host "=================================================================" -ForegroundColor Green

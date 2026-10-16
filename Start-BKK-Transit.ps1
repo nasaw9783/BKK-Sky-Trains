@@ -1,6 +1,6 @@
 ﻿# ==================================================================
-#  BTS Live Map - Bangkok Transit Real-Time Web App Launcher
-#  Cloned from https://bkkskytrain.online/
+#  BKK SkyTrains - Bangkok Transit Real-Time Web App Launcher
+#  Official BKK SkyTrains Live Platform Runner
 # ==================================================================
 
 [CmdletBinding()]
@@ -53,7 +53,7 @@ $ActualPort = Get-AvailablePort -startPort $Port
 $AppUrl = "http://localhost:$ActualPort"
 
 Write-Host "==========================================================" -ForegroundColor Cyan
-Write-Host " 🚊 กำลังเริ่มต้น BTS Live Map (bkkskytrain.online clone)" -ForegroundColor Green
+Write-Host " 🚆 กำลังเริ่มต้น BKK SkyTrains - Real-Time Transit Platform" -ForegroundColor Green
 Write-Host "==========================================================" -ForegroundColor Cyan
 Write-Host "📂 ไดเรกทอรีโปรเจกต์ : $Workspace" -ForegroundColor Gray
 Write-Host "🌐 พอร์ตที่ใช้งาน   : $ActualPort" -ForegroundColor Gray

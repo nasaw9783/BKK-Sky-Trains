@@ -22,6 +22,9 @@ C:\Users\Administrator\Documents\BKK Sky Trains\
 │   ├── js/
 │   │   ├── app.js                  # Client Logic, Live TTA, Router, GPS, Fares, Hotspots
 │   │   └── jsencrypt.min.js        # RSA cryptographic client library สำหรับ API Security
+│   ├── api/
+│   │   └── bts-proxy.js            # Universal Serverless Reverse Proxy & CORS Bypass สำหรับ BTS Live Transit API
+│   ├── vercel.json                 # การตั้งค่า Deployment และ Universal CORS Routing บน Vercel
 │   ├── sw.js                       # Service Worker แคช PWA สำหรับ Offline Support (bts-v52)
 │   ├── manifest.json               # Web App Manifest สำหรับติดตั้งบนหน้าจอมือถือ
 │   ├── Start-BKK-Transit.ps1       # สคริปต์เซิร์ฟเวอร์ทดสอบในเครื่อง + BTS Live Reverse Proxy (UTF-8 BOM)

@@ -1,16 +1,18 @@
 'use strict';
 
         /* ================= CONFIG ================= */
-        const REMOTE_API = 'https://bkkskytrain.online/api/bts-proxy';
+        const REMOTE_API = (typeof window !== 'undefined' && window.BKK_CONFIG && window.BKK_CONFIG.apiBase) || 'https://bkk-skytrains.vercel.app/api/bts-proxy';
         const LOCAL_ORIGIN = 'http://localhost:3000';
-        // ตรวจสอบว่าโฮสต์ปัจจุบันมี local backend proxy จริงหรือไม่ (Node บนพอร์ต 3000)
-        // สำหรับทุกกรณีอื่น (WebView, file://, localhost พอร์ตอื่นๆ, GitHub Pages ฯลฯ) ชี้ตรงไปยัง REMOTE_API ทันที 0ms
-        const hasLocalProxyHost = Boolean(
-            (typeof location !== 'undefined') &&
-            ((location.hostname === 'localhost' || location.hostname === '127.0.0.1') && location.port === '3000')
+        // ตรวจสอบว่าโฮสต์ปัจจุบันรองรับ relative /api/bts-proxy หรือไม่ (Localhost บนพอร์ต 3000 หรือ Vercel *.vercel.app)
+        // สำหรับกรณีอื่น (WebView, file://, GitHub Pages ฯลฯ) ชี้ตรงไปยัง REMOTE_API ทันที
+        const hasRelativeProxyHost = Boolean(
+            (typeof location !== 'undefined') && (
+                ((location.hostname === 'localhost' || location.hostname === '127.0.0.1') && location.port === '3000') ||
+                (location.protocol && location.protocol.startsWith('http') && location.hostname.endsWith('.vercel.app'))
+            )
         );
 
-        let activeProxyBase = hasLocalProxyHost ? '/api/bts-proxy' : REMOTE_API;
+        let activeProxyBase = hasRelativeProxyHost ? '/api/bts-proxy' : REMOTE_API;
 
         const proxyUrl = (endpoint, params = {}) => {
             const q = new URLSearchParams({ endpoint, ...params });

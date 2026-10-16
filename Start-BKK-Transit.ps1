@@ -116,7 +116,16 @@ const server = http.createServer((req, res) => {
 
   // Reverse Proxy for BTS Live API endpoints (/api/bts-proxy)
   if (reqUrl.pathname === '/api/bts-proxy') {
-    const targetUrl = 'https://bkkskytrain.online' + req.url;
+    const proxyHandlerPath = path.resolve(rootDir, 'api/bts-proxy.js');
+    if (fs.existsSync(proxyHandlerPath)) {
+      try {
+        const btsHandler = require(proxyHandlerPath);
+        return btsHandler(req, res);
+      } catch (handlerErr) {
+        console.error('Local BTS Handler Error:', handlerErr.message);
+      }
+    }
+    const targetUrl = 'https://bkk-skytrains.vercel.app' + req.url;
     console.log('[LIVE API ' + req.method + '] ' + reqUrl.search);
 
     const proxyReq = https.request(targetUrl, {

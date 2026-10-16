@@ -10,6 +10,8 @@ Directives and mandatory standards for AI Agents working within `C:\Users\Admini
    - `index.html`: Main real-time web application frontend.
    - `js/app.js`: Core client-side logic, routing, stations data, real-time countdown, and UI rendering.
    - `js/jsencrypt.min.js`: RSA cryptographic client library for secure transit API communications.
+   - `api/bts-proxy.js`: Universal serverless reverse proxy & CORS bypass handler for BTS live transit APIs.
+   - `vercel.json`: Deployment configuration for Vercel serverless functions and universal CORS routing.
    - `sw.js`: Service worker for offline caching and PWA support.
    - `manifest.json`: Web App Manifest for mobile installation.
    - `icon-192.png`, `icon-512.png`, `icon.svg`, `favicon.*`, `apple-touch-icon.png`: Application branding and icons.

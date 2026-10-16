@@ -15,6 +15,9 @@ C:\Users\Administrator\Documents\BKK Sky Trains\
 │   ├── js/
 │   │   ├── app.js                  # Client-side routing, logic, real-time countdown, and UI
 │   │   └── jsencrypt.min.js        # RSA cryptographic client library for secure transit API communications
+│   ├── api/
+│   │   └── bts-proxy.js            # Universal serverless reverse proxy & CORS bypass handler for BTS live transit APIs
+│   ├── vercel.json                 # Deployment configuration for Vercel serverless functions and universal CORS routing
 │   ├── sw.js                       # Offline service worker
 │   ├── manifest.json               # Web App Manifest
 │   ├── Start-BKK-Transit.ps1       # Local test server & reverse-proxy runner (UTF-8 with BOM)

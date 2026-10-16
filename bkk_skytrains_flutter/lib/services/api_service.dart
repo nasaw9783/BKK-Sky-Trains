@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import '../models/journey.dart';
 
 class ApiService {
-  static const String baseUrl = 'https://bkkskytrain.online/api/bts-proxy';
+  static const String baseUrl = 'https://bkk-skytrains.vercel.app/api/bts-proxy';
 
   static Future<List<JourneyRoute>> fetchJourney({
     required String originKey,

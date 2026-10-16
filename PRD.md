@@ -109,7 +109,7 @@ flowchart TD
 - **Core Web Frontend:** Vanilla JavaScript (ES2022+), Semantic HTML5, CSS Variables, Responsive Grid & Flexbox (No React/Vue overhead).
 - **Offline & PWA:** Service Worker (`sw.js`), Web App Manifest (`manifest.json`), LocalStorage Cache Engine.
 - **Mobile Platform:** Flutter 3.x Multi-platform (Dart), `webview_flutter`, `geolocator`, Android SDK 34+, iOS Xcode 15+.
-- **Backend / Reverse Proxy:** Node.js HTTP Server / PowerShell TCP Proxy (`Start-BKK-Transit.ps1`) สำหรับรับส่งข้อมูลข้าม CORS กับ API ของ BTS EBM.
+- **Backend / Reverse Proxy:** Vercel Serverless Function (`api/bts-proxy.js`) & Local Node.js Server (`Start-BKK-Transit.ps1`) สำหรับรับส่งข้อมูลและปลดล็อก CORS กับเซิร์ฟเวอร์ระบบ BTS / EBM ได้อย่างปลอดภัย.
 - **CI/CD & Cloud Build:** GitHub Actions (`.github/workflows/build_ios.yml`) บน macOS-14 Runner สร้างไฟล์ `.ipa` อัตโนมัติ (สำหรับ Private Repository ต้องตั้งค่า Spending Limit บน GitHub Actions ให้มากกว่า $0).
 
 ---

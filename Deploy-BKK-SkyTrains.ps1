@@ -328,6 +328,13 @@ if ($BuildAndroid) {
         Write-Error "JavaScript Syntax Error ใน flutter assets\www\js\app.js"
         exit $LASTEXITCODE
     }
+    if (Test-Path "api\bts-proxy.js") {
+        node --check "api\bts-proxy.js"
+        if ($LASTEXITCODE -ne 0) {
+            Write-Error "JavaScript Syntax Error ใน api\bts-proxy.js"
+            exit $LASTEXITCODE
+        }
+    }
     Write-Host "   ✓ ไวยากรณ์ JavaScript ถูกต้อง 100%" -ForegroundColor Green
 
     # 5.2 ตรวจสอบ Flutter Analyze

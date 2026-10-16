@@ -6283,11 +6283,18 @@ setOriginFromActionSheet() {
                 }
                 const plats = visiblePlatformsForStation(station, arr.platforms);
                 const lines = plats.map(p => {
-                    const isTerminating = p.isDropOffOnly || p.DestinationStation_key === station.StationKey;
-                    const dest = isTerminating ? (lang === 'en' ? 'Drop-off only' : 'ส่งผู้โดยสารเท่านั้น') : shortDest(destName(p.DestinationStation));
-                    const trains = displayTrains(station.StationKey, p.platform, p.train_list, arr.fetchedAt);
+                    const isOutOfService = !!p.isOutOfService || (station.StationKey === 'YL23' && String(p.platform) === '1');
+                    const isTerminating = !isOutOfService && (p.isDropOffOnly || p.DestinationStation_key === station.StationKey);
+                    const dest = isOutOfService
+                        ? (lang === 'en' ? 'Out of Service' : 'ไม่ให้บริการ')
+                        : isTerminating
+                            ? (lang === 'en' ? 'Drop-off only' : 'ส่งผู้โดยสารเท่านั้น')
+                            : shortDest(destName(p.DestinationStation));
+                    const trains = isOutOfService ? [] : displayTrains(station.StationKey, p.platform, p.train_list, arr.fetchedAt);
                     let timeStr = '';
-                    if (trains.length) {
+                    if (isOutOfService) {
+                        timeStr = '';
+                    } else if (trains.length) {
                         const eta = bestEta(station.StationKey, p.platform, trains[0], arr.fetchedAt);
                         if (trains[0].status === 'arriving') {
                             timeStr = T('arrived');
@@ -6298,7 +6305,8 @@ setOriginFromActionSheet() {
                     } else if (isTerminating) {
                         timeStr = lang === 'en' ? 'No boarding train' : 'ขบวนไม่รับผู้โดยสาร';
                     }
-                    return `${lang === 'en' ? 'Platform' : 'ชานชาลา'} ${p.platform}: ${lang === 'en' ? 'To ' : 'ไป'}${dest} ${timeStr ? `(${timeStr})` : ''}`.trim();
+                    const prefix = isOutOfService ? '' : (lang === 'en' ? 'To ' : 'ไป');
+                    return `${lang === 'en' ? 'Platform' : 'ชานชาลา'} ${p.platform}: ${prefix}${dest} ${timeStr ? `(${timeStr})` : ''}`.trim();
                 });
                 return lines.join(' | ');
             },
@@ -6608,13 +6616,14 @@ setOriginFromActionSheet() {
                         p.train_list = [];
                     }
                 }
-                // พิเศษสำหรับ YL23: ขบวนรถวิ่งไป-กลับแค่ P2 ไม่เข้า P1 (เคลียร์ข้อมูลไม่ให้จำขบวนค้าง)
+                // พิเศษสำหรับ YL23: ขบวนรถวิ่งไป-กลับแค่ P2 ไม่เข้า P1 (P1 ชานชาลา 1 ไม่ให้บริการ)
                 if (key === 'YL23' && Array.isArray(platList)) {
                     for (const p of platList) {
                         if (String(p.platform) === '1') {
                             p.train_list = [];
-                            p.isDropOffOnly = true;
-                            p.DestinationStation = (typeof lang !== 'undefined' && lang === 'en') ? 'Terminus' : 'สิ้นสุดสาย';
+                            p.isDropOffOnly = false;
+                            p.isOutOfService = true;
+                            p.DestinationStation = (typeof lang !== 'undefined' && lang === 'en') ? 'Out of Service' : 'ไม่ให้บริการ';
                             p.DestinationStation_key = 'YL23';
                         }
                     }
@@ -7739,18 +7748,21 @@ setOriginFromActionSheet() {
                 const idx = Math.max(0, Math.min(22, num - 1));
                 const travelPerStation = 1.95;
 
-                // Platform 1: ไปสำโรง (YL23)
+                // Platform 1: ไปสำโรง (YL23) — หากเป็น YL23 ชานชาลา 1 ไม่ให้บริการ
                 const isTerm1 = (key === 'YL23');
                 const offset1 = idx * travelPerStation;
-                const dest1 = getDestPair('YL23', 'สำโรง', 'Samrong');
+                const dest1 = isTerm1
+                    ? ((typeof lang !== 'undefined' && lang === 'en') ? 'Out of Service' : 'ไม่ให้บริการ')
+                    : getDestPair('YL23', 'สำโรง', 'Samrong');
                 platforms.push({
                     platform: 1,
                     LineId: 4,
                     LineColor: yellowColor,
                     DestinationStation: dest1,
                     DestinationStation_key: 'YL23',
-                    isDropOffOnly: isTerm1,
-                    train_list: makeTrains(1, dest1, 'YL23', offset1, isTerm1)
+                    isDropOffOnly: false,
+                    isOutOfService: isTerm1,
+                    train_list: isTerm1 ? [] : makeTrains(1, dest1, 'YL23', offset1, false)
                 });
 
                 // Platform 2: ไปลาดพร้าว (YL01)
@@ -8522,13 +8534,14 @@ setOriginFromActionSheet() {
             }
 
             // กฎเฉพาะสำหรับสถานี YL23 (สำโรง สายสีเหลือง):
-            // มี 2 ชานชาลา แต่รถไฟวิ่งไป-กลับแค่ P2 ไม่เข้า P1 (แต่ยังคงให้มี P1 เป็นสถานีปลายทาง ส่งผู้โดยสารเท่านั้น)
+            // มี 2 ชานชาลา แต่รถไฟวิ่งไป-กลับแค่ P2 ไม่เข้า P1 (P1 เป็นชานชาลาที่ไม่ให้บริการ)
             if (station && station.StationKey === 'YL23') {
                 const p1 = result.find(p => p.LineId === 4 && String(p.platform) === '1');
                 const p2 = result.find(p => p.LineId === 4 && String(p.platform) === '2');
                 if (p1) {
-                    p1.isDropOffOnly = true;
-                    p1.DestinationStation = (typeof lang !== 'undefined' && lang === 'en') ? 'Terminus' : 'สิ้นสุดสาย';
+                    p1.isDropOffOnly = false;
+                    p1.isOutOfService = true;
+                    p1.DestinationStation = (typeof lang !== 'undefined' && lang === 'en') ? 'Out of Service' : 'ไม่ให้บริการ';
                     p1.DestinationStation_key = 'YL23';
                     p1.train_list = []; // ไม่เข้า P1 เด็ดขาด
                 }
@@ -8634,7 +8647,8 @@ setOriginFromActionSheet() {
 
         function renderPlatform(p, fetchedAt, stationKey) {
             let tList = p.train_list;
-            if ((!tList || !tList.length) && !p.isDropOffOnly && isTransitOperatingHours(p.LineId, stationKey)) {
+            const isOutOfService = !!p.isOutOfService || (stationKey === 'YL23' && String(p.platform) === '1');
+            if ((!tList || !tList.length) && !p.isDropOffOnly && !isOutOfService && isTransitOperatingHours(p.LineId, stationKey)) {
                 const fb = generateTimetableArrivals(App.findStation(stationKey));
                 const fbPlat = fb?.platform_list?.find(fp => Number(fp.LineId) === Number(p.LineId) && String(fp.platform) === String(p.platform));
                 if (fbPlat?.train_list?.length) {
@@ -8642,15 +8656,23 @@ setOriginFromActionSheet() {
                 }
             }
             // กรองขบวน "--" ที่ไม่มีข้อมูลพอจะแสดงออกก่อน (ดู displayTrains) — เหลือสูงสุด 3 ขบวน
-            const trains = displayTrains(stationKey, p.platform, tList, fetchedAt, p.LineId);
+            const trains = isOutOfService ? [] : displayTrains(stationKey, p.platform, tList, fetchedAt, p.LineId);
             // ขบวนที่ user เลือกไว้ (แตะขบวนเพื่อดูปลายทางของขบวนนั้น) — ตรวจ trainNo กันข้อมูล refresh แล้วลำดับเลื่อน
             const sel = App.selTrain[stationKey + '|' + p.platform];
             const selIdx = (sel && trains[sel.idx]?.trainNo === sel.trainNo) ? sel.idx : -1;
             const selT = selIdx >= 0 ? trains[selIdx] : null;
-            const isTerminating = p.isDropOffOnly || p.DestinationStation_key === stationKey;
+            const isTerminating = !isOutOfService && (p.isDropOffOnly || p.DestinationStation_key === stationKey);
             const rawDest = (selT && selT.station) || p.DestinationStation;
-            const dest = isTerminating ? (lang === 'en' ? 'Drop-off only' : 'ส่งผู้โดยสารเท่านั้น') : shortDest(destName(rawDest));
-            const destLabel = isTerminating ? (lang === 'en' ? `Platform ${esc(p.platform)} · Terminus` : `ชานชาลา ${esc(p.platform)} · สิ้นสุดสาย`) : T('platformTo', esc(p.platform));
+            const dest = isOutOfService
+                ? (lang === 'en' ? 'Out of Service' : 'ไม่ให้บริการ')
+                : isTerminating
+                    ? (lang === 'en' ? 'Drop-off only' : 'ส่งผู้โดยสารเท่านั้น')
+                    : shortDest(destName(rawDest));
+            const destLabel = isOutOfService
+                ? (lang === 'en' ? `Platform ${esc(p.platform)} · Terminus` : `ชานชาลา ${esc(p.platform)} · สิ้นสุดสาย`)
+                : isTerminating
+                    ? (lang === 'en' ? `Platform ${esc(p.platform)} · Terminus` : `ชานชาลา ${esc(p.platform)} · สิ้นสุดสาย`)
+                    : T('platformTo', esc(p.platform));
             const isBrightLine = p.LineColor === '#FFD100' || p.LineColor === '#F5C242' || p.LineId === 4;
             const platTextColor = isBrightLine ? '#0f172a' : '#ffffff';
             const trainTextColor = isBrightLine ? '#ca8a04' : p.LineColor;
@@ -8681,17 +8703,22 @@ setOriginFromActionSheet() {
             };
 
             let rows;
-            if (trains.length) {
+            if (isOutOfService) {
+                rows = `<div class="dropoff-note out-of-service-note" style="padding:4px 6px;text-align:center;background:rgba(255,255,255,0.02);border-radius:10px;border:1px dashed rgba(148,163,184,0.2);min-height:48px;width:100%;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;box-sizing:border-box;">
+                    <div style="margin-bottom:2px;display:flex;align-items:center;justify-content:center;">${getUiIcon('ban', 15, 'var(--muted)')}</div>
+                    <div style="font-weight:700;font-size:11px;line-height:1.2;color:var(--ink);text-align:center;letter-spacing:0;">${lang === 'en' ? 'Out of Service' : 'ไม่ให้บริการ'}</div>
+                </div>`;
+            } else if (trains.length) {
                 const restHtml = trains.slice(1).map((t, j) => trainBtn(t, j + 1)).join('');
                 rows = trainBtn(trains[0], 0) + (restHtml ? `<div class="train-rest">${restHtml}</div>` : '');
             } else if (isTerminating) {
                 rows = `<div class="dropoff-note" style="padding:4px 6px;text-align:center;background:rgba(255,255,255,0.02);border-radius:10px;border:1px dashed rgba(148,163,184,0.2);min-height:48px;width:100%;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;box-sizing:border-box;">
                     <div style="margin-bottom:2px;display:flex;align-items:center;justify-content:center;">${getUiIcon('flag', 15, 'var(--muted)')}</div>
-                    <div style="font-weight:700;font-size:11px;line-height:1.2;color:var(--ink);text-align:center;">${lang === 'en' ? 'Drop-off only' : 'ส่งผู้โดยสารเท่านั้น'}</div>
-                    <div style="font-size:9px;line-height:1.1;color:var(--muted);margin-top:1px;text-align:center;">${lang === 'en' ? 'No boarding train' : 'ขบวนไม่รับผู้โดยสาร'}</div>
+                    <div style="font-weight:700;font-size:11px;line-height:1.2;color:var(--ink);text-align:center;letter-spacing:0;">${lang === 'en' ? 'Drop-off only' : 'ส่งผู้โดยสารเท่านั้น'}</div>
+                    <div style="font-size:9px;line-height:1.1;color:var(--muted);margin-top:1px;text-align:center;letter-spacing:0;">${lang === 'en' ? 'No boarding train' : 'ขบวนไม่รับผู้โดยสาร'}</div>
                 </div>`;
             } else {
-                rows = `<div class="empty-note" style="padding:6px;width:100%;flex:1;min-height:48px;display:flex;align-items:center;justify-content:center;text-align:center;box-sizing:border-box;">${T('noTrains')}</div>`;
+                rows = `<div class="empty-note" style="padding:6px;width:100%;flex:1;min-height:48px;display:flex;align-items:center;justify-content:center;text-align:center;box-sizing:border-box;letter-spacing:0;">${T('noTrains')}</div>`;
             }
 
             return `
@@ -8853,12 +8880,15 @@ setOriginFromActionSheet() {
                 }
                 const pNum = p.platform != null ? p.platform : '';
                 const pText = pNum ? (lang === 'en' ? `Platform ${pNum}` : `ชานชาลา ${pNum}`) : '';
-                const isTerminating = p.isDropOffOnly || (p.DestinationStation_key && p.DestinationStation_key === station.StationKey);
-                let dest = isTerminating
-                    ? (lang === 'en' ? 'Terminus · Drop-off only' : 'สิ้นสุดสาย ส่งผู้โดยสารเท่านั้น')
-                    : (destName(p.DestinationStation) || (dirStation ? stName(dirStation) : ''));
+                const isOutOfService = !!p.isOutOfService || (station.StationKey === 'YL23' && String(p.platform) === '1');
+                const isTerminating = !isOutOfService && (p.isDropOffOnly || (p.DestinationStation_key && p.DestinationStation_key === station.StationKey));
+                let dest = isOutOfService
+                    ? (lang === 'en' ? 'Out of Service' : 'ไม่ให้บริการ')
+                    : isTerminating
+                        ? (lang === 'en' ? 'Terminus · Drop-off only' : 'สิ้นสุดสาย ส่งผู้โดยสารเท่านั้น')
+                        : (destName(p.DestinationStation) || (dirStation ? stName(dirStation) : ''));
                 if (dest) {
-                    const toPrefix = isTerminating ? '' : (lang === 'en' ? 'To ' : 'ไปทาง ');
+                    const toPrefix = (isTerminating || isOutOfService) ? '' : (lang === 'en' ? 'To ' : 'ไปทาง ');
                     return pText ? `${pText} · ${toPrefix}${dest}` : `${toPrefix}${dest}`;
                 }
                 return pText;

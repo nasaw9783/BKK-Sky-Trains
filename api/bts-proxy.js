@@ -1,6 +1,6 @@
 // api/bts-proxy.js
 // BKK SkyTrains - Universal Reverse Proxy & CORS Bypass for BTS Live Real-Time Transit APIs
-// Exact functional clone of https://bkkskytrain.online/api/bts-proxy -> https://bkk-skytrains.vercel.app/api/bts-proxy
+// Production Serverless Handler for https://bkk-skytrains.vercel.app/api/bts-proxy
 
 'use strict';
 
@@ -8,7 +8,7 @@ const https = require('https');
 const http = require('http');
 const { URL } = require('url');
 
-const DEFAULT_UPSTREAM = process.env.UPSTREAM_BTS_API || 'https://bkkskytrain.online/api/bts-proxy';
+const DEFAULT_UPSTREAM = process.env.UPSTREAM_BTS_API || 'https://api.bts.co.th/bts-train/train';
 
 const ALLOWED_ENDPOINTS = [
   'tta',

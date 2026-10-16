@@ -7195,7 +7195,6 @@ setOriginFromActionSheet() {
                     const isNear = this.nearest && this.nearest.km != null
                         && s.StationKey === this.nearest.station.StationKey;
                     const isSiam = s.StationKey === SIAM_KEY;
-                    const isInter = isSiam || s.StationKey === 'PK10' || (this.connections[s.StationKey] && this.connections[s.StationKey].some(c => !c.isBranch));
                     const isBranch = s.StationKey === 'MT01' || s.StationKey === 'MT02';
                     const isTerminus = s.StationKey === 'MT02';
                     const open = this.expandedKey === s.StationKey;
@@ -7208,7 +7207,7 @@ setOriginFromActionSheet() {
                     <div class="st-row${crowded ? ' crowded' : ''}${isBranch ? ' branch-row' : ''}" id="row-${esc(s.StationKey)}-${s.StationLineId}">
                         <div class="st-rail">
                             <div class="track" style="background:${color}${q ? '22' : ''}"></div>
-                            <div class="node ${isInter ? 'inter' : ''} ${isNear ? 'near' : ''}" style="border-color:${color}"></div>
+                            <div class="node ${isSiam ? 'inter' : ''} ${isNear ? 'near' : ''}" style="border-color:${color}"></div>
                         </div>
                         <div class="st-main">
                             <button class="st-btn" onclick="App.toggleStation('${esc(s.StationKey)}')">

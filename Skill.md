@@ -81,9 +81,28 @@ if (Test-Path "js\jsencrypt.min.js") { Copy-Item -Path "js\jsencrypt.min.js" -De
    ```
 3. **PowerShell Encoding:** บันทึกไฟล์ `.ps1` ทุกไฟล์ด้วยรูปแบบ **UTF-8 with BOM** เพื่อให้ทำงานได้ทั้ง PowerShell 5.1 และ pwsh 7+
 
-### 🚊 กฎข้อที่ 3: Project Train Icon Standard (มาตรฐานไอคอนรถไฟประจำสาย)
+### 🚊 กฎข้อที่ 3: Project Train Icon Standard (มาตรฐานไอคอนรถไฟประจำสาย & สัญลักษณ์โครงข่าย)
 - สัญลักษณ์ระบุสายสี/ไลน์รถไฟฟ้าทั้งหมดในโปรเจกต์นี้ **จะต้องใช้ไอคอน SVG รูปรถไฟเฉพาะตามสายสีจากฟังก์ชัน `getLineIconSvg(lineId)` เสมอ**
-- **ห้าม** ใช้จุดกลม (●) หรือไอคอนรถไฟทั่วไปที่ไม่ตรงกับสายโดยเด็ดขาด
+- **ห้าม** ใช้จุดกลม (●) หรือไอคอนรถไฟทั่วไปที่ไม่ตรงกับสายโดยเด็ดขาด:
+  - Line 1: BTS สายสุขุมวิท (`#7AB420`) — 🚆 Heavy Rail EMU บนทางยกระดับ
+  - Line 2: BTS สายสีลม (`#00807D`) — 🚆 Heavy Rail EMU บนทางยกระดับ
+  - Line 3: BTS สายสีทอง (`#C9A038`) — 🚝 APM People Mover ไร้คนขับ
+  - Line 4: MRT สายสีเหลือง (`#FFD100`) — 🚝 Straddle Monorail คอนกรีตเดี่ยว
+  - Line 5: MRT สายสีชมพู (`#EC4899`) — 🚝 Straddle Monorail คอนกรีตเดี่ยว
+  - Line 101: MRT สายสีน้ำเงิน (`#0284C7`) — 🚇 Underground Tunnel Metro อุโมงค์ใต้ดิน
+  - Line 102: MRT สายสีม่วง (`#8A2C9B`) — 🚆 Sustina Heavy Rail Metro ยกระดับ
+  - Line 103: SRTET สายสีแดงเข้ม (`#B91C1C`) — 🚆 Commuter EMU เสารับไฟ Overhead Pantograph
+  - Line 105: SRTET สายสีแดงอ่อน (`#F87171`) — 🚆 Light Commuter EMU แขนรับไฟ Single-arm Pantograph
+  - Line 104: ARL แอร์พอร์ตลิงก์ (`#8A1538`) — ✈️ Airport Express Bullet Train
+  - Line 201: BRT รถโดยสารด่วน (`#82C341`) — 🚌 Bus Rapid Transit ช่องทางเฉพาะ
+  - Line 106: MRT สายสีส้ม (`#F58220`) — 🚇 Orange Tunnel Metro
+- สัญลักษณ์โครงข่ายและการเชื่อมต่อ (Transit Network Legend):
+  - **⇄** จุดเชื่อมต่อข้ามสาย (Interchange)
+  - **✈️** เชื่อมต่อท่าอากาศยาน (Airport)
+  - **⛵** ท่าเรือเชื่อมต่อ เรือด่วน/คลอง (Pier / Boat)
+  - **🚆** เชื่อมต่อรถไฟทางไกล (SRT)
+  - **🚌** สถานีขนส่งผู้โดยสาร (Bus Terminal)
+  - **🅿️** อาคารจอดแล้วจร (Park & Ride)
 
 ### 🧹 กฎข้อที่ 4: Zero-Waste Pruning (ลบไฟล์และแอพที่ไม่สำคัญทิ้งทันที)
 ถ้าไฟล์หรือแอพไหนไม่สำคัญต่อระบบแล้ว และไม่ทำลายระบบให้เสียหาย ให้ลบทิ้งได้ทันทีหลังแก้ไขหรือทดสอบไฟล์ทุกครั้ง:

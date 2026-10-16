@@ -95,8 +95,27 @@ C:\Users\Administrator\Documents\BKK Sky Trains\
    - ห้ามกระทำการใดๆ ข้าม Workspace ระหว่างโปรเจกต์ที่ไม่เกี่ยวข้องกัน
    - โปรเจกต์นี้ **ไม่มีความเกี่ยวข้องใดๆ กับ `D:\Exclusions\Programs` และ `C:\Users\Administrator\Downloads\Programs`** ห้ามเข้าไปรันสคริปต์หรือแก้ไขไฟล์ในไดเรกทอรีดังกล่าวโดยเด็ดขาด
 
-6. **Project Train Icon Standard (มาตรฐานสัญลักษณ์รูปรถไฟประจำสายสี)**:
-   - สัญลักษณ์ระบุสายสี/ไลน์ของรถไฟฟ้าทั้งหมดในโปรเจกต์นี้ จะต้องใช้ไอคอนรูปรถไฟเฉพาะตามสายสีจากฟังก์ชัน `getLineIconSvg(lineId)` เสมอ (ห้ามใช้จุดกลม ● หรือไอคอนรถไฟทั่วไปที่ไม่ตรงกับสาย)
+6. **Project Train Icon Standard (มาตรฐานสัญลักษณ์รูปรถไฟประจำสายสี & สัญลักษณ์โครงข่าย)**:
+   - สัญลักษณ์ระบุสายสี/ไลน์ของรถไฟฟ้าทั้งหมดในโปรเจกต์นี้ จะต้องใช้ไอคอนรูปรถไฟเฉพาะตามสายสีจากฟังก์ชัน `getLineIconSvg(lineId)` เสมอ (ห้ามใช้จุดกลม ● หรือไอคอนรถไฟทั่วไปที่ไม่ตรงกับสาย):
+     - Line 1: BTS สายสุขุมวิท (`#7AB420`) — 🚆 Heavy Rail EMU บนทางยกระดับ
+     - Line 2: BTS สายสีลม (`#00807D`) — 🚆 Heavy Rail EMU บนทางยกระดับ
+     - Line 3: BTS สายสีทอง (`#C9A038`) — 🚝 APM People Mover ไร้คนขับ
+     - Line 4: MRT สายสีเหลือง (`#FFD100`) — 🚝 Straddle Monorail คอนกรีตเดี่ยว
+     - Line 5: MRT สายสีชมพู (`#EC4899`) — 🚝 Straddle Monorail คอนกรีตเดี่ยว
+     - Line 101: MRT สายสีน้ำเงิน (`#0284C7`) — 🚇 Underground Tunnel Metro อุโมงค์ใต้ดิน
+     - Line 102: MRT สายสีม่วง (`#8A2C9B`) — 🚆 Sustina Heavy Rail Metro ยกระดับ
+     - Line 103: SRTET สายสีแดงเข้ม (`#B91C1C`) — 🚆 Commuter EMU เสารับไฟ Overhead Pantograph
+     - Line 105: SRTET สายสีแดงอ่อน (`#F87171`) — 🚆 Light Commuter EMU แขนรับไฟ Single-arm Pantograph
+     - Line 104: ARL แอร์พอร์ตลิงก์ (`#8A1538`) — ✈️ Airport Express Bullet Train
+     - Line 201: BRT รถโดยสารด่วน (`#82C341`) — 🚌 Bus Rapid Transit ช่องทางเฉพาะ
+     - Line 106: MRT สายสีส้ม (`#F58220`) — 🚇 Orange Tunnel Metro
+   - สัญลักษณ์โครงข่ายและการเชื่อมต่อ (Transit Network Legend):
+     - **⇄** จุดเชื่อมต่อข้ามสาย (Interchange)
+     - **✈️** เชื่อมต่อท่าอากาศยาน (Airport)
+     - **⛵** ท่าเรือเชื่อมต่อ เรือด่วน/คลอง (Pier / Boat)
+     - **🚆** เชื่อมต่อรถไฟทางไกล (SRT)
+     - **🚌** สถานีขนส่งผู้โดยสาร (Bus Terminal)
+     - **🅿️** อาคารจอดแล้วจร (Park & Ride)
 
 7. **Project Element Centering Standard (มาตรฐานการจัดองค์ประกอบกึ่งกลางกรอบข้อความและสัญลักษณ์)**:
    - ทุกกรอบข้อความ รหัสสถานี (Station Code เช่น `YL20`, `CEN`), ไอคอนสัญลักษณ์ (Icons / Symbols เช่น Theme Button, Line Icons, Badges), และปุ่มควบคุมแบบ Pill/Box ทั้งหมดในโปรเจกต์นี้ จะต้องถูกจัดให้อยู่ "กึ่งกลาง" (Centered ทั้งแนวนอน Horizontal และแนวตั้ง Vertical) ของกรอบเสมอ

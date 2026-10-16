@@ -8440,13 +8440,13 @@ setOriginFromActionSheet() {
                 const restHtml = trains.slice(1).map((t, j) => trainBtn(t, j + 1)).join('');
                 rows = trainBtn(trains[0], 0) + (restHtml ? `<div class="train-rest">${restHtml}</div>` : '');
             } else if (isTerminating) {
-                rows = `<div class="dropoff-note" style="padding:4px 6px;text-align:center;background:rgba(255,255,255,0.02);border-radius:10px;border:1px dashed rgba(148,163,184,0.2);min-height:48px;">
-                    <div style="margin-bottom:2px;">${getUiIcon('flag', 15, 'var(--muted)')}</div>
-                    <div style="font-weight:700;font-size:11px;line-height:1.2;color:var(--ink);">${lang === 'en' ? 'Drop-off only' : 'ส่งผู้โดยสารเท่านั้น'}</div>
-                    <div style="font-size:9px;line-height:1.1;color:var(--muted);margin-top:1px;">${lang === 'en' ? 'No boarding train' : 'ขบวนไม่รับผู้โดยสาร'}</div>
+                rows = `<div class="dropoff-note" style="padding:4px 6px;text-align:center;background:rgba(255,255,255,0.02);border-radius:10px;border:1px dashed rgba(148,163,184,0.2);min-height:48px;width:100%;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;box-sizing:border-box;">
+                    <div style="margin-bottom:2px;display:flex;align-items:center;justify-content:center;">${getUiIcon('flag', 15, 'var(--muted)')}</div>
+                    <div style="font-weight:700;font-size:11px;line-height:1.2;color:var(--ink);text-align:center;">${lang === 'en' ? 'Drop-off only' : 'ส่งผู้โดยสารเท่านั้น'}</div>
+                    <div style="font-size:9px;line-height:1.1;color:var(--muted);margin-top:1px;text-align:center;">${lang === 'en' ? 'No boarding train' : 'ขบวนไม่รับผู้โดยสาร'}</div>
                 </div>`;
             } else {
-                rows = `<div class="empty-note" style="padding:6px">${T('noTrains')}</div>`;
+                rows = `<div class="empty-note" style="padding:6px;width:100%;flex:1;min-height:48px;display:flex;align-items:center;justify-content:center;text-align:center;box-sizing:border-box;">${T('noTrains')}</div>`;
             }
 
             return `

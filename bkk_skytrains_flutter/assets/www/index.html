@@ -1702,6 +1702,18 @@
             animation: pulseRing 1.8s infinite;
         }
 
+        .st-row.branch-row {
+            padding-left: 8px;
+            background: rgba(215, 104, 134, 0.04);
+            border-left: 2px solid rgba(215, 104, 134, 0.4);
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+            margin: 2px 0;
+        }
+
+        .st-rail .track.branch-term {
+            bottom: 50% !important;
+        }
+
         @keyframes pulseRing {
             0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
             70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }

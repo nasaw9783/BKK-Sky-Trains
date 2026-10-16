@@ -5473,10 +5473,50 @@ setOriginFromActionSheet() {
                         }
                     }
                 }
+
+                // จุดเชื่อมต่อสายแยกเมืองทองธานี (PK10 <-> MT01 / MT02)
+                const pinkColor = LINE_BRAND_COLORS[5] || '#D76886';
+                if (!this.connections['PK10']) this.connections['PK10'] = [];
+                if (!this.connections['PK10'].some(c => c.key === 'MT01')) {
+                    this.connections['PK10'].push({
+                        key: 'MT01',
+                        lineId: 5,
+                        color: pinkColor,
+                        isBranch: true,
+                        labelTh: 'สายแยกเมืองทองธานี (MT01-MT02)',
+                        labelEn: 'Muang Thong Branch (MT01-MT02)'
+                    });
+                }
+                if (!this.connections['MT01']) this.connections['MT01'] = [];
+                if (!this.connections['MT01'].some(c => c.key === 'PK10')) {
+                    this.connections['MT01'].push({
+                        key: 'PK10',
+                        lineId: 5,
+                        color: pinkColor,
+                        isBranch: true,
+                        labelTh: 'สายสีชมพูสายหลัก (PK10)',
+                        labelEn: 'Pink Main Line (PK10)'
+                    });
+                }
+                if (!this.connections['MT02']) this.connections['MT02'] = [];
+                if (!this.connections['MT02'].some(c => c.key === 'PK10')) {
+                    this.connections['MT02'].push({
+                        key: 'PK10',
+                        lineId: 5,
+                        color: pinkColor,
+                        isBranch: true,
+                        labelTh: 'สายสีชมพูสายหลัก (PK10)',
+                        labelEn: 'Pink Main Line (PK10)'
+                    });
+                }
             },
 
-            // กดป้ายเชื่อมต่อ → กระโดดไปสถานีนั้นบนอีกสาย
+            // กดป้ายเชื่อมต่อ → กระโดดไปสถานีนั้นบนอีกสาย หรือสายแยก
             jumpTo(key, lineId) {
+                if (this.currentView !== 'home') {
+                    if (this.closeMapActionSheet) this.closeMapActionSheet();
+                    this.switchView('home');
+                }
                 document.getElementById('searchInput').value = '';
                 this.userPickedLineManually = true;
                 this.activeLine = lineId;
@@ -7155,6 +7195,9 @@ setOriginFromActionSheet() {
                     const isNear = this.nearest && this.nearest.km != null
                         && s.StationKey === this.nearest.station.StationKey;
                     const isSiam = s.StationKey === SIAM_KEY;
+                    const isInter = isSiam || s.StationKey === 'PK10' || (this.connections[s.StationKey] && this.connections[s.StationKey].some(c => !c.isBranch));
+                    const isBranch = s.StationKey === 'MT01' || s.StationKey === 'MT02';
+                    const isTerminus = s.StationKey === 'MT02';
                     const open = this.expandedKey === s.StationKey;
                     const km = (this.userPos && s.Latitude && s.Longitude)
                         ? haversineKm(this.userPos.lat, this.userPos.lon, s.Latitude, s.Longitude) : null;
@@ -7162,10 +7205,10 @@ setOriginFromActionSheet() {
                     // IsCrowded มีเฉพาะสายจาก StationList API — สาย MRT static ไม่มีฟิลด์นี้
                     const crowded = s.IsCrowded === true;
                     return `
-                    <div class="st-row${crowded ? ' crowded' : ''}" id="row-${esc(s.StationKey)}-${s.StationLineId}">
-                        <div class="st-rail">
-                            <div class="track" style="background:${color}${q ? '22' : ''}"></div>
-                            <div class="node ${isSiam ? 'inter' : ''} ${isNear ? 'near' : ''}" style="border-color:${color}"></div>
+                    <div class="st-row${crowded ? ' crowded' : ''}${isBranch ? ' branch-row' : ''}" id="row-${esc(s.StationKey)}-${s.StationLineId}">
+                        <div class="st-rail${isBranch ? ' branch-rail' : ''}">
+                            <div class="track${isTerminus ? ' branch-term' : ''}" style="background:${color}${q ? '22' : ''}"></div>
+                            <div class="node ${isInter ? 'inter' : ''} ${isNear ? 'near' : ''}" style="border-color:${color}"></div>
                         </div>
                         <div class="st-main">
                             <button class="st-btn" onclick="App.toggleStation('${esc(s.StationKey)}')">
@@ -7175,6 +7218,7 @@ setOriginFromActionSheet() {
                                         ${crowded ? `<span class="badge crowd-b">${T('crowded')}</span>` : ''}
                                         ${isNear ? `<span class="badge near-b">${T('nearYou')}</span>` : ''}
                                         ${isSiam ? `<span class="badge inter-b">${T('fourPlat')}</span>` : ''}
+                                        ${isBranch ? `<span class="badge branch-b" style="background:rgba(215,104,134,0.15);color:#D76886;font-size:10.5px;font-weight:600;padding:2px 6px;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;line-height:1;box-sizing:border-box;letter-spacing:0;gap:3px;vertical-align:middle;">↳ ${lang === 'en' ? (isTerminus ? 'Branch Terminus' : 'Muang Thong Branch') : (isTerminus ? 'สายแยกเมืองทอง · ปลายทาง' : 'สายแยกเมืองทอง')}</span>` : ''}
                                         ${connBadges(s.StationKey, s.StationLineId)}
                                     </div>
                                 </div>
@@ -8678,7 +8722,39 @@ setOriginFromActionSheet() {
                 return `<div class="line-group">${head}<div class="plat-grid">${cards}</div></div>`;
             }).join('');
 
-            return platHtml;
+            let branchCard = '';
+            const isEn = (typeof lang !== 'undefined' && lang === 'en') || (App && App.lang === 'en');
+            if (station && station.StationKey === 'PK10') {
+                branchCard = `
+                <div class="branch-transfer-box" style="margin:8px 0 14px;padding:12px 14px;background:rgba(215,104,134,0.08);border:1px solid rgba(215,104,134,0.25);border-radius:12px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-sizing:border-box;">
+                    <div style="display:flex;align-items:center;gap:10px;min-width:0;">
+                        <div style="flex-shrink:0;">${getLineIconSvg(5, false, 22)}</div>
+                        <div style="min-width:0;">
+                            <div style="font-size:13px;font-weight:700;color:var(--ink);">${isEn ? 'Interchange · Muang Thong Thani Branch' : 'จุดเชื่อมต่อ · สายแยกเมืองทองธานี'}</div>
+                            <div style="font-size:12px;color:var(--muted);white-space:normal;line-height:1.4;">${isEn ? 'Transfer to MT01 (IMPACT) & MT02 (Lake Muang Thong Thani)' : 'เปลี่ยนขบวนไป MT01 อิมแพ็ค และ MT02 ทะเลสาบเมืองทองธานี'}</div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-sm" style="flex-shrink:0;background:#D76886;color:#ffffff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;line-height:1;letter-spacing:0;box-sizing:border-box;box-shadow:0 2px 6px rgba(215,104,134,0.3);" onclick="event.stopPropagation();App.jumpTo('MT01', 5);">
+                        ${isEn ? 'Go to MT01 ➔' : 'ไปยังสถานี MT01 ➔'}
+                    </button>
+                </div>`;
+            } else if (station && (station.StationKey === 'MT01' || station.StationKey === 'MT02')) {
+                branchCard = `
+                <div class="branch-transfer-box" style="margin:8px 0 14px;padding:12px 14px;background:rgba(215,104,134,0.08);border:1px solid rgba(215,104,134,0.25);border-radius:12px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-sizing:border-box;">
+                    <div style="display:flex;align-items:center;gap:10px;min-width:0;">
+                        <div style="flex-shrink:0;">${getLineIconSvg(5, false, 22)}</div>
+                        <div style="min-width:0;">
+                            <div style="font-size:13px;font-weight:700;color:var(--ink);">${isEn ? 'Interchange · Pink Main Line' : 'จุดเชื่อมต่อ · สายสีชมพูสายหลัก'}</div>
+                            <div style="font-size:12px;color:var(--muted);white-space:normal;line-height:1.4;">${isEn ? 'Transfer to PK10 (Muang Thong Thani) for Min Buri / Nonthaburi Civic Center' : 'เปลี่ยนขบวนไปสถานีเมืองทองธานี (PK10) เพื่อไปมีนบุรีหรือศูนย์ราชการนนทบุรี'}</div>
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-sm" style="flex-shrink:0;background:#D76886;color:#ffffff;border:none;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;line-height:1;letter-spacing:0;box-sizing:border-box;box-shadow:0 2px 6px rgba(215,104,134,0.3);" onclick="event.stopPropagation();App.jumpTo('PK10', 5);">
+                        ${isEn ? 'Go to PK10 ➔' : 'ไปยังสถานี PK10 ➔'}
+                    </button>
+                </div>`;
+            }
+
+            return branchCard + platHtml;
         }
 
         function renderPlatform(p, fetchedAt, stationKey) {
@@ -8768,16 +8844,23 @@ setOriginFromActionSheet() {
                 </div>`;
         }
 
-        // ป้าย "เชื่อมต่อสาย X" สำหรับสถานีเปลี่ยนสาย — กดเพื่อกระโดดไปสายนั้น
-        // ctxLineId = สายที่กำลังแสดงอยู่ จะไม่โชว์ป้ายของสายตัวเอง (สยามดูจากสุขุมวิท → เห็น ⇄ สายสีลม)
+        // ป้าย "เชื่อมต่อสาย X" สำหรับสถานีเปลี่ยนสาย หรือสายแยก — กดเพื่อกระโดดไปสายนั้น
+        // ctxLineId = สายที่กำลังแสดงอยู่ จะไม่โชว์ป้ายของสายตัวเอง (สยามดูจากสุขุมวิท → เห็น ⇄ สายสีลม) เว้นแต่เป็นสายแยก (isBranch)
         function connBadges(stationKey, ctxLineId) {
+            const isEn = (typeof lang !== 'undefined' && lang === 'en') || (App && App.lang === 'en');
             return (App.connections[stationKey] || [])
-                .filter(c => c.lineId !== ctxLineId)
+                .filter(c => c.isBranch || c.lineId !== ctxLineId)
                 .map(c => {
                     const line = App.lineById[c.lineId] || MRT_LINE_BY_ID[c.lineId];
-                    return ` <span class="badge conn-b" style="color:${c.color};background:${c.color}1f;display:inline-flex;align-items:center;gap:4px;"
+                    const label = c.isBranch
+                        ? (isEn ? (c.labelEn || 'Branch') : (c.labelTh || 'สายแยก'))
+                        : T('connLine', esc(line ? shortLineName(line) : ''));
+                    const titleText = c.isBranch
+                        ? (isEn ? `Connect to ${c.labelEn || c.key}` : `เชื่อมต่อ ${c.labelTh || c.key}`)
+                        : T('connTitle', esc(c.key));
+                    return ` <span class="badge conn-b" style="color:${c.color};background:${c.color}1f;display:inline-flex;align-items:center;justify-content:center;line-height:1;box-sizing:border-box;letter-spacing:0;gap:4px;"
                     onclick="event.stopPropagation();App.jumpTo('${esc(c.key)}',${c.lineId})"
-                    title="${T('connTitle', esc(c.key))}">${getLineIconSvg(c.lineId, false, 14)} <span>${T('connLine', esc(line ? shortLineName(line) : ''))}</span></span>`;
+                    title="${titleText}">${getLineIconSvg(c.lineId, false, 14)} <span>${label}</span></span>`;
                 }).join('');
         }
 

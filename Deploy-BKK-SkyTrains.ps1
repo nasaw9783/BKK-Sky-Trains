@@ -43,7 +43,7 @@ Write-Host ""
 # Detect Version from pubspec.yaml
 $PubspecPath = Join-Path $Workspace "bkk_skytrains_flutter\pubspec.yaml"
 if (Test-Path $PubspecPath) {
-    $PubspecContent = Get-Content -LiteralPath $PubspecPath -Raw
+    $PubspecContent = Get-Content -LiteralPath $PubspecPath -Raw -Encoding UTF8
     if ($PubspecContent -match 'version:\s*([0-9]+\.[0-9]+\.[0-9]+)') {
         $DetectedVersion = $matches[1]
     } else {
@@ -212,7 +212,7 @@ Write-Host "`n[Step 2/7] ⚙️ ตรวจสอบและ Update .yml ท�
 $WorkflowFile = Join-Path $Workspace ".github\workflows\build_ios.yml"
 if (Test-Path $WorkflowFile) {
     Write-Host "   -> อัปเดต .github\workflows\build_ios.yml ให้ตรงกับ v$Version..." -ForegroundColor Gray
-    $wfContent = Get-Content -LiteralPath $WorkflowFile -Raw
+    $wfContent = Get-Content -LiteralPath $WorkflowFile -Raw -Encoding UTF8
 
     # ตรวจสอบและอัปเดต custom_tag default
     $wfContent = [regex]::Replace($wfContent, "custom_tag:\s*\r?\n\s*description:[^\r\n]*\r?\n\s*required:[^\r\n]*\r?\n\s*type:[^\r\n]*\r?\n\s*default:\s*'[^\']*'", "custom_tag:`n        description: 'Custom tag name (optional, e.g. v$Version)'`n        required: false`n        type: string`n        default: ''")
@@ -228,7 +228,7 @@ if (Test-Path $WorkflowFile) {
 # ตรวจสอบไฟล์ yaml อื่นๆ ใน Flutter
 $PubspecFile = Join-Path $Workspace "bkk_skytrains_flutter\pubspec.yaml"
 if (Test-Path $PubspecFile) {
-    $pubContent = Get-Content -LiteralPath $PubspecFile -Raw
+    $pubContent = Get-Content -LiteralPath $PubspecFile -Raw -Encoding UTF8
     if ($pubContent -match "version:\s*([0-9]+\.[0-9]+\.[0-9]+)\+([0-9]+)") {
         $currVer = $matches[1]
         $buildNum = [int]$matches[2]

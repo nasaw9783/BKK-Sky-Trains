@@ -8428,12 +8428,11 @@ setOriginFromActionSheet() {
                 const atVal = eta ? eta.at : (isArriving ? fetchedAt : '');
                 const hasEtaData = baseVal !== '' && atVal !== '';
                 const firstTrainBorder = (i === 0 && !init.now) ? `border: 2px solid ${p.LineColor};` : '';
-                return `<button class="train ${sizeClass} ${i === selIdx ? 'sel' : ''} ${init.now ? 'is-arriving' : ''}" style="color:${trainTextColor};--line-color:${p.LineColor};${firstTrainBorder}"
-                    onclick="App.selectTrain('${esc(stationKey)}','${esc(p.platform)}',${i},'${esc(t.trainNo)}')">
+                return `<div class="train ${sizeClass} ${init.now ? 'is-arriving' : ''}" style="color:${trainTextColor};--line-color:${p.LineColor};${firstTrainBorder}">
                     <span class="no">${destTag}</span>
                     <span class="eta ${init.now ? 'now' : ''}"
                         ${hasEtaData ? `data-eta-base="${baseVal}" data-eta-at="${atVal}" data-eta-approx="${eta?.approx ? '1' : ''}"` : ''}
-                        >${init.text}</span></button>`;
+                        >${init.text}</span></div>`;
             };
 
             let rows;

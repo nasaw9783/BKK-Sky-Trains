@@ -5693,7 +5693,6 @@ setOriginFromActionSheet() {
                 const el = document.getElementById('pickerOverlay');
                 if (el) el.hidden = false;
                 if (document.body) document.body.style.overflow = 'hidden';
-                setTimeout(() => document.getElementById('pickerSearch')?.focus(), 60);
             },
 
             closePicker() {

@@ -8473,11 +8473,11 @@ setOriginFromActionSheet() {
             const royal = LINE_ROYAL_NAMES[id];
             if (lang === 'en') {
                 const enName = en || th;
-                return royal?.en ? `${enName} · ${royal.en}` : enName;
+                return royal?.en ? `${enName} · (${royal.en})` : enName;
             }
             const name = th.startsWith('สาย') ? th : ('สาย' + th);
             if (royal?.th) {
-                return en ? `${name} ${royal.th} (${en})` : `${name} ${royal.th}`;
+                return `${name} · (${royal.th})`;
             }
             return en ? `${name} (${en})` : name;
         }

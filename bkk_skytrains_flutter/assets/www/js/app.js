@@ -6957,8 +6957,8 @@ setOriginFromActionSheet() {
                         try {
                             new Notification(notifTitle, {
                                 body: notifBody,
-                                icon: 'icon-192.png',
-                                badge: 'icon-192.png',
+                                icon: 'icon.svg',
+                                badge: 'icon.svg',
                                 tag: 'nearest-station'
                             });
                         } catch(e){}

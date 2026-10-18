@@ -197,12 +197,7 @@ $AssetsToSync = @(
     "bkk_transit_map.jpg",
     "bkk_transit_map.svg",
     "bkk_transit_map_dark.svg",
-    "icon-192.png",
-    "icon-512.png",
-    "icon.svg",
-    "favicon.ico",
-    "favicon-48.png",
-    "apple-touch-icon.png"
+    "icon.svg"
 )
 
 foreach ($item in $AssetsToSync) {

@@ -9124,7 +9124,8 @@ setOriginFromActionSheet() {
             const chips = (arr2, at) => (arr2 || []).map(e => chip(e, at)).join('');
 
             // แถวกลาง: ราง + จุดสถานี (เส้นครึ่งซ้าย/ขวาตามว่ามีเพื่อนบ้านฝั่งนั้นไหม)
-            const mid = (st, l, r, cur) => `<div class="rt-mid">
+            // pos: 'up' (ชื่อสถานีสลับขึ้นบน) หรือ 'down' (ชื่อสถานีสลับลงล่าง) ตามขบวนเวลารถเข้า
+            const mid = (st, l, r, cur, pos = 'down') => `<div class="rt-mid ${st ? `lbl-${pos}` : ''}">
                 ${l ? `<span class="tl l" style="background:${color}"></span>` : ''}
                 ${r ? `<span class="tl r" style="background:${color}"></span>` : ''}
                 ${st ? `<span class="nd ${cur ? 'cur near' : ''}" style="${cur ? '' : 'border-color:' + color}"></span>
@@ -9263,6 +9264,16 @@ setOriginFromActionSheet() {
                     <div class="rt-lane rail js">${chips(queueP2)}</div>`;
             }
 
+            // ตรวจสอบทิศทางขบวนเวลารถเข้า: รถชานชาลาใดกำลังจะเข้าใกล้สถานีมากกว่า
+            // เพื่อจัดให้ชื่อสถานี สลับขึ้น-ลง หลบแนวขบวนรถที่กำลังเข้าสถานีและไม่บดบังกัน
+            const etaP1 = Z.prev[0]?.m ?? 999;
+            const etaP2 = Z.next[0]?.m ?? 999;
+            const topTrainEntering = etaP1 <= etaP2;
+
+            const prevPos = topTrainEntering ? 'up' : 'down';
+            const curPos = topTrainEntering ? 'down' : 'up';
+            const nextPos = topTrainEntering ? 'up' : 'down';
+
             return `<div class="route-box">
                 <div class="route-title" style="display:flex;align-items:center;gap:6px;">
                     ${getLineIconSvg(block.lineId, false, 16)}
@@ -9272,13 +9283,13 @@ setOriginFromActionSheet() {
                     ${topPlatHdr}
                     <!-- บน: ขบวนที่มาจากฝั่ง prev (วิ่ง → ไปทางเลขสถานีมากขึ้น) -->
                     ${topLanes}
-                    <!-- กลาง: ราง + สถานี -->
+                    <!-- กลาง: ราง + สถานี (ระยะห่างเท่ากัน & สลับขึ้น-ลง ตามขบวนเวลารถเข้า) -->
                     ${mid(null, false, !!prev)}
-                    ${mid(prev, !!prev, !!prev)}
+                    ${mid(prev, !!prev, !!prev, false, prevPos)}
                     ${mid(null, !!prev, !!prev)}
-                    ${mid(station, !!prev, !!next, true)}
+                    ${mid(station, !!prev, !!next, true, curPos)}
                     ${mid(null, !!next, !!next)}
-                    ${mid(next, !!next, !!next)}
+                    ${mid(next, !!next, !!next, false, nextPos)}
                     ${mid(null, !!next, false)}
                     <!-- ล่าง: ขบวนที่มาจากฝั่ง next (วิ่ง ← ไปทางเลขสถานีน้อยลง) -->
                     ${btmLanes}

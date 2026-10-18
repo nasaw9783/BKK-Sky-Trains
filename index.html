@@ -4147,7 +4147,6 @@
             gap: 6px 8px;
             width: 100%;
             box-sizing: border-box;
-            justify-items: center;
         }
 
         .line-stations-grid.is-single {
@@ -4158,29 +4157,25 @@
         }
 
         .station-picker-chip {
-            display: inline-flex;
+            display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 6px 14px;
+            gap: 5px;
+            padding: 6px 7px;
             background: var(--card);
             border: 1px solid var(--line);
             border-radius: 8px;
             cursor: pointer;
             font-family: inherit;
-            text-align: center;
-            transition: border-color var(--transition-fast), transform var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast);
+            text-align: left;
+            transition: all var(--transition-fast);
             outline: none;
             min-width: 0;
-            width: var(--line-chip-w, fit-content);
-            max-width: 100%;
+            width: 100%;
             min-height: 40px;
             box-sizing: border-box;
             overflow: hidden;
             caret-color: transparent !important;
             user-select: none !important;
-            justify-self: center;
-            margin: 0 auto;
         }
 
         .station-picker-chip:hover {
@@ -4224,8 +4219,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
             min-width: 0;
-            flex: 0 1 auto;
-            text-align: center;
+            flex: 1;
             line-height: 1.25;
             caret-color: transparent !important;
             user-select: none !important;
@@ -4240,13 +4234,12 @@
 
         .line-stations-grid.is-single .station-picker-chip,
         .station-picker-chip.chip-centered {
-            width: var(--line-chip-w, fit-content);
-            max-width: 100%;
+            max-width: 360px;
+            width: 100%;
             margin: 0 auto;
             justify-content: center;
             text-align: center;
             gap: 8px;
-            padding: 6px 16px;
         }
 
         .line-stations-grid.is-single .station-picker-chip .chip-name,

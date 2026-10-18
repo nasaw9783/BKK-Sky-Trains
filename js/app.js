@@ -5693,7 +5693,6 @@ setOriginFromActionSheet() {
                 const el = document.getElementById('pickerOverlay');
                 if (el) el.hidden = false;
                 if (document.body) document.body.style.overflow = 'hidden';
-                requestAnimationFrame(() => this.adjustPickerChipWidths());
             },
 
             closePicker() {
@@ -6030,10 +6029,6 @@ setOriginFromActionSheet() {
 
                 listEl.innerHTML = html;
 
-                // Adjust each line's station chips so only their frames have the width of the longest station in that line
-                this.adjustPickerChipWidths();
-                requestAnimationFrame(() => this.adjustPickerChipWidths());
-
                 if (selectedKey && !q) {
                     setTimeout(() => {
                         const selEl = listEl.querySelector('.station-picker-chip.selected');
@@ -6042,31 +6037,6 @@ setOriginFromActionSheet() {
                         }
                     }, 100);
                 }
-            },
-
-            /* Adjust each line's station chips so only their frames match the longest station in that specific line */
-            adjustPickerChipWidths() {
-                const listEl = document.getElementById('pickerList');
-                if (!listEl) return;
-                const boxes = listEl.querySelectorAll('.line-frame-box');
-                boxes.forEach(box => {
-                    box.style.removeProperty('--line-chip-w');
-                    const chips = box.querySelectorAll('.station-picker-chip');
-                    if (!chips.length) return;
-                    let maxW = 0;
-                    chips.forEach(chip => {
-                        const rectW = chip.getBoundingClientRect().width;
-                        const codeW = chip.querySelector('.chip-code')?.offsetWidth || 30;
-                        const nameEl = chip.querySelector('.chip-name');
-                        const nameW = nameEl ? nameEl.scrollWidth : 0;
-                        const naturalW = codeW + 8 + nameW + 30;
-                        const w = Math.max(rectW, naturalW);
-                        if (w > maxW) maxW = w;
-                    });
-                    if (maxW > 0) {
-                        box.style.setProperty('--line-chip-w', Math.ceil(maxW) + 'px');
-                    }
-                });
             },
 
             /* ---------- เลือกขบวนเพื่อดูปลายทางของขบวนนั้น ---------- */

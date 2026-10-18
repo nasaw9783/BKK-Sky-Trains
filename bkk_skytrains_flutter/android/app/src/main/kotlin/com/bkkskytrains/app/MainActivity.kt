@@ -1,4 +1,4 @@
-package com.bkkskytrain.bkk_skytrains_flutter
+package com.bkkskytrains.app
 
 import io.flutter.embedding.android.FlutterActivity
 

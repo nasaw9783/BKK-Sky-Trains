@@ -5345,12 +5345,15 @@
 
         .nearest-popup-route-trigger {
             width: 100%;
-            padding: 10px 12px;
+            position: relative;
+            min-height: 42px;
+            padding: 10px 38px;
             background: transparent;
             border: none;
-            display: flex;
+            display: inline-flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
+            text-align: center;
             font-size: 13px;
             font-weight: 700;
             color: var(--ink);
@@ -5372,12 +5375,16 @@
         .nearest-popup-route-title {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
+            text-align: center;
             gap: 7px;
             color: var(--ink-secondary);
             font-size: 12.5px;
             font-weight: 800;
             line-height: 1;
             letter-spacing: 0;
+            box-sizing: border-box;
+            margin: auto;
         }
 
         .nearest-popup-route-title .route-trigger-icon {
@@ -5392,14 +5399,28 @@
         .nearest-popup-route-title .route-trigger-icon svg {
             display: block;
             margin: auto;
+            flex-shrink: 0;
+        }
+
+        #nearestPopupRouteTitleText {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            line-height: 1;
+            letter-spacing: 0;
         }
 
         .nearest-popup-route-chevron {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
             display: inline-flex;
             align-items: center;
             justify-content: center;
             color: var(--muted);
-            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), color var(--transition-fast);
             line-height: 1;
             flex-shrink: 0;
         }
@@ -5407,10 +5428,11 @@
         .nearest-popup-route-chevron svg {
             display: block;
             margin: auto;
+            flex-shrink: 0;
         }
 
         .nearest-popup-route-trigger[aria-expanded="true"] .nearest-popup-route-chevron {
-            transform: rotate(180deg);
+            transform: translateY(-50%) rotate(180deg);
             color: var(--accent);
         }
 
@@ -5471,6 +5493,7 @@
 
         .nearest-popup-dismiss-btn {
             width: 100%;
+            min-height: 48px;
             padding: 12px 20px;
             font-size: 15px;
             font-weight: 700;
@@ -5483,12 +5506,18 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            text-align: center;
+            line-height: 1;
+            letter-spacing: 0;
+            box-sizing: border-box;
             gap: 8px;
-            letter-spacing: 0.3px;
             transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
             outline: none;
             text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
             -webkit-tap-highlight-color: transparent;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            caret-color: transparent !important;
         }
 
         .nearest-popup-dismiss-btn:hover {
@@ -5503,8 +5532,20 @@
             box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
         }
 
+        .nearest-popup-dismiss-btn span,
+        #nearestPopupDismissLbl {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            line-height: 1;
+            letter-spacing: 0;
+            margin: auto;
+        }
+
         .nearest-popup-dismiss-btn svg {
             display: block;
+            margin: auto;
             flex-shrink: 0;
             filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.25));
         }

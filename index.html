@@ -1745,26 +1745,10 @@
             top: 0;
             bottom: 0;
             left: 50%;
-            width: 6px;
+            width: 4px;
             transform: translateX(-50%);
             background: #cbd5e1;
             z-index: 1;
-        }
-
-        .st-row:first-child .st-rail .track {
-            top: 50%;
-            border-top-left-radius: 3px;
-            border-top-right-radius: 3px;
-        }
-
-        .st-row:last-child .st-rail .track {
-            bottom: 50%;
-            border-bottom-left-radius: 3px;
-            border-bottom-right-radius: 3px;
-        }
-
-        .st-row:only-child .st-rail .track {
-            display: none;
         }
 
         html.dark .st-rail .track {
@@ -1774,20 +1758,20 @@
         .st-rail .node {
             position: relative;
             z-index: 2;
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
             background: var(--card);
-            border: 4px solid #94a3b8;
+            border: 3.5px solid #94a3b8;
             box-shadow: 0 0 0 2px var(--card);
             transition: all var(--transition-fast);
             box-sizing: border-box;
         }
 
         .st-rail .node.inter {
-            width: 20px;
-            height: 20px;
-            border-width: 4.5px;
+            width: 18px;
+            height: 18px;
+            border-width: 4px;
         }
 
         .st-rail .node.near {
@@ -4165,6 +4149,13 @@
             box-sizing: border-box;
         }
 
+        .line-stations-grid.is-single {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
         .station-picker-chip {
             display: flex;
             align-items: center;
@@ -4239,6 +4230,22 @@
         .station-picker-chip .chip-name.chip-name-xxlong {
             font-size: 11px;
             letter-spacing: -0.15px;
+        }
+
+        .line-stations-grid.is-single .station-picker-chip,
+        .station-picker-chip.chip-centered {
+            max-width: 360px;
+            width: 100%;
+            margin: 0 auto;
+            justify-content: center;
+            text-align: center;
+            gap: 8px;
+        }
+
+        .line-stations-grid.is-single .station-picker-chip .chip-name,
+        .station-picker-chip.chip-centered .chip-name {
+            flex: 0 1 auto;
+            text-align: center;
         }
 
         /* ===== Fares & Timetables View ===== */

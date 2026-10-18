@@ -6005,13 +6005,14 @@ setOriginFromActionSheet() {
                     const isBright = isBrightColor(color);
                     const codeTextColor = isBright ? '#0f172a' : '#ffffff';
 
+                    const isSingle = stations.length === 1;
                     const stationChips = stations.map(s => {
                         const isSelected = s.StationKey === selectedKey;
                         const name = stName(s);
                         const nameLen = name.length;
                         const sizeClass = nameLen > 20 ? 'chip-name-xxlong' : (nameLen > 15 ? 'chip-name-xlong' : (nameLen > 11 ? 'chip-name-long' : ''));
                         return `
-                            <button type="button" class="station-picker-chip ${isSelected ? 'selected' : ''}"
+                            <button type="button" class="station-picker-chip ${isSelected ? 'selected' : ''}${isSingle ? ' chip-centered' : ''}"
                                 onclick="App.pickJourneyStation('${esc(s.StationKey)}')">
                                 <span class="chip-code" style="background:${color};color:${codeTextColor}">${esc(s.StationKey)}</span>
                                 <span class="chip-name ${sizeClass}" title="${esc(name)}">${esc(name)}</span>
@@ -6029,7 +6030,7 @@ setOriginFromActionSheet() {
                                     ${stations.length} ${lang === 'th' ? 'สถานี' : 'stations'}
                                 </span>
                             </div>
-                            <div class="line-stations-grid">
+                            <div class="line-stations-grid${isSingle ? ' is-single' : ''}">
                                 ${stationChips}
                             </div>
                         </div>`;

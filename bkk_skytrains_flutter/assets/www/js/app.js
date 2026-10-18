@@ -1266,7 +1266,7 @@ gQIDAQAB
 <div class="footer-disclaimer-note">
     Unofficial app — Built for daily commuters. Timetables & arrival estimates follow official headway schedules. Please allow extra travel time.
 </div>`,
-                langBtn: 'ไทย',
+                langBtn: '中文',
                 clockLocale: 'en-GB',
                 lines: { 1: 'Sukhumvit', 2: 'Silom', 3: 'Gold', 4: 'Yellow', 5: 'Pink', 101: 'Blue', 102: 'Purple', 103: 'Dark Red', 105: 'Light Red', 104: 'Airport Link', 201: 'BRT', 106: 'Orange (Not in Service)' },
                 timetableBadge: 'Timetable',
@@ -1367,6 +1367,289 @@ gQIDAQAB
                 popupPlatSub: 'Arriving / Live countdown',
                 popupAction: 'View Full Station & Exit Details',
                 popupDismiss: 'Got it',
+            },
+            zh: {
+                appName: 'BKK SKYTRAINs',
+                sub: '曼谷 BTS / MRT / SRT / ARL 轨道交通实时运行状态',
+                affiliation: '非 BTS/MRT/SRT/ARL 官方应用',
+                nearestTitle: '离您最近的车站',
+                nearestExitTitle: '离您最近的出入口',
+                relocate: '重新定位',
+                findNearest: '查找附近车站',
+                findNearestExit: '通过 GPS 确定您所在的出入口',
+                locating: '正在获取您的位置…',
+                fromYou: '距您当前位置',
+                atStation: '位于本站',
+                currentLocation: '当前位置',
+                lastLocation: '上次保存位置',
+                confirmHere: '我在此站（确认位置）',
+                searchPh: '搜索车站编号或站名，如 CEN、暹罗、Siam',
+                notFound: q => `未找到车站 “${q}”`,
+                nearYou: '附近',
+                crowded: '拥挤',
+                interchange: '换乘站 · 4 侧站台',
+                fourPlat: '4 侧站台',
+                line: n => `${n}线`,
+                connLine: n => `⇄ ${n}线`,
+                connTitle: k => `连接至 ${k}`,
+                updated: t => `更新于 ${t}`,
+                refresh: '↻ 刷新',
+                retry: '重试',
+                loadStationsFail: '加载车站列表失败 — 请检查网络连接',
+                loadingTrains: '正在加载列车到站信息…',
+                noTrainData: `${getUiIcon('ban', 15, '#ef4444')} 暂无列车数据`,
+                offHours: '可能处于非营运时段',
+                noTrains: '暂无列车',
+                platformTo: p => `${p} 号站台 · 开往`,
+                platformTrainTo: (p, no) => `${p} 号站台 · 第 ${no} 趟开往`,
+                train: no => `第 ${no} 趟`,
+                arrived: '即将进站',
+                minUnit: ' 分钟',
+                mUnit: ' 米', kmUnit: ' 公里',
+                routeTitle: `${getUiIcon('map', 15, 'currentColor')} 列车实时位置`,
+                routeLine: n => ` · ${n}线`,
+                loadingRoute: '正在加载列车位置…',
+                trafficHead: `${getUiIcon('warn', 15, '#f59e0b')} 运营公告`,
+                trafficBad: names => `${names} 运行可能出现延误或异常`,
+                geoUnsupported: '您的浏览器不支持地理位置定位',
+                geoDenied: '定位权限已被拒绝 — 请允许本站使用位置权限后重试',
+                geoFail: '无法获取您的位置，请重试',
+                connectFail: s => `网络连接失败 (HTTP ${s})`,
+                footer: `<div class="footer-systems-title"><span class="footer-title-icon-pill" style="background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.28);color:#10b981">${getUiIcon('train', 16, '#10b981')}</span> 曼谷互联轨道交通网络（全部 12 条线路）</div>
+<div class="footer-slider-wrapper" id="footerSliderWrapper">
+    <div class="footer-slider-track" id="footerSliderTrack">
+        <!-- Set 1 (12 Lines) -->
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(1)" title="BTS 素坤逸线 (库括 ↔ 凯哈)" aria-label="BTS 素坤逸线">
+            <div class="footer-card-icon" style="background:rgba(122,180,32,0.12);border-color:rgba(122,180,32,0.3)">${getLineIconSvg(1, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">BTS 素坤逸线</span><span class="footer-card-dot">·</span><span class="footer-card-route">库括 ↔ 凯哈</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(2)" title="BTS 是隆线 (国家体育场 ↔ 挽哇)" aria-label="BTS 是隆线">
+            <div class="footer-card-icon" style="background:rgba(0,128,125,0.12);border-color:rgba(0,128,125,0.3)">${getLineIconSvg(2, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">BTS 是隆线</span><span class="footer-card-dot">·</span><span class="footer-card-route">国家体育场 ↔ 挽哇</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(3)" title="APM 金线 (吞武里城 ↔ 空讪)" aria-label="APM 金线">
+            <div class="footer-card-icon" style="background:rgba(201,160,56,0.12);border-color:rgba(201,160,56,0.3)">${getLineIconSvg(3, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">APM 金线</span><span class="footer-card-dot">·</span><span class="footer-card-route">吞武里城 ↔ 空讪</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(101)" title="MRT 蓝线 (塔帕 ↔ 拉颂)" aria-label="MRT 蓝线">
+            <div class="footer-card-icon" style="background:rgba(2,132,199,0.12);border-color:rgba(2,132,199,0.3)">${getLineIconSvg(101, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT 蓝线 (差隆拉差蒙坤)</span><span class="footer-card-dot">·</span><span class="footer-card-route">塔帕 ↔ 拉颂</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(102)" title="MRT 紫线 (空邦派 ↔ 岛本)" aria-label="MRT 紫线">
+            <div class="footer-card-icon" style="background:rgba(138,44,155,0.12);border-color:rgba(138,44,155,0.3)">${getLineIconSvg(102, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT 紫线 (差隆拉差探)</span><span class="footer-card-dot">·</span><span class="footer-card-route">空邦派 ↔ 岛本</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(4)" title="MRT 黄线 (拉抛 ↔ 三隆)" aria-label="MRT 黄线">
+            <div class="footer-card-icon" style="background:rgba(255,209,0,0.15);border-color:rgba(255,209,0,0.35)">${getLineIconSvg(4, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT 黄线 (纳卡拉披帕)</span><span class="footer-card-dot">·</span><span class="footer-card-route">拉抛 ↔ 三隆</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(5)" title="MRT 粉红线 (暖武里政务中心 ↔ 民武里)" aria-label="MRT 粉红线">
+            <div class="footer-card-icon" style="background:rgba(236,72,153,0.12);border-color:rgba(236,72,153,0.3)">${getLineIconSvg(5, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT 粉红线 (威瓦那空)</span><span class="footer-card-dot">·</span><span class="footer-card-route">暖武里政务 ↔ 民武里</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(103)" title="SRT 暗红线 (阿披瓦中央站 ↔ 兰实)" aria-label="SRT 暗红线">
+            <div class="footer-card-icon" style="background:rgba(185,28,28,0.12);border-color:rgba(185,28,28,0.3)">${getLineIconSvg(103, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">SRT 暗红线 (塔尼拉塔雅)</span><span class="footer-card-dot">·</span><span class="footer-card-route">阿披瓦中央站 ↔ 兰实</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(105)" title="SRT 浅红线 (阿披瓦中央站 ↔ 大林江)" aria-label="SRT 浅红线">
+            <div class="footer-card-icon" style="background:rgba(248,113,113,0.15);border-color:rgba(248,113,113,0.35)">${getLineIconSvg(105, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">SRT 浅红线 (那空威提)</span><span class="footer-card-dot">·</span><span class="footer-card-route">阿披瓦 ↔ 大林江</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(104)" title="ARL 机场快线 (帕亚泰 ↔ 素万那普)" aria-label="ARL 机场快线">
+            <div class="footer-card-icon" style="background:rgba(138,21,56,0.12);border-color:rgba(138,21,56,0.3)">${getLineIconSvg(104, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">ARL 机场快线</span><span class="footer-card-dot">·</span><span class="footer-card-route">帕亚泰 ↔ 素万那普</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(201)" title="BRT 快捷公交 (沙吞 ↔ 拉差蓬)" aria-label="BRT 快捷公交">
+            <div class="footer-card-icon" style="background:rgba(130,195,65,0.12);border-color:rgba(130,195,65,0.3)">${getLineIconSvg(201, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">BRT 快捷公交</span><span class="footer-card-dot">·</span><span class="footer-card-route">沙吞 ↔ 拉差蓬</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(106)" title="MRT 橙线 (邦坤暖 ↔ 隆高岔路) (尚未开通)" aria-label="MRT 橙线 (尚未开通)">
+            <div class="footer-card-icon" style="background:rgba(245,130,32,0.12);border-color:rgba(245,130,32,0.3)">${getLineIconSvg(106, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT 橙线 <small style="font-size:10px;color:#f58220;font-weight:700;">(尚未开通)</small></span><span class="footer-card-dot">·</span><span class="footer-card-route">邦坤暖 ↔ 隆高岔路</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+
+        <!-- Set 2 (12 Duplicate Lines for Seamless Infinite Loop) -->
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(1)" title="BTS 素坤逸线 (库括 ↔ 凯哈)" aria-label="BTS 素坤逸线" aria-hidden="true" tabindex="-1">
+            <div class="footer-card-icon" style="background:rgba(122,180,32,0.12);border-color:rgba(122,180,32,0.3)">${getLineIconSvg(1, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">BTS 素坤逸线</span><span class="footer-card-dot">·</span><span class="footer-card-route">库括 ↔ 凯哈</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(2)" title="BTS 是隆线 (国家体育场 ↔ 挽哇)" aria-label="BTS 是隆线" aria-hidden="true" tabindex="-1">
+            <div class="footer-card-icon" style="background:rgba(0,128,125,0.12);border-color:rgba(0,128,125,0.3)">${getLineIconSvg(2, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">BTS 是隆线</span><span class="footer-card-dot">·</span><span class="footer-card-route">国家体育场 ↔ 挽哇</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(3)" title="APM 金线 (吞武里城 ↔ 空讪)" aria-label="APM 金线" aria-hidden="true" tabindex="-1">
+            <div class="footer-card-icon" style="background:rgba(201,160,56,0.12);border-color:rgba(201,160,56,0.3)">${getLineIconSvg(3, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">APM 金线</span><span class="footer-card-dot">·</span><span class="footer-card-route">吞武里城 ↔ 空讪</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(101)" title="MRT 蓝线 (塔帕 ↔ 拉颂)" aria-label="MRT 蓝线" aria-hidden="true" tabindex="-1">
+            <div class="footer-card-icon" style="background:rgba(2,132,199,0.12);border-color:rgba(2,132,199,0.3)">${getLineIconSvg(101, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT 蓝线 (差隆拉差蒙坤)</span><span class="footer-card-dot">·</span><span class="footer-card-route">塔帕 ↔ 拉颂</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(102)" title="MRT 紫线 (空邦派 ↔ 岛本)" aria-label="MRT 紫线" aria-hidden="true" tabindex="-1">
+            <div class="footer-card-icon" style="background:rgba(138,44,155,0.12);border-color:rgba(138,44,155,0.3)">${getLineIconSvg(102, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT 紫线 (差隆拉差探)</span><span class="footer-card-dot">·</span><span class="footer-card-route">空邦派 ↔ 岛本</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(4)" title="MRT 黄线 (拉抛 ↔ 三隆)" aria-label="MRT 黄线" aria-hidden="true" tabindex="-1">
+            <div class="footer-card-icon" style="background:rgba(255,209,0,0.15);border-color:rgba(255,209,0,0.35)">${getLineIconSvg(4, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT 黄线 (纳卡拉披帕)</span><span class="footer-card-dot">·</span><span class="footer-card-route">拉抛 ↔ 三隆</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(5)" title="MRT 粉红线 (暖武里政务中心 ↔ 民武里)" aria-label="MRT 粉红线" aria-hidden="true" tabindex="-1">
+            <div class="footer-card-icon" style="background:rgba(236,72,153,0.12);border-color:rgba(236,72,153,0.3)">${getLineIconSvg(5, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT 粉红线 (威瓦那空)</span><span class="footer-card-dot">·</span><span class="footer-card-route">暖武里政务 ↔ 民武里</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(103)" title="SRT 暗红线 (阿披瓦中央站 ↔ 兰实)" aria-label="SRT 暗红线" aria-hidden="true" tabindex="-1">
+            <div class="footer-card-icon" style="background:rgba(185,28,28,0.12);border-color:rgba(185,28,28,0.3)">${getLineIconSvg(103, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">SRT 暗红线 (塔尼拉塔雅)</span><span class="footer-card-dot">·</span><span class="footer-card-route">阿披瓦中央站 ↔ 兰实</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(105)" title="SRT 浅红线 (阿披瓦中央站 ↔ 大林江)" aria-label="SRT 浅红线" aria-hidden="true" tabindex="-1">
+            <div class="footer-card-icon" style="background:rgba(248,113,113,0.15);border-color:rgba(248,113,113,0.35)">${getLineIconSvg(105, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">SRT 浅红线 (那空威提)</span><span class="footer-card-dot">·</span><span class="footer-card-route">阿披瓦 ↔ 大林江</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(104)" title="ARL 机场快线 (帕亚泰 ↔ 素万那普)" aria-label="ARL 机场快线" aria-hidden="true" tabindex="-1">
+            <div class="footer-card-icon" style="background:rgba(138,21,56,0.12);border-color:rgba(138,21,56,0.3)">${getLineIconSvg(104, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">ARL 机场快线</span><span class="footer-card-dot">·</span><span class="footer-card-route">帕亚泰 ↔ 素万那普</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(201)" title="BRT 快捷公交 (沙吞 ↔ 拉差蓬)" aria-label="BRT 快捷公交" aria-hidden="true" tabindex="-1">
+            <div class="footer-card-icon" style="background:rgba(130,195,65,0.12);border-color:rgba(130,195,65,0.3)">${getLineIconSvg(201, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">BRT 快捷公交</span><span class="footer-card-dot">·</span><span class="footer-card-route">沙吞 ↔ 拉差蓬</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+        <button type="button" class="footer-line-card" onclick="App.jumpToLine(106)" title="MRT 橙线 (邦坤暖 ↔ 隆高岔路) (尚未开通)" aria-label="MRT 橙线 (尚未开通)" aria-hidden="true" tabindex="-1">
+            <div class="footer-card-icon" style="background:rgba(245,130,32,0.12);border-color:rgba(245,130,32,0.3)">${getLineIconSvg(106, false, 20)}</div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT 橙线 <small style="font-size:10px;color:#f58220;font-weight:700;">(尚未开通)</small></span><span class="footer-card-dot">·</span><span class="footer-card-route">邦坤暖 ↔ 隆高岔路</span></div>
+            <div class="footer-card-arrow">›</div>
+        </button>
+    </div>
+</div>
+<div class="footer-refresh-note">
+    ${getUiIcon('refresh', 14, 'var(--sky)')} 实时数据 · 每 20 秒自动刷新 · 覆盖曼谷及周边全部 12 条轨道交通线
+</div>
+<div class="footer-disclaimer-note">
+    非官方应用 — 为方便日常通勤打造，列车时刻遵循官方发车间隔，请预留充足以备换乘
+</div>`,
+                langBtn: 'ไทย',
+                clockLocale: 'zh-CN',
+                lines: { 1: '素坤逸', 2: '是隆', 3: '金线', 4: '黄线', 5: '粉红', 101: '蓝线', 102: '紫线', 103: '暗红', 105: '浅红', 104: '机场快线', 201: 'BRT', 106: '橙线 (尚未开通)' },
+                timetableBadge: '时刻表',
+                timetableSchedule: '查看官方发车频次表',
+                mrtFreqTitle: '发车间隔频次',
+                mrtFreqNow: f => `约每 ~${String(f || '').replace(/^~/, '')} 分钟一趟`,
+                mrtFreqNote: '基于常规运行时刻表（非实时 GPS）',
+                mrtWeekday: '工作日（周一至周五）',
+                mrtWeekend: '周末 / 公共假期',
+                mrtOutOfService: '非营运时段',
+                mrtTimeRange: '时段',
+                mrtFreqCol: '发车间隔',
+                mrtSegmentNote: '* 07:00–09:00 时段本站位于 {seg} 区间',
+                btsFreqHead: `${getUiIcon('train', 15, 'currentColor')} 发车间隔（常规时刻表）`,
+                btsSegNote: '* 莫奇–三隆 · ** 三隆–凯哈 及 莫奇–库括',
+                btsFreqUnit: '单位 分:秒',
+                btsFreqEffective: '自 2026 年 1 月 1 日起生效',
+                jTitle: '路线规划与查询',
+                jHint: '起点 → 终点 · 耗时 + 票价',
+                jFrom: '起点',
+                jTo: '终点',
+                jSelect: '轻触选择车站',
+                jUseNearest: `${getUiIcon('pin', 14, 'currentColor')} 使用离我最近的车站`,
+                jRoute: n => `方案 ${n}`,
+                jRecommended: '推荐 / 最快',
+                jCheapest: '最优惠',
+                jMin: m => `${m} 分钟`,
+                jStations: n => `${n} 个车站`,
+                jTransfer: `${getUiIcon('walk', 14, 'currentColor')} 换乘`,
+                jFareTypes: '票价分类',
+                jStaticFare: '总票价',
+                jLiveFare: 'BTS 票价',
+                jMrtBlueFare: 'MRT 蓝线票价',
+                jMrtPurpleFare: 'MRT 紫线票价',
+                jSrtRedFare: 'SRT 红线票价',
+                jArlFare: 'ARL 机场快线票价',
+                jBrtFare: 'BRT 票价',
+                jMrtOrangeFare: 'MRT 橙线票价',
+                jMap: '查看路线图',
+                jSameStation: '同站',
+                jAlreadyAtStation: '已在目的地车站',
+                jSameStationDesc: '起点站与终点站相同，无需乘车出行，无费用。',
+                jFail: '未能找到路线，请重试',
+                jSearching: '正在规划路线…',
+                homeJourneyTitle: '行程规划与票价查询',
+                homeJourneySub: '查询跨 12 条线路换乘、行程耗时与票价',
+                homeJourneyBtn: '打开 ➔',
+                navHome: '首页',
+                navMap: '线路图',
+                navPlanner: '规划',
+                navExits: '出入口',
+                navFares: '票价',
+                navTimetables: '时刻表',
+                faresTitle: '各线轨道交通票价一览',
+                timetablesTitle: '各线列车时刻与发车频次',
+                mapTitle: `${getUiIcon('map', 15, 'currentColor')} 12 线轨道交通全景图`,
+                mapZoomIn: `${getUiIcon('zoomIn', 13, 'currentColor')} 放大`,
+                mapZoomOut: `${getUiIcon('zoomOut', 13, 'currentColor')} 缩小`,
+                mapReset: `${getUiIcon('resetZoom', 13, 'currentColor')} 复位`,
+                mapLegendBtn: '图例',
+                legTitle: '轨道交通线路图例 (Transit Lines)',
+                legSukhumvit: '素坤逸线',
+                legSilom: '是隆线',
+                legGold: '金线',
+                legBlue: '蓝线 (差隆拉差蒙坤)',
+                legPurple: '紫线 (差隆拉差探)',
+                legBrt: 'BRT 快捷公交',
+                legPink: '粉红线 (威瓦那空)',
+                legYellow: '黄线 (纳卡拉披帕)',
+                legDarkRed: '暗红线 (塔尼拉塔雅)',
+                legLightRed: '浅红线 (那空威提)',
+                legArl: '机场快线 (ARL)',
+                legOrange: '橙线 (尚未开通)',
+                legInter: '换乘站 (Interchange)',
+                legAirport: '机场接驳 (Airport)',
+                legBoat: '码头轮渡换乘 (Boat/Pier)',
+                legTrain: '长途火车换乘 (SRT)',
+                legBus: '客运巴士站 (Bus)',
+                legPark: '停车换乘 (Park & Ride)',
+                legTap: '轻触车站设为起点或终点',
+                mapHint: `<span class="map-hint-icon">${getUiIcon('bulb', 15, '#f59e0b')}</span><div class="map-hint-body"><span class="map-hint-phrase"><b>使用提示:</b> 点击线路图上的任意车站，</span> <span class="map-hint-phrase">即可设为 <b>起点站</b>、</span> <span class="map-hint-phrase"><b>终点站</b></span> <span class="map-hint-phrase">或直接查看 <b>出入口设施</b>。</span></div>`,
+                sheetOrigin: '设为起点站 (Set Origin)',
+                sheetOriginSub: '以此站为出发点规划路线',
+                sheetDest: '设为终点站 (Set Destination)',
+                sheetDestSub: '规划前往此站的换乘方案',
+                sheetExits: '查看出入口与无障碍设施 (Exit Info)',
+                sheetExitsSub: '1, 2, 3 号出口、空中连廊、轮椅无障碍电梯',
+                sheetLive: '查看实时列车到站 (Live Arrival)',
+                sheetLiveSub: '来自站台的实时到站倒计时',
+                plannerHubTitle: `${getUiIcon('star', 15, '#f59e0b')} <span>热门车站（快捷选择）</span> <span class="hub-toggle-chev" id="plannerHubChev">▲</span>`,
+                exitCardTitle: `${getUiIcon('door', 15, 'currentColor')} 车站出入口与无障碍便利设施`,
+                exitCardSub: '选择线路和车站，查询各出入口位置、空中连廊、直梯及周边地标',
+                exitSearchPh: '搜索站名或车站编号，如 暹罗、CEN、诗丹...',
+                popupTitle: '检测到您附近的车站',
+                popupSub: '实时到站列车与站台信息',
+                popupDist: '距您当前位置',
+                popupPlatTitle: `${getUiIcon('train', 15, 'currentColor')} 站台与实时列车`,
+                popupPlatSub: '即将进站 / 实时倒计时',
+                popupAction: '查看车站详情与全部出入口',
+                popupDismiss: '知道了',
             }
         };
 
@@ -1414,18 +1697,169 @@ gQIDAQAB
             return list;
         }
 
-        // ชื่อสถานีตามภาษาที่เลือก (EN ไม่มีข้อมูล → ใช้ไทยแทน)
+        /* ================= CHINESE LOCALIZATION DICTIONARIES ================= */
+        const LINE_NAMES_ZH = {
+            1: 'BTS 素坤逸线',
+            2: 'BTS 是隆线',
+            3: 'APM 金线',
+            4: 'MRT 黄线',
+            5: 'MRT 粉红线',
+            101: 'MRT 蓝线',
+            102: 'MRT 紫线',
+            103: 'SRTET 暗红线',
+            105: 'SRTET 浅红线',
+            104: 'ARL 机场快线',
+            201: 'BRT 快捷公交',
+            106: 'MRT 橙线'
+        };
+
+        const DEST_NAMES_ZH = {
+            'คูคต': '库括', 'Khu Khot': '库括',
+            'เคหะฯ': '凯哈', 'เคหะสมุทรปราการ': '凯哈', 'Kheha': '凯哈',
+            'สนามกีฬาแห่งชาติ': '国家体育场', 'National Stadium': '国家体育场',
+            'บางหว้า': '挽哇', 'Bang Wa': '挽哇',
+            'กรุงธนบุรี': '吞武里城', 'Krung Thon Buri': '吞武里城',
+            'คลองสาน': '空讪', 'Khlong San': '空讪',
+            'ท่าพระ': '塔帕', 'Tha Phra': '塔帕',
+            'หลักสอง': '拉颂', 'Lak Song': '拉颂',
+            'คลองบางไผ่': '空邦派', 'Khlong Bang Phai': '空邦派',
+            'เตาปูน': '岛本', 'Tao Poon': '岛本',
+            'ลาดพร้าว': '拉抛', 'Lat Phrao': '拉抛',
+            'สำโรง': '三隆', 'Samrong': '三隆',
+            'ศูนย์ราชการนนทบุรี': '暖武里政务中心', 'Nonthaburi Civic Center': '暖武里政务中心',
+            'มีนบุรี': '民武里', 'Min Buri': '民武里',
+            'กรุงเทพอภิวัฒน์': '阿披瓦中央站', 'Krung Thep Aphiwat': '阿披瓦中央站',
+            'รังสิต': '兰实', 'Rangsit': '兰实',
+            'ตลิ่งชัน': '大林江', 'Taling Chan': '大林江',
+            'พญาไท': '帕亚泰', 'Phaya Thai': '帕亚泰',
+            'สุวรรณภูมิ': '素万那普机场', 'Suvarnabhumi': '素万那普机场',
+            'สาทร': '沙吞', 'Sathorn': '沙吞',
+            'ราชพฤกษ์': '拉差蓬', 'Ratchapruek': '拉差蓬',
+            'บางขุนนนท์': '邦坤暖', 'Bang Khun Non': '邦坤暖',
+            'แยกร่มเกล้า': '隆高岔路', 'Yaek Rom Klao': '隆高岔路',
+            'เมืองทองธานี': '通城', 'Muang Thong Thani': '通城',
+            'ทะเลสาบเมืองทองธานี': '通城湖', 'Lake Muang Thong Thani': '通城湖',
+            'สยาม': '暹罗', 'Siam': '暹罗',
+            'หมอชิต': '莫奇', 'Mo Chit': '莫奇',
+            'อโศก': '阿索克', 'Asok': '阿索克',
+            'ศาลาแดง': '萨拉丹', 'Sala Daeng': '萨拉丹',
+            'จตุจักร': '乍都节', 'Chatuchak': '乍都节',
+            'บางซื่อ': '挽赐', 'Bang Sue': '挽赐'
+        };
+
+        const STATION_NAMES_ZH = {
+            // Sukhumvit (N)
+            'N1': '拉差贴威', 'N2': '帕亚泰', 'N3': '胜利纪念碑', 'N4': '沙南包', 'N5': '阿里',
+            'N7': '水牛桥', 'N8': '莫奇', 'N9': '五峰拉抛', 'N10': '拍凤裕庭24', 'N11': '拉差裕庭',
+            'N12': '瑟那尼空', 'N13': '农业大学', 'N14': '皇家森林厅', 'N15': '挽磨', 'N16': '第十一步兵团',
+            'N17': '帕喜玛哈泰寺', 'N18': '拍凤裕庭59', 'N19': '塞育', 'N20': '新桥',
+            'N21': '普密蓬阿杜德医院', 'N22': '空军博物馆', 'N23': '空军防空部队路口', 'N24': '库括',
+
+            // Center
+            'CEN': '暹罗',
+
+            // Sukhumvit (E)
+            'E1': '奇隆', 'E2': '奔集', 'E3': '那那', 'E4': '阿索克', 'E5': '澎蓬',
+            'E6': '通罗', 'E7': '伊卡迈', 'E8': '帕卡农', 'E9': '安努', 'E10': '挽节',
+            'E11': '布纳威提', 'E12': '乌东素', 'E13': '挽那', 'E14': '轴承', 'E15': '三隆',
+            'E16': '普召', 'E17': '爱侣湾三象', 'E18': '海军学院', 'E19': '北榄',
+            'E20': '诗纳卡琳', 'E21': '帕沙', 'E22': '塞洛', 'E23': '凯哈',
+
+            // Silom (W, S)
+            'W1': '国家体育场',
+            'S1': '拉差丹利', 'S2': '萨拉丹', 'S3': '冲暖诗', 'S4': '圣路易斯', 'S5': '苏拉萨',
+            'S6': '郑皇桥', 'S7': '吞武里城', 'S8': '大罗斗圈', 'S9': '颇尼米', 'S10': '达叻普',
+            'S11': '乌塔卡', 'S12': '挽哇',
+
+            // Gold Line (G)
+            'G1': '吞武里城', 'G2': '乍能纳空', 'G3': '空讪',
+
+            // Yellow Line (YL)
+            'YL01': '拉抛', 'YL02': '帕瓦纳', 'YL03': '触猜四', 'YL04': '拉抛71', 'YL05': '拉抛83',
+            'YL06': '玛哈泰', 'YL07': '拉抛101', 'YL08': '邦卡比', 'YL09': '兰沙里路口', 'YL10': '诗吉利塔',
+            'YL11': '华玛', 'YL12': '卡兰丹', 'YL13': '诗努', 'YL14': '诗纳卡琳38', 'YL15': '皇九世公园',
+            'YL16': '诗乌东', 'YL17': '诗艳', 'YL18': '诗拉萨', 'YL19': '诗培灵', 'YL20': '诗丹',
+            'YL21': '诗贴帕', 'YL22': '提帕宛', 'YL23': '三隆',
+
+            // Pink Line (PK & MT)
+            'PK01': '暖武里政务中心', 'PK02': '佳莱', 'PK03': '萨南宾南', 'PK04': '萨玛基',
+            'PK05': '皇家水利厅', 'PK06': '北革路口', 'PK07': '北革绕道', 'PK08': '畅瓦塔纳-北革28',
+            'PK09': '通城', 'MT01': '挑战者展馆', 'MT02': '通城湖', 'PK10': '诗叻',
+            'PK11': '畅瓦塔纳14', 'PK12': '政府综合办公区', 'PK13': '国家电信', 'PK14': '叻四',
+            'PK15': '拍那空皇家大学', 'PK16': '帕喜玛哈泰寺', 'PK17': '兰茵他3', 'PK18': '拉巴考',
+            'PK19': '兰茵他4公里', 'PK20': '迈雅拉', 'PK21': '瓦查拉蓬', 'PK22': '兰茵他6公里',
+            'PK23': '库蓬', 'PK24': '兰茵他9公里', 'PK25': '外环路-兰茵他', 'PK26': '诺帕拉',
+            'PK27': '邦灿', 'PK28': '瑟塔布班彭', 'PK29': '民武里市场', 'PK30': '民武里',
+
+            // Blue Line (BL)
+            'BL01': '塔帕', 'BL02': '查兰13', 'BL03': '发柴', 'BL04': '邦坤暖', 'BL05': '邦意堪',
+            'BL06': '诗琳通', 'BL07': '邦帕', 'BL08': '邦奥', 'BL09': '邦坡', 'BL10': '岛本',
+            'BL11': '挽赐', 'BL12': '甘烹碧', 'BL13': '乍都节公园', 'BL14': '拍凤裕庭', 'BL15': '拉抛',
+            'BL16': '拉差达披色', 'BL17': '素铁讪', 'BL18': '辉煌', 'BL19': '泰国文化中心', 'BL20': '拉玛九',
+            'BL21': '碧差汶里', 'BL22': '素坤逸', 'BL23': '诗丽吉王后国家会议中心', 'BL24': '孔堤',
+            'BL25': '是乐园', 'BL26': '是隆', 'BL27': '山燕', 'BL28': '华喃峰', 'BL29': '龙莲寺',
+            'BL30': '三峰', 'BL31': '沙南猜', 'BL32': '伊沙拉帕', 'BL33': '邦派', 'BL34': '挽哇',
+            'BL35': '碧甲盛48', 'BL36': '帕西乍能', 'BL37': '邦开', 'BL38': '拉颂',
+
+            // Purple Line (PP)
+            'PP01': '空邦派', 'PP02': '邦艾市场', 'PP03': '邦艾三岔路', 'PP04': '邦普鲁',
+            'PP05': '邦拉艾', 'PP06': '邦拉诺塔伊', 'PP07': '赛马', 'PP08': '帕喃告桥',
+            'PP09': '暖武里第一路口', 'PP10': '邦卡索', 'PP11': '暖武里政务中心', 'PP12': '卫生部',
+            'PP13': '迪威暖路口', 'PP14': '翁沙旺', 'PP15': '邦颂', 'PP16': '岛本',
+
+            // SRT Dark Red (RN)
+            'RN01': '阿披瓦中央站', 'RN02': '乍都节', 'RN03': '萨米安纳里寺', 'RN04': '邦肯',
+            'RN05': '通颂鸿', 'RN06': '叻四', 'RN07': '房屋局', 'RN08': '廊曼机场',
+            'RN09': '六里', 'RN10': '兰实',
+
+            // SRT Light Red (RW)
+            'RW01': '阿披瓦中央站', 'RW02': '邦颂', 'RW03': '邦班鲁', 'RW04': '大林江',
+
+            // ARL (A)
+            'A1': '素万那普机场', 'A2': '拉卡邦', 'A3': '班塔昌', 'A4': '华玛',
+            'A5': '兰甘亨', 'A6': '玛卡森', 'A7': '拉差巴罗', 'A8': '帕亚泰',
+
+            // BRT (B)
+            'B1': '沙吞', 'B2': '房屋局大厦', 'B3': '曼谷技术大学', 'B4': '禅路', 'B5': '那拉拉玛三',
+            'B6': '瓦丹寺', 'B7': '帕里瓦寺', 'B8': '朵迈寺', 'B9': '拉玛九桥', 'B10': '乍能叻',
+            'B11': '拉玛三桥', 'B12': '拉差蓬',
+
+            // Orange Line (OR)
+            'OR01': '邦坤暖', 'OR02': '诗里拉吉', 'OR03': '皇家田', 'OR04': '民主纪念碑',
+            'OR05': '兰銮', 'OR06': '攀发', 'OR07': '水门', 'OR08': '拉差巴罗',
+            'OR09': '朗南', 'OR10': '丁登', 'OR11': '普拉差颂空', 'OR12': '泰国文化中心',
+            'OR13': '地铁管理局', 'OR14': '拉玛九寺', 'OR15': '兰甘亨12', 'OR16': '兰甘亨大学',
+            'OR17': '泰国体育局', 'OR18': '兰甘亨34', 'OR19': '兰沙里路口', 'OR20': '诗布拉帕',
+            'OR21': '空班玛', 'OR22': '萨玛功', 'OR23': '诺姆告', 'OR24': '拉帕塔纳',
+            'OR25': '民帕塔纳', 'OR26': '兰甘亨房屋局', 'OR27': '民武里', 'OR28': '隆高岔路'
+        };
+
+        // ชื่อสถานีตามภาษาที่เลือก (ZH / EN / TH)
         function stName(s) {
             if (!s) return '';
+            const key = s.StationKey || '';
             const en = s.StationNameEN || s.StationName_EN || '';
             const th = s.StationNameTH || s.StationName_TH || s.StationName || '';
+            if (lang === 'zh') {
+                if (key && STATION_NAMES_ZH[key]) return STATION_NAMES_ZH[key];
+                const cleanTh = cleanStationName(th);
+                if (STATION_NAMES_ZH[cleanTh]) return STATION_NAMES_ZH[cleanTh];
+                const cleanEn = cleanStationName(en);
+                if (STATION_NAMES_ZH[cleanEn]) return STATION_NAMES_ZH[cleanEn];
+                return cleanStationName(en || th);
+            }
             const raw = lang === 'en' ? (en || th) : (th || en);
             return cleanStationName(raw);
         }
 
-        // ข้อความจาก API รูปแบบ "เคหะฯ | Kheha" → เลือกฝั่งตามภาษา (ไม่มีฝั่ง EN → ใช้ไทย)
+        // ข้อความจาก API รูปแบบ "เคหะฯ | Kheha" → เลือกฝั่งตามภาษา (ZH / EN / TH)
         function destName(raw) {
             const parts = String(raw || '').split('|').map(x => x.trim()).filter(Boolean);
+            if (lang === 'zh') {
+                const thPart = parts[0] || '';
+                const enPart = parts[1] || '';
+                return DEST_NAMES_ZH[thPart] || DEST_NAMES_ZH[enPart] || STATION_NAMES_ZH[thPart] || STATION_NAMES_ZH[enPart] || enPart || thPart;
+            }
             return lang === 'en' ? (parts[1] || parts[0] || '') : (parts[0] || '');
         }
 
@@ -1447,6 +1881,14 @@ gQIDAQAB
                 'Bhumibol Adulyadej Hospital': 'Bhumibol Hosp.',
                 'Wat Phra Si Mahathat': 'Wat Phra Si',
                 'Nonthaburi Civic Center': 'Nonthaburi CC',
+            },
+            zh: {
+                '暖武里政务中心': '暖武里政务',
+                '阿披瓦中央站': '阿披瓦',
+                '素万那普机场': '素万那普',
+                '普密蓬阿杜德医院': '普密蓬医院',
+                '空军博物馆': '空军博览馆',
+                '皇家森林厅': '森林厅'
             }
         };
         function shortDest(name) {
@@ -2364,7 +2806,7 @@ gQIDAQAB
         const TRANSIT_LINES_CATALOG = [
             {
                 id: 0,
-                nameTH: 'ทั้งหมด',
+                nameTH: 'ทั้งหมด', nameZH: '全部线路',
                 nameEN: 'All Lines',
                 color: '#64748B',
                 operatorTH: 'โครงข่ายรถไฟฟ้า 12 สาย กทม. และปริมณฑล',
@@ -2388,7 +2830,7 @@ gQIDAQAB
             },
             {
                 id: 1,
-                nameTH: 'BTS สายสุขุมวิท',
+                nameTH: 'BTS สายสุขุมวิท', nameZH: 'BTS 素坤逸线',
                 nameEN: 'BTS Sukhumvit Line',
                 color: '#7AB420',
                 operatorTH: 'BTSC (ระบบรถไฟฟ้าบีทีเอส)',
@@ -2414,7 +2856,7 @@ gQIDAQAB
             },
             {
                 id: 2,
-                nameTH: 'BTS สายสีลม',
+                nameTH: 'BTS สายสีลม', nameZH: 'BTS 是隆线',
                 nameEN: 'BTS Silom Line',
                 color: '#00807D',
                 operatorTH: 'BTSC (ระบบรถไฟฟ้าบีทีเอส)',
@@ -2440,7 +2882,7 @@ gQIDAQAB
             },
             {
                 id: 3,
-                nameTH: 'APM สายสีทอง',
+                nameTH: 'APM สายสีทอง', nameZH: 'APM 金线',
                 nameEN: 'APM Gold Line',
                 color: '#C9A038',
                 operatorTH: 'กรุงเทพธนาคม (KT) / BTSC',
@@ -2466,7 +2908,7 @@ gQIDAQAB
             },
             {
                 id: 4,
-                nameTH: 'MRT สายสีเหลือง (นัคราพิพัฒน์)',
+                nameTH: 'MRT สายสีเหลือง (นัคราพิพัฒน์)', nameZH: 'MRT 黄线 (纳卡拉披帕)',
                 nameEN: 'MRT Yellow Line (Nakkhara Phiphat)',
                 color: '#FFD100',
                 operatorTH: 'EBM (Eastern Bangkok Monorail)',
@@ -2492,7 +2934,7 @@ gQIDAQAB
             },
             {
                 id: 5,
-                nameTH: 'MRT สายสีชมพู (วิวัฒน์นคร)',
+                nameTH: 'MRT สายสีชมพู (วิวัฒน์นคร)', nameZH: 'MRT 粉红线 (威瓦那空)',
                 nameEN: 'MRT Pink Line (Wiwat Nakhon)',
                 color: '#EC4899',
                 operatorTH: 'NBM (Northern Bangkok Monorail)',
@@ -2518,7 +2960,7 @@ gQIDAQAB
             },
             {
                 id: 101,
-                nameTH: 'MRT สายสีน้ำเงิน (เฉลิมรัชมงคล)',
+                nameTH: 'MRT สายสีน้ำเงิน (เฉลิมรัชมงคล)', nameZH: 'MRT 蓝线 (差隆拉差蒙坤)',
                 nameEN: 'MRT Blue Line (Chaloem Ratchamongkhon)',
                 color: '#0284C7',
                 operatorTH: 'BEM (Bangkok Expressway and Metro) / รฟม.',
@@ -2544,7 +2986,7 @@ gQIDAQAB
             },
             {
                 id: 102,
-                nameTH: 'MRT สายสีม่วง (ฉลองรัชธรรม)',
+                nameTH: 'MRT สายสีม่วง (ฉลองรัชธรรม)', nameZH: 'MRT 紫线 (差隆拉差探)',
                 nameEN: 'MRT Purple Line (Chalong Ratchatham)',
                 color: '#8A2C9B',
                 operatorTH: 'BEM / รฟม.',
@@ -2570,7 +3012,7 @@ gQIDAQAB
             },
             {
                 id: 103,
-                nameTH: 'SRT สายสีแดงเข้ม (ธานีรัถยา)',
+                nameTH: 'SRT สายสีแดงเข้ม (ธานีรัถยา)', nameZH: 'SRT 暗红线 (塔尼拉塔雅)',
                 nameEN: 'SRT Dark Red Line (Thani Ratthaya)',
                 color: '#B91C1C',
                 operatorTH: 'SRTET (รถไฟฟ้า ร.ฟ.ท.)',
@@ -2596,7 +3038,7 @@ gQIDAQAB
             },
             {
                 id: 105,
-                nameTH: 'SRT สายสีแดงอ่อน (นครวิถี)',
+                nameTH: 'SRT สายสีแดงอ่อน (นครวิถี)', nameZH: 'SRT 浅红线 (那空威提)',
                 nameEN: 'SRT Light Red Line (Nakhon Withi)',
                 color: '#F87171',
                 operatorTH: 'SRTET (รถไฟฟ้า ร.ฟ.ท.)',
@@ -3275,9 +3717,9 @@ gQIDAQAB
                     return {
                         level: 'low',
                         percent,
-                        badge: lang === 'th' ? 'คนน้อย / เดินทางสะดวก' : 'Low / Comfortable',
+                        badge: lang === 'th' ? 'คนน้อย / เดินทางสะดวก' : (lang === 'zh' ? '舒适 / 乘客较少' : 'Low / Comfortable'),
                         color: '#10b981',
-                        advice: lang === 'th' ? 'ผู้โดยสารน้อย มีที่นั่งว่าง เดินทางสะดวกสบาย' : 'Low passenger volume. Plenty of seats available.'
+                        advice: lang === 'th' ? 'ผู้โดยสารน้อย มีที่นั่งว่าง เดินทางสะดวกสบาย' : (lang === 'zh' ? '乘客较少，有空位，出行轻松舒适' : 'Low passenger volume. Plenty of seats available.')
                     };
                 }
             },
@@ -3611,7 +4053,7 @@ gQIDAQAB
                         allBtn.style.cssText = isAll ? 'background:var(--primary,#0284c7);color:#fff;' : '';
                         allBtn.innerHTML = `
                             ${getLineIconSvg(0, isAll, 17)}
-                            <span>${lang === 'th' ? 'ทุกสาย' : 'All Lines'}</span>`;
+                            <span>${lang === 'th' ? 'ทุกสาย' : (lang === 'zh' ? '全部线路' : 'All Lines')}</span>`;
                         allLines.forEach((l, idx) => {
                             const btn = existingTabs[idx + 1];
                             const on = l.LineId === this.exitFilterLine;
@@ -3625,7 +4067,7 @@ gQIDAQAB
                         lineTabsEl.innerHTML = `
                             <button class="tab ${isAll ? 'on' : ''}" style="${isAll ? 'background:var(--primary,#0284c7);color:#fff;' : ''}" onclick="App.filterExitLine(0)">
                                 ${getLineIconSvg(0, isAll, 17)}
-                                <span>${lang === 'th' ? 'ทุกสาย' : 'All Lines'}</span>
+                                <span>${lang === 'th' ? 'ทุกสาย' : (lang === 'zh' ? '全部线路' : 'All Lines')}</span>
                             </button>` + allLines.map(l => {
                             const on = l.LineId === this.exitFilterLine;
                             return `<button class="tab ${on ? 'on' : ''}" style="${on ? 'background:' + l.LineColor + ';color:#fff;' : ''}" onclick="App.filterExitLine(${l.LineId})">
@@ -4241,10 +4683,10 @@ setOriginFromActionSheet() {
                     bodyHtml = `
                         <!-- 20 Baht Flat Fare Policy Banner -->
                         <div class="info-card" style="background:linear-gradient(135deg,#dc26260d,#ef444415);border-color:#ef444444">
-                            <span class="fare-badge-20">${isEn ? '20 Baht Flat Fare Policy' : 'นโยบาย 20 บาทตลอดสาย'}</span>
+                            <span class="fare-badge-20">${lang === 'zh' ? '20 泰铢封顶票价政策' : (isEn ? '20 Baht Flat Fare Policy' : 'นโยบาย 20 บาทตลอดสาย')}</span>
                             <h3 style="color:#b91c1c;display:flex;align-items:center;gap:8px">
                                 <span style="display:inline-flex;gap:4px;align-items:center">${getLineIconSvg(102, false, 20)} ${getLineIconSvg(103, false, 20)} ${getLineIconSvg(105, false, 20)}</span>
-                                <span>${isEn ? 'Flat 20 Baht Fare (EMV Contactless)' : 'รถไฟฟ้า 20 บาทตลอดสาย (EMV Contactless)'}</span>
+                                <span>${lang === 'zh' ? '全线 20 泰铢封顶 (EMV Contactless)' : (isEn ? 'Flat 20 Baht Fare (EMV Contactless)' : 'รถไฟฟ้า 20 บาทตลอดสาย (EMV Contactless)')}</span>
                             </h3>
                             <div style="font-size:12.5px;color:var(--ink);line-height:1.6">
                                 ${isEn ? 'Passengers paying with <b>EMV Contactless</b> credit/debit cards pay a maximum fare of <b>฿20</b>:' : 'ผู้โดยสารที่แตะจ่ายด้วยบัตรเครดิต/เดบิต <b>EMV Contactless</b> เดินทางด้วยค่าโดยสารสูงสุดไม่เกิน <b>20 บาท</b>:'}
@@ -4273,7 +4715,7 @@ setOriginFromActionSheet() {
                         <div class="info-card">
                             <h3 style="display:flex;align-items:center;gap:8px">
                                 <span>${getUiIcon('card', 16, 'var(--primary,#0284c7)')}</span>
-                                <span>${isEn ? 'Fare Comparison across 12 Lines' : 'เปรียบเทียบอัตราค่าโดยสารทั้ง 12 สาย'}</span>
+                                <span>${lang === 'zh' ? '12 条线路票价对比' : (isEn ? 'Fare Comparison across 12 Lines' : 'เปรียบเทียบอัตราค่าโดยสารทั้ง 12 สาย')}</span>
                             </h3>
                             <div style="font-size:12px;color:var(--muted);margin-bottom:8px">
                                 ${isEn ? 'Tap any line below or use the pills above to view detailed fare structure' : 'แตะที่สายรถไฟฟ้าหรือแถบด้านบนเพื่อดูตารางราคาแบบละเอียด'}
@@ -4282,10 +4724,10 @@ setOriginFromActionSheet() {
                                 <table class="fare-grid-table">
                                     <thead>
                                         <tr>
-                                            <th>${isEn ? 'Line' : 'สายรถไฟฟ้า'}</th>
-                                            <th>${isEn ? 'Min - Max' : 'อัตราเริ่มต้น - สูงสุด'}</th>
-                                            <th>${isEn ? 'Pricing Model' : 'รูปแบบราคา'}</th>
-                                            <th>${isEn ? 'Cards / Tickets' : 'บัตรโดยสาร'}</th>
+                                            <th>${lang === 'zh' ? '线路' : (isEn ? 'Line' : 'สายรถไฟฟ้า')}</th>
+                                            <th>${lang === 'zh' ? '起步 - 最高' : (isEn ? 'Min - Max' : 'อัตราเริ่มต้น - สูงสุด')}</th>
+                                            <th>${lang === 'zh' ? '计费方式' : (isEn ? 'Pricing Model' : 'รูปแบบราคา')}</th>
+                                            <th>${lang === 'zh' ? '车票 / 乘车卡' : (isEn ? 'Cards / Tickets' : 'บัตรโดยสาร')}</th>
                                             <th></th>
                                         </tr>
                                     </thead>
@@ -4295,7 +4737,7 @@ setOriginFromActionSheet() {
                                                 <td style="white-space:nowrap;">
                                                     <span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap;">
                                                         ${getLineIconSvg(l.id, false, 16)}
-                                                        <b>${esc(isEn ? l.nameEN : l.nameTH)}</b>
+                                                        <b>${esc(lang === 'zh' ? (l.nameZH || l.nameEN) : (isEn ? l.nameEN : l.nameTH))}</b>
                                                     </span>
                                                 </td>
                                                 <td style="white-space:nowrap;"><b style="color:${l.color}">฿${l.minFare} - ฿${l.maxFare}</b></td>
@@ -4303,7 +4745,7 @@ setOriginFromActionSheet() {
                                                 <td style="white-space:nowrap;font-size:11.5px;color:var(--muted)">${esc(isEn ? l.ticketsEN : l.ticketsTH)}</td>
                                                 <td style="white-space:nowrap;">
                                                     <button type="button" class="btn btn-ghost" style="padding:4px 8px;font-size:11px;white-space:nowrap;" onclick="event.stopPropagation();App.setFaresLine(${l.id})">
-                                                        ${isEn ? 'Details' : 'ดูราคา'} ➔
+                                                        ${lang === 'zh' ? '查看详情' : (isEn ? 'Details' : 'ดูราคา')} ➔
                                                     </button>
                                                 </td>
                                             </tr>
@@ -4738,7 +5180,7 @@ setOriginFromActionSheet() {
                         <div class="info-card">
                             <h3 style="display:flex;align-items:center;gap:8px">
                                 <span>⏰</span>
-                                <span>${isEn ? 'First & Last Train Timetables across 12 Lines' : 'ตารางเวลาเดินรถขบวนแรกและขบวนสุดท้าย 12 สาย'}</span>
+                                <span>${lang === 'zh' ? '12 线首末班车时刻一览' : (isEn ? 'First & Last Train Timetables across 12 Lines' : 'ตารางเวลาเดินรถขบวนแรกและขบวนสุดท้าย 12 สาย')}</span>
                             </h3>
                             <div style="font-size:12px;color:var(--muted);margin-bottom:8px">
                                 ${isEn ? 'Tap any line below or use the pills above to view official frequency schedule table' : 'แตะที่สายรถไฟฟ้าหรือแถบด้านบนเพื่อดูตารางความถี่การเดินรถแบบละเอียด'}
@@ -4747,10 +5189,10 @@ setOriginFromActionSheet() {
                                 <table class="fare-grid-table">
                                     <thead>
                                         <tr>
-                                            <th>${isEn ? 'Line' : 'สายรถไฟฟ้า'}</th>
-                                            <th>${isEn ? 'First Train' : 'ขบวนแรก'}</th>
-                                            <th>${isEn ? 'Last Train' : 'ขบวนสุดท้าย'}</th>
-                                            <th>${isEn ? 'Peak Frequency' : 'ความถี่ช่วงเร่งด่วน'}</th>
+                                            <th>${lang === 'zh' ? '线路' : (isEn ? 'Line' : 'สายรถไฟฟ้า')}</th>
+                                            <th>${lang === 'zh' ? '首班车' : (isEn ? 'First Train' : 'ขบวนแรก')}</th>
+                                            <th>${lang === 'zh' ? '末班车' : (isEn ? 'Last Train' : 'ขบวนสุดท้าย')}</th>
+                                            <th>${lang === 'zh' ? '高峰发车间隔' : (isEn ? 'Peak Frequency' : 'ความถี่ช่วงเร่งด่วน')}</th>
                                             <th></th>
                                         </tr>
                                     </thead>
@@ -4760,7 +5202,7 @@ setOriginFromActionSheet() {
                                                 <td style="white-space:nowrap;">
                                                     <span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap;">
                                                         ${getLineIconSvg(l.id, false, 16)}
-                                                        <b>${esc(isEn ? l.nameEN : l.nameTH)}</b>
+                                                        <b>${esc(lang === 'zh' ? (l.nameZH || l.nameEN) : (isEn ? l.nameEN : l.nameTH))}</b>
                                                     </span>
                                                 </td>
                                                 <td style="white-space:nowrap;"><b>${esc(isEn ? l.firstTrainEN : l.firstTrainTH)}</b></td>
@@ -4768,7 +5210,7 @@ setOriginFromActionSheet() {
                                                 <td style="white-space:nowrap;color:${l.color}"><b>${esc(isEn ? l.peakFreqEN : l.peakFreqTH)}</b></td>
                                                 <td style="white-space:nowrap;">
                                                     <button type="button" class="btn btn-ghost" style="padding:4px 8px;font-size:11px;white-space:nowrap;" onclick="event.stopPropagation();App.setTimetablesLine(${l.id})">
-                                                        ${isEn ? 'Timetable' : 'ดูตาราง'} ➔
+                                                        ${lang === 'zh' ? '时刻表' : (isEn ? 'Timetable' : 'ดูตาราง')} ➔
                                                     </button>
                                                 </td>
                                             </tr>
@@ -5087,7 +5529,13 @@ setOriginFromActionSheet() {
 
             /* ---------- language ---------- */
             setLang(l) {
-                lang = l || (lang === 'th' ? 'en' : 'th');
+                if (l) {
+                    lang = l;
+                } else {
+                    if (lang === 'th') lang = 'en';
+                    else if (lang === 'en') lang = 'zh';
+                    else lang = 'th';
+                }
                 localStorage.setItem('bts_lang', lang);
                 this.applyStaticLang();
                 this.renderTabs();
@@ -5143,7 +5591,7 @@ setOriginFromActionSheet() {
                 if (mapLegendBtn) {
                     const sheet = document.getElementById('mapLegendSheet');
                     const isActive = sheet && sheet.classList.contains('active');
-                    mapLegendBtn.textContent = isActive ? (lang === 'en' ? 'Close' : 'ปิดสัญลักษณ์') : T('mapLegendBtn');
+                    mapLegendBtn.textContent = isActive ? (lang === 'en' ? 'Close' : (lang === 'zh' ? '关闭图例' : 'ปิดสัญลักษณ์')) : T('mapLegendBtn');
                 }
 
                 // Map legend sheet
@@ -5182,7 +5630,9 @@ setOriginFromActionSheet() {
                 const hubChev = this.hubOpen !== false ? '▲' : '▼';
                 const hubTitle = lang === 'th'
                     ? `${getUiIcon('star', 15, '#f59e0b')} <span>สถานียอดนิยม (แตะเพื่อเลือกด่วน)</span> <span class="hub-toggle-chev" id="plannerHubChev">${hubChev}</span>`
-                    : `${getUiIcon('star', 15, '#f59e0b')} <span>Popular Stations (Quick Select)</span> <span class="hub-toggle-chev" id="plannerHubChev">${hubChev}</span>`;
+                    : (lang === 'zh'
+                        ? `${getUiIcon('star', 15, '#f59e0b')} <span>热门车站（快捷选择）</span> <span class="hub-toggle-chev" id="plannerHubChev">${hubChev}</span>`
+                        : `${getUiIcon('star', 15, '#f59e0b')} <span>Popular Stations (Quick Select)</span> <span class="hub-toggle-chev" id="plannerHubChev">${hubChev}</span>`);
                 set('plannerHubTitle', hubTitle);
 
                 // Exits view
@@ -5793,16 +6243,16 @@ setOriginFromActionSheet() {
                 if (!el) return;
                 el.style.display = this.hubOpen === false ? 'none' : 'grid';
                 const hubs = [
-                    { key: 'CEN', lineId: 1, nameTh: 'สยาม', nameEn: 'Siam', subTh: 'BTS สุขุมวิท ⇄ สีลม', subEn: 'BTS Sukhumvit ⇄ Silom' },
-                    { key: 'E4', lineId: 1, nameTh: 'อโศก', nameEn: 'Asok', subTh: 'เชื่อม MRT สุขุมวิท', subEn: 'Connect MRT Sukhumvit' },
-                    { key: 'N8', lineId: 1, nameTh: 'หมอชิต', nameEn: 'Mo Chit', subTh: 'เชื่อม MRT จตุจักร', subEn: 'Connect MRT Chatuchak' },
-                    { key: 'S2', lineId: 2, nameTh: 'ศาลาแดง', nameEn: 'Sala Daeng', subTh: 'เชื่อม MRT สีลม', subEn: 'Connect MRT Si Lom' },
-                    { key: 'N2', lineId: 1, nameTh: 'พญาไท', nameEn: 'Phaya Thai', subTh: 'เชื่อม แอร์พอร์ตลิงก์', subEn: 'Connect Airport Link' },
-                    { key: 'BL11', lineId: 101, nameTh: 'บางซื่อ', nameEn: 'Bang Sue', subTh: 'เชื่อม SRT สายสีแดง', subEn: 'Connect SRT Red Line' },
-                    { key: 'BL15', lineId: 101, nameTh: 'ลาดพร้าว', nameEn: 'Lat Phrao', subTh: 'เชื่อม MRT สายสีเหลือง', subEn: 'Connect Yellow Line' },
-                    { key: 'YL23', lineId: 4, nameTh: 'สำโรง', nameEn: 'Samrong', subTh: 'เชื่อม BTS สุขุมวิท', subEn: 'Connect BTS Sukhumvit' },
-                    { key: 'PP11', lineId: 102, nameTh: 'ศูนย์ราชการฯ', nameEn: 'Nonthaburi CC', subTh: 'สายสีม่วง ⇄ ชมพู', subEn: 'Purple ⇄ Pink Line' },
-                    { key: 'A1', lineId: 104, nameTh: 'สุวรรณภูมิ', nameEn: 'Suvarnabhumi', subTh: 'ท่าอากาศยานสุวรรณภูมิ', subEn: 'Suvarnabhumi Airport' }
+                    { key: 'CEN', lineId: 1, nameTh: 'สยาม', nameEn: 'Siam', nameZh: '暹罗', subTh: 'BTS สุขุมวิท ⇄ สีลม', subEn: 'BTS Sukhumvit ⇄ Silom', subZh: 'BTS 素坤逸 ⇄ 是隆' },
+                    { key: 'E4', lineId: 1, nameTh: 'อโศก', nameEn: 'Asok', nameZh: '阿索克', subTh: 'เชื่อม MRT สุขุมวิท', subEn: 'Connect MRT Sukhumvit', subZh: '换乘 MRT 素坤逸' },
+                    { key: 'N8', lineId: 1, nameTh: 'หมอชิต', nameEn: 'Mo Chit', nameZh: '莫奇', subTh: 'เชื่อม MRT จตุจักร', subEn: 'Connect MRT Chatuchak', subZh: '换乘 MRT 乍都节' },
+                    { key: 'S2', lineId: 2, nameTh: 'ศาลาแดง', nameEn: 'Sala Daeng', nameZh: '萨拉丹', subTh: 'เชื่อม MRT สีลม', subEn: 'Connect MRT Si Lom', subZh: '换乘 MRT 是隆' },
+                    { key: 'N2', lineId: 1, nameTh: 'พญาไท', nameEn: 'Phaya Thai', nameZh: '帕亚泰', subTh: 'เชื่อม แอร์พอร์ตลิงก์', subEn: 'Connect Airport Link', subZh: '换乘机场快线 ARL' },
+                    { key: 'BL11', lineId: 101, nameTh: 'บางซื่อ', nameEn: 'Bang Sue', nameZh: '挽赐', subTh: 'เชื่อม SRT สายสีแดง', subEn: 'Connect SRT Red Line', subZh: '换乘 SRT 红线' },
+                    { key: 'BL15', lineId: 101, nameTh: 'ลาดพร้าว', nameEn: 'Lat Phrao', nameZh: '拉抛', subTh: 'เชื่อม MRT สายสีเหลือง', subEn: 'Connect Yellow Line', subZh: '换乘 MRT 黄线' },
+                    { key: 'YL23', lineId: 4, nameTh: 'สำโรง', nameEn: 'Samrong', nameZh: '三隆', subTh: 'เชื่อม BTS สุขุมวิท', subEn: 'Connect BTS Sukhumvit', subZh: '换乘 BTS 素坤逸' },
+                    { key: 'PP11', lineId: 102, nameTh: 'ศูนย์ราชการฯ', nameEn: 'Nonthaburi CC', nameZh: '暖武里政务中心', subTh: 'สายสีม่วง ⇄ ชมพู', subEn: 'Purple ⇄ Pink Line', subZh: '紫线 ⇄ 粉红线' },
+                    { key: 'A1', lineId: 104, nameTh: 'สุวรรณภูมิ', nameEn: 'Suvarnabhumi', nameZh: '素万那普', subTh: 'ท่าอากาศยานสุวรรณภูมิ', subEn: 'Suvarnabhumi Airport', subZh: '素万那普国际机场' }
                 ];
                 const theme = {
                     1: { bg: 'rgba(122,180,32,0.12)', border: 'rgba(122,180,32,0.3)', pillBg: '#7AB420', pillText: '#ffffff' },
@@ -5818,12 +6268,12 @@ setOriginFromActionSheet() {
                 };
                 el.innerHTML = hubs.map(h => {
                     const s = this.findStation(h.key);
-                    const name = s ? stName(s) : (lang === 'en' ? h.nameEn : h.nameTh);
-                    const sub = lang === 'en' ? h.subEn : h.subTh;
+                    const name = s ? stName(s) : (lang === 'zh' ? (h.nameZh || h.nameEn) : (lang === 'en' ? h.nameEn : h.nameTh));
+                    const sub = lang === 'zh' ? (h.subZh || h.subEn) : (lang === 'en' ? h.subEn : h.subTh);
                     const isFrom = this.journey.from === h.key;
                     const isTo = this.journey.to === h.key;
                     const isSel = isFrom || isTo;
-                    const tag = isFrom ? (lang === 'th' ? 'ต้นทาง' : 'From') : isTo ? (lang === 'th' ? 'ปลายทาง' : 'To') : '';
+                    const tag = isFrom ? (lang === 'th' ? 'ต้นทาง' : (lang === 'zh' ? '起点' : 'From')) : isTo ? (lang === 'th' ? 'ปลายทาง' : (lang === 'zh' ? '终点' : 'To')) : '';
                     const tagCls = isFrom ? 'from' : 'to';
                     const t = theme[h.lineId] || { bg: 'rgba(100,116,139,0.12)', border: 'rgba(100,116,139,0.3)', pillBg: '#64748B', pillText: '#ffffff' };
                     return `<button type="button" class="quick-hub-card ${isSel ? 'on' : ''}" onclick="App.quickSelectHub('${h.key}')" title="${esc(name)} (${esc(sub)})" aria-label="${esc(name)}">
@@ -5884,7 +6334,7 @@ setOriginFromActionSheet() {
                     allBtn.setAttribute('aria-pressed', isAll ? 'true' : 'false');
                     allBtn.innerHTML = `
                         ${getLineIconSvg(0, isAll, 18)}
-                        <span>${lang === 'th' ? 'ทุกสาย' : 'All Lines'}</span>`;
+                        <span>${lang === 'th' ? 'ทุกสาย' : (lang === 'zh' ? '全部线路' : 'All Lines')}</span>`;
 
                     allLines.forEach((l, idx) => {
                         const btn = existingTabs[idx + 1];
@@ -5904,7 +6354,7 @@ setOriginFromActionSheet() {
                         <button class="tab ${isAll ? 'on' : ''}" style="${isAll ? 'background:var(--primary,#0284c7);color:#fff;' : ''}"
                             aria-pressed="${isAll ? 'true' : 'false'}" onclick="App.setPickerLine(0)">
                             ${getLineIconSvg(0, isAll, 18)}
-                            <span>${lang === 'th' ? 'ทุกสาย' : 'All Lines'}</span>
+                            <span>${lang === 'th' ? 'ทุกสาย' : (lang === 'zh' ? '全部线路' : 'All Lines')}</span>
                         </button>` + allLines.map(l => {
                         const on = l.LineId === this.journey.pickerLine;
                         const st = this.traffic?.lines?.find(x => x.LineId === l.LineId);
@@ -6426,9 +6876,9 @@ setOriginFromActionSheet() {
                     const isOutOfService = !!p.isOutOfService || (station.StationKey === 'YL23' && String(p.platform) === '1');
                     const isTerminating = !isOutOfService && (p.isDropOffOnly || p.DestinationStation_key === station.StationKey);
                     const dest = isOutOfService
-                        ? (lang === 'en' ? 'Out of Service' : 'ไม่ให้บริการ')
+                        ? (lang === 'en' ? 'Out of Service' : (lang === 'zh' ? '暂不营运' : 'ไม่ให้บริการ'))
                         : isTerminating
-                            ? (lang === 'en' ? 'Drop-off only' : 'ส่งผู้โดยสารเท่านั้น')
+                            ? (lang === 'en' ? 'Drop-off only' : (lang === 'zh' ? '仅供下车' : 'ส่งผู้โดยสารเท่านั้น'))
                             : shortDest(destName(p.DestinationStation));
                     const trains = isOutOfService ? [] : displayTrains(station.StationKey, p.platform, p.train_list, arr.fetchedAt);
                     let timeStr = '';
@@ -6443,7 +6893,7 @@ setOriginFromActionSheet() {
                             timeStr = m <= 0 ? T('arrived') : `${m} ${lang === 'en' ? 'min' : 'นาที'}`;
                         }
                     } else if (isTerminating) {
-                        timeStr = lang === 'en' ? 'No boarding train' : 'ขบวนไม่รับผู้โดยสาร';
+                        timeStr = lang === 'en' ? 'No boarding train' : (lang === 'zh' ? '非载客列车' : 'ขบวนไม่รับผู้โดยสาร');
                     }
                     const prefix = isOutOfService ? '' : (lang === 'en' ? 'To ' : 'ไป');
                     return `${lang === 'en' ? 'Platform' : 'ชานชาลา'} ${p.platform}: ${prefix}${dest} ${timeStr ? `(${timeStr})` : ''}`.trim();
@@ -7355,7 +7805,7 @@ setOriginFromActionSheet() {
                                         ${crowded ? `<span class="badge crowd-b">${T('crowded')}</span>` : ''}
                                         ${isNear ? `<span class="badge near-b">${T('nearYou')}</span>` : ''}
                                         ${isSiam ? `<span class="badge inter-b">${T('fourPlat')}</span>` : ''}
-                                        ${isTerminus ? `<span class="badge" style="background:var(--bg-subtle);color:var(--muted);border:1px solid var(--line);font-size:9.5px;font-weight:600;padding:2px 6px;border-radius:var(--radius-full);display:inline-flex;align-items:center;justify-content:center;line-height:1;box-sizing:border-box;letter-spacing:0;vertical-align:middle;">${lang === 'en' ? 'Terminus' : 'ปลายทาง'}</span>` : ''}
+                                        ${isTerminus ? `<span class="badge" style="background:var(--bg-subtle);color:var(--muted);border:1px solid var(--line);font-size:9.5px;font-weight:600;padding:2px 6px;border-radius:var(--radius-full);display:inline-flex;align-items:center;justify-content:center;line-height:1;box-sizing:border-box;letter-spacing:0;vertical-align:middle;">${lang === 'en' ? 'Terminus' : (lang === 'zh' ? '终点站' : 'ปลายทาง')}</span>` : ''}
                                         ${connBadges(s.StationKey, s.StationLineId)}
                                     </div>
                                 </div>
@@ -8404,12 +8854,12 @@ setOriginFromActionSheet() {
         }
 
         const LINE_ROYAL_NAMES = {
-            4: { th: 'นัคราพิพัฒน์', en: 'Nakkhara Phiphat' },
-            5: { th: 'วิวัฒน์นคร', en: 'Wiwat Nakhon' },
-            101: { th: 'เฉลิมรัชมงคล', en: 'Chaloem Ratchamongkhon' },
-            102: { th: 'ฉลองรัชธรรม', en: 'Chalong Ratchatham' },
-            103: { th: 'ธานีรัถยา', en: 'Thani Ratthaya' },
-            105: { th: 'นครวิถี', en: 'Nakhon Withi' }
+            4: { th: 'นัคราพิพัฒน์', en: 'Nakkhara Phiphat', zh: '纳卡拉披帕' },
+            5: { th: 'วิวัฒน์นคร', en: 'Wiwat Nakhon', zh: '威瓦那空' },
+            101: { th: 'เฉลิมรัชมงคล', en: 'Chaloem Ratchamongkhon', zh: '差隆拉差蒙坤' },
+            102: { th: 'ฉลองรัชธรรม', en: 'Chalong Ratchatham', zh: '差隆拉差探' },
+            103: { th: 'ธานีรัถยา', en: 'Thani Ratthaya', zh: '塔尼拉塔雅' },
+            105: { th: 'นครวิถี', en: 'Nakhon Withi', zh: '那空威提' }
         };
 
         function matchQueryWithLine(qRaw, line, currentLang) {
@@ -8418,7 +8868,16 @@ setOriginFromActionSheet() {
             const qNoSpace = q.replace(/\s+/g, '');
             if (!q) return false;
 
-            if (currentLang === 'th') {
+            if (currentLang === 'zh') {
+                const nameZh = (LINE_NAMES_ZH[line.LineId] || I18N.zh?.lines?.[line.LineId] || shortLineName(line) || '').toLowerCase();
+                const royalZh = (LINE_ROYAL_NAMES[line.LineId]?.zh || '').toLowerCase();
+                const nameZhNoSpace = nameZh.replace(/\s+/g, '');
+                const royalZhNoSpace = royalZh.replace(/\s+/g, '');
+                return nameZh.includes(q) || q.includes(nameZh)
+                    || (qNoSpace && (nameZhNoSpace.includes(qNoSpace) || qNoSpace.includes(nameZhNoSpace)))
+                    || (royalZh && (royalZh.includes(q) || q.includes(royalZh)))
+                    || (royalZhNoSpace && qNoSpace && (royalZhNoSpace.includes(qNoSpace) || qNoSpace.includes(royalZhNoSpace)));
+            } else if (currentLang === 'th') {
                 const nameTh = (shortLineName(line) || line.LineName_TH || line.LineNameTH || '').toLowerCase();
                 const nameFullTh = (line.LineNameTH || line.LineName_TH || '').toLowerCase();
                 const royalTh = (LINE_ROYAL_NAMES[line.LineId]?.th || '').toLowerCase();
@@ -8454,7 +8913,14 @@ setOriginFromActionSheet() {
             const keyNoSpace = key.replace(/\s+/g, '');
             if (key.includes(q) || (qNoSpace && keyNoSpace.includes(qNoSpace))) return true;
 
-            if (currentLang === 'th') {
+            if (currentLang === 'zh') {
+                const nameZh = (stName(station) || '').toLowerCase();
+                const nameZhNoSpace = nameZh.replace(/\s+/g, '');
+                const nameEn = (station.StationNameEN || station.StationName_EN || '').toLowerCase();
+                const nameEnNoSpace = nameEn.replace(/\s+/g, '');
+                return nameZh.includes(q) || (qNoSpace && nameZhNoSpace.includes(qNoSpace))
+                    || nameEn.includes(q) || (qNoSpace && nameEnNoSpace.includes(qNoSpace));
+            } else if (currentLang === 'th') {
                 const nameTh = (station.StationNameTH || stName(station) || '').toLowerCase();
                 const nameThNoSpace = nameTh.replace(/\s+/g, '');
                 return nameTh.includes(q) || (qNoSpace && nameThNoSpace.includes(qNoSpace));
@@ -8471,6 +8937,10 @@ setOriginFromActionSheet() {
             const th = l.LineName_TH || l.LineNameTH || '';
             const en = l.LineName_EN || l.LineNameEN || '';
             const royal = LINE_ROYAL_NAMES[id];
+            if (lang === 'zh') {
+                const zhName = LINE_NAMES_ZH[id] || (I18N.zh?.lines?.[id] ? `${I18N.zh.lines[id]}线`.replace('线线', '线') : (en || th));
+                return royal?.zh ? `${zhName} · (${royal.zh})` : zhName;
+            }
             if (lang === 'en') {
                 const enName = en || th;
                 return royal?.en ? `${enName} · (${royal.en})` : enName;
@@ -8995,14 +9465,14 @@ setOriginFromActionSheet() {
             const isTerminating = !isOutOfService && (p.isDropOffOnly || p.DestinationStation_key === stationKey);
             const rawDest = (selT && selT.station) || p.DestinationStation;
             const dest = isOutOfService
-                ? (lang === 'en' ? 'Out of Service' : 'ไม่ให้บริการ')
+                ? (lang === 'en' ? 'Out of Service' : (lang === 'zh' ? '暂不营运' : 'ไม่ให้บริการ'))
                 : isTerminating
-                    ? (lang === 'en' ? 'Drop-off only' : 'ส่งผู้โดยสารเท่านั้น')
+                    ? (lang === 'en' ? 'Drop-off only' : (lang === 'zh' ? '仅供下车' : 'ส่งผู้โดยสารเท่านั้น'))
                     : shortDest(destName(rawDest));
             const destLabel = isOutOfService
-                ? (lang === 'en' ? `Platform ${esc(p.platform)} · Terminus` : `ชานชาลา ${esc(p.platform)} · สิ้นสุดสาย`)
+                ? (lang === 'en' ? `Platform ${esc(p.platform)} · Terminus` : (lang === 'zh' ? `${esc(p.platform)} 号站台 · 终点站` : `ชานชาลา ${esc(p.platform)} · สิ้นสุดสาย`))
                 : isTerminating
-                    ? (lang === 'en' ? `Platform ${esc(p.platform)} · Terminus` : `ชานชาลา ${esc(p.platform)} · สิ้นสุดสาย`)
+                    ? (lang === 'en' ? `Platform ${esc(p.platform)} · Terminus` : (lang === 'zh' ? `${esc(p.platform)} 号站台 · 终点站` : `ชานชาลา ${esc(p.platform)} · สิ้นสุดสาย`))
                     : T('platformTo', esc(p.platform));
             const isBrightLine = p.LineColor === '#FFD100' || p.LineColor === '#F5C242' || p.LineId === 4;
             const platTextColor = isBrightLine ? '#0f172a' : '#ffffff';
@@ -9037,7 +9507,7 @@ setOriginFromActionSheet() {
             if (isOutOfService) {
                 rows = `<div class="dropoff-note out-of-service-note" style="padding:4px 6px;text-align:center;background:rgba(255,255,255,0.02);border-radius:10px;border:1px dashed rgba(148,163,184,0.2);min-height:48px;width:100%;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;box-sizing:border-box;">
                     <div style="margin-bottom:2px;display:flex;align-items:center;justify-content:center;">${getUiIcon('ban', 15, 'var(--muted)')}</div>
-                    <div style="font-weight:700;font-size:11px;line-height:1.2;color:var(--ink);text-align:center;letter-spacing:0;">${lang === 'en' ? 'Out of Service' : 'ไม่ให้บริการ'}</div>
+                    <div style="font-weight:700;font-size:11px;line-height:1.2;color:var(--ink);text-align:center;letter-spacing:0;">${lang === 'en' ? 'Out of Service' : (lang === 'zh' ? '暂不营运' : 'ไม่ให้บริการ')}</div>
                 </div>`;
             } else if (trains.length) {
                 const restHtml = trains.slice(1).map((t, j) => trainBtn(t, j + 1)).join('');
@@ -9045,8 +9515,8 @@ setOriginFromActionSheet() {
             } else if (isTerminating) {
                 rows = `<div class="dropoff-note" style="padding:4px 6px;text-align:center;background:rgba(255,255,255,0.02);border-radius:10px;border:1px dashed rgba(148,163,184,0.2);min-height:48px;width:100%;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;box-sizing:border-box;">
                     <div style="margin-bottom:2px;display:flex;align-items:center;justify-content:center;">${getUiIcon('flag', 15, 'var(--muted)')}</div>
-                    <div style="font-weight:700;font-size:11px;line-height:1.2;color:var(--ink);text-align:center;letter-spacing:0;">${lang === 'en' ? 'Drop-off only' : 'ส่งผู้โดยสารเท่านั้น'}</div>
-                    <div style="font-size:9px;line-height:1.1;color:var(--muted);margin-top:1px;text-align:center;letter-spacing:0;">${lang === 'en' ? 'No boarding train' : 'ขบวนไม่รับผู้โดยสาร'}</div>
+                    <div style="font-weight:700;font-size:11px;line-height:1.2;color:var(--ink);text-align:center;letter-spacing:0;">${lang === 'en' ? 'Drop-off only' : (lang === 'zh' ? '仅供下车' : 'ส่งผู้โดยสารเท่านั้น')}</div>
+                    <div style="font-size:9px;line-height:1.1;color:var(--muted);margin-top:1px;text-align:center;letter-spacing:0;">${lang === 'en' ? 'No boarding train' : (lang === 'zh' ? '非载客列车' : 'ขบวนไม่รับผู้โดยสาร')}</div>
                 </div>`;
             } else {
                 rows = `<div class="empty-note" style="padding:6px;width:100%;flex:1;min-height:48px;display:flex;align-items:center;justify-content:center;text-align:center;box-sizing:border-box;letter-spacing:0;">${T('noTrains')}</div>`;
@@ -9156,7 +9626,7 @@ setOriginFromActionSheet() {
                     ${badgeLabel ? `<span class="j-badge" style="${isSameStation ? 'background:rgba(2,132,199,0.15);color:#0284c7;border:1px solid rgba(2,132,199,0.3);' : ''}">${esc(badgeLabel)}</span>` : ''}
                     <span class="j-fare">฿${esc(fareDisplay)}</span>
                     <span class="j-sum">${getUiIcon('timer', 13, 'currentColor')} <b>${T('jMin', timeDisplay)}</b> · ${T('jStations', rm.Count_Station ?? steps.length)}
-                        · ${kmDisplay} ${T('kmUnit').trim()}${rm.Count_InterChange ? ' · ' + (lang === 'en' ? 'Transfer' : 'เปลี่ยนสาย') + ' ×' + rm.Count_InterChange : ''}</span>
+                        · ${kmDisplay} ${T('kmUnit').trim()}${rm.Count_InterChange ? ' · ' + (lang === 'zh' ? '换乘' : (lang === 'en' ? 'Transfer' : 'เปลี่ยนสาย')) + ' ×' + rm.Count_InterChange : ''}</span>
                 </button>
                 ${open ? `<div class="j-steps">
                     ${isSameStation ? `<div class="same-station-banner" style="margin-bottom:10px;padding:9px 12px;background:rgba(2,132,199,0.08);border-left:3px solid #0284c7;border-radius:6px;font-size:12px;line-height:1.45;color:var(--ink);">
@@ -9221,7 +9691,7 @@ setOriginFromActionSheet() {
                 const isOutOfService = !!p.isOutOfService || (station.StationKey === 'YL23' && String(p.platform) === '1');
                 const isTerminating = !isOutOfService && (p.isDropOffOnly || (p.DestinationStation_key && p.DestinationStation_key === station.StationKey));
                 let dest = isOutOfService
-                    ? (lang === 'en' ? 'Out of Service' : 'ไม่ให้บริการ')
+                    ? (lang === 'en' ? 'Out of Service' : (lang === 'zh' ? '暂不营运' : 'ไม่ให้บริการ'))
                     : isTerminating
                         ? (lang === 'en' ? 'Terminus · Drop-off only' : 'สิ้นสุดสาย ส่งผู้โดยสารเท่านั้น')
                         : (destName(p.DestinationStation) || (dirStation ? stName(dirStation) : ''));

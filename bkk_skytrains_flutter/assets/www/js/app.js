@@ -1762,9 +1762,7 @@ gQIDAQAB
             return !!station && (
                 station.StaticJourney === true ||
                 isMrtStationKey(station.StationKey) ||
-                isGoldLineId(station.StationLineId) ||
-                isPinkLineId(station.StationLineId) ||
-                isPinkStationKey(station.StationKey)
+                isGoldLineId(station.StationLineId)
             );
         }
 
@@ -8407,8 +8405,8 @@ setOriginFromActionSheet() {
                     continue;
                 }
 
-                // 5. ตรวจสอบการแซงของขบวน (บนรางเดียวกัน ขบวนหลังต้องไม่แซงขบวนหน้า)
-                if (eta) {
+                // 5. ตรวจสอบเฉพาะขบวนที่เป็นค่าประมาณ (~approx จาก etaMem) หากมีขบวนจริงที่มาถึงก่อนและเวลาขัดแย้ง
+                if (t.time_come === '--' && eta && eta.approx) {
                     const remaining = eta.base - (nowMs - eta.at) / 60000;
                     const overtaken = (list || []).some(o => o !== t
                         && o.time_come !== '--' && o.time_come_double != null
@@ -8418,6 +8416,15 @@ setOriginFromActionSheet() {
 
                 out.push(t);
             }
+
+            // จัดเรียงตามเวลานับถอยหลังคงเหลือจริง (จากน้อยไปมาก)
+            out.sort((a, b) => {
+                const etaA = bestEta(stationKey, platform, a, fetchedAt);
+                const etaB = bestEta(stationKey, platform, b, fetchedAt);
+                const remA = etaA ? (etaA.base - (nowMs - etaA.at) / 60000) : (a.status === 'arriving' ? 0 : 999);
+                const remB = etaB ? (etaB.base - (nowMs - etaB.at) / 60000) : (b.status === 'arriving' ? 0 : 999);
+                return remA - remB;
+            });
 
             // 6. เติมเวลานับถอยหลังของขบวนถัดไป (ขบวนที่ 2 และ 3) เสมอตามความถี่เดินรถ (Headway Interval)
             // เพื่อให้ผู้ใช้เห็นเวลานับถอยหลังของขบวนถัดไปเสมอเหมือนภาพที่สอง

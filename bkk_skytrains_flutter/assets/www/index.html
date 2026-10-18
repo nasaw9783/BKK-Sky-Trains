@@ -5848,15 +5848,15 @@
 
 
             <!-- Quick Trip Planner Banner / Link to Tab 3 -->
-            <div class="card" style="padding:13px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;background:linear-gradient(135deg,rgba(2,132,199,0.08),rgba(16,185,129,0.08));border:1px solid rgba(2,132,199,0.22);margin-bottom:12px;" onclick="App.switchView('planner')">
-                <div style="display:flex;align-items:center;gap:12px">
-                    <span class="card-icon-pill sky" style="width:36px;height:36px;border-radius:10px;"><svg class="ui-ic ui-ic-compass" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill="currentColor" fill-opacity="0.3"/></svg></span>
-                    <div>
-                        <div style="font-weight:700;font-size:14px;color:var(--ink)" id="homePlannerTitle">วางแผนการเดินทาง & เช็คค่าโดยสาร</div>
-                        <div style="font-size:11.5px;color:var(--muted)" id="homePlannerSub">ค้นหาเส้นทาง คำนวณเวลา และราคาข้าม 12 สาย</div>
+            <div class="card" style="padding:13px 16px;position:relative;display:flex;align-items:center;justify-content:center;cursor:pointer;background:linear-gradient(135deg,rgba(2,132,199,0.08),rgba(16,185,129,0.08));border:1px solid rgba(2,132,199,0.22);margin-bottom:12px;" onclick="App.switchView('planner')">
+                <div style="display:flex;align-items:center;justify-content:center;gap:12px;text-align:center;margin:0 auto;max-width:calc(100% - 80px);">
+                    <span class="card-icon-pill sky" style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg class="ui-ic ui-ic-compass" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill="currentColor" fill-opacity="0.3"/></svg></span>
+                    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;">
+                        <div style="font-weight:700;font-size:14px;color:var(--ink);text-align:center;line-height:1.3;" id="homePlannerTitle">วางแผนการเดินทาง & เช็คค่าโดยสาร</div>
+                        <div style="font-size:11.5px;color:var(--muted);text-align:center;line-height:1.3;" id="homePlannerSub">ค้นหาเส้นทาง คำนวณเวลา และราคาข้าม 12 สาย</div>
                     </div>
                 </div>
-                <button class="btn btn-ghost" id="homePlannerBtn" style="padding:5px 12px;font-size:12px">เปิด ➔</button>
+                <button class="btn btn-ghost" id="homePlannerBtn" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);padding:5px 10px;font-size:12px;margin:0;white-space:nowrap;">เปิด ➔</button>
             </div>
 
             <!-- Search -->

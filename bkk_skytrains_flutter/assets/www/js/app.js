@@ -5866,7 +5866,7 @@ setOriginFromActionSheet() {
                         <div class="picker-list" id="pickerList"></div>
                     </div>`;
                 this.renderPickerTabs();
-                document.getElementById('pickerSearch').addEventListener('input', () => this.renderPickerList());
+                document.getElementById('pickerSearch').addEventListener('input', () => this.onPickerSearchInput());
                 this.renderPickerList();
             },
 
@@ -5932,56 +5932,42 @@ setOriginFromActionSheet() {
                 this.renderPickerList();
             },
 
+            onPickerSearchInput() {
+                const qRaw = (document.getElementById('pickerSearch')?.value || '').trim();
+                const allLines = allJourneyLines();
+                if (qRaw) {
+                    const matchedLineByName = allLines.find(l => matchQueryWithLine(qRaw, l, lang));
+                    if (matchedLineByName) {
+                        // เมื่อคำค้นหาตรงกับสายสี/ไลน์ไหน ให้เลื่อนแท็บไปที่สายสี/ไลน์นั้น ๆ ตามภาษาที่ใช้อยู่เท่านั้น
+                        if (this.journey.pickerLine !== matchedLineByName.LineId) {
+                            this.journey.pickerLine = matchedLineByName.LineId;
+                            this.renderPickerTabs();
+                        }
+                    } else {
+                        // ค้นหาด้วยชื่อสถานีใด ๆ หรือเมื่อยังพิมพ์คำค้นหาไม่ครบ ให้แสดงผลลัพธ์คำค้นหาใกล้เคียงรวมทุกสายสี (แท็บ ทุกสาย)
+                        if (this.journey.pickerLine !== 0) {
+                            this.journey.pickerLine = 0;
+                            this.renderPickerTabs();
+                        }
+                    }
+                }
+                this.renderPickerList();
+            },
+
             renderPickerList() {
                 const listEl = document.getElementById('pickerList');
                 if (!listEl) return;
                 const qRaw = (document.getElementById('pickerSearch')?.value || '').trim();
                 const q = qRaw.toLowerCase();
                 const allLines = allJourneyLines();
-
-                // เมื่อคำค้นหาตรงกับสายสี/ไลน์ไหน ให้เลื่อนแท็บไปที่สายสี/ไลน์นั้น ๆ ตามภาษาที่ใช้อยู่เท่านั้น
-                if (q) {
-                    const matchedLineByName = allLines.find(l => matchQueryWithLine(qRaw, l, lang));
-                    let targetLineId = null;
-
-                    if (matchedLineByName) {
-                        targetLineId = matchedLineByName.LineId;
-                    } else {
-                        // หาสายแรกที่มีสถานีตรงกับคำค้นหาตามภาษาที่ใช้อยู่เท่านั้น
-                        const firstMatchingLine = allLines.find(l =>
-                            (l.StationList || []).some(s => matchQueryWithStation(qRaw, s, lang))
-                        );
-                        if (firstMatchingLine) {
-                            const curLine = allLines.find(l => l.LineId === this.journey.pickerLine);
-                            const curHasMatch = curLine && (curLine.StationList || []).some(s => matchQueryWithStation(qRaw, s, lang));
-                            if (!curHasMatch) {
-                                targetLineId = firstMatchingLine.LineId;
-                            }
-                        }
-                    }
-
-                    if (targetLineId && this.journey.pickerLine !== targetLineId) {
-                        this.journey.pickerLine = targetLineId;
-                        this.renderPickerTabs();
-                    }
-                }
-
                 const curPickerLine = this.journey.pickerLine;
 
                 // Determine lines to show based on tab filter & search
                 let linesToShow;
-                if (q) {
-                    if (curPickerLine && curPickerLine !== 0) {
-                        const activeLineList = allLines.filter(l => l.LineId === curPickerLine);
-                        const hasMatchOnActive = activeLineList.some(l => (l.StationList || []).some(s => matchQueryWithStation(qRaw, s, lang)));
-                        linesToShow = hasMatchOnActive ? activeLineList : allLines;
-                    } else {
-                        linesToShow = allLines;
-                    }
+                if (curPickerLine && curPickerLine !== 0) {
+                    linesToShow = allLines.filter(l => l.LineId === curPickerLine);
                 } else {
-                    linesToShow = (curPickerLine && curPickerLine !== 0)
-                        ? allLines.filter(l => l.LineId === curPickerLine)
-                        : allLines;
+                    linesToShow = allLines;
                 }
 
                 const selectedKey = this.journey.picking === 'from' ? this.journey.from : this.journey.to;

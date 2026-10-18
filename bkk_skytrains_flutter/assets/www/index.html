@@ -207,6 +207,23 @@
         *, *::before, *::after {
             box-sizing: border-box;
             -webkit-tap-highlight-color: transparent;
+            caret-color: transparent;
+        }
+
+        /* Allow caret and text selection only in real editable form inputs */
+        input, textarea, [contenteditable="true"], [contenteditable=""] {
+            caret-color: auto !important;
+            user-select: text !important;
+            -webkit-user-select: text !important;
+            cursor: text !important;
+        }
+
+        /* Prevent text selection and blinking cursor globally on all non-input containers */
+        *:not(input):not(textarea):not([contenteditable="true"]) {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
         }
 
         html {
@@ -804,6 +821,13 @@
             line-height: 1;
             letter-spacing: 0;
             box-sizing: border-box;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            cursor: default !important;
+            caret-color: transparent !important;
+            outline: none !important;
         }
 
         .station-hero .names {
@@ -1283,6 +1307,13 @@
             margin-top: 1px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
             flex-shrink: 0;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            cursor: default !important;
+            caret-color: transparent !important;
+            outline: none !important;
         }
 
         .plat-dest {
@@ -1359,15 +1390,18 @@
             border: 1.5px solid var(--line);
             border-radius: 10px;
             padding: 6px 8px;
-            cursor: default;
+            cursor: default !important;
             pointer-events: none;
-            user-select: none;
-            -webkit-user-select: none;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            caret-color: transparent !important;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            outline: none;
+            outline: none !important;
             min-width: 0;
         }
 
@@ -1381,6 +1415,13 @@
             font-variant-numeric: tabular-nums;
             line-height: 1.1;
             white-space: nowrap;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            cursor: default !important;
+            caret-color: transparent !important;
+            outline: none !important;
         }
 
         .train .eta.now,
@@ -1435,6 +1476,13 @@
             color: var(--muted);
             margin-top: 1px;
             font-weight: 600;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            cursor: default !important;
+            caret-color: transparent !important;
+            outline: none !important;
         }
 
         .train.first {
@@ -1461,6 +1509,12 @@
             gap: 4px;
             flex: 0.95;
             min-width: 0;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            cursor: default !important;
+            caret-color: transparent !important;
         }
 
         .train-rest .train {
@@ -1471,11 +1525,25 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            cursor: default !important;
+            caret-color: transparent !important;
+            outline: none !important;
         }
 
         .train-rest .train .eta {
             font-size: 11.5px;
             font-weight: 700;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            cursor: default !important;
+            caret-color: transparent !important;
+            outline: none !important;
         }
 
         /* ===== Real-Time Crowd Gauge ===== */
@@ -5089,6 +5157,13 @@
             gap: 12px;
             animation: slideDownModal 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             overflow-y: auto;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            cursor: default !important;
+            caret-color: transparent !important;
+            outline: none !important;
         }
 
         @keyframes slideDownModal {
@@ -5180,6 +5255,13 @@
             background: var(--bg-subtle);
             border: 1px solid var(--line);
             border-radius: var(--radius-md);
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            cursor: default !important;
+            caret-color: transparent !important;
+            outline: none !important;
         }
 
         .nearest-popup-names {
@@ -5187,6 +5269,12 @@
             flex-direction: column;
             min-width: 0;
             flex: 1;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            cursor: default !important;
+            caret-color: transparent !important;
         }
 
         .nearest-popup-name-th {
@@ -5197,6 +5285,12 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            cursor: default !important;
+            caret-color: transparent !important;
         }
 
         .nearest-popup-name-en {
@@ -5207,6 +5301,12 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            cursor: default !important;
+            caret-color: transparent !important;
         }
 
         .nearest-popup-plat-wrapper {
@@ -5214,6 +5314,13 @@
             border: 1px solid var(--line);
             border-radius: var(--radius-md);
             padding: 10px 12px 12px;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            cursor: default !important;
+            caret-color: transparent !important;
+            outline: none !important;
         }
 
         .nearest-popup-platforms .plat-grid {
@@ -5241,6 +5348,13 @@
             font-size: 12px;
             font-weight: 700;
             color: var(--ink-secondary);
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            cursor: default !important;
+            caret-color: transparent !important;
+            outline: none !important;
         }
 
         .nearest-detail-chip .icon {

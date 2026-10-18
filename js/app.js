@@ -4023,6 +4023,23 @@ gQIDAQAB
                     }
                     lastTouchEnd = now;
                 }, { passive: false });
+
+                // Prevent text selection and unwanted blinking caret on non-input UI elements
+                document.addEventListener('selectstart', (e) => {
+                    if (!e.target.closest('input, textarea, [contenteditable="true"]')) {
+                        e.preventDefault();
+                    }
+                });
+
+                // Clear any inadvertent text selection or caret in non-input frames
+                document.addEventListener('mousedown', (e) => {
+                    if (!e.target.closest('input, textarea, [contenteditable="true"], select, button, a')) {
+                        const sel = window.getSelection();
+                        if (sel && sel.rangeCount > 0 && !sel.isCollapsed) {
+                            sel.removeAllRanges();
+                        }
+                    }
+                });
             },
 
             renderInteractiveMap(force = false) {

@@ -1691,7 +1691,7 @@
             font-family: inherit;
             font-size: 13.5px;
             font-weight: 500;
-            padding: 11px 16px 11px 38px;
+            padding: 11px 38px;
             background: var(--card);
             border: 1.5px solid var(--line);
             border-radius: var(--radius-full);
@@ -1699,6 +1699,11 @@
             box-shadow: var(--shadow-xs);
             outline: none;
             transition: all var(--transition-fast);
+            text-align: center;
+        }
+
+        .search-box input::placeholder {
+            text-align: center;
         }
 
         .search-box input:focus {
@@ -4767,6 +4772,11 @@
             font-family: inherit;
             font-size: 14px;
             outline: none;
+            text-align: center;
+        }
+
+        .picker-head input::placeholder {
+            text-align: center;
         }
 
         .picker-head input:focus {
@@ -5743,7 +5753,7 @@
             <!-- Search -->
             <div class="search-box">
                 <span class="ic"><svg class="ui-ic ui-ic-search" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><line x1="21" x2="16.65" y1="21" y2="16.65"/></svg></span>
-                <input id="searchInput" type="search" placeholder="ค้นหาสถานี เช่น สยาม, N8, Mo Chit…" autocomplete="off">
+                <input id="searchInput" type="search" placeholder="ค้นหา รหัสสถานี หรือ ชื่อสถานี เช่น CEN , สยาม" autocomplete="off">
             </div>
 
             <!-- Line tabs -->

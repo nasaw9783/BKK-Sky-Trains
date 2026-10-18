@@ -817,7 +817,7 @@ gQIDAQAB
                 currentLocation: 'ตำแหน่งปัจจุบัน',
                 lastLocation: 'ตำแหน่งที่บันทึกไว้',
                 confirmHere: 'ฉันอยู่ที่สถานีนี้ (ยืนยันพิกัด)',
-                searchPh: 'ค้นหาสถานี เช่น สยาม, N8, Mo Chit…',
+                searchPh: 'ค้นหา รหัสสถานี หรือ ชื่อสถานี เช่น CEN , สยาม',
                 notFound: q => `ไม่พบสถานี “${q}”`,
                 nearYou: 'ใกล้คุณ',
                 crowded: 'หนาแน่น',
@@ -1100,7 +1100,7 @@ gQIDAQAB
                 currentLocation: 'Current Location',
                 lastLocation: 'Saved Location',
                 confirmHere: "I'm at this station (Confirm)",
-                searchPh: 'Search station e.g. Siam, N8, Mo Chit…',
+                searchPh: 'Search station code or name e.g. CEN, Siam',
                 notFound: q => `No station found for “${q}”`,
                 nearYou: 'Nearest',
                 crowded: 'Crowded',
@@ -7188,6 +7188,10 @@ setOriginFromActionSheet() {
                 this.userPickedLineManually = true;
                 this.activeLine = id;
                 this.expandedKey = null;
+                const searchEl = document.getElementById('searchInput');
+                if (searchEl && searchEl.value) {
+                    searchEl.value = '';
+                }
                 this.renderTabs();
                 this.renderStrip();
                 this.syncUrl();
@@ -7238,21 +7242,24 @@ setOriginFromActionSheet() {
             renderStrip() {
                 const el = document.getElementById('strip');
                 if (!this.lines.length) return;
-                const q = document.getElementById('searchInput').value.trim().toLowerCase();
+                const qRaw = (document.getElementById('searchInput')?.value || '').trim().toLowerCase();
+                const q = qRaw;
+                const qNoSpace = qRaw.replace(/\s+/g, '');
                 const isMrtLine = isMrtLineId(this.activeLine);
 
                 let stations, lineColor;
                 if (q) {
-                    // ค้นหารวม BTS + MRT แต่กรองเฉพาะสายที่เลือก (activeLine)
+                    // ค้นหารวมทุกสายในโปรเจกต์ (BTS + MRT + SRT + ARL + BRT ทุกรหัสและชื่อสถานี)
                     const seen = new Set();
-                    const allSt = [
-                        ...this.lines.flatMap(l => l.StationList),
-                        ...MRT_STATIC_DB.lines.flatMap(l => l.StationList)
-                    ];
+                    const allSt = this.getAllLines().flatMap(l => l.StationList || []);
                     stations = allSt.filter(s => {
-                        const hay = `${s.StationNameTH} ${s.StationNameEN || ''} ${s.StationKey}`.toLowerCase();
-                        const belongsToActive = (this.keyLines[s.StationKey] || []).some(kl => kl.lineId === this.activeLine);
-                        return hay.includes(q) && belongsToActive && !seen.has(s.StationKey) && seen.add(s.StationKey);
+                        const nameTh = (s.StationNameTH || '').toLowerCase();
+                        const nameEn = (s.StationNameEN || s.StationName_EN || '').toLowerCase();
+                        const key = (s.StationKey || '').toLowerCase();
+                        const hay = `${nameTh} ${nameEn} ${key}`;
+                        const hayNoSpace = hay.replace(/\s+/g, '');
+                        const match = hay.includes(q) || (qNoSpace && hayNoSpace.includes(qNoSpace));
+                        return match && !seen.has(s.StationKey) && seen.add(s.StationKey);
                     });
                     lineColor = isMrtLine ? MRT_LINE_BY_ID[this.activeLine]?.LineColor : this.lineById[this.activeLine]?.LineColor;
                     if (!stations.length) {
@@ -7273,7 +7280,7 @@ setOriginFromActionSheet() {
 
                 el.innerHTML = stations.map(s => {
                     const staticTime = usesStaticTimetable(s);
-                    const color = lineColor || s.StationLineColor;
+                    const color = (q ? (s.StationLineColor || LINE_BRAND_COLORS[s.StationLineId] || lineColor) : (lineColor || s.StationLineColor)) || '#64748B';
                     // สถานีสำรอง (km == null) ไม่ใช่ "ใกล้คุณ" จริง — ไม่ติด badge/วงแหวน
                     const isNear = this.nearest && this.nearest.km != null
                         && s.StationKey === this.nearest.station.StationKey;
@@ -7327,9 +7334,14 @@ setOriginFromActionSheet() {
                     return;
                 }
                 this.expandedKey = key;
+                const station = this.findStation(key);
+                if (station && station.StationLineId && station.StationLineId !== this.activeLine) {
+                    this.activeLine = station.StationLineId;
+                    this.renderTabs();
+                    this.scrollActiveTabIntoView();
+                }
                 this.renderStrip();
                 this.syncUrl();
-                const station = this.findStation(key);
                 if (station) {
                     this.loadArrivals(station);
                 }

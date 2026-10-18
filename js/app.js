@@ -5829,7 +5829,7 @@ setOriginFromActionSheet() {
                             </div>
                         </div>
                         <div class="tabs picker-tabs" id="pickerTabs"></div>
-                        ${this.nearest ? `<div style="padding:2px 14px 6px;"><button class="alt-chip" style="align-self:flex-start;"
+                        ${this.nearest ? `<div class="picker-nearest-wrap" style="padding:4px 14px 8px; display:flex; justify-content:center; align-items:center; width:100%; box-sizing:border-box;"><button class="alt-chip" style="margin:0 auto; display:inline-flex; align-items:center; justify-content:center; text-align:center; letter-spacing:0;"
                             onclick="App.pickJourneyStation('${esc(this.nearest.station.StationKey)}')">
                             ${T('jUseNearest')} · <span class="st-key" style="background:${this.nearest.station.StationLineColor || '#7AB420'};">${esc(this.nearest.station.StationKey)}</span> ${esc(stName(this.nearest.station))}</button></div>` : ''}
                         <div class="picker-list" id="pickerList"></div>

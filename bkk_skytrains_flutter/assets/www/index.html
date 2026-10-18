@@ -617,17 +617,14 @@
             .station-picker-chip .chip-name {
                 font-size: 10.5px;
             }
-            .station-picker-chip .chip-name.chip-name-long {
-                font-size: 9.8px;
-                letter-spacing: -0.2px;
-            }
+            .station-picker-chip .chip-name.chip-name-long,
             .station-picker-chip .chip-name.chip-name-xlong {
-                font-size: 8.8px;
-                letter-spacing: -0.35px;
+                font-size: 10.5px;
+                letter-spacing: -0.1px;
             }
             .station-picker-chip .chip-name.chip-name-xxlong {
-                font-size: 8.2px;
-                letter-spacing: -0.45px;
+                font-size: 10.5px;
+                letter-spacing: -0.2px;
             }
         }
 
@@ -910,10 +907,16 @@
             font-family: inherit;
             font-weight: 600;
             color: var(--ink);
-            display: flex;
+            display: inline-flex;
             align-items: center;
+            justify-content: center;
+            text-align: center;
+            letter-spacing: 0;
+            box-sizing: border-box;
             gap: 6px;
             cursor: pointer;
+            caret-color: transparent !important;
+            user-select: none !important;
             box-shadow: var(--shadow-xs);
             transition: all var(--transition-fast);
         }
@@ -1002,6 +1005,7 @@
             transition: stroke 0.4s ease, fill 0.4s ease;
         }
 
+        .alt-chip .st-key,
         #nearestAltRow .alt-chip .st-key,
         .nearest-alt-row .alt-chip .st-key {
             display: inline-flex;
@@ -1020,6 +1024,8 @@
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
             color: #ffffff;
             letter-spacing: 0;
+            caret-color: transparent !important;
+            user-select: none !important;
         }
 
         #nearestAltRow .alt-chip .chip-name,
@@ -4092,6 +4098,8 @@
             min-height: 40px;
             box-sizing: border-box;
             overflow: hidden;
+            caret-color: transparent !important;
+            user-select: none !important;
         }
 
         .station-picker-chip:hover {
@@ -4124,6 +4132,8 @@
             overflow: hidden;
             box-sizing: border-box;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+            caret-color: transparent !important;
+            user-select: none !important;
         }
 
         .station-picker-chip .chip-name {
@@ -4135,21 +4145,15 @@
             min-width: 0;
             flex: 1;
             line-height: 1.25;
+            caret-color: transparent !important;
+            user-select: none !important;
         }
 
-        .station-picker-chip .chip-name.chip-name-long {
-            font-size: 10px;
-            letter-spacing: -0.2px;
-        }
-
-        .station-picker-chip .chip-name.chip-name-xlong {
-            font-size: 9.2px;
-            letter-spacing: -0.35px;
-        }
-
+        .station-picker-chip .chip-name.chip-name-long,
+        .station-picker-chip .chip-name.chip-name-xlong,
         .station-picker-chip .chip-name.chip-name-xxlong {
-            font-size: 8.5px;
-            letter-spacing: -0.4px;
+            font-size: 11px;
+            letter-spacing: -0.15px;
         }
 
         /* ===== Fares & Timetables View ===== */
@@ -4750,6 +4754,16 @@
             margin-bottom: 2px;
             flex-shrink: 0;
             -webkit-overflow-scrolling: touch;
+        }
+
+        .picker-nearest-wrap {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 4px 14px 8px;
+            box-sizing: border-box;
+            flex-shrink: 0;
         }
 
         .picker-list {

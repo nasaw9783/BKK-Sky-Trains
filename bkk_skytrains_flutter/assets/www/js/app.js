@@ -1697,24 +1697,37 @@ gQIDAQAB
             return km < 1 ? Math.round(km * 1000) + T('mUnit') : km.toFixed(1) + T('kmUnit');
         }
 
-        async function fetchIpLocation(timeoutMs = 2500) {
+        async function fetchIpLocation(timeoutMs = 3500) {
             if (typeof fetch !== 'function') throw new Error('fetch not available');
-            const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
-            const timer = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;
-            try {
-                const res = await fetch('https://ipwho.is/', {
-                    signal: controller ? controller.signal : undefined,
-                    cache: 'no-cache'
-                });
-                if (!res.ok) throw new Error('HTTP ' + res.status);
-                const data = await res.json();
-                if (data && data.success && data.latitude && data.longitude) {
-                    return { lat: data.latitude, lon: data.longitude };
+            const fetchWithTimeout = async (url, ms) => {
+                const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+                const timer = controller ? setTimeout(() => controller.abort(), ms) : null;
+                try {
+                    const res = await fetch(url, { signal: controller ? controller.signal : undefined, cache: 'no-cache' });
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    return await res.json();
+                } finally {
+                    if (timer) clearTimeout(timer);
                 }
-                throw new Error('Invalid IP geo payload');
-            } finally {
-                if (timer) clearTimeout(timer);
-            }
+            };
+
+            // Provider 1: ipwho.is
+            try {
+                const data = await fetchWithTimeout('https://ipwho.is/', timeoutMs);
+                if (data && data.success && data.latitude && data.longitude) {
+                    return { lat: Number(data.latitude), lon: Number(data.longitude) };
+                }
+            } catch (e) {}
+
+            // Provider 2: ipapi.co
+            try {
+                const data2 = await fetchWithTimeout('https://ipapi.co/json/', timeoutMs);
+                if (data2 && data2.latitude && data2.longitude) {
+                    return { lat: Number(data2.latitude), lon: Number(data2.longitude) };
+                }
+            } catch (e) {}
+
+            throw new Error('All IP geolocation providers failed');
         }
 
         function isMrtLineId(id) {
@@ -6055,10 +6068,9 @@ setOriginFromActionSheet() {
             onNativeLocationError(reason) {
                 clearTimeout(this.fallbackTimer);
                 clearTimeout(this._nativeLocationTimer);
-                clearTimeout(this._geoMasterTimer);
-                this.locating = false;
-                this.updateRelocateBtn();
-                this._locateBrowser(false);
+                const wasInteractive = this._lastLocateInteractive;
+                // สลับมารัน browser/network geolocation โดยคงสถานะ interactive ไว้
+                this._locateBrowser(wasInteractive);
             },
 
             locate(interactive) {
@@ -6066,6 +6078,7 @@ setOriginFromActionSheet() {
                     this.userPickedLineManually = false;
                     this.lastSyncedStationKey = null;
                 }
+                this._lastLocateInteractive = !!interactive;
 
                 // หากกำลังระบุตำแหน่งอยู่ แล้วผู้ใช้กดซ้ำ ให้ยกเลิกคำขอเดิมและเริ่มใหม่ทันที
                 clearTimeout(this.fallbackTimer);
@@ -6077,7 +6090,7 @@ setOriginFromActionSheet() {
                 this.renderNearest();
                 this.updateRelocateBtn();
 
-                // Master Safety Timer: ไม่ปล่อยให้ปุ่มค้างเกิน 5 วินาทีเด็ดขาด
+                // Master Safety Timer: ไม่ปล่อยให้ปุ่มค้างเกิน 9 วินาทีเด็ดขาด
                 this._geoMasterTimer = setTimeout(() => {
                     if (this.locating) {
                         this.locating = false;
@@ -6086,7 +6099,7 @@ setOriginFromActionSheet() {
                             this.showToast(`${getUiIcon('alert', 16, '#f59e0b')} ค้นหาตำแหน่งนานเกินกำหนด โปรดลองใหม่อีกครั้ง`);
                         }
                     }
-                }, 5000);
+                }, 9000);
 
                 // หากรันใน Flutter Native Mobile App
                 if (window.FlutterLocation && typeof window.FlutterLocation.postMessage === 'function') {
@@ -6095,7 +6108,7 @@ setOriginFromActionSheet() {
                             console.warn('FlutterLocation timeout, fallback to browser geolocation');
                             this._locateBrowser(interactive);
                         }
-                    }, 3500);
+                    }, 7500);
                     try {
                         window.FlutterLocation.postMessage(JSON.stringify({ action: 'getLocation', interactive: !!interactive }));
                         return;
@@ -6150,9 +6163,9 @@ setOriginFromActionSheet() {
                     this.locating = false;
                     this.updateRelocateBtn();
 
-                    // กรณี GPS ไม่พร้อม (เช่น บน Desktop PC) ลอง IP Geolocation แบบรวดเร็ว
-                    if (!this.userPos && typeof fetch === 'function') {
-                        fetchIpLocation(2000)
+                    // หาก GPS hardware ไม่พร้อมหรือล้มเหลว ให้ใช้ IP Geolocation ทันที
+                    if (typeof fetch === 'function') {
+                        fetchIpLocation(3500)
                             .then(coords => {
                                 this.userPos = { lat: coords.lat, lon: coords.lon, accuracy: 2000, calibrated: false };
                                 this.saveUserPosition(this.userPos, null, false);
@@ -6184,7 +6197,7 @@ setOriginFromActionSheet() {
                     if (!this.nearest) this.useFallbackStation();
                 };
 
-                // ขั้นที่ 1: ลองค้นหาด้วยความแม่นยำสูงแบบเร็ว (Timeout 3.2 วินาที)
+                // ขั้นที่ 1: ลองค้นหาด้วยความแม่นยำสูง (Timeout 5 วินาที, maximumAge 15 วินาที)
                 try {
                     navigator.geolocation.getCurrentPosition(
                         onPositionSuccess,
@@ -6194,18 +6207,18 @@ setOriginFromActionSheet() {
                                 handleFinalError(err1);
                                 return;
                             }
-                            // ขั้นที่ 2: สลับมาลอง Cellular / Wi-Fi Positioning ทันที (Timeout 2.2 วินาที)
+                            // ขั้นที่ 2: สลับมาลอง Cellular / Wi-Fi Positioning ทันที (Timeout 4 วินาที, maximumAge 60 วินาที)
                             try {
                                 navigator.geolocation.getCurrentPosition(
                                     onPositionSuccess,
                                     (err2) => handleFinalError(err2),
-                                    { enableHighAccuracy: false, maximumAge: 120000, timeout: 2200 }
+                                    { enableHighAccuracy: false, maximumAge: 60000, timeout: 4000 }
                                 );
                             } catch (e2) {
                                 handleFinalError(err1);
                             }
                         },
-                        { enableHighAccuracy: true, maximumAge: 30000, timeout: 3200 }
+                        { enableHighAccuracy: true, maximumAge: 15000, timeout: 5000 }
                     );
                 } catch (e) {
                     handleFinalError({ code: 2 });
@@ -6480,11 +6493,19 @@ setOriginFromActionSheet() {
                 const modal = document.getElementById('nearestStationPopup');
                 if (!modal || !station) return;
                 this.popupStation = station;
+                this.nearestPopupRouteOpen = false;
 
                 const badge = document.getElementById('nearestPopupLineBadge');
                 const nameTH = document.getElementById('nearestPopupNameTH');
                 const nameEN = document.getElementById('nearestPopupNameEN');
                 const platContainer = document.getElementById('nearestPopupPlatforms');
+                const routeTrigger = document.getElementById('nearestPopupRouteTrigger');
+                const routePanel = document.getElementById('nearestPopupRoutePanel');
+                const routeTitle = document.getElementById('nearestPopupRouteTitleText');
+
+                if (routeTrigger) routeTrigger.setAttribute('aria-expanded', 'false');
+                if (routePanel) routePanel.hidden = true;
+                if (routeTitle) routeTitle.textContent = lang === 'en' ? 'Train positions' : 'ตำแหน่งขบวนรถ';
 
                 const color = station.StationLineColor || '#7AB420';
                 const isBright = color === '#FFD100' || color === '#F5C242';
@@ -6498,6 +6519,9 @@ setOriginFromActionSheet() {
 
                 this.updatePopupDistance(station);
 
+                // พรีโหลดตำแหน่งขบวนรถรอบสถานีรอไว้
+                this.loadRoute(station);
+
                 // เรนเดอร์ชานชาลา & เวลาเดินรถสดในป๊อปอัปสถานี
                 if (platContainer) {
                     const arr = this.arrivals[station.StationKey];
@@ -6510,12 +6534,36 @@ setOriginFromActionSheet() {
                             const curPlat = document.getElementById('nearestPopupPlatforms');
                             if (curPlat && this.popupStation?.StationKey === station.StationKey) {
                                 curPlat.innerHTML = renderPlatformSection(station, freshArr);
+                                if (this.nearestPopupRouteOpen) {
+                                    this.renderNearestPopupRoute();
+                                }
                             }
                         });
                     }
                 }
 
                 modal.style.display = 'flex';
+            },
+
+            toggleNearestPopupRoute() {
+                const panel = document.getElementById('nearestPopupRoutePanel');
+                const trigger = document.getElementById('nearestPopupRouteTrigger');
+                if (!panel || !trigger || !this.popupStation) return;
+                this.nearestPopupRouteOpen = !this.nearestPopupRouteOpen;
+                trigger.setAttribute('aria-expanded', this.nearestPopupRouteOpen ? 'true' : 'false');
+                panel.hidden = !this.nearestPopupRouteOpen;
+                if (this.nearestPopupRouteOpen) {
+                    this.renderNearestPopupRoute();
+                    if (!this.routes[this.popupStation.StationKey]?.ready) {
+                        this.loadRoute(this.popupStation);
+                    }
+                }
+            },
+
+            renderNearestPopupRoute() {
+                const content = document.getElementById('nearestPopupRouteContent');
+                if (!content || !this.popupStation) return;
+                content.innerHTML = renderRouteSection(this.popupStation);
             },
 
             updatePopupDistance(station) {
@@ -6552,6 +6600,11 @@ setOriginFromActionSheet() {
                     modal.style.display = 'none';
                 }
                 this.popupStation = null;
+                this.nearestPopupRouteOpen = false;
+                const trigger = document.getElementById('nearestPopupRouteTrigger');
+                const panel = document.getElementById('nearestPopupRoutePanel');
+                if (trigger) trigger.setAttribute('aria-expanded', 'false');
+                if (panel) panel.hidden = true;
             },
 
             selectNearestFromPopup() {
@@ -6875,6 +6928,9 @@ setOriginFromActionSheet() {
                     if (platContainer) {
                         const s = this.popupStation;
                         platContainer.innerHTML = renderPlatformSection(s, this.arrivals[key]);
+                    }
+                    if (this.nearestPopupRouteOpen) {
+                        this.renderNearestPopupRoute();
                     }
                 }
             },

@@ -150,13 +150,13 @@ class _BkkWebViewScreenState extends State<BkkWebViewScreen> {
         if (defaultTargetPlatform == TargetPlatform.android) {
           locationSettings = AndroidSettings(
             accuracy: LocationAccuracy.high,
-            forceLocationManager: true,
-            timeLimit: const Duration(seconds: 4),
+            forceLocationManager: false,
+            timeLimit: const Duration(seconds: 7),
           );
         } else {
           locationSettings = const LocationSettings(
             accuracy: LocationAccuracy.high,
-            timeLimit: Duration(seconds: 4),
+            timeLimit: Duration(seconds: 7),
           );
         }
         final livePos = await Geolocator.getCurrentPosition(locationSettings: locationSettings);
@@ -166,11 +166,25 @@ class _BkkWebViewScreenState extends State<BkkWebViewScreen> {
           "if (window.App && App.onNativeLocationSuccess) { App.onNativeLocationSuccess(${position.latitude}, ${position.longitude}, ${position.accuracy}); }",
         );
       } catch (e) {
-        debugPrint('Live fix timeout/error: $e');
-        if (position == null) {
-          _controller.runJavaScript(
-            "if (window.App && App.onNativeLocationError) { App.onNativeLocationError('$e'); }",
+        debugPrint('High accuracy fix failed ($e), falling back to balanced accuracy...');
+        try {
+          final fallbackSettings = const LocationSettings(
+            accuracy: LocationAccuracy.medium,
+            timeLimit: Duration(seconds: 5),
           );
+          final fallbackPos = await Geolocator.getCurrentPosition(locationSettings: fallbackSettings);
+          position = fallbackPos;
+          debugPrint('Fallback balanced location obtained: ${position.latitude}, ${position.longitude}');
+          _controller.runJavaScript(
+            "if (window.App && App.onNativeLocationSuccess) { App.onNativeLocationSuccess(${position.latitude}, ${position.longitude}, ${position.accuracy}); }",
+          );
+        } catch (e2) {
+          debugPrint('Balanced fix failed ($e2)');
+          if (position == null) {
+            _controller.runJavaScript(
+              "if (window.App && App.onNativeLocationError) { App.onNativeLocationError('$e2'); }",
+            );
+          }
         }
       }
     } catch (e) {

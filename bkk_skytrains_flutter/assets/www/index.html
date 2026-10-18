@@ -5331,6 +5331,106 @@
             background: var(--card);
         }
 
+        /* ===== Nearest Popup Route Dropdown ===== */
+        .nearest-popup-route-wrapper {
+            background: var(--bg-subtle);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-md);
+            margin-top: 8px;
+            overflow: hidden;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            caret-color: transparent !important;
+        }
+
+        .nearest-popup-route-trigger {
+            width: 100%;
+            padding: 10px 12px;
+            background: transparent;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--ink);
+            cursor: pointer;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            caret-color: transparent !important;
+            outline: none !important;
+            transition: background var(--transition-fast);
+            line-height: 1;
+            letter-spacing: 0;
+            box-sizing: border-box;
+        }
+
+        .nearest-popup-route-trigger:hover {
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .nearest-popup-route-title {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            color: var(--ink-secondary);
+            font-size: 12.5px;
+            font-weight: 800;
+            line-height: 1;
+            letter-spacing: 0;
+        }
+
+        .nearest-popup-route-title .route-trigger-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #eab308;
+            line-height: 1;
+            flex-shrink: 0;
+        }
+
+        .nearest-popup-route-title .route-trigger-icon svg {
+            display: block;
+            margin: auto;
+        }
+
+        .nearest-popup-route-chevron {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--muted);
+            transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            line-height: 1;
+            flex-shrink: 0;
+        }
+
+        .nearest-popup-route-chevron svg {
+            display: block;
+            margin: auto;
+        }
+
+        .nearest-popup-route-trigger[aria-expanded="true"] .nearest-popup-route-chevron {
+            transform: rotate(180deg);
+            color: var(--accent);
+        }
+
+        .nearest-popup-route-panel {
+            border-top: 1px solid var(--line);
+            padding: 8px 8px 10px;
+            background: rgba(0, 0, 0, 0.12);
+        }
+
+        .nearest-popup-route-panel[hidden] {
+            display: none !important;
+        }
+
+        .nearest-popup-route-content .route-box {
+            margin-top: 0 !important;
+            border: none !important;
+            background: transparent !important;
+            padding: 0 !important;
+        }
+
         .nearest-popup-details {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -6079,6 +6179,26 @@
                         <span style="font-size:11px;color:var(--muted)" id="nearestPopupPlatSub">กำลังเข้า / นับถอยหลังสด</span>
                     </div>
                     <div id="nearestPopupPlatforms" class="nearest-popup-platforms"></div>
+                </div>
+
+                <!-- Drop Down ตำแหน่งขบวนรถ -->
+                <div class="nearest-popup-route-wrapper" id="nearestPopupRouteWrapper">
+                    <button type="button" class="nearest-popup-route-trigger" id="nearestPopupRouteTrigger" onclick="App.toggleNearestPopupRoute();" aria-expanded="false">
+                        <span class="nearest-popup-route-title">
+                            <span class="route-trigger-icon">
+                                <svg class="ui-ic ui-ic-map" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"></polygon><line x1="9" y1="3" x2="9" y2="18"></line><line x1="15" y1="6" x2="15" y2="21"></line></svg>
+                            </span>
+                            <span id="nearestPopupRouteTitleText">ตำแหน่งขบวนรถ</span>
+                        </span>
+                        <span class="nearest-popup-route-chevron" id="nearestPopupRouteChevron">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </span>
+                    </button>
+                    <div id="nearestPopupRoutePanel" class="nearest-popup-route-panel" hidden>
+                        <div id="nearestPopupRouteContent" class="nearest-popup-route-content"></div>
+                    </div>
                 </div>
             </div>
             <div class="nearest-popup-actions">

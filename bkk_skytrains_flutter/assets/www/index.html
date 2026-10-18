@@ -4169,10 +4169,10 @@
             cursor: pointer;
             font-family: inherit;
             text-align: center;
-            transition: all var(--transition-fast);
+            transition: border-color var(--transition-fast), transform var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast);
             outline: none;
             min-width: 0;
-            width: fit-content;
+            width: var(--line-chip-w, fit-content);
             max-width: 100%;
             min-height: 40px;
             box-sizing: border-box;
@@ -4240,7 +4240,7 @@
 
         .line-stations-grid.is-single .station-picker-chip,
         .station-picker-chip.chip-centered {
-            width: fit-content;
+            width: var(--line-chip-w, fit-content);
             max-width: 100%;
             margin: 0 auto;
             justify-content: center;

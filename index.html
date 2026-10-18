@@ -4991,7 +4991,54 @@
             margin-left: 2px;
         }
 
-        /* ===== Journey Planner Quick Hubs Grid ===== */
+        /* ===== Journey Planner Quick Hubs Toggle & Grid ===== */
+        .hub-toggle-btn {
+            width: 100%;
+            background: none;
+            border: none;
+            padding: 0;
+            margin: 0;
+            cursor: pointer;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            caret-color: transparent !important;
+            user-select: none !important;
+        }
+
+        .hub-toggle-content {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            font-size: 13.5px;
+            font-weight: 800;
+            color: var(--ink);
+            text-align: center;
+            padding: 6px 14px;
+            border-radius: var(--radius-full);
+            border: 1px solid var(--line);
+            background: var(--bg-subtle, rgba(255, 255, 255, 0.04));
+            transition: all var(--transition-fast);
+            letter-spacing: 0;
+            caret-color: transparent !important;
+            user-select: none !important;
+        }
+
+        .hub-toggle-btn:hover .hub-toggle-content {
+            background: var(--card-hover, rgba(255, 255, 255, 0.08));
+            border-color: var(--accent);
+        }
+
+        .hub-toggle-chev {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--muted);
+            margin-left: 2px;
+        }
+
         .quick-hub-grid {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -5841,9 +5888,11 @@
         <div id="viewPlanner" class="app-view">
             <section class="card" id="journeyCard" style="margin-bottom:14px"></section>
             
-            <div class="card" style="padding:16px;margin-bottom:14px">
-                <div style="font-weight:800;font-size:13.5px;margin-bottom:10px;color:var(--ink);display:flex;align-items:center;gap:6px;" id="plannerHubTitle"><svg class="ui-ic" width="16" height="16" viewBox="0 0 24 24" fill="#f59e0b" fill-opacity="0.25" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> <span>สถานีชุมทางยอดนิยม (แตะเพื่อเลือกด่วน)</span></div>
-                <div class="quick-hub-grid" id="quickHubChips"></div>
+            <div class="card" style="padding:14px 16px;margin-bottom:14px" id="popularHubCard">
+                <button type="button" class="hub-toggle-btn" id="plannerHubToggle" onclick="App.togglePopularHubs()" aria-expanded="true" aria-controls="quickHubChips">
+                    <span class="hub-toggle-content" id="plannerHubTitle"><svg class="ui-ic" width="16" height="16" viewBox="0 0 24 24" fill="#f59e0b" fill-opacity="0.25" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> <span>สถานียอดนิยม (แตะเพื่อเลือกด่วน)</span> <span class="hub-toggle-chev" id="plannerHubChev">▲</span></span>
+                </button>
+                <div class="quick-hub-grid" id="quickHubChips" style="margin-top:12px;"></div>
             </div>
         </div>
 

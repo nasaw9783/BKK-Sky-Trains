@@ -1073,7 +1073,7 @@ gQIDAQAB
                 sheetExitsSub: 'ทางออก 1, 2, 3, Skywalk, ลิฟต์คนพิการ',
                 sheetLive: 'ดูเวลารถไฟฟ้าขบวนถัดไปสด (Live Arrival)',
                 sheetLiveSub: 'เวลานับถอยหลังจริงจากชานชาลา',
-                plannerHubTitle: `${getUiIcon('star', 15, '#f59e0b')} สถานีชุมทางยอดนิยม (แตะเพื่อเลือกด่วน)`,
+                plannerHubTitle: `${getUiIcon('star', 15, '#f59e0b')} <span>สถานียอดนิยม (แตะเพื่อเลือกด่วน)</span> <span class="hub-toggle-chev" id="plannerHubChev">▲</span>`,
                 exitCardTitle: `${getUiIcon('door', 15, 'currentColor')} ข้อมูลทางออกสถานี & สิ่งอำนวยความสะดวก`,
                 exitCardSub: 'เลือกสายและสถานี เพื่อตรวจสอบตำแหน่งทางออก สกายวอล์ก ลิฟต์คนพิการ และสถานที่ใกล้เคียง',
                 exitSearchPh: 'ค้นหาชื่อสถานี หรือรหัส เช่น สยาม, CEN, ศรีด่าน...',
@@ -1356,7 +1356,7 @@ gQIDAQAB
                 sheetExitsSub: 'Exits, Skywalks, Priority Elevators',
                 sheetLive: 'Live Train Arrivals',
                 sheetLiveSub: 'Real-time platform countdowns',
-                plannerHubTitle: `${getUiIcon('star', 15, '#f59e0b')} Popular Hub Stations (Quick Select)`,
+                plannerHubTitle: `${getUiIcon('star', 15, '#f59e0b')} <span>Popular Stations (Quick Select)</span> <span class="hub-toggle-chev" id="plannerHubChev">▲</span>`,
                 exitCardTitle: `${getUiIcon('door', 15, 'currentColor')} Station Exits & Facilities`,
                 exitCardSub: 'Select line and station to check exits, skywalks, priority elevators, and nearby landmarks',
                 exitSearchPh: 'Search station e.g. Siam, CEN, Si Dan...',
@@ -5179,7 +5179,11 @@ setOriginFromActionSheet() {
                 set('sheetLiveSub', T('sheetLiveSub'));
 
                 // Planner view
-                set('plannerHubTitle', T('plannerHubTitle'));
+                const hubChev = this.hubOpen !== false ? '▲' : '▼';
+                const hubTitle = lang === 'th'
+                    ? `${getUiIcon('star', 15, '#f59e0b')} <span>สถานียอดนิยม (แตะเพื่อเลือกด่วน)</span> <span class="hub-toggle-chev" id="plannerHubChev">${hubChev}</span>`
+                    : `${getUiIcon('star', 15, '#f59e0b')} <span>Popular Stations (Quick Select)</span> <span class="hub-toggle-chev" id="plannerHubChev">${hubChev}</span>`;
+                set('plannerHubTitle', hubTitle);
 
                 // Exits view
                 set('nearestExitTitle', T('nearestExitTitle') || (lang === 'th' ? 'ทางออกใกล้คุณที่สุด' : 'Nearest Exit to You'));
@@ -5628,6 +5632,24 @@ setOriginFromActionSheet() {
             },
 
             /* ---------- journey planner (from → to) ---------- */
+            hubOpen: true,
+
+            togglePopularHubs() {
+                this.hubOpen = this.hubOpen === false ? true : false;
+                const chipsEl = document.getElementById('quickHubChips');
+                const chevEl = document.getElementById('plannerHubChev');
+                const btnEl = document.getElementById('plannerHubToggle');
+                if (chipsEl) {
+                    chipsEl.style.display = this.hubOpen ? 'grid' : 'none';
+                }
+                if (chevEl) {
+                    chevEl.textContent = this.hubOpen ? '▲' : '▼';
+                }
+                if (btnEl) {
+                    btnEl.setAttribute('aria-expanded', String(this.hubOpen));
+                }
+            },
+
             toggleJourney() {
                 const j = this.journey;
                 j.open = !j.open;
@@ -5748,10 +5770,12 @@ setOriginFromActionSheet() {
                     </button>`;
                 };
                 el.innerHTML = `
-                    <button class="j-toggle" onclick="App.toggleJourney()">${getUiIcon('compass', 16, 'currentColor')} ${T('jTitle')}
-                        <span class="hint">${T('jHint')}</span><span class="chev">${j.open ? '▲' : '▼'}</span></button>
-                    ${j.open ? `
-                    <div class="j-body">
+                    <div class="card-head" style="padding:14px 16px 12px;border-bottom:1px solid var(--line, rgba(255,255,255,0.06));">
+                        <div class="card-title" style="display:flex;align-items:center;gap:8px;font-size:15px;font-weight:700;color:var(--ink);">
+                            ${getUiIcon('compass', 16, 'currentColor')} <span>${T('jTitle')}</span>
+                        </div>
+                    </div>
+                    <div class="j-body" style="padding:14px 16px 16px;">
                         <div class="j-fields">
                             ${field('from', j.from)}
                             <button class="j-swap" onclick="App.swapJourney()" title="swap">⇅</button>
@@ -5761,13 +5785,14 @@ setOriginFromActionSheet() {
                         ${j.error ? `<div class="err-box">${esc(j.error)}
                             <button class="btn btn-ghost" onclick="App.findRoute()">${T('retry')}</button></div>` : ''}
                         ${j.result ? (j.result.RoutesMap || []).map((rm, i) => renderJourneyRoute(rm, i, j.openRoute === i)).join('') : ''}
-                    </div>` : ''}`;
+                    </div>`;
                 this.renderQuickHubChips();
             },
 
             renderQuickHubChips() {
                 const el = document.getElementById('quickHubChips');
                 if (!el) return;
+                el.style.display = this.hubOpen === false ? 'none' : 'grid';
                 const hubs = [
                     { key: 'CEN', lineId: 1, nameTh: 'สยาม', nameEn: 'Siam', subTh: 'BTS สุขุมวิท ⇄ สีลม', subEn: 'BTS Sukhumvit ⇄ Silom' },
                     { key: 'E4', lineId: 1, nameTh: 'อโศก', nameEn: 'Asok', subTh: 'เชื่อม MRT สุขุมวิท', subEn: 'Connect MRT Sukhumvit' },
@@ -5910,7 +5935,8 @@ setOriginFromActionSheet() {
             renderPickerList() {
                 const listEl = document.getElementById('pickerList');
                 if (!listEl) return;
-                const q = (document.getElementById('pickerSearch')?.value || '').trim().toLowerCase();
+                const qRaw = (document.getElementById('pickerSearch')?.value || '').trim();
+                const q = qRaw.toLowerCase();
                 const curPickerLine = this.journey.pickerLine;
                 const allLines = allJourneyLines();
 
@@ -5993,7 +6019,7 @@ setOriginFromActionSheet() {
 
                 if (totalMatching === 0) {
                     html = `<div style="text-align:center; padding:32px 14px; color:var(--muted); font-size:13px;">
-                        ${getUiIcon('search', 16, 'var(--muted)')} ${T('notFound', esc(q))}
+                        ${getUiIcon('search', 16, 'var(--muted)')} ${T('notFound', esc(qRaw))}
                     </div>`;
                 }
 
@@ -7242,16 +7268,17 @@ setOriginFromActionSheet() {
             renderStrip() {
                 const el = document.getElementById('strip');
                 if (!this.lines.length) return;
-                const qRaw = (document.getElementById('searchInput')?.value || '').trim().toLowerCase();
-                const q = qRaw;
-                const qNoSpace = qRaw.replace(/\s+/g, '');
+                const qRaw = (document.getElementById('searchInput')?.value || '').trim();
+                const q = qRaw.toLowerCase();
+                const qNoSpace = q.replace(/\s+/g, '');
                 const isMrtLine = isMrtLineId(this.activeLine);
 
                 let stations, lineColor;
                 if (q) {
                     // ค้นหารวมทุกสายในโปรเจกต์ (BTS + MRT + SRT + ARL + BRT ทุกรหัสและชื่อสถานี)
                     const seen = new Set();
-                    const allSt = this.getAllLines().flatMap(l => l.StationList || []);
+                    const allLines = this.getAllLines();
+                    const allSt = allLines.flatMap(l => l.StationList || []);
                     stations = allSt.filter(s => {
                         const nameTh = (s.StationNameTH || '').toLowerCase();
                         const nameEn = (s.StationNameEN || s.StationName_EN || '').toLowerCase();
@@ -7261,9 +7288,41 @@ setOriginFromActionSheet() {
                         const match = hay.includes(q) || (qNoSpace && hayNoSpace.includes(qNoSpace));
                         return match && !seen.has(s.StationKey) && seen.add(s.StationKey);
                     });
-                    lineColor = isMrtLine ? MRT_LINE_BY_ID[this.activeLine]?.LineColor : this.lineById[this.activeLine]?.LineColor;
+
+                    // ตรวจสอบว่าคำค้นหาตรงกับชื่อสายหรือไม่
+                    const matchedLineByName = allLines.find(l => {
+                        const lNameTh = (shortLineName(l) || l.LineName_TH || l.LineNameTH || '').toLowerCase();
+                        const lNameEn = (l.LineName_EN || l.LineNameEN || '').toLowerCase();
+                        const lNameFull = (l.LineNameTH || '').toLowerCase();
+                        return (lNameTh && (lNameTh.includes(q) || q.includes(lNameTh)))
+                            || (lNameEn && (lNameEn.includes(q) || q.includes(lNameEn)))
+                            || (lNameFull && lNameFull.includes(q));
+                    });
+
+                    if (stations.length === 0 && matchedLineByName && matchedLineByName.StationList) {
+                        stations = matchedLineByName.StationList;
+                    }
+
+                    // เมื่อคำค้นหาตรงกับสายสี/ไลน์ไหน ให้เลื่อนแท็บไปที่สายสี/ไลน์นั้น
+                    let targetLineId = null;
+                    if (matchedLineByName) {
+                        targetLineId = matchedLineByName.LineId;
+                    } else if (stations.length > 0) {
+                        const activeHasMatch = stations.some(s => s.StationLineId === this.activeLine);
+                        if (!activeHasMatch) {
+                            targetLineId = stations[0].StationLineId;
+                        }
+                    }
+
+                    if (targetLineId && this.activeLine !== targetLineId) {
+                        this.activeLine = targetLineId;
+                        this.renderTabs();
+                        this.scrollActiveTabIntoView();
+                    }
+
+                    lineColor = isMrtLineId(this.activeLine) ? MRT_LINE_BY_ID[this.activeLine]?.LineColor : this.lineById[this.activeLine]?.LineColor;
                     if (!stations.length) {
-                        el.innerHTML = `<div class="empty-note" style="padding:24px">${T('notFound', esc(q))}</div>`;
+                        el.innerHTML = `<div class="empty-note" style="padding:24px">${T('notFound', esc(qRaw))}</div>`;
                         return;
                     }
                 } else if (isMrtLine) {

@@ -2,6 +2,7 @@
 
         /* ================= CONFIG ================= */
         const REMOTE_API = (typeof window !== 'undefined' && window.BKK_CONFIG && window.BKK_CONFIG.apiBase) || 'https://bkk-skytrains.vercel.app/api/bts-proxy';
+        const BACKUP_API = 'https://bkkskytrain.online/api/bts-proxy';
         const LOCAL_ORIGIN = 'http://localhost:3000';
         // ตรวจสอบว่าโฮสต์ปัจจุบันรองรับ relative /api/bts-proxy หรือไม่ (Localhost บนพอร์ต 3000 หรือ Vercel *.vercel.app)
         // สำหรับกรณีอื่น (WebView, file://, GitHub Pages ฯลฯ) ชี้ตรงไปยัง REMOTE_API ทันที
@@ -1489,10 +1490,10 @@ gQIDAQAB
         let ttaMode = 'encrypted';
 
         async function postJSON(url, body, headers, timeoutMs = 6000) {
-            // หาก URL เป็น local proxy ให้ใช้ timeout สั้นพิเศษ 1,500ms เพื่อ failover ไปยัง REMOTE_API ทันที ไม่รอค้าง
+            // หาก URL เป็น local proxy ให้ใช้ timeout สั้นพิเศษ 1,800ms เพื่อ failover ไปยัง REMOTE_API ทันที ไม่รอค้าง
             const isLocalProxy = typeof url === 'string' && (
                 (!url.startsWith('http://') && !url.startsWith('https://')) ||
-                (!url.startsWith(REMOTE_API) && (url.includes('localhost') || url.includes('127.0.0.1')))
+                (!url.startsWith(REMOTE_API) && !url.startsWith(BACKUP_API) && (url.includes('localhost') || url.includes('127.0.0.1')))
             );
             const effectiveTimeout = isLocalProxy ? Math.min(timeoutMs, 1800) : timeoutMs;
 
@@ -1522,25 +1523,42 @@ gQIDAQAB
             };
 
             try {
-                const res = await doFetch(url, effectiveTimeout);
-                // หากต่อ local proxy ได้ 404 หรือ 502 ให้ failover ไปยัง REMOTE_API ทันที และจำค่าไว้ถาวร
-                if ((res.status === 404 || res.status === 502) && !url.startsWith(REMOTE_API)) {
+                let res = await doFetch(url, effectiveTimeout);
+                // 1. หากต่อ local proxy ได้ 404, 502, 504 ให้ failover ไปยัง REMOTE_API
+                if ((res.status === 404 || res.status === 502 || res.status === 504) && !url.startsWith(REMOTE_API) && !url.startsWith(BACKUP_API)) {
                     switchPermanentlyToRemote();
                     const fallbackUrl = url.replace(/^(?:https?:\/\/[^\/]+)?\/api\/bts-proxy/, REMOTE_API);
                     if (fallbackUrl !== url) {
-                        return await doFetch(fallbackUrl, timeoutMs);
+                        res = await doFetch(fallbackUrl, timeoutMs);
+                    }
+                }
+                // 2. หาก REMOTE_API มีปัญหา (404/502/504 หรือ gateway error) ให้ failover ไปยัง BACKUP_API ทันที
+                if ((res.status === 404 || res.status === 502 || res.status === 504 || (res.data && res.data.ErrCode === 502)) && !url.startsWith(BACKUP_API)) {
+                    const backupUrl = url.replace(/^(?:https?:\/\/[^\/]+)?\/api\/bts-proxy/, BACKUP_API);
+                    if (backupUrl !== url) {
+                        return await doFetch(backupUrl, timeoutMs);
                     }
                 }
                 return res;
             } catch (err) {
-                // หาก network ต่อ local proxy ไม่ได้ ให้ลอง REMOTE_API อัตโนมัติ
-                if (!url.startsWith(REMOTE_API)) {
+                // หาก network ต่อ local proxy ไม่ได้ ให้ลอง REMOTE_API ก่อน
+                if (!url.startsWith(REMOTE_API) && !url.startsWith(BACKUP_API)) {
                     switchPermanentlyToRemote();
                     const fallbackUrl = url.replace(/^(?:https?:\/\/[^\/]+)?\/api\/bts-proxy/, REMOTE_API);
                     if (fallbackUrl !== url) {
                         try {
-                            return await doFetch(fallbackUrl, timeoutMs);
-                        } catch (e2) {
+                            const res = await doFetch(fallbackUrl, timeoutMs);
+                            if (res.status === 200 && res.data?.ErrMessage === 'Success') return res;
+                        } catch (e2) { /* fallback to backup */ }
+                    }
+                }
+                // หากยังไม่ได้ ให้ลอง BACKUP_API เพื่อความมั่นใจว่าข้อมูล Live รถไฟฟ้าจะไม่มีวันสะดุด
+                if (!url.startsWith(BACKUP_API)) {
+                    const backupUrl = url.replace(/^(?:https?:\/\/[^\/]+)?\/api\/bts-proxy/, BACKUP_API);
+                    if (backupUrl !== url) {
+                        try {
+                            return await doFetch(backupUrl, timeoutMs);
+                        } catch (e3) {
                             throw err;
                         }
                     }

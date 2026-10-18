@@ -8,7 +8,7 @@ const https = require('https');
 const http = require('http');
 const { URL } = require('url');
 
-const DEFAULT_UPSTREAM = process.env.UPSTREAM_BTS_API || 'https://api.bts.co.th/bts-train/train';
+const DEFAULT_UPSTREAM = process.env.UPSTREAM_BTS_API || 'https://bkkskytrain.online/api/bts-proxy';
 
 const ALLOWED_ENDPOINTS = [
   'tta',

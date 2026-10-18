@@ -3609,11 +3609,17 @@ gQIDAQAB
                         const allBtn = existingTabs[0];
                         allBtn.className = `tab ${isAll ? 'on' : ''}`;
                         allBtn.style.cssText = isAll ? 'background:var(--primary,#0284c7);color:#fff;' : '';
+                        allBtn.innerHTML = `
+                            ${getLineIconSvg(0, isAll, 17)}
+                            <span>${lang === 'th' ? 'ทุกสาย' : 'All Lines'}</span>`;
                         allLines.forEach((l, idx) => {
                             const btn = existingTabs[idx + 1];
                             const on = l.LineId === this.exitFilterLine;
                             btn.className = `tab ${on ? 'on' : ''}`;
                             btn.style.cssText = on ? `background:${l.LineColor};color:#fff;` : '';
+                            btn.innerHTML = `
+                                ${getLineIconSvg(l.LineId, on, 17)}
+                                <span>${esc(shortLineName(l))}</span>`;
                         });
                     } else {
                         lineTabsEl.innerHTML = `
@@ -5852,14 +5858,22 @@ setOriginFromActionSheet() {
                     allBtn.className = `tab ${isAll ? 'on' : ''}`;
                     allBtn.style.cssText = isAll ? 'background:var(--primary,#0284c7);color:#fff;' : '';
                     allBtn.setAttribute('aria-pressed', isAll ? 'true' : 'false');
+                    allBtn.innerHTML = `
+                        ${getLineIconSvg(0, isAll, 18)}
+                        <span>${lang === 'th' ? 'ทุกสาย' : 'All Lines'}</span>`;
 
                     allLines.forEach((l, idx) => {
                         const btn = existingTabs[idx + 1];
                         const on = l.LineId === this.journey.pickerLine;
+                        const st = this.traffic?.lines?.find(x => x.LineId === l.LineId);
+                        const warn = st && st.TrafficStatus !== 1 ? ` ${getUiIcon('alert', 12, '#ef4444')}` : '';
                         const textColor = on ? (isBrightColor(l.LineColor) ? '#0f172a' : '#fff') : '';
                         btn.className = `tab ${on ? 'on' : ''}`;
                         btn.style.cssText = on ? `background:${l.LineColor};color:${textColor};` : '';
                         btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+                        btn.innerHTML = `
+                            ${getLineIconSvg(l.LineId, on, 18)}
+                            <span>${esc(shortLineName(l))}${warn}</span>`;
                     });
                 } else {
                     el.innerHTML = `
@@ -8329,14 +8343,29 @@ setOriginFromActionSheet() {
             return false;
         }
 
+        const LINE_ROYAL_NAMES = {
+            4: { th: 'นัคราพิพัฒน์', en: 'Nakkhara Phiphat' },
+            5: { th: 'วิวัฒน์นคร', en: 'Wiwat Nakhon' },
+            101: { th: 'เฉลิมรัชมงคล', en: 'Chaloem Ratchamongkhon' },
+            102: { th: 'ฉลองรัชธรรม', en: 'Chalong Ratchatham' },
+            103: { th: 'ธานีรัถยา', en: 'Thani Ratthaya' },
+            105: { th: 'นครวิถี', en: 'Nakhon Withi' }
+        };
+
         function getLineOptLabel(l) {
             if (!l) return '';
+            const id = Number(l.LineId) || 0;
             const th = l.LineName_TH || l.LineNameTH || '';
             const en = l.LineName_EN || l.LineNameEN || '';
+            const royal = LINE_ROYAL_NAMES[id];
             if (lang === 'en') {
-                return en || th;
+                const enName = en || th;
+                return royal?.en ? `${enName} · ${royal.en}` : enName;
             }
             const name = th.startsWith('สาย') ? th : ('สาย' + th);
+            if (royal?.th) {
+                return en ? `${name} ${royal.th} (${en})` : `${name} ${royal.th}`;
+            }
             return en ? `${name} (${en})` : name;
         }
 

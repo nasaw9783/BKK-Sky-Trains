@@ -125,7 +125,7 @@ const server = http.createServer((req, res) => {
         console.error('Local BTS Handler Error:', handlerErr.message);
       }
     }
-    const targetUrl = 'https://bkk-skytrains.vercel.app' + req.url;
+    const targetUrl = 'https://bkkskytrain.online' + req.url;
     console.log('[LIVE API ' + req.method + '] ' + reqUrl.search);
 
     const proxyReq = https.request(targetUrl, {

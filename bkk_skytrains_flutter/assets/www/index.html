@@ -1601,6 +1601,14 @@
             font-size: 11px;
             color: var(--muted);
             line-height: 1.35;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            letter-spacing: 0;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            caret-color: transparent !important;
         }
 
         /* ===== Line Tabs Selector ===== */
@@ -2741,12 +2749,16 @@
             caret-color: transparent !important;
         }
 
-        .rt-mid.lbl-up .lbl {
+        .rt-mid.lbl-up .lbl,
+        .rt-mid.lbl-both .lbl.lbl-top {
             bottom: calc(50% + 9px);
+            top: auto;
         }
 
-        .rt-mid.lbl-down .lbl {
+        .rt-mid.lbl-down .lbl,
+        .rt-mid.lbl-both .lbl.lbl-btm {
             top: calc(50% + 9px);
+            bottom: auto;
         }
 
         .rt-mid .lbl b {

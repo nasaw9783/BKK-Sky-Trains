@@ -9124,13 +9124,23 @@ setOriginFromActionSheet() {
             const chips = (arr2, at) => (arr2 || []).map(e => chip(e, at)).join('');
 
             // แถวกลาง: ราง + จุดสถานี (เส้นครึ่งซ้าย/ขวาตามว่ามีเพื่อนบ้านฝั่งนั้นไหม)
-            // pos: 'up' (ชื่อสถานีสลับขึ้นบน) หรือ 'down' (ชื่อสถานีสลับลงล่าง) ตามขบวนเวลารถเข้า
-            const mid = (st, l, r, cur, pos = 'down') => `<div class="rt-mid ${st ? `lbl-${pos}` : ''}">
-                ${l ? `<span class="tl l" style="background:${color}"></span>` : ''}
-                ${r ? `<span class="tl r" style="background:${color}"></span>` : ''}
-                ${st ? `<span class="nd ${cur ? 'cur near' : ''}" style="${cur ? '' : 'border-color:' + color}"></span>
-                <span class="lbl"><b style="${cur ? 'color:' + color : ''}">${esc(st.StationKey)}</b><i>${esc(shortDest(stName(st)))}</i></span>` : ''}
-            </div>`;
+            // pos: 'up' (ชื่อสถานีขึ้นบน) | 'down' (ชื่อสถานีลงล่าง) | 'both' (แสดงทั้งบนและล่างตามรถเข้าชานชาลา)
+            const mid = (st, l, r, cur, pos = 'down') => {
+                let lblHtml = '';
+                if (st) {
+                    const stLbl = `<b style="${cur ? 'color:' + color : ''}">${esc(st.StationKey)}</b><i>${esc(shortDest(stName(st)))}</i>`;
+                    if (pos === 'both') {
+                        lblHtml = `<span class="lbl lbl-top">${stLbl}</span><span class="lbl lbl-btm">${stLbl}</span>`;
+                    } else {
+                        lblHtml = `<span class="lbl">${stLbl}</span>`;
+                    }
+                }
+                return `<div class="rt-mid ${st ? `lbl-${pos}` : ''}">
+                    ${l ? `<span class="tl l" style="background:${color}"></span>` : ''}
+                    ${r ? `<span class="tl r" style="background:${color}"></span>` : ''}
+                    ${st ? `<span class="nd ${cur ? 'cur near' : ''}" style="${cur ? '' : 'border-color:' + color}"></span>${lblHtml}` : ''}
+                </div>`;
+            };
 
             let pTop = plats.find(p => fromOf(p) === 'prev');
             let pBtm = plats.find(p => fromOf(p) === 'next');
@@ -9264,15 +9274,36 @@ setOriginFromActionSheet() {
                     <div class="rt-lane rail js">${chips(queueP2)}</div>`;
             }
 
-            // ตรวจสอบทิศทางขบวนเวลารถเข้า: รถชานชาลาใดกำลังจะเข้าใกล้สถานีมากกว่า
-            // เพื่อจัดให้ชื่อสถานี สลับขึ้น-ลง หลบแนวขบวนรถที่กำลังเข้าสถานีและไม่บดบังกัน
-            const etaP1 = Z.prev[0]?.m ?? 999;
-            const etaP2 = Z.next[0]?.m ?? 999;
-            const topTrainEntering = etaP1 <= etaP2;
+            // ตรวจสอบสถานะรถเข้าชานชาลา:
+            // สลับขึ้นบน (ชานชาลา 1 รางบน) หรือลงล่าง (ชานชาลา 2 รางล่าง) ตามรถเข้าชานชาลานั้นๆ
+            // ถ้าหากรถเข้าชานชาลาพร้อมกันให้แสดงทั้งบน และ ล่าง (both)
+            const isEntering1 = !!atP1 || (allP1.length > 0 && (allP1[0].m <= 1.0 || allP1[0].t?.status === 'arriving'));
+            const isEntering2 = !!atP2 || (allP2.length > 0 && (allP2[0].m <= 1.0 || allP2[0].t?.status === 'arriving'));
 
-            const prevPos = topTrainEntering ? 'up' : 'down';
-            const curPos = topTrainEntering ? 'down' : 'up';
-            const nextPos = topTrainEntering ? 'up' : 'down';
+            const etaP1 = allP1[0]?.m ?? 999;
+            const etaP2 = allP2[0]?.m ?? 999;
+
+            let curPos = 'down';
+            if (isEntering1 && isEntering2) {
+                curPos = 'both';
+            } else if (isEntering1) {
+                curPos = 'up';
+            } else if (isEntering2) {
+                curPos = 'down';
+            } else {
+                // หากยังไม่มีขบวนใดกำลังเข้าสถานี ให้สลับตามชานชาลาที่รถกำลังจะมาถึงก่อน
+                if (Math.abs(etaP1 - etaP2) < 0.25 && etaP1 < 900) {
+                    curPos = 'both';
+                } else if (etaP1 <= etaP2) {
+                    curPos = 'up';
+                } else {
+                    curPos = 'down';
+                }
+            }
+
+            // สถานีข้างเคียง (prev, next) สลับตำแหน่งเพื่อความสมดุล
+            const prevPos = curPos === 'up' ? 'down' : 'up';
+            const nextPos = curPos === 'up' ? 'down' : 'up';
 
             return `<div class="route-box">
                 <div class="route-title" style="display:flex;align-items:center;gap:6px;">

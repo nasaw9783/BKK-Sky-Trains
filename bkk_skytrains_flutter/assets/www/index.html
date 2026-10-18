@@ -1745,10 +1745,26 @@
             top: 0;
             bottom: 0;
             left: 50%;
-            width: 4px;
+            width: 6px;
             transform: translateX(-50%);
             background: #cbd5e1;
             z-index: 1;
+        }
+
+        .st-row:first-child .st-rail .track {
+            top: 50%;
+            border-top-left-radius: 3px;
+            border-top-right-radius: 3px;
+        }
+
+        .st-row:last-child .st-rail .track {
+            bottom: 50%;
+            border-bottom-left-radius: 3px;
+            border-bottom-right-radius: 3px;
+        }
+
+        .st-row:only-child .st-rail .track {
+            display: none;
         }
 
         html.dark .st-rail .track {
@@ -1758,19 +1774,20 @@
         .st-rail .node {
             position: relative;
             z-index: 2;
-            width: 14px;
-            height: 14px;
+            width: 16px;
+            height: 16px;
             border-radius: 50%;
             background: var(--card);
-            border: 3.5px solid #94a3b8;
+            border: 4px solid #94a3b8;
             box-shadow: 0 0 0 2px var(--card);
             transition: all var(--transition-fast);
+            box-sizing: border-box;
         }
 
         .st-rail .node.inter {
-            width: 18px;
-            height: 18px;
-            border-width: 4px;
+            width: 20px;
+            height: 20px;
+            border-width: 4.5px;
         }
 
         .st-rail .node.near {
@@ -3790,6 +3807,44 @@
             justify-content: space-between;
             padding: 3px 0;
             color: var(--ink-secondary);
+        }
+
+        .j-map-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 10px 16px 14px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .j-map-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            padding: 7px 18px;
+            border-radius: var(--radius-full);
+            background: var(--bg-subtle, rgba(255, 255, 255, 0.05));
+            border: 1px solid var(--line);
+            color: var(--accent, #10b981);
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            text-align: center;
+            transition: all var(--transition-fast);
+            box-sizing: border-box;
+            letter-spacing: 0;
+            caret-color: transparent !important;
+            user-select: none !important;
+            cursor: pointer;
+        }
+
+        .j-map-link:hover {
+            background: var(--card-hover, rgba(255, 255, 255, 0.09));
+            border-color: var(--accent, #10b981);
+            text-decoration: none;
         }
 
         /* ===== Station Exits & Facilities View ===== */

@@ -5937,20 +5937,43 @@ setOriginFromActionSheet() {
                 if (!listEl) return;
                 const qRaw = (document.getElementById('pickerSearch')?.value || '').trim();
                 const q = qRaw.toLowerCase();
-                const curPickerLine = this.journey.pickerLine;
                 const allLines = allJourneyLines();
+
+                // เมื่อคำค้นหาตรงกับสายสี/ไลน์ไหน ให้เลื่อนแท็บไปที่สายสี/ไลน์นั้น ๆ ตามภาษาที่ใช้อยู่เท่านั้น
+                if (q) {
+                    const matchedLineByName = allLines.find(l => matchQueryWithLine(qRaw, l, lang));
+                    let targetLineId = null;
+
+                    if (matchedLineByName) {
+                        targetLineId = matchedLineByName.LineId;
+                    } else {
+                        // หาสายแรกที่มีสถานีตรงกับคำค้นหาตามภาษาที่ใช้อยู่เท่านั้น
+                        const firstMatchingLine = allLines.find(l =>
+                            (l.StationList || []).some(s => matchQueryWithStation(qRaw, s, lang))
+                        );
+                        if (firstMatchingLine) {
+                            const curLine = allLines.find(l => l.LineId === this.journey.pickerLine);
+                            const curHasMatch = curLine && (curLine.StationList || []).some(s => matchQueryWithStation(qRaw, s, lang));
+                            if (!curHasMatch) {
+                                targetLineId = firstMatchingLine.LineId;
+                            }
+                        }
+                    }
+
+                    if (targetLineId && this.journey.pickerLine !== targetLineId) {
+                        this.journey.pickerLine = targetLineId;
+                        this.renderPickerTabs();
+                    }
+                }
+
+                const curPickerLine = this.journey.pickerLine;
 
                 // Determine lines to show based on tab filter & search
                 let linesToShow;
                 if (q) {
                     if (curPickerLine && curPickerLine !== 0) {
                         const activeLineList = allLines.filter(l => l.LineId === curPickerLine);
-                        const hasMatchOnActive = activeLineList.some(l => (l.StationList || []).some(s => {
-                            const nameTh = (stName(s) || s.StationNameTH || '').toLowerCase();
-                            const nameEn = (s.StationName_EN || s.StationNameEN || '').toLowerCase();
-                            const key = (s.StationKey || '').toLowerCase();
-                            return nameTh.includes(q) || nameEn.includes(q) || key.includes(q);
-                        }));
+                        const hasMatchOnActive = activeLineList.some(l => (l.StationList || []).some(s => matchQueryWithStation(qRaw, s, lang)));
                         linesToShow = hasMatchOnActive ? activeLineList : allLines;
                     } else {
                         linesToShow = allLines;
@@ -5971,12 +5994,7 @@ setOriginFromActionSheet() {
                     stations = stations.filter(s => (s.StaticJourney || (s.Latitude && s.Longitude) || s.StationKey) && !seen.has(s.StationKey) && seen.add(s.StationKey));
 
                     if (q) {
-                        stations = stations.filter(s => {
-                            const nameTh = (stName(s) || s.StationNameTH || '').toLowerCase();
-                            const nameEn = (s.StationName_EN || s.StationNameEN || '').toLowerCase();
-                            const key = (s.StationKey || '').toLowerCase();
-                            return nameTh.includes(q) || nameEn.includes(q) || key.includes(q);
-                        });
+                        stations = stations.filter(s => matchQueryWithStation(qRaw, s, lang));
                     }
 
                     if (stations.length === 0) continue;
@@ -7275,35 +7293,20 @@ setOriginFromActionSheet() {
 
                 let stations, lineColor;
                 if (q) {
-                    // ค้นหารวมทุกสายในโปรเจกต์ (BTS + MRT + SRT + ARL + BRT ทุกรหัสและชื่อสถานี)
+                    // ค้นหารวมทุกสายในโปรเจกต์ (BTS + MRT + SRT + ARL + BRT ทุกรหัสและชื่อสถานีตามภาษาที่ใช้อยู่เท่านั้น)
                     const seen = new Set();
                     const allLines = this.getAllLines();
                     const allSt = allLines.flatMap(l => l.StationList || []);
-                    stations = allSt.filter(s => {
-                        const nameTh = (s.StationNameTH || '').toLowerCase();
-                        const nameEn = (s.StationNameEN || s.StationName_EN || '').toLowerCase();
-                        const key = (s.StationKey || '').toLowerCase();
-                        const hay = `${nameTh} ${nameEn} ${key}`;
-                        const hayNoSpace = hay.replace(/\s+/g, '');
-                        const match = hay.includes(q) || (qNoSpace && hayNoSpace.includes(qNoSpace));
-                        return match && !seen.has(s.StationKey) && seen.add(s.StationKey);
-                    });
+                    stations = allSt.filter(s => matchQueryWithStation(qRaw, s, lang) && !seen.has(s.StationKey) && seen.add(s.StationKey));
 
-                    // ตรวจสอบว่าคำค้นหาตรงกับชื่อสายหรือไม่
-                    const matchedLineByName = allLines.find(l => {
-                        const lNameTh = (shortLineName(l) || l.LineName_TH || l.LineNameTH || '').toLowerCase();
-                        const lNameEn = (l.LineName_EN || l.LineNameEN || '').toLowerCase();
-                        const lNameFull = (l.LineNameTH || '').toLowerCase();
-                        return (lNameTh && (lNameTh.includes(q) || q.includes(lNameTh)))
-                            || (lNameEn && (lNameEn.includes(q) || q.includes(lNameEn)))
-                            || (lNameFull && lNameFull.includes(q));
-                    });
+                    // ตรวจสอบว่าคำค้นหาตรงกับชื่อสายหรือไม่ ตามภาษาที่ใช้อยู่เท่านั้น
+                    const matchedLineByName = allLines.find(l => matchQueryWithLine(qRaw, l, lang));
 
                     if (stations.length === 0 && matchedLineByName && matchedLineByName.StationList) {
                         stations = matchedLineByName.StationList;
                     }
 
-                    // เมื่อคำค้นหาตรงกับสายสี/ไลน์ไหน ให้เลื่อนแท็บไปที่สายสี/ไลน์นั้น
+                    // เมื่อคำค้นหาตรงกับสายสี/ไลน์ไหน ให้เลื่อนแท็บไปที่สายสี/ไลน์นั้น ๆ ตามภาษาที่ใช้อยู่เท่านั้น
                     let targetLineId = null;
                     if (matchedLineByName) {
                         targetLineId = matchedLineByName.LineId;
@@ -8423,6 +8426,59 @@ setOriginFromActionSheet() {
             105: { th: 'นครวิถี', en: 'Nakhon Withi' }
         };
 
+        function matchQueryWithLine(qRaw, line, currentLang) {
+            if (!qRaw || !line) return false;
+            const q = qRaw.toLowerCase().trim();
+            const qNoSpace = q.replace(/\s+/g, '');
+            if (!q) return false;
+
+            if (currentLang === 'th') {
+                const nameTh = (shortLineName(line) || line.LineName_TH || line.LineNameTH || '').toLowerCase();
+                const nameFullTh = (line.LineNameTH || line.LineName_TH || '').toLowerCase();
+                const royalTh = (LINE_ROYAL_NAMES[line.LineId]?.th || '').toLowerCase();
+                const nameThNoSpace = nameTh.replace(/\s+/g, '');
+                const nameFullNoSpace = nameFullTh.replace(/\s+/g, '');
+                const royalThNoSpace = royalTh.replace(/\s+/g, '');
+                return nameTh.includes(q) || q.includes(nameTh)
+                    || (qNoSpace && (nameThNoSpace.includes(qNoSpace) || qNoSpace.includes(nameThNoSpace)))
+                    || nameFullTh.includes(q) || q.includes(nameFullTh)
+                    || (qNoSpace && (nameFullNoSpace.includes(qNoSpace) || qNoSpace.includes(nameFullNoSpace)))
+                    || (royalTh && (royalTh.includes(q) || q.includes(royalTh)))
+                    || (royalThNoSpace && qNoSpace && (royalThNoSpace.includes(qNoSpace) || qNoSpace.includes(royalThNoSpace)));
+            } else {
+                const nameEn = (line.LineName_EN || line.LineNameEN || shortLineName(line) || '').toLowerCase();
+                const royalEn = (LINE_ROYAL_NAMES[line.LineId]?.en || '').toLowerCase();
+                const nameEnNoSpace = nameEn.replace(/\s+/g, '');
+                const royalEnNoSpace = royalEn.replace(/\s+/g, '');
+                return nameEn.includes(q) || q.includes(nameEn)
+                    || (qNoSpace && (nameEnNoSpace.includes(qNoSpace) || qNoSpace.includes(nameEnNoSpace)))
+                    || (royalEn && (royalEn.includes(q) || q.includes(royalEn)))
+                    || (royalEnNoSpace && qNoSpace && (royalEnNoSpace.includes(qNoSpace) || qNoSpace.includes(royalEnNoSpace)));
+            }
+        }
+
+        function matchQueryWithStation(qRaw, station, currentLang) {
+            if (!qRaw || !station) return false;
+            const q = qRaw.toLowerCase().trim();
+            const qNoSpace = q.replace(/\s+/g, '');
+            if (!q) return false;
+
+            // StationKey (รหัสสถานีสากล เช่น YL20, CEN, N8) ค้นหาได้เสมอ
+            const key = (station.StationKey || '').toLowerCase();
+            const keyNoSpace = key.replace(/\s+/g, '');
+            if (key.includes(q) || (qNoSpace && keyNoSpace.includes(qNoSpace))) return true;
+
+            if (currentLang === 'th') {
+                const nameTh = (station.StationNameTH || stName(station) || '').toLowerCase();
+                const nameThNoSpace = nameTh.replace(/\s+/g, '');
+                return nameTh.includes(q) || (qNoSpace && nameThNoSpace.includes(qNoSpace));
+            } else {
+                const nameEn = (station.StationNameEN || station.StationName_EN || stName(station) || '').toLowerCase();
+                const nameEnNoSpace = nameEn.replace(/\s+/g, '');
+                return nameEn.includes(q) || (qNoSpace && nameEnNoSpace.includes(qNoSpace));
+            }
+        }
+
         function getLineOptLabel(l) {
             if (!l) return '';
             const id = Number(l.LineId) || 0;
@@ -9130,7 +9186,7 @@ setOriginFromActionSheet() {
                     ${rows.join('')}
                 </div>
                 ${fares ? `<div class="j-fares"><div class="ft">${T('jFareTypes')}</div>${fares}</div>` : ''}
-                ${rm.StaticMapSrc ? `<a class="j-map-link" href="${esc(rm.StaticMapSrc)}" target="_blank" rel="noopener">${getUiIcon('map', 13, 'currentColor')} ${T('jMap')}</a>` : ''}` : ''}
+                ${rm.StaticMapSrc ? `<div class="j-map-wrap"><a class="j-map-link" href="${esc(rm.StaticMapSrc)}" target="_blank" rel="noopener">${getUiIcon('map', 14, 'currentColor')} <span>${T('jMap')}</span></a></div>` : ''}` : ''}
             </div>`;
         }
 

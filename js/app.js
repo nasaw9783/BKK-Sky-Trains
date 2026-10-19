@@ -2574,7 +2574,7 @@ gQIDAQAB
             const entries = App.keyLines[st.StationKey] || [];
             const lineId = st.StationLineId || entries[0]?.lineId || 1;
             const line = App.lineById[lineId] || MRT_LINE_BY_ID[lineId];
-            const lineName = line ? (lang === 'en' ? (line.LineNameEN || line.LineName) : (line.LineNameTH || line.LineName)) : '';
+            const lineName = line ? (lang === 'zh' ? (LINE_NAMES_ZH[lineId] || line.LineNameEN || line.LineName) : (lang === 'en' ? (line.LineNameEN || line.LineName) : (line.LineNameTH || line.LineName))) : '';
 
             // 1. MRT Lines
             if (lineId === MRT_LINE_IDS.BLUE) {
@@ -2645,16 +2645,18 @@ gQIDAQAB
                             {
                                 StationCode: st.StationKey,
                                 Title: title,
-                                TimeRoute: lang === 'en' ? '0 min' : '0 นาที',
+                                TimeRoute: lang === 'zh' ? '0 分钟' : (lang === 'en' ? '0 min' : '0 นาที'),
                                 LineId: primaryLineId
                             }
                         ],
                         FareRateInfo: [{
                             FareRate_List: [
                                 {
-                                    FareDetail: lang === 'en'
-                                        ? `Same-station fare (1-station rate · ${lineName || 'Current line'})`
-                                        : `ค่าโดยสารสถานีเดียวกัน (คิดอัตรา 1 สถานี · ${lineName || 'สายนี้'})`,
+                                    FareDetail: lang === 'zh'
+                                        ? `同站票价 (按 1 站计费 · ${lineName || '本线路'})`
+                                        : (lang === 'en'
+                                            ? `Same-station fare (1-station rate · ${lineName || 'Current line'})`
+                                            : `ค่าโดยสารสถานีเดียวกัน (คิดอัตรา 1 สถานี · ${lineName || 'สายนี้'})`),
                                     FareDetail_ENG: `Same-station fare (1-station rate · ${lineName || 'Current line'})`,
                                     FarePrice: oneStationFare
                                 }
@@ -3338,18 +3340,18 @@ gQIDAQAB
                 return {
                     weekday: buildBtsFreqRows(data.weekday, !we),
                     weekend: buildBtsFreqRows(data.weekend, we),
-                    note: lineId === 1 ? (lang === 'en' ? '* Mo Chit–Samrong · ** Samrong–Kheha and Mo Chit–Khu Khot' : '* หมอชิต–สำโรง · ** สำโรง–เคหะฯ และ หมอชิต–คูคต') : ''
+                    note: lineId === 1 ? (lang === 'zh' ? '* 莫奇–三隆 · ** 三隆–凯哈 及 莫奇–库括' : (lang === 'en' ? '* Mo Chit–Samrong · ** Samrong–Kheha and Mo Chit–Khu Khot' : '* หมอชิต–สำโรง · ** สำโรง–เคหะฯ และ หมอชิต–คูคต')) : ''
                 };
             }
             const t = getMrtFreqTable(lineId);
             if (!t) return null;
             let note = '';
             if (lineId === 103) {
-                note = lang === 'en' ? '* Thani Ratthaya Line (Rangsit) every 10-20 min' : '* สายธานีรัถยา (รังสิต) ทุก 10-20 นาที';
+                note = lang === 'zh' ? '* 塔尼拉塔雅线 (兰实) 每 10-20 分钟' : (lang === 'en' ? '* Thani Ratthaya Line (Rangsit) every 10-20 min' : '* สายธานีรัถยา (รังสิต) ทุก 10-20 นาที');
             } else if (lineId === 105) {
-                note = lang === 'en' ? '* Nakhon Withi Line (Taling Chan) every 20-30 min' : '* สายนครวิถี (ตลิ่งชัน) ทุก 20-30 นาที';
+                note = lang === 'zh' ? '* 那空威提线 (大林江) 每 20-30 分钟' : (lang === 'en' ? '* Nakhon Withi Line (Taling Chan) every 20-30 min' : '* สายนครวิถี (ตลิ่งชัน) ทุก 20-30 นาที');
             } else if (lineId === 101) {
-                note = lang === 'en' ? '* Inner Circle (Bang Sue ↔ Tha Phra) / Outer Loop' : '* ช่วง 07:00–09:00 ช่วงบางซื่อ–ท่าพระ–หลักสอง ความถี่ตามตารางทางการ';
+                note = lang === 'zh' ? '* 07:00–09:00 期间挽赐–塔帕–拉颂区间按官方发车时刻运行' : (lang === 'en' ? '* Inner Circle (Bang Sue ↔ Tha Phra) / Outer Loop' : '* ช่วง 07:00–09:00 ช่วงบางซื่อ–ท่าพระ–หลักสอง ความถี่ตามตารางทางการ');
             }
             return {
                 weekday: t.weekday || [],
@@ -3753,9 +3755,9 @@ gQIDAQAB
                     return {
                         level: 'high',
                         percent: 86,
-                        badge: lang === 'th' ? 'หนาแน่นมาก' : 'Very Crowded',
+                        badge: lang === 'zh' ? '非常拥挤' : (lang === 'th' ? 'หนาแน่นมาก' : 'Very Crowded'),
                         color: '#ef4444',
-                        advice: lang === 'th' ? 'ผู้โดยสารหนาแน่น อาจต้องรอขบวนถัดไป 1-2 ขบวน' : 'High passenger volume. Expect a 1-2 train wait.'
+                        advice: lang === 'zh' ? '客流量很大，可能需要多等 1-2 趟列车' : (lang === 'th' ? 'ผู้โดยสารหนาแน่น อาจต้องรอขบวนถัดไป 1-2 ขบวน' : 'High passenger volume. Expect a 1-2 train wait.')
                     };
                 }
                 const now = new Date();
@@ -3806,17 +3808,17 @@ gQIDAQAB
                     return {
                         level: 'high',
                         percent,
-                        badge: lang === 'th' ? 'หนาแน่น' : 'Crowded',
+                        badge: lang === 'zh' ? '拥挤' : (lang === 'th' ? 'หนาแน่น' : 'Crowded'),
                         color: '#ef4444',
-                        advice: lang === 'th' ? 'ผู้โดยสารหนาแน่น อาจต้องรอขบวนถัดไป 1-2 ขบวน' : 'High passenger volume. Possible 1-2 train wait.'
+                        advice: lang === 'zh' ? '客流量大，可能需要多等 1-2 趟列车' : (lang === 'th' ? 'ผู้โดยสารหนาแน่น อาจต้องรอขบวนถัดไป 1-2 ขบวน' : 'High passenger volume. Possible 1-2 train wait.')
                     };
                 } else if (level === 'moderate') {
                     return {
                         level: 'moderate',
                         percent,
-                        badge: lang === 'th' ? 'ปานกลาง' : 'Moderate',
+                        badge: lang === 'zh' ? '适中' : (lang === 'th' ? 'ปานกลาง' : 'Moderate'),
                         color: '#f59e0b',
-                        advice: lang === 'th' ? 'มีผู้โดยสารพอสมควร ยืนหรือนั่งได้สะดวก' : 'Moderate crowding. Seating or standing available.'
+                        advice: lang === 'zh' ? '客流适中，可舒适站立或就坐' : (lang === 'th' ? 'มีผู้โดยสารพอสมควร ยืนหรือนั่งได้สะดวก' : 'Moderate crowding. Seating or standing available.')
                     };
                 } else {
                     return {
@@ -3832,7 +3834,7 @@ gQIDAQAB
             renderCrowdGauge(station) {
                 if (!station) return '';
                 const g = this.getCrowdLevel(station);
-                const title = lang === 'th' ? 'ความหนาแน่นผู้โดยสาร' : 'Passenger Density';
+                const title = lang === 'zh' ? '车厢拥挤度' : (lang === 'th' ? 'ความหนาแน่นผู้โดยสาร' : 'Passenger Density');
                 const statusDot = `<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${g.color};box-shadow:0 0 6px ${g.color}66;margin-right:5px;vertical-align:middle;"></span>`;
                 return `
                     <div class="crowd-gauge-card">
@@ -3961,7 +3963,7 @@ gQIDAQAB
                                     <span>${esc(groupLabel)}</span>
                                 </div>
                                 <span class="line-frame-count" style="background:${color}22; color:${isBright ? '#ca8a04' : color}; border:1px solid ${color}44;">
-                                    ${stations.length} ${lang === 'th' ? 'สถานี' : 'stations'}
+                                    ${stations.length} ${lang === 'zh' ? '座车站' : (lang === 'th' ? 'สถานี' : 'stations')}
                                 </span>
                             </div>
                             <div class="line-stations-grid">
@@ -3972,7 +3974,7 @@ gQIDAQAB
 
                 if (totalMatching === 0) {
                     html = `<div style="text-align:center; padding:24px 12px; color:var(--muted); font-size:13px;">
-                        ${getUiIcon('search', 16, 'var(--muted)')} ${lang === 'th' ? `ไม่พบสถานีที่ตรงกับคำค้นหา "${esc(q)}"` : `No stations found matching "${esc(q)}"`}
+                        ${getUiIcon('search', 16, 'var(--muted)')} ${lang === 'zh' ? `未找到匹配 “${esc(q)}” 的车站` : (lang === 'th' ? `ไม่พบสถานีที่ตรงกับคำค้นหา "${esc(q)}"` : `No stations found matching "${esc(q)}"`)}
                     </div>`;
                 }
 
@@ -4020,9 +4022,10 @@ gQIDAQAB
                 }
 
                 if (!this.userPos) {
+                    const locateExitLabel = lang === 'zh' ? '通过 GPS 查找最近的出入口' : (lang === 'th' ? 'ระบุทางออกที่คุณยืนอยู่ด้วย GPS' : 'Find your nearest exit by GPS');
                     el.innerHTML =
                         (this.locError ? `<div class="err-box" style="margin:0 0 10px">${this.locError}</div>` : '') +
-                        `<button class="btn btn-big" onclick="App.locateExitGps(true)">${getUiIcon('pin', 16, '#ffffff')} ${lang === 'th' ? 'ระบุทางออกที่คุณยืนอยู่ด้วย GPS' : 'Find your nearest exit by GPS'}</button>`;
+                        `<button class="btn btn-big" onclick="App.locateExitGps(true)">${getUiIcon('pin', 16, '#ffffff')} ${locateExitLabel}</button>`;
                     return;
                 }
 
@@ -4033,7 +4036,7 @@ gQIDAQAB
                 const s = nearestSt;
                 const exits = getStationExits(s);
                 if (!exits || !exits.length) {
-                    el.innerHTML = `<div class="empty-note">${lang === 'th' ? 'ไม่มีข้อมูลทางออก' : 'No exit data'}</div>`;
+                    el.innerHTML = `<div class="empty-note">${lang === 'zh' ? '暂无出入口信息' : (lang === 'th' ? 'ไม่มีข้อมูลทางออก' : 'No exit data')}</div>`;
                     return;
                 }
 
@@ -4050,49 +4053,55 @@ gQIDAQAB
 
                 const nearestExit = exitsWithDist[0];
                 const isAtStation = this.userPos?.calibrated || nearestExit.meters <= 450;
+                const mUnit = lang === 'zh' ? '米' : (lang === 'th' ? 'เมตร' : 'm');
+                const kmUnit = lang === 'zh' ? '公里' : (lang === 'th' ? 'กม.' : 'km');
+                const mUnitShort = lang === 'zh' ? '米' : (lang === 'th' ? 'ม.' : 'm');
+                const kmUnitShort = lang === 'zh' ? '公里' : (lang === 'th' ? 'กม.' : 'km');
+
                 const distText = nearestExit.meters < 1000
-                    ? `${nearestExit.meters} ${lang === 'th' ? 'เมตร' : 'm'}`
-                    : `${(nearestExit.meters / 1000).toFixed(1)} ${lang === 'th' ? 'กม.' : 'km'}`;
+                    ? `${nearestExit.meters} ${mUnit}`
+                    : `${(nearestExit.meters / 1000).toFixed(1)} ${kmUnit}`;
 
                 const color = s.StationLineColor || '#7AB420';
                 const allLines = [...this.lines, ...MRT_STATIC_DB.lines];
                 const lineObj = this.lineById[s.StationLineId] || allLines.find(l => l.LineId === s.StationLineId);
-                const lineLabel = lineObj ? (lang === 'en' ? (lineObj.LineName_EN || lineObj.LineName_TH) : (lineObj.LineName_TH || '')) : '';
+                const lineLabel = lineObj ? (lang === 'zh' ? (LINE_NAMES_ZH[lineObj.LineId] || lineObj.LineName_EN || lineObj.LineName_TH) : (lang === 'en' ? (lineObj.LineName_EN || lineObj.LineName_TH) : (lineObj.LineName_TH || ''))) : '';
 
                 const headline = isAtStation
-                    ? (lang === 'th' ? `คุณยืนอยู่บริเวณ <b>ทางออก ${nearestExit.exit}</b>` : `You are standing near <b>Exit ${nearestExit.exit}</b>`)
-                    : (lang === 'th' ? `ทางออกที่ใกล้จุดที่คุณอยู่ที่สุดคือ <b>ทางออก ${nearestExit.exit}</b>` : `Closest exit from your location is <b>Exit ${nearestExit.exit}</b>`);
+                    ? (lang === 'zh' ? `您正位于 <b>出入口 ${nearestExit.exit}</b> 附近` : (lang === 'th' ? `คุณยืนอยู่บริเวณ <b>ทางออก ${nearestExit.exit}</b>` : `You are standing near <b>Exit ${nearestExit.exit}</b>`))
+                    : (lang === 'zh' ? `距您当前位置最近的出入口为 <b>出入口 ${nearestExit.exit}</b>` : (lang === 'th' ? `ทางออกที่ใกล้จุดที่คุณอยู่ที่สุดคือ <b>ทางออก ${nearestExit.exit}</b>` : `Closest exit from your location is <b>Exit ${nearestExit.exit}</b>`));
 
                 const statusBadge = isAtStation
-                    ? `<span class="badge near-b" style="font-size:10px">${getUiIcon('pin', 11, '#16a34a')} ${lang === 'th' ? 'จุดที่คุณยืนอยู่' : 'Your Location'}</span>`
-                    : `<span class="badge" style="background:#e0f2fe;color:#0369a1;font-size:10px">${lang === 'th' ? 'สถานีใกล้คุณ' : 'Nearest Station'}</span>`;
+                    ? `<span class="badge near-b" style="font-size:10px">${getUiIcon('pin', 11, '#16a34a')} ${lang === 'zh' ? '您当前所在位置' : (lang === 'th' ? 'จุดที่คุณยืนอยู่' : 'Your Location')}</span>`
+                    : `<span class="badge" style="background:#e0f2fe;color:#0369a1;font-size:10px">${lang === 'zh' ? '就近车站' : (lang === 'th' ? 'สถานีใกล้คุณ' : 'Nearest Station')}</span>`;
 
-                const lm = lang === 'th' ? nearestExit.landmarks_th : (nearestExit.landmarks_en || nearestExit.landmarks_th);
+                const lm = lang === 'zh' ? (nearestExit.landmarks_zh || nearestExit.landmarks_en || nearestExit.landmarks_th) : (lang === 'th' ? nearestExit.landmarks_th : (nearestExit.landmarks_en || nearestExit.landmarks_th));
 
                 const facilityBadges = (nearestExit.facilities || []).map(f => {
-                    if (f === 'skywalk') return `<span class="facility-chip skywalk">${getUiIcon('walk', 13, 'currentColor')} ${lang === 'th' ? 'Skywalk ทางเชื่อม' : 'Skywalk Link'}</span>`;
-                    if (f === 'elevator') return `<span class="facility-chip elevator">${getUiIcon('elevator', 13, 'currentColor')} ${lang === 'th' ? 'ลิฟต์คนพิการ/ผู้สูงอายุ' : 'Priority Elevator'}</span>`;
-                    if (f === 'escalator') return `<span class="facility-chip">${getUiIcon('escalator', 13, 'currentColor')} ${lang === 'th' ? 'บันไดเลื่อน' : 'Escalator'}</span>`;
+                    if (f === 'skywalk') return `<span class="facility-chip skywalk">${getUiIcon('walk', 13, 'currentColor')} ${lang === 'zh' ? '人行天桥 Skywalk' : (lang === 'th' ? 'Skywalk ทางเชื่อม' : 'Skywalk Link')}</span>`;
+                    if (f === 'elevator') return `<span class="facility-chip elevator">${getUiIcon('elevator', 13, 'currentColor')} ${lang === 'zh' ? '无障碍/长者专用电梯' : (lang === 'th' ? 'ลิฟต์คนพิการ/ผู้สูงอายุ' : 'Priority Elevator')}</span>`;
+                    if (f === 'escalator') return `<span class="facility-chip">${getUiIcon('escalator', 13, 'currentColor')} ${lang === 'zh' ? '自动扶梯' : (lang === 'th' ? 'บันไดเลื่อน' : 'Escalator')}</span>`;
                     return '';
                 }).join('');
 
+                const exitWord = lang === 'zh' ? '出入口' : (lang === 'th' ? 'ทางออก' : 'Exit');
                 const altChips = exitsWithDist.map(ex => {
                     const isSelected = ex.exit === nearestExit.exit;
-                    const dStr = ex.meters < 1000 ? `~${ex.meters} ${lang === 'th' ? 'ม.' : 'm'}` : `~${(ex.meters / 1000).toFixed(1)} ${lang === 'th' ? 'กม.' : 'km'}`;
+                    const dStr = ex.meters < 1000 ? `~${ex.meters} ${mUnitShort}` : `~${(ex.meters / 1000).toFixed(1)} ${kmUnitShort}`;
                     return `
                         <button type="button" class="alt-chip ${isSelected ? 'on' : ''}" onclick="App.scrollToExit(${ex.exit}, '${esc(s.StationKey)}')">
                             <span class="dot" style="background:${isSelected ? '#16a34a' : '#94a3b8'}"></span>
-                            <span>${lang === 'th' ? 'ทางออก' : 'Exit'} ${ex.exit}</span>
+                            <span>${exitWord} ${ex.exit}</span>
                             <span class="km">${dStr}</span>
                         </button>`;
                 }).join('');
 
                 const isCurrentDirectoryStation = this.selectedExitKey === s.StationKey;
                 const calibrateExitBtn = (!this.userPos?.calibrated && nearestExit.meters > 120 && nearestExit.meters <= 800)
-                    ? `<button class="btn btn-ghost" style="padding:3px 8px;font-size:11px;color:var(--primary,#0284c7);border:1px dashed var(--primary,#0284c7);border-radius:8px;margin-left:auto" onclick="App.calibrateToStation('${esc(s.StationKey)}')">${getUiIcon('pin', 12, 'currentColor')} ${lang === 'th' ? 'ฉันอยู่ที่สถานีนี้' : "I'm at this station"}</button>`
+                    ? `<button class="btn btn-ghost" style="padding:3px 8px;font-size:11px;color:var(--primary,#0284c7);border:1px dashed var(--primary,#0284c7);border-radius:8px;margin-left:auto" onclick="App.calibrateToStation('${esc(s.StationKey)}')">${getUiIcon('pin', 12, 'currentColor')} ${lang === 'zh' ? '我在此站' : (lang === 'th' ? 'ฉันอยู่ที่สถานีนี้' : "I'm at this station")}</button>`
                     : '';
                 const viewDirectoryBtn = !isCurrentDirectoryStation
-                    ? `<button class="btn btn-ghost view-dir-btn" style="padding:3px 8px;font-size:11px;margin-left:${calibrateExitBtn ? '6px' : 'auto'}" onclick="App.selectExitStation('${esc(s.StationKey)}')">${getUiIcon('door', 13, 'currentColor')} ${lang === 'th' ? 'เปิดไดเรกทอรีสถานีนี้ ➔' : 'View Station Exits ➔'}</button>`
+                    ? `<button class="btn btn-ghost view-dir-btn" style="padding:3px 8px;font-size:11px;margin-left:${calibrateExitBtn ? '6px' : 'auto'}" onclick="App.selectExitStation('${esc(s.StationKey)}')">${getUiIcon('door', 13, 'currentColor')} ${lang === 'zh' ? '查看本站出入口名录 ➔' : (lang === 'th' ? 'เปิดไดเรกทอรีสถานีนี้ ➔' : 'View Station Exits ➔')}</button>`
                     : '';
 
                 el.innerHTML = `
@@ -4115,14 +4124,14 @@ gQIDAQAB
                             </div>
                             <div class="box-details">
                                 <div class="headline">${headline}</div>
-                                <div class="dist-tag">${getUiIcon('ruler', 14, 'var(--primary,#0284c7)')} ${lang === 'th' ? 'ระยะห่างประมาณ' : 'Approx.'} <b>${distText}</b> ${lang === 'th' ? 'จากจุดที่คุณยืน' : 'from your location'}</div>
+                                <div class="dist-tag">${getUiIcon('ruler', 14, 'var(--primary,#0284c7)')} ${lang === 'zh' ? '距您所在位置约' : (lang === 'th' ? 'ระยะห่างประมาณ' : 'Approx.')} <b>${distText}</b> ${lang === 'zh' ? '' : (lang === 'th' ? 'จากจุดที่คุณยืน' : 'from your location')}</div>
                                 <div class="landmark-tag">${getUiIcon('door', 14, 'var(--text-sub,#64748b)')} ${esc(lm)}</div>
                             </div>
                         </div>
                         ${facilityBadges ? `<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px">${facilityBadges}</div>` : ''}
                         <div style="margin-top:12px;padding-top:10px;border-top:1px dashed var(--line)">
                             <div style="font-size:11.5px;color:var(--muted);margin-bottom:6px;font-weight:600">
-                                ${lang === 'th' ? 'ทางออกทั้งหมดของสถานีนี้ (แตะเพื่อดูรายละเอียด):' : 'All exits of this station (tap to jump to details):'}
+                                ${lang === 'zh' ? '本站全部出入口 (点击查看详情):' : (lang === 'th' ? 'ทางออกทั้งหมดของสถานีนี้ (แตะเพื่อดูรายละเอียด):' : 'All exits of this station (tap to jump to details):')}
                             </div>
                             <div class="alt-row">${altChips}</div>
                         </div>
@@ -4215,7 +4224,7 @@ gQIDAQAB
                 if (!s) return;
                 const color = s.StationLineColor || '#7AB420';
                 const lineObj = this.lineById[s.StationLineId] || allLines.find(l => l.LineId === s.StationLineId);
-                const lineLabel = lineObj ? (lang === 'en' ? (lineObj.LineName_EN || lineObj.LineName_TH) : `${lineObj.LineName_TH} (${lineObj.LineName_EN || ''})`) : '';
+                const lineLabel = lineObj ? (lang === 'zh' ? (LINE_NAMES_ZH[lineObj.LineId] || lineObj.LineName_EN || lineObj.LineName_TH) : (lang === 'en' ? (lineObj.LineName_EN || lineObj.LineName_TH) : `${lineObj.LineName_TH} (${lineObj.LineName_EN || ''})`)) : '';
 
                 if (trigBadge) {
                     trigBadge.textContent = s.StationKey;
@@ -4250,10 +4259,12 @@ gQIDAQAB
                 this.renderNearestExit();
 
                 // 7. Render Station Hero
+                const mUnitEx = lang === 'zh' ? '米' : (lang === 'th' ? 'ม.' : 'm');
+                const kmUnitEx = lang === 'zh' ? '公里' : (lang === 'th' ? 'กม.' : 'km');
                 const exitHint = nearestExitInfo ? `
                     <div class="dist-chip">
-                        <div class="v">${lang === 'th' ? 'ทางออก' : 'Exit'} ${nearestExitInfo.exit}</div>
-                        <div class="l">${lang === 'th' ? 'ใกล้ทิศทางคุณ' : 'Nearest'} (~${nearestExitInfo.meters < 1000 ? nearestExitInfo.meters + ' ' + (lang === 'th' ? 'ม.' : 'm') : (nearestExitInfo.meters/1000).toFixed(1) + ' ' + (lang === 'th' ? 'กม.' : 'km')})</div>
+                        <div class="v">${lang === 'zh' ? '出入口' : (lang === 'th' ? 'ทางออก' : 'Exit')} ${nearestExitInfo.exit}</div>
+                        <div class="l">${lang === 'zh' ? '就近方向' : (lang === 'th' ? 'ใกล้ทิศทางคุณ' : 'Nearest')} (~${nearestExitInfo.meters < 1000 ? nearestExitInfo.meters + ' ' + mUnitEx : (nearestExitInfo.meters/1000).toFixed(1) + ' ' + kmUnitEx})</div>
                     </div>` : '';
 
                 heroEl.innerHTML = `
@@ -4270,17 +4281,17 @@ gQIDAQAB
                 listEl.innerHTML = exits.map(ex => {
                     const isNearest = nearestExitInfo && nearestExitInfo.exit === ex.exit;
                     const badges = (ex.facilities || []).map(f => {
-                        if (f === 'skywalk') return `<span class="facility-chip skywalk">${getUiIcon('walk', 13, '#0284c7')} ${lang === 'th' ? 'Skywalk ทางเชื่อม' : 'Skywalk Link'}</span>`;
-                        if (f === 'elevator') return `<span class="facility-chip elevator">${getUiIcon('elevator', 13, '#10b981')} ${lang === 'th' ? 'ลิฟต์คนพิการ/ผู้สูงอายุ' : 'Priority Elevator'}</span>`;
-                        if (f === 'escalator') return `<span class="facility-chip">${getUiIcon('escalator', 13, '#64748b')} ${lang === 'th' ? 'บันไดเลื่อน' : 'Escalator'}</span>`;
+                        if (f === 'skywalk') return `<span class="facility-chip skywalk">${getUiIcon('walk', 13, '#0284c7')} ${lang === 'zh' ? '人行天桥 Skywalk' : (lang === 'th' ? 'Skywalk ทางเชื่อม' : 'Skywalk Link')}</span>`;
+                        if (f === 'elevator') return `<span class="facility-chip elevator">${getUiIcon('elevator', 13, '#10b981')} ${lang === 'zh' ? '无障碍/长者专用电梯' : (lang === 'th' ? 'ลิฟต์คนพิการ/ผู้สูงอายุ' : 'Priority Elevator')}</span>`;
+                        if (f === 'escalator') return `<span class="facility-chip">${getUiIcon('escalator', 13, '#64748b')} ${lang === 'zh' ? '自动扶梯' : (lang === 'th' ? 'บันไดเลื่อน' : 'Escalator')}</span>`;
                         return '';
                     }).join('');
 
                     const nearestBadge = isNearest
-                        ? `<span class="facility-chip nearest-live-chip">${getUiIcon('pin', 13, '#10b981')} ${lang === 'th' ? 'คุณยืนอยู่ใกล้ทางออกนี้' : 'You are near this exit'} (${nearestExitInfo.meters < 1000 ? '~' + nearestExitInfo.meters + ' ' + (lang === 'th' ? 'ม.' : 'm') : (nearestExitInfo.meters / 1000).toFixed(1) + ' ' + (lang === 'th' ? 'กม.' : 'km')})</span>`
+                        ? `<span class="facility-chip nearest-live-chip">${getUiIcon('pin', 13, '#10b981')} ${lang === 'zh' ? '您正位于此出入口附近' : (lang === 'th' ? 'คุณยืนอยู่ใกล้ทางออกนี้' : 'You are near this exit')} (${nearestExitInfo.meters < 1000 ? '~' + nearestExitInfo.meters + ' ' + mUnitEx : (nearestExitInfo.meters / 1000).toFixed(1) + ' ' + kmUnitEx})</span>`
                         : '';
 
-                    const lm = lang === 'th' ? ex.landmarks_th : (ex.landmarks_en || ex.landmarks_th);
+                    const lm = lang === 'zh' ? (ex.landmarks_zh || ex.landmarks_en || ex.landmarks_th) : (lang === 'th' ? ex.landmarks_th : (ex.landmarks_en || ex.landmarks_th));
                     return `
                         <div class="exit-item ${isNearest ? 'nearest-exit-active' : ''}" id="exit-card-${ex.exit}">
                             <div class="exit-badge-num" style="${isNearest ? 'background:linear-gradient(135deg,#16a34a,#15803d);' : ''}">
@@ -4331,7 +4342,7 @@ gQIDAQAB
                     const isActive = sheet.classList.toggle('active');
                     const btnText = document.getElementById('mapLegendBtnText');
                     if (btnText) {
-                        btnText.textContent = isActive ? (lang === 'en' ? 'Close' : 'ปิดสัญลักษณ์') : (lang === 'en' ? 'Legend' : 'สัญลักษณ์');
+                        btnText.textContent = isActive ? (lang === 'en' ? 'Close' : (lang === 'zh' ? '关闭图例' : 'ปิดสัญลักษณ์')) : (lang === 'en' ? 'Legend' : (lang === 'zh' ? '图例' : 'สัญลักษณ์'));
                     }
                     return;
                 }
@@ -4347,7 +4358,7 @@ gQIDAQAB
                 }
                 const btnText = document.getElementById('mapLegendBtnText');
                 if (btnText) {
-                    btnText.textContent = isHidden ? (lang === 'en' ? 'Legend' : 'สัญลักษณ์') : (lang === 'en' ? 'Show Legend' : 'เปิดสัญลักษณ์');
+                    btnText.textContent = isHidden ? (lang === 'en' ? 'Legend' : (lang === 'zh' ? '图例' : 'สัญลักษณ์')) : (lang === 'en' ? 'Show Legend' : (lang === 'zh' ? '显示图例' : 'เปิดสัญลักษณ์'));
                 }
             },
 
@@ -4692,7 +4703,7 @@ gQIDAQAB
                     const enName = s.StationName_EN || s.StationNameEN || '';
                     const isOrange = (s.StationLineId === 106 || stationKey.startsWith('OR'));
                     const statusBadge = isOrange
-                        ? `<div style="display:inline-block;margin-top:4px;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;background:rgba(245,130,32,0.15);color:#ea580c;border:1px solid rgba(245,130,32,0.3);">${this.lang === 'en' ? 'Orange Line (Not in Service)' : 'สายสีส้ม (ยังไม่เปิดให้บริการ)'}</div>`
+                        ? `<div style="display:inline-block;margin-top:4px;padding:2px 8px;border-radius:999px;font-size:11px;font-weight:700;background:rgba(245,130,32,0.15);color:#ea580c;border:1px solid rgba(245,130,32,0.3);">${this.lang === 'en' ? 'Orange Line (Not in Service)' : (this.lang === 'zh' ? '橙线 (尚未开通)' : 'สายสีส้ม (ยังไม่เปิดให้บริการ)')}</div>`
                         : '';
                     infoEl.innerHTML = `
                         <div class="sheet-badge" style="background:${color}">${esc(s.StationKey)}</div>
@@ -5779,7 +5790,7 @@ setOriginFromActionSheet() {
                 setAttr('plannerHubToggle', 'aria-expanded', String(!!this.hubOpen));
 
                 // Exits view
-                set('nearestExitTitle', T('nearestExitTitle') || (lang === 'th' ? 'ทางออกใกล้คุณที่สุด' : 'Nearest Exit to You'));
+                set('nearestExitTitle', T('nearestExitTitle') || (lang === 'zh' ? '离您最近的出入口' : (lang === 'th' ? 'ทางออกใกล้คุณที่สุด' : 'Nearest Exit to You')));
                 set('exitRelocateBtn', `${getUiIcon('compass', 14, 'currentColor')} ${T('relocate')}`);
                 set('exitCardTitle', T('exitCardTitle'));
                 set('exitCardSub', T('exitCardSub'));
@@ -5941,7 +5952,7 @@ setOriginFromActionSheet() {
                 if (topBar) {
                     topBar.classList.add('visible', 'refreshing');
                     const t = topBar.querySelector('.pull-refresh-text');
-                    if (t) t.textContent = lang === 'en' ? 'Reloading...' : 'กำลังรีโหลดหน้าเว็บ...';
+                    if (t) t.textContent = lang === 'en' ? 'Reloading...' : (lang === 'zh' ? '正在刷新页面...' : 'กำลังรีโหลดหน้าเว็บ...');
                 }
                 if (navigator.vibrate) try { navigator.vibrate(25); } catch(e) {}
                 setTimeout(() => {
@@ -6022,7 +6033,7 @@ setOriginFromActionSheet() {
                             const icon = topIndicator.querySelector('.pull-refresh-icon');
                             const text = topIndicator.querySelector('.pull-refresh-text');
                             if (icon) icon.style.transform = `rotate(${pullDistance * 4}deg)`;
-                            if (text) text.textContent = pullDistance >= 45 ? (lang === 'en' ? 'Release to reload...' : 'ปล่อยเพื่อรีโหลดหน้าเว็บ...') : (lang === 'en' ? 'Pull down to reload' : 'เลื่อนลงเพื่อรีโหลด');
+                            if (text) text.textContent = pullDistance >= 45 ? (lang === 'en' ? 'Release to reload...' : (lang === 'zh' ? '释放以刷新页面...' : 'ปล่อยเพื่อรีโหลดหน้าเว็บ...')) : (lang === 'en' ? 'Pull down to reload' : (lang === 'zh' ? '下拉刷新' : 'เลื่อนลงเพื่อรีโหลด'));
                         }
                     }
                 }, { passive: true });
@@ -6041,7 +6052,7 @@ setOriginFromActionSheet() {
                         if (topIndicator) {
                             topIndicator.classList.add('refreshing');
                             const text = topIndicator.querySelector('.pull-refresh-text');
-                            if (text) text.textContent = lang === 'en' ? 'Reloading...' : 'กำลังรีโหลดหน้าเว็บ...';
+                            if (text) text.textContent = lang === 'en' ? 'Reloading...' : (lang === 'zh' ? '正在刷新页面...' : 'กำลังรีโหลดหน้าเว็บ...');
                         }
                         this.triggerReload();
                     } else {
@@ -6118,7 +6129,8 @@ setOriginFromActionSheet() {
                         color: pinkColor,
                         isBranch: true,
                         labelTh: 'สายแยกเมืองทอง',
-                        labelEn: 'Muang Thong Branch'
+                        labelEn: 'Muang Thong Branch',
+                        labelZh: '通城支线'
                     });
                 }
                 if (!this.connections['MT01']) this.connections['MT01'] = [];
@@ -6129,7 +6141,8 @@ setOriginFromActionSheet() {
                         color: pinkColor,
                         isBranch: true,
                         labelTh: 'สายหลัก (PK10)',
-                        labelEn: 'Main Line (PK10)'
+                        labelEn: 'Main Line (PK10)',
+                        labelZh: '主线 (PK10)'
                     });
                 }
                 if (!this.connections['MT02']) this.connections['MT02'] = [];
@@ -6140,7 +6153,8 @@ setOriginFromActionSheet() {
                         color: pinkColor,
                         isBranch: true,
                         labelTh: 'สายหลัก (PK10)',
-                        labelEn: 'Main Line (PK10)'
+                        labelEn: 'Main Line (PK10)',
+                        labelZh: '主线 (PK10)'
                     });
                 }
             },
@@ -6357,7 +6371,7 @@ setOriginFromActionSheet() {
                         <div class="j-head">
                             <span class="lbl">${T(which === 'from' ? 'jFrom' : 'jTo')}</span>
                             ${st ? `
-                                <span class="j-clear-btn" onclick="event.stopPropagation();App.clearJourneyStation('${which}')" title="${lang === 'th' ? 'ล้างการเลือก' : 'Clear'}" aria-label="Clear">✕</span>
+                                <span class="j-clear-btn" onclick="event.stopPropagation();App.clearJourneyStation('${which}')" title="${lang === 'zh' ? '清除选择' : (lang === 'th' ? 'ล้างการเลือก' : 'Clear')}" aria-label="Clear">✕</span>
                             ` : ''}
                         </div>
                         <div class="val ${st ? '' : 'ph'}">
@@ -6446,7 +6460,7 @@ setOriginFromActionSheet() {
                 const j = this.journey;
                 const curKey = j.picking === 'from' ? j.from : j.to;
                 const curSt = curKey ? this.findStation(curKey) : null;
-                const whichLabel = j.picking === 'from' ? (lang === 'th' ? 'สถานีต้นทาง' : 'origin') : (lang === 'th' ? 'สถานีปลายทาง' : 'destination');
+                const whichLabel = j.picking === 'from' ? (lang === 'zh' ? '起点站' : (lang === 'th' ? 'สถานีต้นทาง' : 'origin')) : (lang === 'zh' ? '终点站' : (lang === 'th' ? 'สถานีปลายทาง' : 'destination'));
                 el.innerHTML = `
                     <div class="picker-bg" onclick="App.closePicker()"></div>
                     <div class="picker">
@@ -7017,7 +7031,7 @@ setOriginFromActionSheet() {
                         }
                         return `${T('mrtOutOfService')}`;
                     }
-                    return lang === 'en' ? 'Loading live trains...' : 'กำลังโหลดเวลาเดินรถสด...';
+                    return lang === 'en' ? 'Loading live trains...' : (lang === 'zh' ? '正在加载实时列车…' : 'กำลังโหลดเวลาเดินรถสด...');
                 }
                 const plats = visiblePlatformsForStation(station, arr.platforms);
                 const lines = plats.map(p => {
@@ -7038,13 +7052,13 @@ setOriginFromActionSheet() {
                             timeStr = T('arrived');
                         } else if (eta) {
                             const m = Math.round(eta.base - (Date.now() - eta.at) / 60000);
-                            timeStr = m <= 0 ? T('arrived') : `${m} ${lang === 'en' ? 'min' : 'นาที'}`;
+                            timeStr = m <= 0 ? T('arrived') : `${m} ${lang === 'en' ? 'min' : (lang === 'zh' ? '分钟' : 'นาที')}`;
                         }
                     } else if (isTerminating) {
                         timeStr = lang === 'en' ? 'No boarding train' : (lang === 'zh' ? '非载客列车' : 'ขบวนไม่รับผู้โดยสาร');
                     }
-                    const prefix = isOutOfService ? '' : (lang === 'en' ? 'To ' : 'ไป');
-                    return `${lang === 'en' ? 'Platform' : 'ชานชาลา'} ${p.platform}: ${prefix}${dest} ${timeStr ? `(${timeStr})` : ''}`.trim();
+                    const prefix = isOutOfService ? '' : (lang === 'en' ? 'To ' : (lang === 'zh' ? '开往 ' : 'ไป'));
+                    return `${lang === 'en' ? 'Platform' : (lang === 'zh' ? '站台' : 'ชานชาลา')} ${p.platform}: ${prefix}${dest} ${timeStr ? `(${timeStr})` : ''}`.trim();
                 });
                 return lines.join(' | ');
             },
@@ -7100,8 +7114,14 @@ setOriginFromActionSheet() {
                     if (Notification.permission === 'granted') {
                         const notifTitle = lang === 'en'
                             ? `Nearest Station: ${s.StationKey} ${stName(s)} (${distText})`
-                            : `สถานีใกล้คุณ: ${s.StationKey} ${stName(s)} (${distText})`;
-                        const notifBody = platSummary || (lang === 'en' ? `${distText} away · Tap to view timetable & platforms` : `ห่าง ${distText} · แตะเพื่อดูเวลาขบวนรถและชานชาลา`);
+                            : (lang === 'zh'
+                                ? `离您最近的车站: ${s.StationKey} ${stName(s)} (${distText})`
+                                : `สถานีใกล้คุณ: ${s.StationKey} ${stName(s)} (${distText})`);
+                        const notifBody = platSummary || (lang === 'en'
+                            ? `${distText} away · Tap to view timetable & platforms`
+                            : (lang === 'zh'
+                                ? `距您 ${distText} · 点击查看时刻表与站台`
+                                : `ห่าง ${distText} · แตะเพื่อดูเวลาขบวนรถและชานชาลา`));
                         try {
                             new Notification(notifTitle, {
                                 body: notifBody,
@@ -7120,8 +7140,14 @@ setOriginFromActionSheet() {
                     try {
                         const notifTitle = lang === 'en'
                             ? `Nearest Station: ${s.StationKey} ${stName(s)} (${distText})`
-                            : `สถานีใกล้คุณ: ${s.StationKey} ${stName(s)} (${distText})`;
-                        const androidBody = platSummary || (lang === 'en' ? `${distText} away · View timetable & platforms` : `ห่าง ${distText} · ดูเวลาเดินรถและชานชาลา`);
+                            : (lang === 'zh'
+                                ? `离您最近的车站: ${s.StationKey} ${stName(s)} (${distText})`
+                                : `สถานีใกล้คุณ: ${s.StationKey} ${stName(s)} (${distText})`);
+                        const androidBody = platSummary || (lang === 'en'
+                            ? `${distText} away · View timetable & platforms`
+                            : (lang === 'zh'
+                                ? `距您 ${distText} · 查看时刻表与站台`
+                                : `ห่าง ${distText} · ดูเวลาเดินรถและชานชาลา`));
                         window.AndroidBridge.showNotification(
                             notifTitle,
                             androidBody,
@@ -7147,7 +7173,7 @@ setOriginFromActionSheet() {
 
                 if (routeTrigger) routeTrigger.setAttribute('aria-expanded', 'false');
                 if (routePanel) routePanel.hidden = true;
-                if (routeTitle) routeTitle.textContent = lang === 'en' ? 'Train positions' : 'ตำแหน่งขบวนรถ';
+                if (routeTitle) routeTitle.textContent = lang === 'en' ? 'Train positions' : (lang === 'zh' ? '列车实时位置' : 'ตำแหน่งขบวนรถ');
 
                 const color = station.StationLineColor || '#7AB420';
                 const isBright = color === '#FFD100' || color === '#F5C242';
@@ -7229,7 +7255,7 @@ setOriginFromActionSheet() {
                 if (distEl) {
                     distEl.innerHTML = km != null
                         ? (isAtStation ? `${getUiIcon('pin', 13, '#10b981')} ${T('atStation')}` : fmtDist(km))
-                        : (lang === 'en' ? 'Near you' : 'ใกล้คุณ');
+                        : (lang === 'en' ? 'Near you' : (lang === 'zh' ? '附近' : 'ใกล้คุณ'));
                 }
                 if (distLbl) {
                     distLbl.textContent = isAtStation ? T('currentLocation') : T('fromYou');
@@ -7401,7 +7427,7 @@ setOriginFromActionSheet() {
                             p.train_list = [];
                             p.isDropOffOnly = false;
                             p.isOutOfService = true;
-                            p.DestinationStation = (typeof lang !== 'undefined' && lang === 'en') ? 'Out of Service' : 'ไม่ให้บริการ';
+                            p.DestinationStation = (typeof lang !== 'undefined' && lang === 'en') ? 'Out of Service' : ((typeof lang !== 'undefined' && lang === 'zh') ? '暂不营运' : 'ไม่ให้บริการ');
                             p.DestinationStation_key = 'YL23';
                         }
                     }
@@ -8572,7 +8598,7 @@ setOriginFromActionSheet() {
                 const isTerm1 = (key === 'YL23');
                 const offset1 = idx * travelPerStation;
                 const dest1 = isTerm1
-                    ? ((typeof lang !== 'undefined' && lang === 'en') ? 'Out of Service' : 'ไม่ให้บริการ')
+                    ? ((typeof lang !== 'undefined' && lang === 'en') ? 'Out of Service' : ((typeof lang !== 'undefined' && lang === 'zh') ? '暂不营运' : 'ไม่ให้บริการ'))
                     : getDestPair('YL23', 'สำโรง', 'Samrong');
                 platforms.push({
                     platform: 1,
@@ -8676,12 +8702,12 @@ setOriginFromActionSheet() {
                             <td>
                                 <div class="freq-time-cell">
                                     <span class="freq-time-range">${esc(r.timeStr)}</span>
-                                    ${r.isCurrent ? `<span class="freq-live-now-tag"><span class="freq-pulse-dot"></span> ${lang === 'en' ? 'NOW' : 'ขณะนี้'}</span>` : ''}
+                                    ${r.isCurrent ? `<span class="freq-live-now-tag"><span class="freq-pulse-dot"></span> ${lang === 'en' ? 'NOW' : (lang === 'zh' ? '当前' : 'ขณะนี้')}</span>` : ''}
                                 </div>
                             </td>
                             <td>
                                 <div class="freq-single-pill">
-                                    <span class="freq-prefix">${lang === 'en' ? 'Every ~' : 'ทุก ~'}</span>
+                                    <span class="freq-prefix">${lang === 'en' ? 'Every ~' : (lang === 'zh' ? '每 ~' : 'ทุก ~')}</span>
                                     <b>${esc(String(lbl).replace(/^~/, ''))}</b>
                                     <span class="freq-unit">${T('minUnit').trim()}</span>
                                 </div>
@@ -8696,7 +8722,9 @@ setOriginFromActionSheet() {
             if (table.isBlueOuter) {
                 const segName = lang === 'en'
                     ? (key.startsWith('BL3') || key === 'BL38' ? 'Phetkasem 48–Lak Song' : 'Tha Phra–Bang Pho')
-                    : (key.startsWith('BL3') || key === 'BL38' ? 'เพชรเกษม 48–หลักสอง' : 'ท่าพระ–บางโพ');
+                    : (lang === 'zh'
+                        ? (key.startsWith('BL3') || key === 'BL38' ? '碧甲盛48–拉颂' : '塔帕–邦坡')
+                        : (key.startsWith('BL3') || key === 'BL38' ? 'เพชรเกษม 48–หลักสอง' : 'ท่าพระ–บางโพ'));
                 segNote = `<div class="mrt-freq-note">${T('mrtSegmentNote').replace('{seg}', segName)}</div>`;
             }
 
@@ -8746,13 +8774,13 @@ setOriginFromActionSheet() {
                             <div class="freq-dual-box">
                                 <div class="freq-dual-pill">
                                     <span class="freq-dual-tag core" style="background:rgba(122,180,32,0.18);color:#5c8e14;">
-                                        ${lang === 'en' ? 'Core (Mo Chit–Samrong)' : 'สายหลัก (หมอชิต–สำโรง)'}
+                                        ${lang === 'en' ? 'Core (Mo Chit–Samrong)' : (lang === 'zh' ? '主线 (莫奇–三隆)' : 'สายหลัก (หมอชิต–สำโรง)')}
                                     </span>
                                     <span class="freq-dual-val">~${esc(p1)} <span class="freq-unit">${T('minUnit').trim()}</span></span>
                                 </div>
                                 <div class="freq-dual-pill">
                                     <span class="freq-dual-tag ext">
-                                        ${lang === 'en' ? 'Ext. (Khu Khot / Kheha)' : 'ส่วนต่อขยาย (คูคต/เคหะฯ)'}
+                                        ${lang === 'en' ? 'Ext. (Khu Khot / Kheha)' : (lang === 'zh' ? '延伸线 (库括 / 凯哈)' : 'ส่วนต่อขยาย (คูคต/เคหะฯ)')}
                                     </span>
                                     <span class="freq-dual-val">~${esc(p2)} <span class="freq-unit">${T('minUnit').trim()}</span></span>
                                 </div>
@@ -8762,7 +8790,7 @@ setOriginFromActionSheet() {
                         const lbl = raw.startsWith('~') ? raw : `~${raw}`;
                         freqCellHtml = `
                             <div class="freq-single-pill">
-                                <span class="freq-prefix">${lang === 'en' ? 'Every ~' : 'ทุก ~'}</span>
+                                <span class="freq-prefix">${lang === 'en' ? 'Every ~' : (lang === 'zh' ? '每 ~' : 'ทุก ~')}</span>
                                 <b>${esc(String(lbl).replace(/^~/, ''))}</b>
                                 <span class="freq-unit">${T('minUnit').trim()}</span>
                             </div>
@@ -8772,7 +8800,7 @@ setOriginFromActionSheet() {
                         <td>
                             <div class="freq-time-cell">
                                 <span class="freq-time-range">${esc(r.timeStr)}</span>
-                                <span class="freq-live-now-tag">${lang === 'en' ? 'NOW' : 'ขณะนี้'}</span>
+                                <span class="freq-live-now-tag">${lang === 'en' ? 'NOW' : (lang === 'zh' ? '当前' : 'ขณะนี้')}</span>
                             </div>
                         </td>
                         <td>
@@ -8985,7 +9013,7 @@ setOriginFromActionSheet() {
         function shortLineName(l) {
             const map = T('lines');
             return map[l.LineId]
-                || (lang === 'en' ? (l.LineName_EN || l.LineName_TH) : (l.LineName_TH || l.LineName_EN));
+                || (lang === 'en' ? (l.LineName_EN || l.LineName_TH) : (lang === 'zh' ? (LINE_NAMES_ZH[l.LineId] || l.LineName_EN || l.LineName_TH) : (l.LineName_TH || l.LineName_EN)));
         }
 
         function isBrightColor(col) {
@@ -9346,8 +9374,8 @@ setOriginFromActionSheet() {
                     // MT01 มี 2 ชานชาลา ได้แก่ ชานชาลา 3 (ไปทะเลสาบเมืองทองธานี) และ ชานชาลา 4 (ไปเมืองทองธานี)
                     const p3 = linePlats.find(p => String(p.platform) === '3');
                     const p4 = linePlats.find(p => String(p.platform) === '4');
-                    const dest1 = (typeof lang !== 'undefined' && lang === 'en') ? 'Lake Muang Thong Thani' : 'ทะเลสาบเมืองทองธานี';
-                    const dest2 = (typeof lang !== 'undefined' && lang === 'en') ? 'Muang Thong Thani' : 'เมืองทองธานี';
+                    const dest1 = (typeof lang !== 'undefined' && lang === 'en') ? 'Lake Muang Thong Thani' : ((typeof lang !== 'undefined' && lang === 'zh') ? '通城湖' : 'ทะเลสาบเมืองทองธานี');
+                    const dest2 = (typeof lang !== 'undefined' && lang === 'en') ? 'Muang Thong Thani' : ((typeof lang !== 'undefined' && lang === 'zh') ? '通城' : 'เมืองทองธานี');
                     if (!p3) {
                         result.push({
                             platform: 3,
@@ -9386,8 +9414,8 @@ setOriginFromActionSheet() {
                     // MT02 มี 2 ชานชาลา ได้แก่ ชานชาลา 3 (สิ้นสุดสาย ส่งผู้โดยสารเท่านั้น) และ ชานชาลา 4 (ไปเมืองทองธานี)
                     const p3 = linePlats.find(p => String(p.platform) === '3');
                     const p4 = linePlats.find(p => String(p.platform) === '4');
-                    const dest1 = (typeof lang !== 'undefined' && lang === 'en') ? 'Lake Muang Thong Thani' : 'ทะเลสาบเมืองทองธานี';
-                    const dest2 = (typeof lang !== 'undefined' && lang === 'en') ? 'Muang Thong Thani' : 'เมืองทองธานี';
+                    const dest1 = (typeof lang !== 'undefined' && lang === 'en') ? 'Lake Muang Thong Thani' : ((typeof lang !== 'undefined' && lang === 'zh') ? '通城湖' : 'ทะเลสาบเมืองทองธานี');
+                    const dest2 = (typeof lang !== 'undefined' && lang === 'en') ? 'Muang Thong Thani' : ((typeof lang !== 'undefined' && lang === 'zh') ? '通城' : 'เมืองทองธานี');
                     if (!p3) {
                         result.push({
                             platform: 3,
@@ -9491,13 +9519,13 @@ setOriginFromActionSheet() {
                 if (p1) {
                     p1.isDropOffOnly = false;
                     p1.isOutOfService = true;
-                    p1.DestinationStation = (typeof lang !== 'undefined' && lang === 'en') ? 'Out of Service' : 'ไม่ให้บริการ';
+                    p1.DestinationStation = (typeof lang !== 'undefined' && lang === 'en') ? 'Out of Service' : ((typeof lang !== 'undefined' && lang === 'zh') ? '暂不营运' : 'ไม่ให้บริการ');
                     p1.DestinationStation_key = 'YL23';
                     p1.train_list = []; // ไม่เข้า P1 เด็ดขาด
                 }
                 if (p2) {
                     p2.isDropOffOnly = false;
-                    p2.DestinationStation = (typeof lang !== 'undefined' && lang === 'en') ? 'Lat Phrao' : 'ลาดพร้าว';
+                    p2.DestinationStation = (typeof lang !== 'undefined' && lang === 'en') ? 'Lat Phrao' : ((typeof lang !== 'undefined' && lang === 'zh') ? '拉抛' : 'ลาดพร้าว');
                     p2.DestinationStation_key = 'YL01';
                 }
             }
@@ -9543,11 +9571,16 @@ setOriginFromActionSheet() {
         // แสดงชานชาลาทั้งหมดของสถานี — จัดกลุ่มตามสาย (สยามมี 2 สาย × 2 ชานชาลา = 4)
         function renderPlatformSection(station, arr) {
             if (station && (station.StationLineId === 106 || station.StationKey?.startsWith('OR'))) {
-                const isEn = (typeof lang !== 'undefined' && lang === 'en') || (App && App.lang === 'en');
+                const orangeTitle = lang === 'en' ? 'Orange Line (Not in Service)' : (lang === 'zh' ? '橙线 (尚未开通)' : 'สายสีส้ม (ยังไม่เปิดให้บริการ)');
+                const orangeDesc = lang === 'en'
+                    ? 'This line is currently under construction and testing. Commercial passenger service has not yet commenced.'
+                    : (lang === 'zh'
+                        ? '捷运橙线目前正在进行系统测试及施工中，尚未向公众开放商业营运。'
+                        : 'โครงการรถไฟฟ้าสายสีส้มอยู่ระหว่างการทดสอบระบบและดำเนินงานก่อสร้าง ยังไม่เปิดให้บริการเดินรถแก่ประชาชน');
                 return `<div class="empty-note" style="padding:24px 16px;text-align:center;">
                     <div style="display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:50%;background:rgba(245,130,32,0.12);color:#f58220;margin-bottom:12px;font-size:24px;">🚧</div>
-                    <div style="font-size:16px;font-weight:800;color:var(--ink);margin-bottom:6px;">${isEn ? 'Orange Line (Not in Service)' : 'สายสีส้ม (ยังไม่เปิดให้บริการ)'}</div>
-                    <div style="font-size:13px;color:var(--muted);max-width:320px;margin:0 auto;line-height:1.5;">${isEn ? 'This line is currently under construction and testing. Commercial passenger service has not yet commenced.' : 'โครงการรถไฟฟ้าสายสีส้มอยู่ระหว่างการทดสอบระบบและดำเนินงานก่อสร้าง ยังไม่เปิดให้บริการเดินรถแก่ประชาชน'}</div>
+                    <div style="font-size:16px;font-weight:800;color:var(--ink);margin-bottom:6px;">${orangeTitle}</div>
+                    <div style="font-size:13px;color:var(--muted);max-width:320px;margin:0 auto;line-height:1.5;">${orangeDesc}</div>
                 </div>`;
             }
             if (!arr || (arr.loading && !arr.platforms))
@@ -9593,33 +9626,38 @@ setOriginFromActionSheet() {
             }).join('');
 
             let branchCard = '';
-            const isEn = (typeof lang !== 'undefined' && lang === 'en') || (App && App.lang === 'en');
             if (station && station.StationKey === 'PK10') {
+                const bTitle = lang === 'en' ? 'Muang Thong Thani Branch Interchange' : (lang === 'zh' ? '通城支线换乘站' : 'จุดเชื่อมต่อ · สายแยกเมืองทองธานี');
+                const bDesc = lang === 'en' ? 'Transfer to MT01 (IMPACT) & MT02 (Lake)' : (lang === 'zh' ? '换乘至 MT01 挑战者展馆 与 MT02 通城湖' : 'เปลี่ยนขบวนไป MT01 อิมแพ็ค และ MT02 ทะเลสาบเมืองทองธานี');
+                const bBtn = lang === 'en' ? 'View MT01 ➔' : (lang === 'zh' ? '查看 MT01 ➔' : 'ดูสถานี MT01 ➔');
                 branchCard = `
                 <div class="branch-transfer-box" style="margin:4px 0 12px 0;padding:10px 14px;background:var(--bg-subtle);border:1px solid var(--line);border-left:3px solid #D76886;border-radius:10px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-sizing:border-box;">
                     <div style="display:flex;align-items:center;gap:10px;min-width:0;">
                         <div style="flex-shrink:0;display:flex;align-items:center;justify-content:center;">${getLineIconSvg(5, false, 20)}</div>
                         <div style="min-width:0;">
-                            <div style="font-size:12.5px;font-weight:700;color:var(--ink);line-height:1.3;">${isEn ? 'Muang Thong Thani Branch Interchange' : 'จุดเชื่อมต่อ · สายแยกเมืองทองธานี'}</div>
-                            <div style="font-size:11.5px;color:var(--muted);line-height:1.35;margin-top:2px;white-space:normal;">${isEn ? 'Transfer to MT01 (IMPACT) & MT02 (Lake)' : 'เปลี่ยนขบวนไป MT01 อิมแพ็ค และ MT02 ทะเลสาบเมืองทองธานี'}</div>
+                            <div style="font-size:12.5px;font-weight:700;color:var(--ink);line-height:1.3;">${bTitle}</div>
+                            <div style="font-size:11.5px;color:var(--muted);line-height:1.35;margin-top:2px;white-space:normal;">${bDesc}</div>
                         </div>
                     </div>
                     <button type="button" class="btn btn-sm" style="flex-shrink:0;background:rgba(215,104,134,0.1);color:#D76886;border:1px solid rgba(215,104,134,0.25);border-radius:20px;padding:6px 12px;font-size:11.5px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;line-height:1;letter-spacing:0;box-sizing:border-box;transition:all 0.2s;" onclick="event.stopPropagation();App.jumpTo('MT01', 5);">
-                        ${isEn ? 'View MT01 ➔' : 'ดูสถานี MT01 ➔'}
+                        ${bBtn}
                     </button>
                 </div>`;
             } else if (station && (station.StationKey === 'MT01' || station.StationKey === 'MT02')) {
+                const bTitle = lang === 'en' ? 'Pink Line Main Interchange' : (lang === 'zh' ? '粉红线主线换乘站' : 'จุดเชื่อมต่อ · สายสีชมพูสายหลัก');
+                const bDesc = lang === 'en' ? 'Transfer at PK10 to Min Buri or Nonthaburi Civic Center' : (lang === 'zh' ? '在 PK10 换乘前往民武里或暖武里政务中心' : 'เปลี่ยนขบวนไปสถานีเมืองทองธานี (PK10) เพื่อไปมีนบุรีหรือศูนย์ราชการนนทบุรี');
+                const bBtn = lang === 'en' ? 'View PK10 ➔' : (lang === 'zh' ? '查看 PK10 ➔' : 'ดูสถานี PK10 ➔');
                 branchCard = `
                 <div class="branch-transfer-box" style="margin:4px 0 12px 0;padding:10px 14px;background:var(--bg-subtle);border:1px solid var(--line);border-left:3px solid #D76886;border-radius:10px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-sizing:border-box;">
                     <div style="display:flex;align-items:center;gap:10px;min-width:0;">
                         <div style="flex-shrink:0;display:flex;align-items:center;justify-content:center;">${getLineIconSvg(5, false, 20)}</div>
                         <div style="min-width:0;">
-                            <div style="font-size:12.5px;font-weight:700;color:var(--ink);line-height:1.3;">${isEn ? 'Pink Line Main Interchange' : 'จุดเชื่อมต่อ · สายสีชมพูสายหลัก'}</div>
-                            <div style="font-size:11.5px;color:var(--muted);line-height:1.35;margin-top:2px;white-space:normal;">${isEn ? 'Transfer at PK10 to Min Buri or Nonthaburi Civic Center' : 'เปลี่ยนขบวนไปสถานีเมืองทองธานี (PK10) เพื่อไปมีนบุรีหรือศูนย์ราชการนนทบุรี'}</div>
+                            <div style="font-size:12.5px;font-weight:700;color:var(--ink);line-height:1.3;">${bTitle}</div>
+                            <div style="font-size:11.5px;color:var(--muted);line-height:1.35;margin-top:2px;white-space:normal;">${bDesc}</div>
                         </div>
                     </div>
                     <button type="button" class="btn btn-sm" style="flex-shrink:0;background:rgba(215,104,134,0.1);color:#D76886;border:1px solid rgba(215,104,134,0.25);border-radius:20px;padding:6px 12px;font-size:11.5px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;line-height:1;letter-spacing:0;box-sizing:border-box;transition:all 0.2s;" onclick="event.stopPropagation();App.jumpTo('PK10', 5);">
-                        ${isEn ? 'View PK10 ➔' : 'ดูสถานี PK10 ➔'}
+                        ${bBtn}
                     </button>
                 </div>`;
             }
@@ -9717,16 +9755,15 @@ setOriginFromActionSheet() {
         // ป้าย "เชื่อมต่อสาย X" สำหรับสถานีเปลี่ยนสาย หรือสายแยก — กดเพื่อกระโดดไปสายนั้น
         // ctxLineId = สายที่กำลังแสดงอยู่ จะไม่โชว์ป้ายของสายตัวเอง (สยามดูจากสุขุมวิท → เห็น ⇄ สายสีลม) เว้นแต่เป็นสายแยก (isBranch)
         function connBadges(stationKey, ctxLineId) {
-            const isEn = (typeof lang !== 'undefined' && lang === 'en') || (App && App.lang === 'en');
             return (App.connections[stationKey] || [])
                 .filter(c => c.isBranch || c.lineId !== ctxLineId)
                 .map(c => {
                     const line = App.lineById[c.lineId] || MRT_LINE_BY_ID[c.lineId];
                     const label = c.isBranch
-                        ? (isEn ? (c.labelEn || 'Branch') : (c.labelTh || 'สายแยก'))
+                        ? (lang === 'en' ? (c.labelEn || 'Branch') : (lang === 'zh' ? (c.labelZh || '支线') : (c.labelTh || 'สายแยก')))
                         : T('connLine', esc(line ? shortLineName(line) : ''));
                     const titleText = c.isBranch
-                        ? (isEn ? `Connect to ${c.labelEn || c.key}` : `เชื่อมต่อ ${c.labelTh || c.key}`)
+                        ? (lang === 'en' ? `Connect to ${c.labelEn || c.key}` : (lang === 'zh' ? `换乘至 ${c.labelZh || c.key}` : `เชื่อมต่อ ${c.labelTh || c.key}`))
                         : T('connTitle', esc(c.key));
                     return ` <span class="badge conn-b" style="color:${c.color};background:${c.color}14;border:1px solid ${c.color}32;border-radius:var(--radius-full);font-size:10px;font-weight:600;padding:2px 7px;display:inline-flex;align-items:center;justify-content:center;line-height:1;box-sizing:border-box;letter-spacing:0;gap:4px;vertical-align:middle;"
                     onclick="event.stopPropagation();App.jumpTo('${esc(c.key)}',${c.lineId})"
@@ -9792,9 +9829,23 @@ setOriginFromActionSheet() {
 
             // FareRateInfo เป็น array ที่มีสมาชิกเดียว
             const fi = Array.isArray(rm.FareRateInfo) ? rm.FareRateInfo[0] : rm.FareRateInfo;
-            const fares = (fi?.FareRate_List || []).map(f =>
-                `<div class="j-fare-row"><span>${esc(lang === 'en' ? (f.FareDetail_ENG || f.FareDetail) : f.FareDetail)}</span>
-                 <b>฿${esc(f.FarePrice)}</b></div>`).join('');
+            const FARE_DETAIL_ZH = {
+                'บุคคลทั่วไป': '普通成人单程票',
+                'นักเรียน นักศึกษา': '学生优惠卡',
+                'นักเรียน/นักศึกษา': '学生优惠卡',
+                'ผู้สูงอายุ': '长者优待卡',
+                'Single Journey Card': '单程票',
+                'Rabbit Card': '兔子卡 (成人)',
+                'Student Card': '学生卡',
+                'Senior Card': '长者卡'
+            };
+            const fares = (fi?.FareRate_List || []).map(f => {
+                const fName = lang === 'zh'
+                    ? (FARE_DETAIL_ZH[f.FareDetail] || FARE_DETAIL_ZH[f.FareDetail_ENG] || f.FareDetail_ENG || f.FareDetail)
+                    : (lang === 'en' ? (f.FareDetail_ENG || f.FareDetail) : f.FareDetail);
+                return `<div class="j-fare-row"><span>${esc(fName)}</span>
+                 <b>฿${esc(f.FarePrice)}</b></div>`;
+            }).join('');
 
             const isSameStation = steps.length === 1 || (rm.TotalTime === 0 && (rm.Count_Station ?? steps.length) <= 1);
             const badgeLabel = rm.LabelTag || (isSameStation ? T('jSameStation') : (i === 0 ? T('jRecommended') : ''));
@@ -9817,7 +9868,9 @@ setOriginFromActionSheet() {
                         <div style="color:var(--muted);font-size:11.5px;">
                             ${esc(lang === 'en'
                                 ? `Origin and destination are the same station. Fare is charged at the 1-station rate (฿${fareDisplay}) for this line.`
-                                : `สถานีต้นทางและปลายทางเป็นสถานีเดียวกัน คิดค่าโดยสารเท่ากับ 1 สถานีตามอัตราของสายนี้ (฿${fareDisplay})`)}
+                                : (lang === 'zh'
+                                    ? `起点站与终点站为同一车站。本线路按 1 站票价 (฿${fareDisplay}) 计费。`
+                                    : `สถานีต้นทางและปลายทางเป็นสถานีเดียวกัน คิดค่าโดยสารเท่ากับ 1 สถานีตามอัตราของสายนี้ (฿${fareDisplay})`))}
                         </div>
                     </div>` : ''}
                     ${rows.join('')}
@@ -9865,19 +9918,19 @@ setOriginFromActionSheet() {
             const formatPlatLabel = (p, dirStation) => {
                 if (!p) {
                     const fallbackName = dirStation ? stName(dirStation) : '';
-                    return fallbackName ? (lang === 'en' ? `Towards ${fallbackName}` : `ไปทาง ${fallbackName}`) : '';
+                    return fallbackName ? (lang === 'en' ? `Towards ${fallbackName}` : (lang === 'zh' ? `开往 ${fallbackName}` : `ไปทาง ${fallbackName}`)) : '';
                 }
                 const pNum = p.platform != null ? p.platform : '';
-                const pText = pNum ? (lang === 'en' ? `Platform ${pNum}` : `ชานชาลา ${pNum}`) : '';
+                const pText = pNum ? (lang === 'en' ? `Platform ${pNum}` : (lang === 'zh' ? `${pNum} 号站台` : `ชานชาลา ${pNum}`)) : '';
                 const isOutOfService = !!p.isOutOfService || (station.StationKey === 'YL23' && String(p.platform) === '1');
                 const isTerminating = !isOutOfService && (p.isDropOffOnly || (p.DestinationStation_key && p.DestinationStation_key === station.StationKey));
                 let dest = isOutOfService
                     ? (lang === 'en' ? 'Out of Service' : (lang === 'zh' ? '暂不营运' : 'ไม่ให้บริการ'))
                     : isTerminating
-                        ? (lang === 'en' ? 'Terminus · Drop-off only' : 'สิ้นสุดสาย ส่งผู้โดยสารเท่านั้น')
+                        ? (lang === 'en' ? 'Terminus · Drop-off only' : (lang === 'zh' ? '终点站 · 仅供下车' : 'สิ้นสุดสาย ส่งผู้โดยสารเท่านั้น'))
                         : (destName(p.DestinationStation) || (dirStation ? stName(dirStation) : ''));
                 if (dest) {
-                    const toPrefix = (isTerminating || isOutOfService) ? '' : (lang === 'en' ? 'To ' : 'ไปทาง ');
+                    const toPrefix = (isTerminating || isOutOfService) ? '' : (lang === 'en' ? 'To ' : (lang === 'zh' ? '开往 ' : 'ไปทาง '));
                     return pText ? `${pText} · ${toPrefix}${dest}` : `${toPrefix}${dest}`;
                 }
                 return pText;

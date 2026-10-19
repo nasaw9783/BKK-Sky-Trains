@@ -53,12 +53,6 @@
 14. <img src="icons/legend/branch.svg" width="110" height="18" alt="Branch" style="vertical-align:middle;"> **รองรับสายแยกเมืองทองธานี (Muang Thong Branch PK10 ⇄ MT01, MT02)**
     - กำหนดสถานีเมืองทองธานี (`PK10`) เป็นจุดเชื่อมต่อข้ามสายสำหรับสายแยก
     - การ์ดแนะนำการเปลี่ยนขบวน (Transfer Card) ที่แสดงไอคอนโมโนเรลสายสีชมพู พร้อมชานชาลาเฉพาะ (MT01 ชานชาลา 3 & 4, MT02 ชานชาลา 4)
-15. <img src="icons/ui/compass.svg" width="18" height="18" alt="Responsive" style="vertical-align:middle;"> **ระบบ Auto Detect และรองรับทุกขนาดหน้าจอ (Multi-Device Responsive System)**
-    - ระบบตรวจจับสภาพแวดล้อมอุปกรณ์อัตโนมัติ (Auto Detection Engine) แบบ Real-time ครอบคลุม: คอมพิวเตอร์ (Computer / Desktop), มือถือ (Mobile), แท็บเล็ต (Tablet), iOS (iPhone) และ iPad (iPadOS / Safari)
-    - ปรับผังการแสดงผล (Responsive Layout) แบบไดนามิกตามขนาดหน้าจอ:
-      - **คอมพิวเตอร์ / Desktop (>= 1024px):** ขยายความกว้างคอนเทนเนอร์ 1160px–1280px, ผังชานชาลาและข้อมูลทางออกสถานีแบบหลายคอลัมน์ (Multi-column Cards Grid), ผังโครงข่ายรถไฟฟ้าพาโนรามาพร้อมระบบซูมด้วยล้อเลื่อนเมาส์ (Mouse Wheel Zoom), ปุ่มลัดคีย์บอร์ด (1–5 สลับแท็บ, `/` ค้นหาสถานี, `Esc` ปิดหน้าต่าง) และ Dock นำทางลอยตัว
-      - **แท็บเล็ต / iPad (768px – 1023px):** ขยายพื้นที่เป็น 860px–1080px รองรับทั้งแนวตั้งและแนวนอน, ปรับปรุงการสัมผัสและการจัดเรียงการ์ดทางออกและสถานียอดนิยม, ตรวจจับ iPadOS 13+ แม่นยำ
-      - **มือถือ / iOS (< 768px):** ประสบการณ์มือถือที่ลื่นไหล รองรับ `100dvh` ป้องกันแถบ Safari บังหน้าจอ และรองรับ Safe-area Insets ครบถ้วน
 
 ---
 

@@ -4461,30 +4461,6 @@ gQIDAQAB
                     this.handleMapDoubleTapZoom(e.clientX, e.clientY);
                 });
 
-                // --- Desktop Mouse Wheel Zoom (ซูม ย่อ-ขยาย แผนที่ด้วยล้อเลื่อนเมาส์อย่างนุ่มนวล) ---
-                vp.addEventListener('wheel', (e) => {
-                    e.preventDefault();
-                    const curZoom = this.mapZoom || 1.0;
-                    const factor = e.deltaY < 0 ? 1.15 : 0.87;
-                    const nextZoom = Math.min(2.5, Math.max(0.6, curZoom * factor));
-                    if (Math.abs(nextZoom - curZoom) < 0.005) return;
-
-                    const vpRect = vp.getBoundingClientRect();
-                    const mouseX = e.clientX - vpRect.left;
-                    const mouseY = e.clientY - vpRect.top;
-
-                    const contentX = (vp.scrollLeft + mouseX) / curZoom;
-                    const contentY = (vp.scrollTop + mouseY) / curZoom;
-
-                    this.setMapZoomDirect(nextZoom);
-
-                    const targetScrollLeft = (contentX * nextZoom) - mouseX;
-                    const targetScrollTop = (contentY * nextZoom) - mouseY;
-
-                    vp.scrollLeft = Math.max(0, targetScrollLeft);
-                    vp.scrollTop = Math.max(0, targetScrollTop);
-                }, { passive: false });
-
                 // --- Touch Pan (1 finger), Pinch-to-zoom (2 fingers) & Double-tap zoom (แตะสองครั้ง) ---
                 let touchStartX = 0, touchStartY = 0;
                 let touchScrollLeft = 0, touchScrollTop = 0;
@@ -5852,7 +5828,6 @@ setOriginFromActionSheet() {
             },
 
             async init() {
-                this.initResponsiveAutoDetect();
                 this.setupMobileZoomLock();
                 if (typeof window !== 'undefined' && window.isFlutterApp) {
                     try { document.documentElement.classList.add('is-flutter-app'); } catch (e) { }
@@ -5985,65 +5960,6 @@ setOriginFromActionSheet() {
                 }, 220);
             },
 
-            device: null,
-
-            initResponsiveAutoDetect() {
-                this.device = (typeof window !== 'undefined' && window.__BKK_DEVICE__) ? window.__BKK_DEVICE__ : {
-                    deviceCategory: 'mobile',
-                    platform: 'other',
-                    isDesktop: false,
-                    isTablet: false,
-                    isMobile: true,
-                    screenCategory: 'xs'
-                };
-                this.setupDesktopShortcuts();
-            },
-
-            onEnvironmentChange(newEnv) {
-                this.device = newEnv;
-            },
-
-            setupDesktopShortcuts() {
-                if (typeof window === 'undefined') return;
-                window.addEventListener('keydown', (e) => {
-                    const tag = (e.target && e.target.tagName) ? e.target.tagName.toLowerCase() : '';
-                    const isInput = tag === 'input' || tag === 'textarea' || (e.target && e.target.isContentEditable);
-
-                    if (e.key === 'Escape') {
-                        this.closeMapActionSheet();
-                        this.closeStationPicker();
-                        this.closeExitDropdown();
-                        this.closeNearestPopup();
-                        return;
-                    }
-
-                    if (isInput) return;
-
-                    if (e.key === '/' || e.key === 's' || e.key === 'S') {
-                        const searchInput = document.getElementById('searchInput');
-                        if (searchInput) {
-                            e.preventDefault();
-                            if (this.currentView !== 'home') this.switchView('home');
-                            searchInput.focus();
-                            searchInput.select();
-                        }
-                        return;
-                    }
-
-                    if (e.key === '1') {
-                        this.switchView('home');
-                    } else if (e.key === '2') {
-                        this.switchView('map');
-                    } else if (e.key === '3') {
-                        this.switchView('planner');
-                    } else if (e.key === '4') {
-                        this.switchView('fares');
-                    } else if (e.key === '5') {
-                        this.switchView('timetables');
-                    }
-                });
-            },
-
             initScrollNav() {
                 // 1. Dynamic Auto-Hide Bottom Navigation on Scroll ("เลื่อนขึ้นซ่อน เลื่อนลงแสดง")
                 let lastScrollY = window.pageYOffset || document.documentElement.scrollTop;
@@ -6051,11 +5967,6 @@ setOriginFromActionSheet() {
                 const nav = document.querySelector('.bottom-nav');
 
                 window.addEventListener('scroll', () => {
-                    // On desktop computers, maintain floating dock stability for superior desktop UX
-                    if (this.device?.isDesktop) {
-                        nav?.classList.remove('nav-hidden');
-                        return;
-                    }
                     if (!scrollTicking) {
                         window.requestAnimationFrame(() => {
                             const currentScrollY = window.pageYOffset || document.documentElement.scrollTop;

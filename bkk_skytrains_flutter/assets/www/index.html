@@ -1712,14 +1712,28 @@
         }
 
         /* ===== BRT (Line 201) เส้นราง, จุดต่อสถานี และ แบนเนอร์ รหัสสถานี ===== */
-        /* เส้นราง (Track): ตรง เรียบเนียน ไร้รอยต่อ เหมือนสายอื่นๆ (เพื่อน) */
+        /* เส้นราง (Track): ตรง เรียบเนียน ไม่เป็นเส้นปะ เหมือนสายอื่นๆ พร้อมการแบ่งแถบสีในแนวดิ่ง (เขียวคาดเหลือง) */
         .st-rail .track.track-brt,
         .st-row.brt-row .st-rail .track,
         #strip[data-active-line="201"] .st-rail .track {
+            position: absolute !important;
+            top: -1px !important;
+            bottom: -1px !important;
+            left: 50% !important;
             width: 4px !important;
-            background: #82C341 !important;
+            transform: translateX(-50%) !important;
             border-radius: 0 !important;
             box-shadow: none !important;
+            background: linear-gradient(
+                to right,
+                #82C341 0%,
+                #82C341 30%,
+                #FFD100 30%,
+                #FFD100 70%,
+                #82C341 70%,
+                #82C341 100%
+            ) !important;
+            z-index: 1;
         }
 
         /* จุดต่อสถานี (Station Node): สีเขียวคาดเหลือง (ขอบเขียว แกนกลางเหลืองสว่าง) */
@@ -1758,6 +1772,18 @@
         .j-step .nd.node-brt {
             border: 2px solid #82C341 !important;
             background: #FFD100 !important;
+        }
+
+        .j-step.step-brt .ndw::before {
+            background: linear-gradient(
+                to right,
+                #82C341 0%,
+                #82C341 30%,
+                #FFD100 30%,
+                #FFD100 70%,
+                #82C341 70%,
+                #82C341 100%
+            ) !important;
         }
 
         /* ===== Search Input ===== */

@@ -8127,7 +8127,7 @@ setOriginFromActionSheet() {
                     return `
                     <div class="st-row${crowded ? ' crowded' : ''}${isBranch ? ' branch-row' : ''}${isBrt ? ' brt-row' : ''}" id="row-${esc(s.StationKey)}-${s.StationLineId}">
                         <div class="st-rail">
-                            <div class="track" style="background:${color}${q ? '22' : ''}"></div>
+                            <div class="track${isBrt ? ' track-brt' : ''}" style="${isBrt ? '' : 'background:' + color + (q ? '22' : '')}"></div>
                             <div class="node ${isSiam ? 'inter' : ''} ${isNear ? 'near' : ''}${isBrt ? ' node-brt' : ''}" style="${isBrt ? '' : 'border-color:' + color}"></div>
                         </div>
                         <div class="st-main">
@@ -9972,16 +9972,17 @@ setOriginFromActionSheet() {
                 const isLast = k === steps.length - 1;
                 const isEnd = isFirst || isLast;
 
+                const isBrtKey = pick.lineId === 201 || (st.StationCode && String(st.StationCode).startsWith('B') && !String(st.StationCode).startsWith('BL'));
                 const stepClasses = [
                     'j-step',
                     isFirst ? 'first' : '',
                     isLast ? 'last' : '',
                     isEnd ? 'end' : '',
                     hasTransferBefore ? 'post-transfer' : '',
-                    hasTransferAfter ? 'pre-transfer' : ''
+                    hasTransferAfter ? 'pre-transfer' : '',
+                    isBrtKey ? 'step-brt' : ''
                 ].filter(Boolean).join(' ');
 
-                const isBrtKey = pick.lineId === 201 || (st.StationCode && String(st.StationCode).startsWith('B') && !String(st.StationCode).startsWith('BL'));
                 rows.push(`<div class="${stepClasses}" style="color:${pick.color}">
                     <span class="ndw"><span class="nd${isBrtKey ? ' node-brt' : ''}"></span></span>
                     <span class="nm" style="color:var(--ink)"><span class="st-key ${isBrtKey ? 'st-key-brt' : ''}" style="${isBrtKey ? '' : 'background:' + pick.color + ';'}font-size:9.5px;padding:1px 5px;min-width:28px;height:18px;margin-right:6px;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;color:#fff;line-height:1;">${esc(st.StationCode)}</span>${esc(destName(st.Title))}</span>

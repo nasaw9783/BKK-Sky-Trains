@@ -5810,6 +5810,171 @@
             transform: translateX(-50%) translateY(0);
         }
 
+        /* Quick Trip Planner Banner & Mobile Responsive Optimization */
+        .quick-planner-banner {
+            padding: 13px 16px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: linear-gradient(135deg, rgba(2, 132, 199, 0.08), rgba(16, 185, 129, 0.08));
+            border: 1px solid rgba(2, 132, 199, 0.22);
+            margin-bottom: 12px;
+            transition: border-color var(--transition-fast), background var(--transition-fast);
+        }
+
+        .quick-planner-banner:hover {
+            border-color: rgba(2, 132, 199, 0.45);
+        }
+
+        .quick-planner-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            text-align: center;
+            margin: 0 auto;
+            max-width: calc(100% - 78px);
+            min-width: 0;
+        }
+
+        .quick-planner-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .quick-planner-icon svg {
+            display: block;
+            margin: auto;
+            flex-shrink: 0;
+        }
+
+        .quick-planner-text {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            min-width: 0;
+        }
+
+        .quick-planner-title {
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--ink);
+            text-align: center;
+            line-height: 1.3;
+            white-space: nowrap;
+        }
+
+        .quick-planner-sub {
+            font-size: 11.5px;
+            color: var(--muted);
+            text-align: center;
+            line-height: 1.3;
+            white-space: nowrap;
+        }
+
+        .quick-planner-btn {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 5px 10px;
+            font-size: 12px;
+            margin: 0;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            line-height: 1;
+            box-sizing: border-box;
+            cursor: pointer;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            caret-color: transparent !important;
+        }
+
+        /* Mobile Responsive Adaptations (เฉพาะสำหรับมือถือ <= 480px) */
+        @media (max-width: 480px) {
+            .quick-planner-banner {
+                padding: 10px 10px;
+            }
+
+            .quick-planner-content {
+                gap: 8px;
+                max-width: calc(100% - 66px);
+                margin: 0 auto 0 0;
+                padding-left: 2px;
+            }
+
+            .quick-planner-icon {
+                width: 30px;
+                height: 30px;
+                border-radius: 8px;
+            }
+
+            .quick-planner-icon svg {
+                width: 17px;
+                height: 17px;
+            }
+
+            .quick-planner-text {
+                align-items: flex-start;
+                text-align: left;
+            }
+
+            .quick-planner-title {
+                font-size: 12.5px;
+                letter-spacing: -0.2px;
+                text-align: left;
+            }
+
+            .quick-planner-sub {
+                font-size: 10px;
+                letter-spacing: -0.15px;
+                text-align: left;
+            }
+
+            .quick-planner-btn {
+                right: 8px;
+                padding: 4px 7px;
+                font-size: 11px;
+                letter-spacing: -0.2px;
+            }
+        }
+
+        /* Ultra Compact Mobile Screens (<= 375px) */
+        @media (max-width: 375px) {
+            .quick-planner-content {
+                gap: 6px;
+                max-width: calc(100% - 60px);
+            }
+
+            .quick-planner-title {
+                font-size: 11.5px;
+                letter-spacing: -0.3px;
+            }
+
+            .quick-planner-sub {
+                font-size: 9.5px;
+                letter-spacing: -0.2px;
+            }
+
+            .quick-planner-btn {
+                right: 6px;
+                padding: 3px 6px;
+                font-size: 10.5px;
+            }
+        }
+
         /* Desktop Auto-Detect Enhancements (Preserving original 560px mobile design) */
         html.device-desktop .bottom-nav .nav-tab:hover {
             background: var(--bg-subtle);
@@ -5946,15 +6111,15 @@
 
 
             <!-- Quick Trip Planner Banner / Link to Tab 3 -->
-            <div class="card" style="padding:13px 16px;position:relative;display:flex;align-items:center;justify-content:center;cursor:pointer;background:linear-gradient(135deg,rgba(2,132,199,0.08),rgba(16,185,129,0.08));border:1px solid rgba(2,132,199,0.22);margin-bottom:12px;" onclick="App.switchView('planner')">
-                <div style="display:flex;align-items:center;justify-content:center;gap:12px;text-align:center;margin:0 auto;max-width:calc(100% - 80px);">
-                    <span class="card-icon-pill sky" style="width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg class="ui-ic ui-ic-compass" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill="currentColor" fill-opacity="0.3"/></svg></span>
-                    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;">
-                        <div style="font-weight:700;font-size:14px;color:var(--ink);text-align:center;line-height:1.3;" id="homePlannerTitle">วางแผนการเดินทาง & เช็คค่าโดยสาร</div>
-                        <div style="font-size:11.5px;color:var(--muted);text-align:center;line-height:1.3;" id="homePlannerSub">ค้นหาเส้นทาง คำนวณเวลา และราคาข้าม 12 สาย</div>
+            <div class="card quick-planner-banner" onclick="App.switchView('planner')">
+                <div class="quick-planner-content">
+                    <span class="card-icon-pill sky quick-planner-icon"><svg class="ui-ic ui-ic-compass" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill="currentColor" fill-opacity="0.3"/></svg></span>
+                    <div class="quick-planner-text">
+                        <div class="quick-planner-title" id="homePlannerTitle">วางแผนการเดินทาง & เช็คค่าโดยสาร</div>
+                        <div class="quick-planner-sub" id="homePlannerSub">ค้นหาเส้นทาง คำนวณเวลา และราคาข้าม 12 สาย</div>
                     </div>
                 </div>
-                <button class="btn btn-ghost" id="homePlannerBtn" style="position:absolute;right:14px;top:50%;transform:translateY(-50%);padding:5px 10px;font-size:12px;margin:0;white-space:nowrap;">เปิด ➔</button>
+                <button class="btn btn-ghost quick-planner-btn" id="homePlannerBtn">เปิด ➔</button>
             </div>
 
             <!-- Search -->

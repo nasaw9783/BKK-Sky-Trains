@@ -1711,23 +1711,15 @@
             text-shadow: inherit !important;
         }
 
-        /* ===== BRT (Line 201) เส้นราง-จุดต่อสถานี และ แบนเนอร์ รหัสสถานี แสดงสีเขียวคาดเหลือง ===== */
-        /* เส้นราง (Track): สีเขียวคาดเหลือง */
+        /* ===== BRT (Line 201) เส้นราง, จุดต่อสถานี และ แบนเนอร์ รหัสสถานี ===== */
+        /* เส้นราง (Track): ตรง เรียบเนียน ไร้รอยต่อ เหมือนสายอื่นๆ (เพื่อน) */
         .st-rail .track.track-brt,
         .st-row.brt-row .st-rail .track,
         #strip[data-active-line="201"] .st-rail .track {
-            width: 5px !important;
-            background: linear-gradient(
-                to right,
-                #82C341 0%,
-                #82C341 33%,
-                #FFD100 33%,
-                #FFD100 67%,
-                #82C341 67%,
-                #82C341 100%
-            ) !important;
-            border-radius: 2.5px;
-            box-shadow: 0 0 3px rgba(130, 195, 65, 0.35);
+            width: 4px !important;
+            background: #82C341 !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
         }
 
         /* จุดต่อสถานี (Station Node): สีเขียวคาดเหลือง (ขอบเขียว แกนกลางเหลืองสว่าง) */

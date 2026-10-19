@@ -8127,7 +8127,7 @@ setOriginFromActionSheet() {
                     return `
                     <div class="st-row${crowded ? ' crowded' : ''}${isBranch ? ' branch-row' : ''}${isBrt ? ' brt-row' : ''}" id="row-${esc(s.StationKey)}-${s.StationLineId}">
                         <div class="st-rail">
-                            <div class="track${isBrt ? ' track-brt' : ''}" style="${isBrt ? '' : 'background:' + color + (q ? '22' : '')}"></div>
+                            <div class="track" style="background:${color}${q ? '22' : ''}"></div>
                             <div class="node ${isSiam ? 'inter' : ''} ${isNear ? 'near' : ''}${isBrt ? ' node-brt' : ''}" style="${isBrt ? '' : 'border-color:' + color}"></div>
                         </div>
                         <div class="st-main">

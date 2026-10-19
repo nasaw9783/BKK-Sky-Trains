@@ -342,7 +342,14 @@ flowchart LR
 
 ## 8. แผนการพัฒนาในอนาคต (Product Roadmap)
 
-- **v1.3.6 (Completed / Current Production Release):**
+- **v1.3.7 (Completed / Current Production Release):**
+  - ระบบตรวจจับสภาพแวดล้อมอุปกรณ์อัตโนมัติ (Multi-Device Auto Detection Engine) รองรับคอมพิวเตอร์ (Computer / Desktop), มือถือ (Mobile), แท็บเล็ต (Tablet), iOS (iPhone) และ iPad (iPadOS / Safari) แบบเรียลไทม์
+  - ผังการแสดงผลแบบปรับตัวอัตโนมัติ (Dynamic Responsive Breakpoints & Adaptive Layouts):
+    - Desktop / Computer (>= 1024px): คอนเทนเนอร์ 1160px–1280px, ผังชานชาลาและทางออกหลายคอลัมน์, แผนที่แบบพาโนรามาพร้อมซูมด้วย Mouse Wheel, คีย์บอร์ดชอร์ตคัต (1–5, /, Esc)
+    - Tablet & iPad (768px – 1023px): คอนเทนเนอร์ 860px–1080px, การ์ดทางออกและสถานียอดนิยมแบบตารางสองคอลัมน์, ตรวจจับ iPadOS 13+ แม่นยำ
+    - Mobile & iOS (< 768px): คอนเทนเนอร์ 560px, รองรับ `100dvh` และ Safe-area Insets ป้องกันขอบจอบังแถบนำทาง
+  - ระบบพรีแคชและ Service Worker อัปเกรดเป็นเวอร์ชัน `bts-v60`
+- **v1.3.6 (Completed):**
   - แผนผังโครงข่ายรถไฟฟ้าความละเอียดสูงแบบเวกเตอร์พิมพ์เขียว (Transit Blueprint Vector Map) ครอบคลุม 10 สายรถไฟฟ้า กทม. และปริมณฑล รองรับการสลับโหมดมืด/สว่างอัตโนมัติ (`bkk_transit_map.svg`, `bkk_transit_map_dark.svg`)
   - จุดฮอตสปอตสถานีแบบโต้ตอบบนแผนที่ (`MAP_STATION_HOTSPOTS`) แตะเลือกสถานีต้นทาง, ปลายทาง หรือเปิดดูข้อมูลประตูทางออกได้ทันที
   - หน้าต่างคำอธิบายสัญลักษณ์โครงข่ายและจุดเชื่อมต่อ (Transit Network Legend: Airport, Pier/Boat, SRT, Bus, Park & Ride)

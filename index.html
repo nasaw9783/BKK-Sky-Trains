@@ -5810,16 +5810,87 @@
             transform: translateX(-50%) translateY(0);
         }
 
+        /* Desktop Auto-Detect Enhancements (Preserving original 560px mobile design) */
+        html.device-desktop .bottom-nav .nav-tab:hover {
+            background: var(--bg-subtle);
+            transform: translateY(-2px);
+        }
+        html.device-desktop .map-viewport {
+            cursor: grab;
+        }
     </style>
     <script>
-        // ตั้งธีมก่อน render — กันหน้ากะพริบตอนเปิดในโหมดมืด
-        // default = light เสมอ เข้าโหมดมืดเฉพาะเมื่อผู้ใช้เคยกดเลือกไว้เอง
+        /* ========================================================
+           BKK SKYTRAINs - Auto-Detect Engine (Desktop / Mobile)
+        ======================================================== */
         (function () {
+            // 1. Theme initialization (Prevent dark mode flash)
             try {
                 const urlTheme = new URLSearchParams(location.search).get('theme');
-                if (localStorage.getItem('bts_theme') === 'dark' || urlTheme === 'dark')
+                if (localStorage.getItem('bts_theme') === 'dark' || urlTheme === 'dark') {
                     document.documentElement.classList.add('dark');
+                }
             } catch (e) { }
+
+            // 2. Real-time Device & Environment Auto-Detection
+            function detectDevice() {
+                try {
+                    const ua = navigator.userAgent || '';
+                    const platformStr = navigator.platform || '';
+                    const maxTouch = navigator.maxTouchPoints || 0;
+                    const hasTouch = maxTouch > 0 || ('ontouchstart' in window);
+
+                    const width = window.innerWidth || document.documentElement.clientWidth || screen.width || 390;
+
+                    // iPadOS 13+ detection
+                    const isIPad = /iPad/i.test(ua) || (platformStr === 'MacIntel' && maxTouch > 1 && !/iPhone/i.test(ua));
+                    const isMobileUA = /Android|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+                    const isWindows = /Windows NT|Win64|Win32/i.test(ua);
+                    const isMac = !isIPad && /Macintosh|MacIntel/i.test(ua);
+                    const isLinux = !/Android/i.test(ua) && /Linux/i.test(ua);
+
+                    // Desktop / Computer check
+                    const isDesktop = (!isIPad && !isMobileUA && (isWindows || isMac || isLinux || (!hasTouch && width >= 768)));
+                    const isPointerFine = window.matchMedia ? window.matchMedia('(pointer: fine)').matches : isDesktop;
+
+                    return {
+                        isDesktop,
+                        isMobile: !isDesktop,
+                        isIPad,
+                        hasTouch,
+                        isPointerFine
+                    };
+                } catch (e) {
+                    return { isDesktop: false, isMobile: true, isIPad: false, hasTouch: true, isPointerFine: false };
+                }
+            }
+
+            function applyDeviceClasses(env) {
+                const root = document.documentElement;
+                if (!root) return;
+                root.classList.remove('device-desktop', 'device-mobile', 'is-desktop', 'is-mobile');
+                if (env.isDesktop) {
+                    root.classList.add('device-desktop', 'is-desktop');
+                } else {
+                    root.classList.add('device-mobile', 'is-mobile');
+                }
+                window.__BKK_DEVICE__ = env;
+            }
+
+            const env = detectDevice();
+            applyDeviceClasses(env);
+
+            let resizeTimer = null;
+            window.addEventListener('resize', function () {
+                clearTimeout(resizeTimer);
+                resizeTimer = setTimeout(function () {
+                    const freshEnv = detectDevice();
+                    applyDeviceClasses(freshEnv);
+                    if (window.App && typeof window.App.onEnvironmentChange === 'function') {
+                        window.App.onEnvironmentChange(freshEnv);
+                    }
+                }, 150);
+            }, { passive: true });
         })();
     </script>
 </head>

@@ -5999,6 +5999,9 @@ setOriginFromActionSheet() {
 
             onEnvironmentChange(newEnv) {
                 this.device = newEnv;
+                if (this.currentView === 'planner') {
+                    this.checkJourneyMarquee();
+                }
             },
 
             setupDesktopShortcuts() {
@@ -6463,7 +6466,12 @@ setOriginFromActionSheet() {
                         </div>
                         <div class="val ${st ? '' : 'ph'}">
                             ${st ? `<span class="st-key" style="${keyStyle}">${esc(st.StationKey)}</span>` : ''}
-                            <span class="nm ${sizeClass}" title="${st ? esc(stName(st)) : T('jSelect')}">${esc(nameStr)}</span>
+                            <div class="nm-marquee-wrap" title="${st ? esc(stName(st)) : T('jSelect')}">
+                                <div class="nm-marquee-track">
+                                    <span class="nm ${sizeClass}">${esc(nameStr)}</span>
+                                    ${st ? `<span class="nm ${sizeClass} nm-clone" aria-hidden="true">${esc(nameStr)}</span>` : ''}
+                                </div>
+                            </div>
                         </div>
                     </button>`;
                 };
@@ -6485,6 +6493,47 @@ setOriginFromActionSheet() {
                         ${j.result ? (j.result.RoutesMap || []).map((rm, i) => renderJourneyRoute(rm, i, j.openRoute === i)).join('') : ''}
                     </div>`;
                 this.renderQuickHubChips();
+                this.checkJourneyMarquee();
+            },
+
+            checkJourneyMarquee() {
+                requestAnimationFrame(() => {
+                    const card = document.getElementById('journeyCard');
+                    if (!card) return;
+                    const wraps = card.querySelectorAll('.nm-marquee-wrap');
+                    if (!wraps.length) return;
+
+                    // If not laid out yet (e.g. view hidden/switching), retry shortly
+                    if (wraps[0].clientWidth === 0) {
+                        setTimeout(() => this.checkJourneyMarquee(), 60);
+                        return;
+                    }
+
+                    wraps.forEach(wrap => {
+                        const primary = wrap.querySelector('.nm:not(.nm-clone)');
+                        const clone = wrap.querySelector('.nm-clone');
+                        if (!primary || !clone) {
+                            wrap.classList.remove('is-marquee');
+                            wrap.style.removeProperty('--marquee-dur');
+                            return;
+                        }
+
+                        // Temporarily remove is-marquee to measure natural unclipped width
+                        wrap.classList.remove('is-marquee');
+                        const wrapWidth = wrap.clientWidth;
+                        const textWidth = primary.scrollWidth;
+
+                        if (wrapWidth > 0 && textWidth > wrapWidth + 2) {
+                            wrap.classList.add('is-marquee');
+                            // Smooth speed ~24px per second, matching footer lines smooth slider
+                            const duration = Math.max(6, Math.round((textWidth + 24) / 24));
+                            wrap.style.setProperty('--marquee-dur', duration + 's');
+                        } else {
+                            wrap.classList.remove('is-marquee');
+                            wrap.style.removeProperty('--marquee-dur');
+                        }
+                    });
+                });
             },
 
             renderQuickHubChips() {

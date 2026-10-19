@@ -3563,6 +3563,23 @@
             overflow: hidden;
         }
 
+        .j-field .val .nm-marquee-wrap {
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .j-field .val .nm-marquee-track {
+            display: flex;
+            align-items: center;
+            white-space: nowrap;
+            width: max-content;
+            max-width: 100%;
+        }
+
         .j-field .val .nm {
             flex: 1;
             min-width: 0;
@@ -3581,6 +3598,90 @@
         .j-field .val .nm.st-name-xlong {
             font-size: 10.5px;
             letter-spacing: -0.3px;
+        }
+
+        .j-field .val .nm-clone {
+            display: none !important;
+        }
+
+        /* เฉพาะสำหรับมือถือ (Mobile <= 768px): ถ้าชื่อสถานีหลุดกรอบแบนเนอร์ ให้เลื่อนสไลด์ไปทางซ้ายอย่างสมูทแบบเดียวกับโครงข่าย 12 สาย */
+        @media (max-width: 768px) {
+            .j-field .val .nm-marquee-wrap.is-marquee {
+                mask-image: linear-gradient(to right, black 0%, black calc(100% - 14px), transparent 100%);
+                -webkit-mask-image: linear-gradient(to right, black 0%, black calc(100% - 14px), transparent 100%);
+            }
+
+            .j-field .val .nm-marquee-wrap.is-marquee .nm-marquee-track {
+                max-width: none;
+                width: max-content;
+                animation: jStationSlideLeft var(--marquee-dur, 10s) linear infinite;
+                will-change: transform;
+            }
+
+            .j-field .val .nm-marquee-wrap.is-marquee .nm-marquee-track:hover,
+            .j-field .val .nm-marquee-wrap.is-marquee .nm-marquee-track:active {
+                animation-play-state: paused;
+            }
+
+            .j-field .val .nm-marquee-wrap.is-marquee .nm {
+                overflow: visible;
+                text-overflow: clip;
+                padding-right: 24px;
+                flex: 0 0 auto;
+                flex-shrink: 0;
+            }
+
+            .j-field .val .nm-marquee-wrap.is-marquee .nm-clone {
+                display: inline-block !important;
+                flex: 0 0 auto;
+                flex-shrink: 0;
+            }
+        }
+
+        html.device-mobile .j-field .val .nm-marquee-wrap.is-marquee,
+        html.is-mobile .j-field .val .nm-marquee-wrap.is-marquee {
+            mask-image: linear-gradient(to right, black 0%, black calc(100% - 14px), transparent 100%);
+            -webkit-mask-image: linear-gradient(to right, black 0%, black calc(100% - 14px), transparent 100%);
+        }
+
+        html.device-mobile .j-field .val .nm-marquee-wrap.is-marquee .nm-marquee-track,
+        html.is-mobile .j-field .val .nm-marquee-wrap.is-marquee .nm-marquee-track {
+            max-width: none;
+            width: max-content;
+            animation: jStationSlideLeft var(--marquee-dur, 10s) linear infinite;
+            will-change: transform;
+        }
+
+        html.device-mobile .j-field .val .nm-marquee-wrap.is-marquee .nm-marquee-track:hover,
+        html.device-mobile .j-field .val .nm-marquee-wrap.is-marquee .nm-marquee-track:active,
+        html.is-mobile .j-field .val .nm-marquee-wrap.is-marquee .nm-marquee-track:hover,
+        html.is-mobile .j-field .val .nm-marquee-wrap.is-marquee .nm-marquee-track:active {
+            animation-play-state: paused;
+        }
+
+        html.device-mobile .j-field .val .nm-marquee-wrap.is-marquee .nm,
+        html.is-mobile .j-field .val .nm-marquee-wrap.is-marquee .nm {
+            overflow: visible;
+            text-overflow: clip;
+            padding-right: 24px;
+            flex: 0 0 auto;
+            flex-shrink: 0;
+        }
+
+        html.device-mobile .j-field .val .nm-marquee-wrap.is-marquee .nm-clone,
+        html.is-mobile .j-field .val .nm-marquee-wrap.is-marquee .nm-clone {
+            display: inline-block !important;
+            flex: 0 0 auto;
+            flex-shrink: 0;
+        }
+
+        @keyframes jStationSlideLeft {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
         }
 
         .j-field .val.ph,

@@ -870,32 +870,32 @@ gQIDAQAB
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(101)" title="MRT สายสีน้ำเงิน (ท่าพระ ↔ หลักสอง)" aria-label="MRT สายสีน้ำเงิน">
             <div class="footer-card-icon" style="background:rgba(2,132,199,0.12);border-color:rgba(2,132,199,0.3)">${getLineIconSvg(101, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีน้ำเงิน (เฉลิมรัชมงคล)</span><span class="footer-card-dot">·</span><span class="footer-card-route">ท่าพระ ↔ หลักสอง</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีน้ำเงิน | (เฉลิมรัชมงคล)</span><span class="footer-card-dot">·</span><span class="footer-card-route">ท่าพระ ↔ หลักสอง</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(102)" title="MRT สายสีม่วง (คลองบางไผ่ ↔ เตาปูน)" aria-label="MRT สายสีม่วง">
             <div class="footer-card-icon" style="background:rgba(138,44,155,0.12);border-color:rgba(138,44,155,0.3)">${getLineIconSvg(102, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีม่วง (ฉลองรัชธรรม)</span><span class="footer-card-dot">·</span><span class="footer-card-route">คลองบางไผ่ ↔ เตาปูน</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีม่วง | (ฉลองรัชธรรม)</span><span class="footer-card-dot">·</span><span class="footer-card-route">คลองบางไผ่ ↔ เตาปูน</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(4)" title="MRT สายสีเหลือง (ลาดพร้าว ↔ สำโรง)" aria-label="MRT สายสีเหลือง">
             <div class="footer-card-icon" style="background:rgba(255,209,0,0.15);border-color:rgba(255,209,0,0.35)">${getLineIconSvg(4, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีเหลือง (นัคราพิพัฒน์)</span><span class="footer-card-dot">·</span><span class="footer-card-route">ลาดพร้าว ↔ สำโรง</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีเหลือง | (นัคราพิพัฒน์)</span><span class="footer-card-dot">·</span><span class="footer-card-route">ลาดพร้าว ↔ สำโรง</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(5)" title="MRT สายสีชมพู (ศูนย์ราชการฯ ↔ มีนบุรี)" aria-label="MRT สายสีชมพู">
             <div class="footer-card-icon" style="background:rgba(236,72,153,0.12);border-color:rgba(236,72,153,0.3)">${getLineIconSvg(5, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีชมพู (วิวัฒน์นคร)</span><span class="footer-card-dot">·</span><span class="footer-card-route">ศูนย์ราชการฯ ↔ มีนบุรี</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีชมพู | (วิวัฒน์นคร)</span><span class="footer-card-dot">·</span><span class="footer-card-route">ศูนย์ราชการฯ ↔ มีนบุรี</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(103)" title="SRT สายสีแดงเข้ม (กรุงเทพอภิวัฒน์ ↔ รังสิต)" aria-label="SRT สายสีแดงเข้ม">
             <div class="footer-card-icon" style="background:rgba(185,28,28,0.12);border-color:rgba(185,28,28,0.3)">${getLineIconSvg(103, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">SRT สายสีแดงเข้ม (ธานีรัถยา)</span><span class="footer-card-dot">·</span><span class="footer-card-route">กรุงเทพอภิวัฒน์ ↔ รังสิต</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">SRT สายสีแดงเข้ม | (ธานีรัถยา)</span><span class="footer-card-dot">·</span><span class="footer-card-route">กรุงเทพอภิวัฒน์ ↔ รังสิต</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(105)" title="SRT สายสีแดงอ่อน (กรุงเทพอภิวัฒน์ ↔ ตลิ่งชัน)" aria-label="SRT สายสีแดงอ่อน">
             <div class="footer-card-icon" style="background:rgba(248,113,113,0.15);border-color:rgba(248,113,113,0.35)">${getLineIconSvg(105, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">SRT สายสีแดงอ่อน (นครวิถี)</span><span class="footer-card-dot">·</span><span class="footer-card-route">กรุงเทพอภิวัฒน์ ↔ ตลิ่งชัน</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">SRT สายสีแดงอ่อน | (นครวิถี)</span><span class="footer-card-dot">·</span><span class="footer-card-route">กรุงเทพอภิวัฒน์ ↔ ตลิ่งชัน</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(104)" title="ARL แอร์พอร์ต ลิงก์ (พญาไท ↔ สุวรรณภูมิ)" aria-label="ARL แอร์พอร์ต ลิงก์">
@@ -932,32 +932,32 @@ gQIDAQAB
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(101)" title="MRT สายสีน้ำเงิน (ท่าพระ ↔ หลักสอง)" aria-label="MRT สายสีน้ำเงิน" aria-hidden="true" tabindex="-1">
             <div class="footer-card-icon" style="background:rgba(2,132,199,0.12);border-color:rgba(2,132,199,0.3)">${getLineIconSvg(101, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีน้ำเงิน (เฉลิมรัชมงคล)</span><span class="footer-card-dot">·</span><span class="footer-card-route">ท่าพระ ↔ หลักสอง</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีน้ำเงิน | (เฉลิมรัชมงคล)</span><span class="footer-card-dot">·</span><span class="footer-card-route">ท่าพระ ↔ หลักสอง</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(102)" title="MRT สายสีม่วง (คลองบางไผ่ ↔ เตาปูน)" aria-label="MRT สายสีม่วง" aria-hidden="true" tabindex="-1">
             <div class="footer-card-icon" style="background:rgba(138,44,155,0.12);border-color:rgba(138,44,155,0.3)">${getLineIconSvg(102, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีม่วง (ฉลองรัชธรรม)</span><span class="footer-card-dot">·</span><span class="footer-card-route">คลองบางไผ่ ↔ เตาปูน</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีม่วง | (ฉลองรัชธรรม)</span><span class="footer-card-dot">·</span><span class="footer-card-route">คลองบางไผ่ ↔ เตาปูน</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(4)" title="MRT สายสีเหลือง (ลาดพร้าว ↔ สำโรง)" aria-label="MRT สายสีเหลือง" aria-hidden="true" tabindex="-1">
             <div class="footer-card-icon" style="background:rgba(255,209,0,0.15);border-color:rgba(255,209,0,0.35)">${getLineIconSvg(4, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีเหลือง (นัคราพิพัฒน์)</span><span class="footer-card-dot">·</span><span class="footer-card-route">ลาดพร้าว ↔ สำโรง</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีเหลือง | (นัคราพิพัฒน์)</span><span class="footer-card-dot">·</span><span class="footer-card-route">ลาดพร้าว ↔ สำโรง</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(5)" title="MRT สายสีชมพู (ศูนย์ราชการฯ ↔ มีนบุรี)" aria-label="MRT สายสีชมพู" aria-hidden="true" tabindex="-1">
             <div class="footer-card-icon" style="background:rgba(236,72,153,0.12);border-color:rgba(236,72,153,0.3)">${getLineIconSvg(5, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีชมพู (วิวัฒน์นคร)</span><span class="footer-card-dot">·</span><span class="footer-card-route">ศูนย์ราชการฯ ↔ มีนบุรี</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีชมพู | (วิวัฒน์นคร)</span><span class="footer-card-dot">·</span><span class="footer-card-route">ศูนย์ราชการฯ ↔ มีนบุรี</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(103)" title="SRT สายสีแดงเข้ม (กรุงเทพอภิวัฒน์ ↔ รังสิต)" aria-label="SRT สายสีแดงเข้ม" aria-hidden="true" tabindex="-1">
             <div class="footer-card-icon" style="background:rgba(185,28,28,0.12);border-color:rgba(185,28,28,0.3)">${getLineIconSvg(103, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">SRT สายสีแดงเข้ม (ธานีรัถยา)</span><span class="footer-card-dot">·</span><span class="footer-card-route">กรุงเทพอภิวัฒน์ ↔ รังสิต</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">SRT สายสีแดงเข้ม | (ธานีรัถยา)</span><span class="footer-card-dot">·</span><span class="footer-card-route">กรุงเทพอภิวัฒน์ ↔ รังสิต</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(105)" title="SRT สายสีแดงอ่อน (กรุงเทพอภิวัฒน์ ↔ ตลิ่งชัน)" aria-label="SRT สายสีแดงอ่อน" aria-hidden="true" tabindex="-1">
             <div class="footer-card-icon" style="background:rgba(248,113,113,0.15);border-color:rgba(248,113,113,0.35)">${getLineIconSvg(105, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">SRT สายสีแดงอ่อน (นครวิถี)</span><span class="footer-card-dot">·</span><span class="footer-card-route">กรุงเทพอภิวัฒน์ ↔ ตลิ่งชัน</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">SRT สายสีแดงอ่อน | (นครวิถี)</span><span class="footer-card-dot">·</span><span class="footer-card-route">กรุงเทพอภิวัฒน์ ↔ ตลิ่งชัน</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(104)" title="ARL แอร์พอร์ต ลิงก์ (พญาไท ↔ สุวรรณภูมิ)" aria-label="ARL แอร์พอร์ต ลิงก์" aria-hidden="true" tabindex="-1">
@@ -1048,13 +1048,13 @@ gQIDAQAB
                 legSukhumvit: 'สายสุขุมวิท',
                 legSilom: 'สายสีลม',
                 legGold: 'สายสีทอง',
-                legBlue: 'สายสีน้ำเงิน (เฉลิมรัชมงคล)',
-                legPurple: 'สายสีม่วง (ฉลองรัชธรรม)',
+                legBlue: 'สายสีน้ำเงิน | (เฉลิมรัชมงคล)',
+                legPurple: 'สายสีม่วง | (ฉลองรัชธรรม)',
                 legBrt: 'รถโดยสารด่วนพิเศษ BRT',
-                legPink: 'สายสีชมพู (วิวัฒน์นคร)',
-                legYellow: 'สายสีเหลือง (นัคราพิพัฒน์)',
-                legDarkRed: 'สายสีแดงเข้ม (ธานีรัถยา)',
-                legLightRed: 'สายสีแดงอ่อน (นครวิถี)',
+                legPink: 'สายสีชมพู | (วิวัฒน์นคร)',
+                legYellow: 'สายสีเหลือง | (นัคราพิพัฒน์)',
+                legDarkRed: 'สายสีแดงเข้ม | (ธานีรัถยา)',
+                legLightRed: 'สายสีแดงอ่อน | (นครวิถี)',
                 legArl: 'แอร์พอร์ต ลิงก์',
                 legOrange: 'สายสีส้ม (ยังไม่เปิดให้บริการ)',
                 legInter: 'จุดเชื่อมต่อข้ามสาย (Interchange)',
@@ -2908,8 +2908,8 @@ gQIDAQAB
             },
             {
                 id: 4,
-                nameTH: 'MRT สายสีเหลือง (นัคราพิพัฒน์)', nameZH: 'MRT 黄线 (纳卡拉披帕)',
-                nameEN: 'MRT Yellow Line (Nakkhara Phiphat)',
+                nameTH: 'MRT สายสีเหลือง | (นัคราพิพัฒน์)', nameZH: 'MRT 黄线 | (纳卡拉披帕)',
+                nameEN: 'MRT Yellow Line | (Nakkhara Phiphat)',
                 color: '#FFD100',
                 operatorTH: 'EBM (Eastern Bangkok Monorail)',
                 operatorEN: 'EBM (Eastern Bangkok Monorail)',
@@ -2934,8 +2934,8 @@ gQIDAQAB
             },
             {
                 id: 5,
-                nameTH: 'MRT สายสีชมพู (วิวัฒน์นคร)', nameZH: 'MRT 粉红线 (威瓦那空)',
-                nameEN: 'MRT Pink Line (Wiwat Nakhon)',
+                nameTH: 'MRT สายสีชมพู | (วิวัฒน์นคร)', nameZH: 'MRT 粉红线 | (威瓦那空)',
+                nameEN: 'MRT Pink Line | (Wiwat Nakhon)',
                 color: '#EC4899',
                 operatorTH: 'NBM (Northern Bangkok Monorail)',
                 operatorEN: 'NBM (Northern Bangkok Monorail)',
@@ -2960,8 +2960,8 @@ gQIDAQAB
             },
             {
                 id: 101,
-                nameTH: 'MRT สายสีน้ำเงิน (เฉลิมรัชมงคล)', nameZH: 'MRT 蓝线 (差隆拉差蒙坤)',
-                nameEN: 'MRT Blue Line (Chaloem Ratchamongkhon)',
+                nameTH: 'MRT สายสีน้ำเงิน | (เฉลิมรัชมงคล)', nameZH: 'MRT 蓝线 | (差隆拉差蒙坤)',
+                nameEN: 'MRT Blue Line | (Chaloem Ratchamongkhon)',
                 color: '#0284C7',
                 operatorTH: 'BEM (Bangkok Expressway and Metro) / รฟม.',
                 operatorEN: 'BEM / MRTA (Mass Rapid Transit Authority)',
@@ -2986,8 +2986,8 @@ gQIDAQAB
             },
             {
                 id: 102,
-                nameTH: 'MRT สายสีม่วง (ฉลองรัชธรรม)', nameZH: 'MRT 紫线 (差隆拉差探)',
-                nameEN: 'MRT Purple Line (Chalong Ratchatham)',
+                nameTH: 'MRT สายสีม่วง | (ฉลองรัชธรรม)', nameZH: 'MRT 紫线 | (差隆拉差探)',
+                nameEN: 'MRT Purple Line | (Chalong Ratchatham)',
                 color: '#8A2C9B',
                 operatorTH: 'BEM / รฟม.',
                 operatorEN: 'BEM / MRTA',
@@ -3012,8 +3012,8 @@ gQIDAQAB
             },
             {
                 id: 103,
-                nameTH: 'SRT สายสีแดงเข้ม (ธานีรัถยา)', nameZH: 'SRT 暗红线 (塔尼拉塔雅)',
-                nameEN: 'SRT Dark Red Line (Thani Ratthaya)',
+                nameTH: 'SRT สายสีแดงเข้ม | (ธานีรัถยา)', nameZH: 'SRT 暗红线 | (塔尼拉塔雅)',
+                nameEN: 'SRT Dark Red Line | (Thani Ratthaya)',
                 color: '#B91C1C',
                 operatorTH: 'SRTET (รถไฟฟ้า ร.ฟ.ท.)',
                 operatorEN: 'SRTET (State Railway of Thailand Electrified Train)',
@@ -3038,8 +3038,8 @@ gQIDAQAB
             },
             {
                 id: 105,
-                nameTH: 'SRT สายสีแดงอ่อน (นครวิถี)', nameZH: 'SRT 浅红线 (那空威提)',
-                nameEN: 'SRT Light Red Line (Nakhon Withi)',
+                nameTH: 'SRT สายสีแดงอ่อน | (นครวิถี)', nameZH: 'SRT 浅红线 | (那空威提)',
+                nameEN: 'SRT Light Red Line | (Nakhon Withi)',
                 color: '#F87171',
                 operatorTH: 'SRTET (รถไฟฟ้า ร.ฟ.ท.)',
                 operatorEN: 'SRTET (State Railway of Thailand Electrified Train)',
@@ -4693,15 +4693,15 @@ setOriginFromActionSheet() {
                                 <ul style="margin:8px 0 8px 6px;padding-left:14px;list-style:none">
                                     <li style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
                                         ${getLineIconSvg(102, false, 18)}
-                                        <span><b>${isEn ? 'MRT Purple Line:' : 'สายสีม่วง (ฉลองรัชธรรม):'}</b> ${isEn ? 'Khlong Bang Phai ↔ Tao Poon (Max ฿20)' : 'คลองบางไผ่ ↔ เตาปูน (สูงสุด 20 บาท)'}</span>
+                                        <span><b>${isEn ? 'MRT Purple Line | (Chalong Ratchatham):' : 'MRT สายสีม่วง | (ฉลองรัชธรรม):'}</b> ${isEn ? 'Khlong Bang Phai ↔ Tao Poon (Max ฿20)' : 'คลองบางไผ่ ↔ เตาปูน (สูงสุด 20 บาท)'}</span>
                                     </li>
                                     <li style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
                                         ${getLineIconSvg(103, false, 18)}
-                                        <span><b>${isEn ? 'SRT Dark Red Line:' : 'สายสีแดงเข้ม (ธานีรัถยา):'}</b> ${isEn ? 'Krung Thep Aphiwat ↔ Rangsit (Max ฿20)' : 'กรุงเทพอภิวัฒน์ ↔ รังสิต (สูงสุด 20 บาท)'}</span>
+                                        <span><b>${isEn ? 'SRT Dark Red Line | (Thani Ratthaya):' : 'SRT สายสีแดงเข้ม | (ธานีรัถยา):'}</b> ${isEn ? 'Krung Thep Aphiwat ↔ Rangsit (Max ฿20)' : 'กรุงเทพอภิวัฒน์ ↔ รังสิต (สูงสุด 20 บาท)'}</span>
                                     </li>
                                     <li style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
                                         ${getLineIconSvg(105, false, 18)}
-                                        <span><b>${isEn ? 'SRT Light Red Line:' : 'สายสีแดงอ่อน (นครวิถี):'}</b> ${isEn ? 'Krung Thep Aphiwat ↔ Taling Chan (Max ฿20)' : 'กรุงเทพอภิวัฒน์ ↔ ตลิ่งชัน (สูงสุด 20 บาท)'}</span>
+                                        <span><b>${isEn ? 'SRT Light Red Line | (Nakhon Withi):' : 'SRT สายสีแดงอ่อน | (นครวิถี):'}</b> ${isEn ? 'Krung Thep Aphiwat ↔ Taling Chan (Max ฿20)' : 'กรุงเทพอภิวัฒน์ ↔ ตลิ่งชัน (สูงสุด 20 บาท)'}</span>
                                     </li>
                                     <li style="display:flex;align-items:center;gap:8px">
                                         <span style="display:inline-flex;align-items:center;gap:3px">${getLineIconSvg(102, false, 15)}⇄${getLineIconSvg(103, false, 15)}/${getLineIconSvg(105, false, 15)}</span>
@@ -8868,6 +8868,11 @@ setOriginFromActionSheet() {
             const q = qRaw.toLowerCase().trim();
             const qNoSpace = q.replace(/\s+/g, '');
             if (!q) return false;
+            const optLabel = (getLineOptLabel(line) || '').toLowerCase();
+            const optNoSpace = optLabel.replace(/\s+/g, '');
+            if (optLabel.includes(q) || (qNoSpace && optNoSpace.includes(qNoSpace))) {
+                return true;
+            }
 
             if (currentLang === 'zh') {
                 const nameZh = (LINE_NAMES_ZH[line.LineId] || I18N.zh?.lines?.[line.LineId] || shortLineName(line) || '').toLowerCase();
@@ -8938,17 +8943,30 @@ setOriginFromActionSheet() {
             const th = l.LineName_TH || l.LineNameTH || '';
             const en = l.LineName_EN || l.LineNameEN || '';
             const royal = LINE_ROYAL_NAMES[id];
+            const isMrt = (id === 4 || id === 5 || id === 101 || id === 102 || id === 106);
             if (lang === 'zh') {
                 const zhName = LINE_NAMES_ZH[id] || (I18N.zh?.lines?.[id] ? `${I18N.zh.lines[id]}线`.replace('线线', '线') : (en || th));
-                return royal?.zh ? `${zhName} · (${royal.zh})` : zhName;
+                if (isMrt && !zhName.startsWith('MRT ') && !zhName.startsWith('MRT')) {
+                    zhName = 'MRT ' + zhName;
+                }
+                return royal?.zh ? `${zhName} | (${royal.zh})` : zhName;
             }
             if (lang === 'en') {
                 const enName = en || th;
-                return royal?.en ? `${enName} · (${royal.en})` : enName;
+                if (!enName.toLowerCase().includes('line')) {
+                    enName = `${enName} Line`;
+                }
+                if (isMrt && !enName.startsWith('MRT ') && !enName.startsWith('MRT')) {
+                    enName = 'MRT ' + enName;
+                }
+                return royal?.en ? `${enName} | (${royal.en})` : enName;
             }
-            const name = th.startsWith('สาย') ? th : ('สาย' + th);
+            let name = th.startsWith('สาย') ? th : ('สาย' + th);
+            if (isMrt && !name.startsWith('MRT ') && !name.startsWith('MRT')) {
+                name = 'MRT ' + name;
+            }
             if (royal?.th) {
-                return `${name} · (${royal.th})`;
+                return `${name} | (${royal.th})`;
             }
             return name;
         }

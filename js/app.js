@@ -2882,8 +2882,8 @@ gQIDAQAB
             },
             {
                 id: 3,
-                nameTH: 'APM สายสีทอง', nameZH: 'APM 金线',
-                nameEN: 'APM Gold Line',
+                nameTH: 'BTS สายสีทอง', nameZH: 'BTS 金线',
+                nameEN: 'BTS Gold Line',
                 color: '#C9A038',
                 operatorTH: 'กรุงเทพธนาคม (KT) / BTSC',
                 operatorEN: 'Krungthep Thanakom / BTSC',
@@ -3064,8 +3064,8 @@ gQIDAQAB
             },
             {
                 id: 104,
-                nameTH: 'แอร์พอร์ต ลิงก์',
-                nameEN: 'Airport Rail Link (ARL)',
+                nameTH: 'ARL แอร์พอร์ต ลิงก์', nameZH: 'ARL 机场快线',
+                nameEN: 'ARL Airport Rail Link',
                 color: '#8A1538',
                 operatorTH: 'รถไฟฟ้า ร.ฟ.ท. (เอเชีย เอรา วัน)',
                 operatorEN: 'SRT Electrified Train (Asia Era One)',
@@ -3090,8 +3090,8 @@ gQIDAQAB
             },
             {
                 id: 201,
-                nameTH: 'BRT สายสาทร–ราชพฤกษ์',
-                nameEN: 'BRT Sathorn–Ratchaphruek Line',
+                nameTH: 'BRT', nameZH: 'BRT',
+                nameEN: 'BRT',
                 color: '#82C341',
                 operatorTH: 'กทม. / ระบบรถโดยสารด่วนพิเศษ BRT',
                 operatorEN: 'BMA / Bangkok BRT Express Bus',
@@ -3185,7 +3185,7 @@ gQIDAQAB
             return `<div ${idAttr} class="line-filter-bar" data-lang="${lang}">
                 ${TRANSIT_LINES_CATALOG.map(l => {
                     const isActive = l.id === activeLineId;
-                    const name = lang === 'en' ? l.nameEN : l.nameTH;
+                    const name = getLineOptLabel(l);
                     const activeStyle = isActive
                         ? `background:${l.color};color:#ffffff;border-color:${l.color};font-weight:700;box-shadow:0 3px 10px ${l.color}55;`
                         : '';
@@ -4061,7 +4061,7 @@ gQIDAQAB
                             btn.style.cssText = on ? `background:${l.LineColor};color:#fff;` : '';
                             btn.innerHTML = `
                                 ${getLineIconSvg(l.LineId, on, 17)}
-                                <span>${esc(shortLineName(l))}</span>`;
+                                <span>${esc(getLineOptLabel(l))}</span>`;
                         });
                     } else {
                         lineTabsEl.innerHTML = `
@@ -4072,7 +4072,7 @@ gQIDAQAB
                             const on = l.LineId === this.exitFilterLine;
                             return `<button class="tab ${on ? 'on' : ''}" style="${on ? 'background:' + l.LineColor + ';color:#fff;' : ''}" onclick="App.filterExitLine(${l.LineId})">
                                 ${getLineIconSvg(l.LineId, on, 17)}
-                                <span>${esc(shortLineName(l))}</span></button>`;
+                                <span>${esc(getLineOptLabel(l))}</span></button>`;
                         }).join('');
                     }
 
@@ -6348,7 +6348,7 @@ setOriginFromActionSheet() {
                         btn.setAttribute('aria-pressed', on ? 'true' : 'false');
                         btn.innerHTML = `
                             ${getLineIconSvg(l.LineId, on, 18)}
-                            <span>${esc(shortLineName(l))}${warn}</span>`;
+                            <span>${esc(getLineOptLabel(l))}${warn}</span>`;
                     });
                 } else {
                     el.innerHTML = `
@@ -6364,7 +6364,7 @@ setOriginFromActionSheet() {
                         return `<button class="tab ${on ? 'on' : ''}" style="${on ? 'background:' + l.LineColor + ';color:' + textColor + ';' : ''}"
                             aria-pressed="${on ? 'true' : 'false'}" onclick="App.setPickerLine(${l.LineId})">
                             ${getLineIconSvg(l.LineId, on, 18)}
-                            <span>${esc(shortLineName(l))}${warn}</span></button>`;
+                            <span>${esc(getLineOptLabel(l))}${warn}</span></button>`;
                     }).join('');
                 }
 
@@ -7606,7 +7606,7 @@ setOriginFromActionSheet() {
                         tabBtn.style.background = on ? l.LineColor : '';
                         tabBtn.innerHTML = `
                             ${getLineIconSvg(l.LineId, on, 18)}
-                            <span>${esc(shortLineName(l))}${warn}</span>`;
+                            <span>${esc(getLineOptLabel(l))}${warn}</span>`;
                     });
                     return;
                 }
@@ -7617,7 +7617,7 @@ setOriginFromActionSheet() {
                     return `<button class="tab ${on ? 'on' : ''}" style="${on ? 'background:' + l.LineColor : ''}"
                         onclick="App.setLine(${l.LineId})">
                         ${getLineIconSvg(l.LineId, on, 18)}
-                        <span>${esc(shortLineName(l))}${warn}</span></button>`;
+                            <span>${esc(getLineOptLabel(l))}${warn}</span></button>`;
                 }).join('');
             },
 
@@ -8939,36 +8939,51 @@ setOriginFromActionSheet() {
 
         function getLineOptLabel(l) {
             if (!l) return '';
-            const id = Number(l.LineId) || 0;
+            const id = Number(l.LineId ?? l.id) || 0;
+            if (id === 0) {
+                return lang === 'zh' ? '全部线路' : (lang === 'en' ? 'All Lines' : 'ทั้งหมด');
+            }
+            if (id === 1) {
+                return lang === 'zh' ? 'BTS 素坤逸线' : (lang === 'en' ? 'BTS Sukhumvit Line' : 'BTS สายสุขุมวิท');
+            }
+            if (id === 2) {
+                return lang === 'zh' ? 'BTS 是隆线' : (lang === 'en' ? 'BTS Silom Line' : 'BTS สายสีลม');
+            }
+            if (id === 3) {
+                return lang === 'zh' ? 'BTS 金线' : (lang === 'en' ? 'BTS Gold Line' : 'BTS สายสีทอง');
+            }
+            if (id === 4) {
+                return lang === 'zh' ? 'MRT 黄线 | (纳卡拉披帕)' : (lang === 'en' ? 'MRT Yellow Line | (Nakkhara Phiphat)' : 'MRT สายสีเหลือง | (นัคราพิพัฒน์)');
+            }
+            if (id === 5) {
+                return lang === 'zh' ? 'MRT 粉红线 | (威瓦那空)' : (lang === 'en' ? 'MRT Pink Line | (Wiwat Nakhon)' : 'MRT สายสีชมพู | (วิวัฒน์นคร)');
+            }
+            if (id === 101) {
+                return lang === 'zh' ? 'MRT 蓝线 | (差隆拉差蒙坤)' : (lang === 'en' ? 'MRT Blue Line | (Chaloem Ratchamongkhon)' : 'MRT สายสีน้ำเงิน | (เฉลิมรัชมงคล)');
+            }
+            if (id === 102) {
+                return lang === 'zh' ? 'MRT 紫线 | (差隆拉差探)' : (lang === 'en' ? 'MRT Purple Line | (Chalong Ratchatham)' : 'MRT สายสีม่วง | (ฉลองรัชธรรม)');
+            }
+            if (id === 103) {
+                return lang === 'zh' ? 'SRT 暗红线 | (塔尼拉塔雅)' : (lang === 'en' ? 'SRT Dark Red Line | (Thani Ratthaya)' : 'SRT สายสีแดงเข้ม | (ธานีรัถยา)');
+            }
+            if (id === 105) {
+                return lang === 'zh' ? 'SRT 浅红线 | (那空威提)' : (lang === 'en' ? 'SRT Light Red Line | (Nakhon Withi)' : 'SRT สายสีแดงอ่อน | (นครวิถี)');
+            }
+            if (id === 104) {
+                return lang === 'zh' ? 'ARL 机场快线' : (lang === 'en' ? 'ARL Airport Rail Link' : 'ARL แอร์พอร์ต ลิงก์');
+            }
+            if (id === 201) {
+                return 'BRT';
+            }
+            if (id === 106) {
+                return lang === 'zh' ? 'MRT 橙线 (尚未开通)' : (lang === 'en' ? 'MRT Orange Line (Not in Service)' : 'MRT สายสีส้ม (ยังไม่เปิดให้บริการ)');
+            }
             const th = l.LineName_TH || l.LineNameTH || '';
             const en = l.LineName_EN || l.LineNameEN || '';
-            const royal = LINE_ROYAL_NAMES[id];
-            const isMrt = (id === 4 || id === 5 || id === 101 || id === 102 || id === 106);
-            if (lang === 'zh') {
-                const zhName = LINE_NAMES_ZH[id] || (I18N.zh?.lines?.[id] ? `${I18N.zh.lines[id]}线`.replace('线线', '线') : (en || th));
-                if (isMrt && !zhName.startsWith('MRT ') && !zhName.startsWith('MRT')) {
-                    zhName = 'MRT ' + zhName;
-                }
-                return royal?.zh ? `${zhName} | (${royal.zh})` : zhName;
-            }
-            if (lang === 'en') {
-                const enName = en || th;
-                if (!enName.toLowerCase().includes('line')) {
-                    enName = `${enName} Line`;
-                }
-                if (isMrt && !enName.startsWith('MRT ') && !enName.startsWith('MRT')) {
-                    enName = 'MRT ' + enName;
-                }
-                return royal?.en ? `${enName} | (${royal.en})` : enName;
-            }
-            let name = th.startsWith('สาย') ? th : ('สาย' + th);
-            if (isMrt && !name.startsWith('MRT ') && !name.startsWith('MRT')) {
-                name = 'MRT ' + name;
-            }
-            if (royal?.th) {
-                return `${name} | (${royal.th})`;
-            }
-            return name;
+            if (lang === 'zh') return LINE_NAMES_ZH[id] || en || th;
+            if (lang === 'en') return en || th;
+            return th || en;
         }
 
         // คืน {text, now} สำหรับ ETA (นาทีคงเหลือ ณ ตอนนี้) — approx = ค่าจากความจำ ใส่ ~ นำหน้า

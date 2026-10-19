@@ -5870,6 +5870,7 @@
             color: var(--ink);
             text-align: center;
             line-height: 1.3;
+            letter-spacing: 0;
             white-space: nowrap;
         }
 
@@ -5878,6 +5879,7 @@
             color: var(--muted);
             text-align: center;
             line-height: 1.3;
+            letter-spacing: 0;
             white-space: nowrap;
         }
 
@@ -5895,6 +5897,7 @@
             justify-content: center;
             text-align: center;
             line-height: 1;
+            letter-spacing: 0;
             box-sizing: border-box;
             cursor: pointer;
             user-select: none !important;
@@ -5905,14 +5908,17 @@
         /* Mobile Responsive Adaptations (เฉพาะสำหรับมือถือ <= 480px) */
         @media (max-width: 480px) {
             .quick-planner-banner {
-                padding: 10px 10px;
+                padding: 10px 8px;
             }
 
             .quick-planner-content {
                 gap: 8px;
-                max-width: calc(100% - 66px);
-                margin: 0 auto 0 0;
-                padding-left: 2px;
+                margin: 0 auto;
+                text-align: center;
+                align-items: center;
+                justify-content: center;
+                max-width: calc(100% - 64px);
+                padding: 0;
             }
 
             .quick-planner-icon {
@@ -5927,51 +5933,83 @@
             }
 
             .quick-planner-text {
-                align-items: flex-start;
-                text-align: left;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
             }
 
             .quick-planner-title {
-                font-size: 12.5px;
-                letter-spacing: -0.2px;
-                text-align: left;
+                font-size: 12px;
+                letter-spacing: 0;
+                text-align: center;
+                line-height: 1.25;
             }
 
             .quick-planner-sub {
                 font-size: 10px;
-                letter-spacing: -0.15px;
-                text-align: left;
+                letter-spacing: 0;
+                text-align: center;
+                line-height: 1.25;
             }
 
             .quick-planner-btn {
                 right: 8px;
-                padding: 4px 7px;
+                padding: 4px 6px;
                 font-size: 11px;
-                letter-spacing: -0.2px;
+                letter-spacing: 0;
             }
         }
 
         /* Ultra Compact Mobile Screens (<= 375px) */
         @media (max-width: 375px) {
+            .quick-planner-banner {
+                padding: 9px 6px;
+            }
+
             .quick-planner-content {
                 gap: 6px;
-                max-width: calc(100% - 60px);
+                margin: 0 auto;
+                text-align: center;
+                align-items: center;
+                justify-content: center;
+                max-width: calc(100% - 56px);
+                padding: 0;
+            }
+
+            .quick-planner-icon {
+                width: 26px;
+                height: 26px;
+                border-radius: 6px;
+            }
+
+            .quick-planner-icon svg {
+                width: 15px;
+                height: 15px;
+            }
+
+            .quick-planner-text {
+                align-items: center;
+                justify-content: center;
+                text-align: center;
             }
 
             .quick-planner-title {
-                font-size: 11.5px;
-                letter-spacing: -0.3px;
+                font-size: 10.5px;
+                letter-spacing: 0;
+                text-align: center;
             }
 
             .quick-planner-sub {
-                font-size: 9.5px;
-                letter-spacing: -0.2px;
+                font-size: 8.5px;
+                letter-spacing: 0;
+                text-align: center;
             }
 
             .quick-planner-btn {
                 right: 6px;
-                padding: 3px 6px;
-                font-size: 10.5px;
+                padding: 3px 5px;
+                font-size: 10px;
+                letter-spacing: 0;
             }
         }
 

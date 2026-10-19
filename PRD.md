@@ -143,7 +143,7 @@ flowchart TD
   - <img src="icons/lines/line-103.svg" width="16" height="16" alt="SRT Dark Red" style="vertical-align:middle;"> SRTET สายสีแดงเข้ม (ธานีรัถยา - Dark Red - LineId: 103, `#B91C1C`)
   - <img src="icons/lines/line-105.svg" width="16" height="16" alt="SRT Light Red" style="vertical-align:middle;"> SRTET สายสีแดงอ่อน (นครวิถี - Light Red - LineId: 105, `#F87171`)
   - <img src="icons/lines/line-104.svg" width="16" height="16" alt="ARL" style="vertical-align:middle;"> ARL รถไฟฟ้าแอร์พอร์ต เรล ลิงก์ (Airport Rail Link - LineId: 104, `#8A1538`)
-  - <img src="icons/lines/line-201.svg" width="16" height="16" alt="BRT" style="vertical-align:middle;"> BRT รถโดยสารด่วนพิเศษ (Bus Rapid Transit - LineId: 201, `#FCF173`)
+  - <img src="icons/lines/line-201.svg" width="16" height="16" alt="BRT" style="vertical-align:middle;"> BRT รถโดยสารด่วนพิเศษ (Bus Rapid Transit - LineId: 201, `#82C341`)
   - <img src="icons/lines/line-106.svg" width="16" height="16" alt="MRT Orange" style="vertical-align:middle;"> MRT สายสีส้ม (Orange Line - LineId: 106, `#F58220`, โครงการในอนาคต)
 - **FR-3.2:** ผู้ใช้สามารถแตะเลือกสถานีใดๆ บนผังเพื่อเปิดแผ่นข้อมูลรายละเอียด (Station Bottom Sheet) ได้ทันที
 - **FR-3.3 (Mandatory Icon Standard):** ทุกจุดที่แสดงสัญลักษณ์สายสี ต้องใช้ไอคอน SVG รูปรถไฟเฉพาะประจำสายสีผ่าน `getLineIconSvg(lineId)` ห้ามใช้จุดกลม (●) หรือไอคอนรถไฟทั่วไปที่ไม่ตรงกับสายเด็ดขาด
@@ -218,7 +218,7 @@ flowchart TD
 --srt-dark-red  : #B91C1C;  /* Line 103: สายสีแดงเข้ม ธานีรัถยา (สีแดงเข้ม รฟท.) */
 --srt-light-red : #F87171;  /* Line 105: สายสีแดงอ่อน นครวิถี (สีแดงสว่าง รฟท.) */
 --arl           : #8A1538;  /* Line 104: แอร์พอร์ต เรล ลิงก์ (สีแดงเลือดหมู/มารูน) */
---brt           : #FCF173;  /* Line 201: รถโดยสารด่วนพิเศษ BRT (สีเขียวตองอมเหลือง) */
+--brt           : #82C341;  /* Line 201: รถโดยสารด่วนพิเศษ BRT (สีเขียวตอง) */
 --mrt-orange    : #F58220;  /* Line 106: สายสีส้ม (สีส้มเมโทร - โครงการในอนาคต) */
 ```
 
@@ -239,7 +239,7 @@ flowchart TD
 | **103** | **SRT สายสีแดงเข้ม** | `#B91C1C` | <img src="icons/lines/line-103.svg" width="24" height="24" alt="SRT Dark Red" style="vertical-align:middle;"> | **Commuter EMU (Hitachi):** ขบวนรถไฟชานเมือง พร้อมเสาและขารับกระแสไฟฟ้าเหนือหัว (Overhead Catenary Pantograph) |
 | **105** | **SRT สายสีแดงอ่อน** | `#F87171` | <img src="icons/lines/line-105.svg" width="24" height="24" alt="SRT Light Red" style="vertical-align:middle;"> | **Light Commuter EMU:** ขบวนรถไฟชานเมืองสายตะวันตก พร้อมแขนรับกระแสไฟฟ้าแบบแขนเดี่ยว (Single-Arm Pantograph) |
 | **104** | **ARL แอร์พอร์ตลิงก์** | `#8A1538` | <img src="icons/lines/line-104.svg" width="24" height="24" alt="ARL" style="vertical-align:middle;"> | **Airport Express Bullet Train:** ขบวนรถด่วนรูปทรงหัวกระสุน พร้อมสัญลักษณ์เครื่องบินด้านหน้า |
-| **201** | **BRT รถโดยสารด่วน** | `#FCF173` | <img src="icons/lines/line-201.svg" width="24" height="24" alt="BRT" style="vertical-align:middle;"> | **Bus Rapid Transit:** รถโดยสารปรับอากาศขนาดใหญ่ พร้อมช่องทางวิ่งเฉพาะ (Dedicated Lane) |
+| **201** | **BRT รถโดยสารด่วน** | `#82C341` | <img src="icons/lines/line-201.svg" width="24" height="24" alt="BRT" style="vertical-align:middle;"> | **Bus Rapid Transit:** รถโดยสารปรับอากาศขนาดใหญ่ พร้อมช่องทางวิ่งเฉพาะ (Dedicated Lane) |
 | **106** | **MRT สายสีส้ม** | `#F58220` | <img src="icons/lines/line-106.svg" width="24" height="24" alt="MRT Orange" style="vertical-align:middle;"> | **Orange Tunnel Metro:** ขบวนรถไฟฟ้าขนส่งมวลชนเชื่อมฝั่งเมืองตะวันออก-ตก (โครงการในอนาคต) |
 | **0** | **สถานีรวมทุกสาย** | `#64748B` | <img src="icons/lines/line-0.svg" width="24" height="24" alt="Transit Hub" style="vertical-align:middle;"> | **Transit Network Hub:** ชุมทางเชื่อมต่อโครงข่ายระบบรางทั้งหมด |
 

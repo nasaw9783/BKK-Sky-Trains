@@ -34,7 +34,7 @@
         const GOLD_LINE_ID = 3;
         const MRT_BLUE_FARE_CHANGE_AT = new Date('2026-07-03T00:00:00+07:00').getTime();
         const MRT_LINE_IDS = { BLUE: 101, PURPLE: 102, RED: 103, DARK_RED: 103, LIGHT_RED: 105, ARL: 104, BRT: 201, ORANGE: 106 };
-        const MRT_COLORS = { BLUE: '#0284c7', PURPLE: '#8a2c9b', RED: '#b91c1c', DARK_RED: '#b91c1c', LIGHT_RED: '#f87171', ARL: '#8a1538', BRT: '#FCF173', ORANGE: '#f58220' };
+        const MRT_COLORS = { BLUE: '#0284c7', PURPLE: '#8a2c9b', RED: '#b91c1c', DARK_RED: '#b91c1c', LIGHT_RED: '#f87171', ARL: '#8a1538', BRT: '#82c341', ORANGE: '#f58220' };
 
         const MRT_STATIC_DB = {
             lines: [
@@ -659,7 +659,7 @@ gQIDAQAB
             103: '#B91C1C',  // Dark Red (SRT Commuter - Dark Red / ธานีรัถยา)
             105: '#F87171',  // Light Red (SRT Commuter - Light Red / นครวิถี)
             104: '#8A1538',  // ARL (Airport Express)
-            201: '#FCF173',  // BRT (Bus Rapid Transit)
+            201: '#82C341',  // BRT (Bus Rapid Transit)
             106: '#F58220',  // Orange (MRT Orange Line)
             0: '#64748B'     // All lines
         };
@@ -904,7 +904,7 @@ gQIDAQAB
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(201)" title="รถโดยสารด่วนพิเศษ BRT (สาทร ↔ ราชพฤกษ์)" aria-label="รถโดยสารด่วนพิเศษ BRT">
-            <div class="footer-card-icon" style="background:rgba(252,241,115,0.15);border-color:rgba(252,241,115,0.35)">${getLineIconSvg(201, false, 20)}</div>
+            <div class="footer-card-icon" style="background:rgba(130,195,65,0.12);border-color:rgba(130,195,65,0.3)">${getLineIconSvg(201, false, 20)}</div>
             <div class="footer-card-info"><span class="footer-card-name">BRT สาทร-ราชพฤกษ์</span><span class="footer-card-dot">·</span><span class="footer-card-route">สาทร ↔ ราชพฤกษ์</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
@@ -966,7 +966,7 @@ gQIDAQAB
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(201)" title="รถโดยสารด่วนพิเศษ BRT (สาทร ↔ ราชพฤกษ์)" aria-label="รถโดยสารด่วนพิเศษ BRT" aria-hidden="true" tabindex="-1">
-            <div class="footer-card-icon" style="background:rgba(252,241,115,0.15);border-color:rgba(252,241,115,0.35)">${getLineIconSvg(201, false, 20)}</div>
+            <div class="footer-card-icon" style="background:rgba(130,195,65,0.12);border-color:rgba(130,195,65,0.3)">${getLineIconSvg(201, false, 20)}</div>
             <div class="footer-card-info"><span class="footer-card-name">BRT สาทร-ราชพฤกษ์</span><span class="footer-card-dot">·</span><span class="footer-card-route">สาทร ↔ ราชพฤกษ์</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
@@ -1187,7 +1187,7 @@ gQIDAQAB
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(201)" title="Bangkok BRT (Sathorn ↔ Ratchapruek)" aria-label="Bangkok BRT">
-            <div class="footer-card-icon" style="background:rgba(252,241,115,0.15);border-color:rgba(252,241,115,0.35)">${getLineIconSvg(201, false, 20)}</div>
+            <div class="footer-card-icon" style="background:rgba(130,195,65,0.12);border-color:rgba(130,195,65,0.3)">${getLineIconSvg(201, false, 20)}</div>
             <div class="footer-card-info"><span class="footer-card-name">Bangkok BRT</span><span class="footer-card-dot">·</span><span class="footer-card-route">Sathorn ↔ Ratchapruek</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
@@ -1249,7 +1249,7 @@ gQIDAQAB
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(201)" title="Bangkok BRT (Sathorn ↔ Ratchapruek)" aria-label="Bangkok BRT" aria-hidden="true" tabindex="-1">
-            <div class="footer-card-icon" style="background:rgba(252,241,115,0.15);border-color:rgba(252,241,115,0.35)">${getLineIconSvg(201, false, 20)}</div>
+            <div class="footer-card-icon" style="background:rgba(130,195,65,0.12);border-color:rgba(130,195,65,0.3)">${getLineIconSvg(201, false, 20)}</div>
             <div class="footer-card-info"><span class="footer-card-name">Bangkok BRT</span><span class="footer-card-dot">·</span><span class="footer-card-route">Sathorn ↔ Ratchapruek</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
@@ -1470,7 +1470,7 @@ gQIDAQAB
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(201)" title="BRT 快捷公交 (沙吞 ↔ 拉差蓬)" aria-label="BRT 快捷公交">
-            <div class="footer-card-icon" style="background:rgba(252,241,115,0.15);border-color:rgba(252,241,115,0.35)">${getLineIconSvg(201, false, 20)}</div>
+            <div class="footer-card-icon" style="background:rgba(130,195,65,0.12);border-color:rgba(130,195,65,0.3)">${getLineIconSvg(201, false, 20)}</div>
             <div class="footer-card-info"><span class="footer-card-name">BRT 快捷公交</span><span class="footer-card-dot">·</span><span class="footer-card-route">沙吞 ↔ 拉差蓬</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
@@ -1532,7 +1532,7 @@ gQIDAQAB
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(201)" title="BRT 快捷公交 (沙吞 ↔ 拉差蓬)" aria-label="BRT 快捷公交" aria-hidden="true" tabindex="-1">
-            <div class="footer-card-icon" style="background:rgba(252,241,115,0.15);border-color:rgba(252,241,115,0.35)">${getLineIconSvg(201, false, 20)}</div>
+            <div class="footer-card-icon" style="background:rgba(130,195,65,0.12);border-color:rgba(130,195,65,0.3)">${getLineIconSvg(201, false, 20)}</div>
             <div class="footer-card-info"><span class="footer-card-name">BRT 快捷公交</span><span class="footer-card-dot">·</span><span class="footer-card-route">沙吞 ↔ 拉差蓬</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
@@ -3182,7 +3182,7 @@ gQIDAQAB
                 id: 201,
                 nameTH: 'BRT', nameZH: 'BRT',
                 nameEN: 'BRT',
-                color: '#FCF173',
+                color: '#82C341',
                 operatorTH: 'กทม. / ระบบรถโดยสารด่วนพิเศษ BRT',
                 operatorEN: 'BMA / Bangkok BRT Express Bus',
                 operatorZH: '曼谷市政府 (BMA) / BRT 快速公交',
@@ -3291,17 +3291,16 @@ gQIDAQAB
             return `<div ${idAttr} class="line-filter-bar" data-lang="${lang}">
                 ${TRANSIT_LINES_CATALOG.map(l => {
                     const isActive = l.id === activeLineId;
+                    const isBrt = l.id === 201;
                     const name = getLineOptLabel(l);
-                    const isBright = isActive && isBrightColor(l.color);
-                    const activeTextColor = isBright ? '#0f172a' : '#ffffff';
                     const activeStyle = isActive
-                        ? `background:${l.color};color:${activeTextColor};border-color:${l.color};font-weight:700;box-shadow:0 3px 10px ${l.color}55;`
+                        ? (isBrt ? '' : `background:${l.color};color:#ffffff;border-color:${l.color};font-weight:700;box-shadow:0 3px 10px ${l.color}55;`)
                         : '';
-                    return `<button type="button" class="line-filter-pill ${isActive ? 'active' : ''}${isBright ? ' bright' : ''}"
+                    return `<button type="button" class="line-filter-pill ${isBrt ? 'tab-brt' : ''} ${isActive ? 'active' : ''}"
                         data-line-id="${l.id}"
                         style="${activeStyle}"
                         onclick="App.${onClickHandlerName}(${l.id})">
-                        <span class="pill-icon" style="display:inline-flex;align-items:center;">${getLineIconSvg(l.id, isBright ? '#0f172a' : isActive, 15)}</span>
+                        <span class="pill-icon" style="display:inline-flex;align-items:center;">${getLineIconSvg(l.id, isActive, 15)}</span>
                         <span>${esc(name)}</span>
                     </button>`;
                 }).join('')}
@@ -4173,12 +4172,12 @@ gQIDAQAB
                         allLines.forEach((l, idx) => {
                             const btn = existingTabs[idx + 1];
                             const on = l.LineId === this.exitFilterLine;
-                            const isBright = on && isBrightColor(l.LineColor);
-                            const textColor = on ? (isBright ? '#0f172a' : '#fff') : '';
-                            btn.className = `tab ${on ? 'on' : ''}${isBright ? ' bright' : ''}`;
-                            btn.style.cssText = on ? `background:${l.LineColor};color:${textColor};` : '';
+                            const isBrt = l.LineId === 201;
+                            btn.className = `tab ${isBrt ? 'tab-brt' : ''} ${on ? 'on' : ''}`;
+                            btn.setAttribute('data-line', l.LineId);
+                            btn.style.cssText = on ? (isBrt ? '' : `background:${l.LineColor};color:#fff;`) : '';
                             btn.innerHTML = `
-                                ${getLineIconSvg(l.LineId, isBright ? '#0f172a' : on, 17)}
+                                ${getLineIconSvg(l.LineId, on, 17)}
                                 <span>${esc(getLineOptLabel(l))}</span>`;
                         });
                     } else {
@@ -4188,10 +4187,10 @@ gQIDAQAB
                                 <span>${lang === 'th' ? 'ทุกสาย' : (lang === 'zh' ? '全部线路' : 'All Lines')}</span>
                             </button>` + allLines.map(l => {
                             const on = l.LineId === this.exitFilterLine;
-                            const isBright = on && isBrightColor(l.LineColor);
-                            const textColor = on ? (isBright ? '#0f172a' : '#fff') : '';
-                            return `<button class="tab ${on ? 'on' : ''}${isBright ? ' bright' : ''}" style="${on ? 'background:' + l.LineColor + ';color:' + textColor + ';' : ''}" onclick="App.filterExitLine(${l.LineId})">
-                                ${getLineIconSvg(l.LineId, isBright ? '#0f172a' : on, 17)}
+                            const isBrt = l.LineId === 201;
+                            const bgStyle = on ? (isBrt ? '' : `background:${l.LineColor};color:#fff;`) : '';
+                            return `<button class="tab ${isBrt ? 'tab-brt' : ''} ${on ? 'on' : ''}" data-line="${l.LineId}" style="${bgStyle}" onclick="App.filterExitLine(${l.LineId})">
+                                ${getLineIconSvg(l.LineId, on, 17)}
                                 <span>${esc(getLineOptLabel(l))}</span></button>`;
                         }).join('');
                     }
@@ -5179,9 +5178,9 @@ setOriginFromActionSheet() {
                     } else if (activeId === 201) {
                         // BRT
                         specificContent = `
-                            <div class="info-card" style="background:linear-gradient(135deg,#fcf17315,#fcf17325);border-color:#fcf17355">
-                                <span class="fare-badge-20" style="background:#FCF173;color:#0f172a">฿15 ${isZh ? '单一票价' : (isEn ? 'Flat Rate' : 'ราคาเดียวตลอดสาย')}</span>
-                                <h3 style="color:#a89d00">
+                            <div class="info-card" style="background:linear-gradient(135deg,#82c34110,#82c34120);border-color:#82c34155">
+                                <span class="fare-badge-20" style="background:#82C341">฿15 ${isZh ? '单一票价' : (isEn ? 'Flat Rate' : 'ราคาเดียวตลอดสาย')}</span>
+                                <h3 style="color:#5f9628">
                                     <span>${isZh ? '全线单一票价 15 泰铢' : (isEn ? 'Flat 15 Baht Fare' : 'อัตราค่าโดยสาร 15 บาท ตลอดสาย')}</span>
                                 </h3>
                                 <div style="font-size:12.5px;color:var(--ink);line-height:1.6">
@@ -5294,18 +5293,17 @@ setOriginFromActionSheet() {
                     pills.forEach((p) => {
                         const lineId = Number(p.getAttribute('data-line-id'));
                         const isActive = lineId === activeId;
-                        const lineData = TRANSIT_LINES_CATALOG.find(l => l.id === lineId);
-                        const isBright = isActive && lineData && isBrightColor(lineData.color);
+                        const isBrt = lineId === 201;
                         p.classList.toggle('active', isActive);
-                        p.classList.toggle('bright', isBright);
+                        p.classList.toggle('tab-brt', isBrt);
+                        const lineData = TRANSIT_LINES_CATALOG.find(l => l.id === lineId);
                         if (lineData) {
-                            const activeTextColor = isBright ? '#0f172a' : '#ffffff';
                             p.style.cssText = isActive
-                                ? `background:${lineData.color};color:${activeTextColor};border-color:${lineData.color};font-weight:700;box-shadow:0 3px 10px ${lineData.color}55;`
+                                ? (isBrt ? '' : `background:${lineData.color};color:#ffffff;border-color:${lineData.color};font-weight:700;box-shadow:0 3px 10px ${lineData.color}55;`)
                                 : '';
                             const iconWrap = p.querySelector('.pill-icon');
                             if (iconWrap) {
-                                iconWrap.innerHTML = getLineIconSvg(lineData.id, isBright ? '#0f172a' : isActive, 15);
+                                iconWrap.innerHTML = getLineIconSvg(lineData.id, isActive, 15);
                             }
                         }
                         if (isActive) activePill = p;
@@ -5654,18 +5652,17 @@ setOriginFromActionSheet() {
                     pills.forEach((p) => {
                         const lineId = Number(p.getAttribute('data-line-id'));
                         const isActive = lineId === activeId;
-                        const lineData = TRANSIT_LINES_CATALOG.find(l => l.id === lineId);
-                        const isBright = isActive && lineData && isBrightColor(lineData.color);
+                        const isBrt = lineId === 201;
                         p.classList.toggle('active', isActive);
-                        p.classList.toggle('bright', isBright);
+                        p.classList.toggle('tab-brt', isBrt);
+                        const lineData = TRANSIT_LINES_CATALOG.find(l => l.id === lineId);
                         if (lineData) {
-                            const activeTextColor = isBright ? '#0f172a' : '#ffffff';
                             p.style.cssText = isActive
-                                ? `background:${lineData.color};color:${activeTextColor};border-color:${lineData.color};font-weight:700;box-shadow:0 3px 10px ${lineData.color}55;`
+                                ? (isBrt ? '' : `background:${lineData.color};color:#ffffff;border-color:${lineData.color};font-weight:700;box-shadow:0 3px 10px ${lineData.color}55;`)
                                 : '';
                             const iconWrap = p.querySelector('.pill-icon');
                             if (iconWrap) {
-                                iconWrap.innerHTML = getLineIconSvg(lineData.id, isBright ? '#0f172a' : isActive, 15);
+                                iconWrap.innerHTML = getLineIconSvg(lineData.id, isActive, 15);
                             }
                         }
                         if (isActive) activePill = p;
@@ -6462,9 +6459,9 @@ setOriginFromActionSheet() {
                 const j = this.journey;
                 const field = (which, key) => {
                     const st = key ? this.findStation(key) : null;
-                    const isBright = st && (isBrightColor(st.StationLineColor) || st.StationLineId === 4 || st.StationLineId === 201);
+                    const isYellow = st && (st.StationLineId === 4 || (st.StationLineColor && String(st.StationLineColor).toUpperCase() === '#FFD100'));
                     const keyStyle = st
-                        ? `background:${st.StationLineColor};color:${isBright ? '#0f172a' : '#ffffff'};`
+                        ? `background:${st.StationLineColor};color:${isYellow ? '#0f172a' : '#ffffff'};`
                         : '';
                     const nameStr = st ? stName(st) : T('jSelect');
                     const nameLen = nameStr.length;
@@ -6651,13 +6648,14 @@ setOriginFromActionSheet() {
                         const on = l.LineId === this.journey.pickerLine;
                         const st = this.traffic?.lines?.find(x => x.LineId === l.LineId);
                         const warn = st && st.TrafficStatus !== 1 ? ` ${getUiIcon('alert', 12, '#ef4444')}` : '';
-                        const isBright = on && isBrightColor(l.LineColor);
-                        const textColor = on ? (isBright ? '#0f172a' : '#fff') : '';
-                        btn.className = `tab ${on ? 'on' : ''}${isBright ? ' bright' : ''}`;
-                        btn.style.cssText = on ? `background:${l.LineColor};color:${textColor};` : '';
+                        const isBrt = l.LineId === 201;
+                        const textColor = on ? (isBrt ? '#ffffff' : (isBrightColor(l.LineColor) ? '#0f172a' : '#fff')) : '';
+                        btn.className = `tab ${isBrt ? 'tab-brt' : ''} ${on ? 'on' : ''}`;
+                        btn.setAttribute('data-line', l.LineId);
+                        btn.style.cssText = on ? (isBrt ? '' : `background:${l.LineColor};color:${textColor};`) : '';
                         btn.setAttribute('aria-pressed', on ? 'true' : 'false');
                         btn.innerHTML = `
-                            ${getLineIconSvg(l.LineId, isBright ? '#0f172a' : on, 18)}
+                            ${getLineIconSvg(l.LineId, on, 18)}
                             <span>${esc(getLineOptLabel(l))}${warn}</span>`;
                     });
                 } else {
@@ -6670,11 +6668,12 @@ setOriginFromActionSheet() {
                         const on = l.LineId === this.journey.pickerLine;
                         const st = this.traffic?.lines?.find(x => x.LineId === l.LineId);
                         const warn = st && st.TrafficStatus !== 1 ? ` ${getUiIcon('alert', 12, '#ef4444')}` : '';
-                        const isBright = on && isBrightColor(l.LineColor);
-                        const textColor = on ? (isBright ? '#0f172a' : '#fff') : '';
-                        return `<button class="tab ${on ? 'on' : ''}${isBright ? ' bright' : ''}" style="${on ? 'background:' + l.LineColor + ';color:' + textColor + ';' : ''}"
+                        const isBrt = l.LineId === 201;
+                        const textColor = on ? (isBrt ? '#ffffff' : (isBrightColor(l.LineColor) ? '#0f172a' : '#fff')) : '';
+                        const bgStyle = on ? (isBrt ? '' : `background:${l.LineColor};color:${textColor};`) : '';
+                        return `<button class="tab ${isBrt ? 'tab-brt' : ''} ${on ? 'on' : ''}" data-line="${l.LineId}" style="${bgStyle}"
                             aria-pressed="${on ? 'true' : 'false'}" onclick="App.setPickerLine(${l.LineId})">
-                            ${getLineIconSvg(l.LineId, isBright ? '#0f172a' : on, 18)}
+                            ${getLineIconSvg(l.LineId, on, 18)}
                             <span>${esc(getLineOptLabel(l))}${warn}</span></button>`;
                     }).join('');
                 }
@@ -7868,7 +7867,7 @@ setOriginFromActionSheet() {
                         onclick="App.pinStation('${r.station.StationKey}')">
                         <span class="chip-row-top">
                             ${getLineIconSvg(lineId, iconColor, 15)}
-                            <span class="st-key" style="background:${stColor}${isBrightColor(stColor) ? ';color:#0f172a' : ''}">${esc(r.station.StationKey)}</span>
+                            <span class="st-key" style="background:${stColor}">${esc(r.station.StationKey)}</span>
                             <span class="${nameClass}">${esc(nm)}</span>
                         </span>
                         <span class="km km-bottom">${distStr}</span></button>`;
@@ -7925,11 +7924,12 @@ setOriginFromActionSheet() {
                         const on = l.LineId === this.activeLine;
                         const st = this.traffic?.lines?.find(x => x.LineId === l.LineId);
                         const warn = st && st.TrafficStatus !== 1 ? ` ${getUiIcon('alert', 12, '#ef4444')}` : '';
-                        const isBright = on && isBrightColor(l.LineColor);
-                        tabBtn.className = `tab ${on ? 'on' : ''}${isBright ? ' bright' : ''}`;
-                        tabBtn.style.background = on ? l.LineColor : '';
+                        const isBrt = l.LineId === 201;
+                        tabBtn.className = `tab ${isBrt ? 'tab-brt' : ''} ${on ? 'on' : ''}`;
+                        tabBtn.setAttribute('data-line', l.LineId);
+                        tabBtn.style.background = on ? (isBrt ? '' : l.LineColor) : '';
                         tabBtn.innerHTML = `
-                            ${getLineIconSvg(l.LineId, isBright ? '#0f172a' : on, 18)}
+                            ${getLineIconSvg(l.LineId, on, 18)}
                             <span>${esc(getLineOptLabel(l))}${warn}</span>`;
                     });
                     return;
@@ -7938,10 +7938,11 @@ setOriginFromActionSheet() {
                     const on = l.LineId === this.activeLine;
                     const st = this.traffic?.lines?.find(x => x.LineId === l.LineId);
                     const warn = st && st.TrafficStatus !== 1 ? ` ${getUiIcon('alert', 12, '#ef4444')}` : '';
-                    const isBright = on && isBrightColor(l.LineColor);
-                    return `<button class="tab ${on ? 'on' : ''}${isBright ? ' bright' : ''}" style="${on ? 'background:' + l.LineColor : ''}"
+                    const isBrt = l.LineId === 201;
+                    const bgStyle = on ? (isBrt ? '' : 'background:' + l.LineColor) : '';
+                    return `<button class="tab ${isBrt ? 'tab-brt' : ''} ${on ? 'on' : ''}" data-line="${l.LineId}" style="${bgStyle}"
                         onclick="App.setLine(${l.LineId})">
-                        ${getLineIconSvg(l.LineId, isBright ? '#0f172a' : on, 18)}
+                        ${getLineIconSvg(l.LineId, on, 18)}
                             <span>${esc(getLineOptLabel(l))}${warn}</span></button>`;
                 }).join('');
             },
@@ -8125,7 +8126,7 @@ setOriginFromActionSheet() {
                         </div>
                         <div class="st-main">
                             <button class="st-btn" onclick="App.toggleStation('${esc(s.StationKey)}')">
-                                <span class="st-key" style="background:${color}${isBrightColor(color) ? ';color:#0f172a' : ''}">${esc(s.StationKey)}</span>
+                                <span class="st-key" style="background:${color}">${esc(s.StationKey)}</span>
                                 <div class="names">
                                     <div class="th">${esc(stName(s))}
                                         ${crowded ? `<span class="badge crowd-b">${T('crowded')}</span>` : ''}
@@ -9031,9 +9032,9 @@ setOriginFromActionSheet() {
             if (typeof activeOrColor === 'string' && (activeOrColor.startsWith('#') || activeOrColor.startsWith('rgb'))) {
                 c = activeOrColor;
             } else {
-                c = activeOrColor ? (isBrightColor(color) ? '#0f172a' : '#ffffff') : color;
+                c = activeOrColor ? '#ffffff' : color;
             }
-            const isYellow = id === 4 || id === 201;
+            const isYellow = id === 4;
             const filter = (String(c).toLowerCase() === '#ffffff' && isYellow) ? 'filter: drop-shadow(0 1px 2px rgba(0,0,0,0.6));' : '';
 
             let inner = '';
@@ -9122,16 +9123,17 @@ setOriginFromActionSheet() {
                     <line x1="2" y1="21" x2="22" y2="21" stroke-width="2"/>
                 </svg>`;
             } else if (id === 201) {
-                // Bangkok BRT: Bus Rapid Transit - Modern transit bus with dedicated lane
-                inner = `<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="${c}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:block;margin:auto;">
-                    <rect x="4" y="4" width="16" height="14" rx="3" fill="${c}" fill-opacity="0.22"/>
-                    <path d="M6 7.5h12v4.5H6z" rx="1" fill="${c}"/>
-                    <line x1="8" y1="5.2" x2="16" y2="5.2" stroke-width="1.5"/>
-                    <circle cx="7.5" cy="15" r="1.3" fill="${c}"/>
-                    <circle cx="16.5" cy="15" r="1.3" fill="${c}"/>
-                    <line x1="10" y1="15" x2="14" y2="15" stroke-width="1.5"/>
-                    <line x1="2" y1="21" x2="22" y2="21" stroke-width="2"/>
-                    <path d="M5 18v2M19 18v2" stroke-width="2"/>
+                // Bangkok BRT: Bus Rapid Transit - Modern transit bus with dedicated lane (เขียวคาดเหลือง)
+                inner = `<svg viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:block;margin:auto;">
+                    <line x1="2" y1="21" x2="22" y2="21" stroke="#82C341" stroke-width="2"/>
+                    <path d="M5 18v2M19 18v2" stroke="#1e293b" stroke-width="2.2"/>
+                    <rect x="4" y="4" width="16" height="14" rx="3" fill="#82C341" stroke="#5f9628" stroke-width="1.6"/>
+                    <line x1="8" y1="5.5" x2="16" y2="5.5" stroke="#ffffff" stroke-width="1.3"/>
+                    <rect x="6" y="7" width="12" height="3.8" rx="0.8" fill="#0f172a" fill-opacity="0.8"/>
+                    <rect x="4" y="11.6" width="16" height="2.4" fill="#FFD100" stroke="#ca8a04" stroke-width="0.3"/>
+                    <circle cx="7.5" cy="15.3" r="1.2" fill="#FFD100" stroke="#365314" stroke-width="0.5"/>
+                    <circle cx="16.5" cy="15.3" r="1.2" fill="#FFD100" stroke="#365314" stroke-width="0.5"/>
+                    <line x1="10" y1="15.3" x2="14" y2="15.3" stroke="#ffffff" stroke-width="1.4"/>
                 </svg>`;
             } else if (id === 106) {
                 // MRT Orange Line: Underground Tunnel Metro with modern aerodynamic front
@@ -9170,9 +9172,8 @@ setOriginFromActionSheet() {
 
         function isBrightColor(col) {
             if (!col) return false;
-            const up = String(col).toUpperCase();
-            if (up === '#FFD100' || up === '#F5C242' || up === '#EAB308' || up === '#F1A80A' || up === '#FCF173') return true;
-            const c = up.replace('#', '');
+            if (col === '#FFD100' || col === '#F5C242' || col === '#EAB308' || col === '#F1A80A') return true;
+            const c = String(col).replace('#', '');
             if (c.length === 6) {
                 const r = parseInt(c.slice(0, 2), 16);
                 const g = parseInt(c.slice(2, 4), 16);

@@ -3943,6 +3943,7 @@ gQIDAQAB
                     const isBright = isBrightColor(color);
                     const codeTextColor = isBright ? '#0f172a' : '#ffffff';
 
+                    const isBrt = line.LineId === 201;
                     const stationChips = stations.map(s => {
                         const isSelected = s.StationKey === curKey;
                         const name = stName(s);
@@ -3951,7 +3952,7 @@ gQIDAQAB
                         return `
                             <button type="button" class="station-picker-chip ${isSelected ? 'selected' : ''}"
                                 onclick="App.selectExitStation('${esc(s.StationKey)}')">
-                                <span class="chip-code" style="background:${color};color:${codeTextColor}">${esc(s.StationKey)}</span>
+                                <span class="chip-code ${isBrt ? 'chip-code-brt' : ''}" style="${isBrt ? '' : `background:${color};color:${codeTextColor}`}">${esc(s.StationKey)}</span>
                                 <span class="chip-name ${sizeClass}" title="${esc(name)}">${esc(name)}</span>
                             </button>`;
                     }).join('');
@@ -4105,11 +4106,12 @@ gQIDAQAB
                     ? `<button class="btn btn-ghost view-dir-btn" style="padding:3px 8px;font-size:11px;margin-left:${calibrateExitBtn ? '6px' : 'auto'}" onclick="App.selectExitStation('${esc(s.StationKey)}')">${getUiIcon('door', 13, 'currentColor')} ${lang === 'zh' ? '查看本站出入口名录 ➔' : (lang === 'th' ? 'เปิดไดเรกทอรีสถานีนี้ ➔' : 'View Station Exits ➔')}</button>`
                     : '';
 
-                el.innerHTML = `
+                    const isBrt = s.StationLineId === 201;
+                    el.innerHTML = `
                     ${this.locError ? `<div class="err-box" style="margin:0 0 10px">${this.locError}</div>` : ''}
                     <div class="current-exit-hero">
                         <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px dashed var(--line);flex-wrap:wrap">
-                            <span class="st-key" style="background:${color};font-size:12px;padding:3px 8px">${esc(s.StationKey)}</span>
+                            <span class="st-key ${isBrt ? 'st-key-brt' : ''}" style="${isBrt ? '' : 'background:' + color + ';'}font-size:12px;padding:3px 8px">${esc(s.StationKey)}</span>
                             <div>
                                 <span style="font-weight:700;font-size:14px;color:var(--ink)">${esc(stName(s))}</span>
                                 <span style="font-size:11px;color:var(--muted);margin-left:6px">${esc(lineLabel)}</span>
@@ -6460,8 +6462,9 @@ setOriginFromActionSheet() {
                 const field = (which, key) => {
                     const st = key ? this.findStation(key) : null;
                     const isYellow = st && (st.StationLineId === 4 || (st.StationLineColor && String(st.StationLineColor).toUpperCase() === '#FFD100'));
+                    const isBrt = st && (st.StationLineId === 201 || (st.StationKey && String(st.StationKey).startsWith('B') && !String(st.StationKey).startsWith('BL')));
                     const keyStyle = st
-                        ? `background:${st.StationLineColor};color:${isYellow ? '#0f172a' : '#ffffff'};`
+                        ? (isBrt ? '' : `background:${st.StationLineColor};color:${isYellow ? '#0f172a' : '#ffffff'};`)
                         : '';
                     const nameStr = st ? stName(st) : T('jSelect');
                     const nameLen = nameStr.length;
@@ -6474,7 +6477,7 @@ setOriginFromActionSheet() {
                             ` : ''}
                         </div>
                         <div class="val ${st ? '' : 'ph'}">
-                            ${st ? `<span class="st-key" style="${keyStyle}">${esc(st.StationKey)}</span>` : ''}
+                            ${st ? `<span class="st-key ${isBrt ? 'st-key-brt' : ''}" style="${keyStyle}">${esc(st.StationKey)}</span>` : ''}
                             <div class="nm-marquee-wrap" title="${st ? esc(stName(st)) : T('jSelect')}">
                                 <div class="nm-marquee-track">
                                     <span class="nm ${sizeClass}">${esc(nameStr)}</span>
@@ -6618,7 +6621,7 @@ setOriginFromActionSheet() {
                         <div class="tabs picker-tabs" id="pickerTabs"></div>
                         ${this.nearest ? `<div class="picker-nearest-wrap" style="padding:4px 14px 8px; display:flex; justify-content:center; align-items:center; width:100%; box-sizing:border-box;"><button class="alt-chip" style="margin:0 auto; display:inline-flex; align-items:center; justify-content:center; text-align:center; letter-spacing:0;"
                             onclick="App.pickJourneyStation('${esc(this.nearest.station.StationKey)}')">
-                            ${T('jUseNearest')} · <span class="st-key" style="background:${this.nearest.station.StationLineColor || '#7AB420'};">${esc(this.nearest.station.StationKey)}</span> ${esc(stName(this.nearest.station))}</button></div>` : ''}
+                            ${T('jUseNearest')} · <span class="st-key ${this.nearest.station.StationLineId === 201 ? 'st-key-brt' : ''}" style="${this.nearest.station.StationLineId === 201 ? '' : 'background:' + (this.nearest.station.StationLineColor || '#7AB420') + ';'}">${esc(this.nearest.station.StationKey)}</span> ${esc(stName(this.nearest.station))}</button></div>` : ''}
                         <div class="picker-list" id="pickerList"></div>
                     </div>`;
                 this.renderPickerTabs();
@@ -7863,11 +7866,12 @@ setOriginFromActionSheet() {
                     const nm = stName(r.station);
                     const nameClass = nm.length > 14 ? 'chip-name xxlong' : (nm.length > 9 ? 'chip-name xlong' : (nm.length > 5 ? 'chip-name long' : 'chip-name'));
                     const iconColor = this.getStationTrainIconColor(r, lineId);
+                    const isBrt = lineId === 201;
                     return `<button type="button" class="alt-chip ${isSel ? 'on' : ''}"
                         onclick="App.pinStation('${r.station.StationKey}')">
                         <span class="chip-row-top">
                             ${getLineIconSvg(lineId, iconColor, 15)}
-                            <span class="st-key" style="background:${stColor}">${esc(r.station.StationKey)}</span>
+                            <span class="st-key ${isBrt ? 'st-key-brt' : ''}" style="${isBrt ? '' : 'background:' + stColor}">${esc(r.station.StationKey)}</span>
                             <span class="${nameClass}">${esc(nm)}</span>
                         </span>
                         <span class="km km-bottom">${distStr}</span></button>`;
@@ -8103,9 +8107,11 @@ setOriginFromActionSheet() {
                     lineColor = line?.LineColor;
                 }
 
+                el.setAttribute('data-active-line', this.activeLine);
                 el.innerHTML = stations.map(s => {
                     const staticTime = usesStaticTimetable(s);
                     const color = (q ? (s.StationLineColor || LINE_BRAND_COLORS[s.StationLineId] || lineColor) : (lineColor || s.StationLineColor)) || '#64748B';
+                    const isBrt = s.StationLineId === 201 || (this.activeLine === 201 && (!s.StationLineId || s.StationLineId === 201));
                     // สถานีสำรอง (km == null) ไม่ใช่ "ใกล้คุณ" จริง — ไม่ติด badge/วงแหวน
                     const isNear = this.nearest && this.nearest.km != null
                         && s.StationKey === this.nearest.station.StationKey;
@@ -8119,14 +8125,14 @@ setOriginFromActionSheet() {
                     // IsCrowded มีเฉพาะสายจาก StationList API — สาย MRT static ไม่มีฟิลด์นี้
                     const crowded = s.IsCrowded === true;
                     return `
-                    <div class="st-row${crowded ? ' crowded' : ''}${isBranch ? ' branch-row' : ''}" id="row-${esc(s.StationKey)}-${s.StationLineId}">
+                    <div class="st-row${crowded ? ' crowded' : ''}${isBranch ? ' branch-row' : ''}${isBrt ? ' brt-row' : ''}" id="row-${esc(s.StationKey)}-${s.StationLineId}">
                         <div class="st-rail">
-                            <div class="track" style="background:${color}${q ? '22' : ''}"></div>
-                            <div class="node ${isSiam ? 'inter' : ''} ${isNear ? 'near' : ''}" style="border-color:${color}"></div>
+                            <div class="track${isBrt ? ' track-brt' : ''}" style="${isBrt ? '' : 'background:' + color + (q ? '22' : '')}"></div>
+                            <div class="node ${isSiam ? 'inter' : ''} ${isNear ? 'near' : ''}${isBrt ? ' node-brt' : ''}" style="${isBrt ? '' : 'border-color:' + color}"></div>
                         </div>
                         <div class="st-main">
                             <button class="st-btn" onclick="App.toggleStation('${esc(s.StationKey)}')">
-                                <span class="st-key" style="background:${color}">${esc(s.StationKey)}</span>
+                                <span class="st-key${isBrt ? ' st-key-brt' : ''}" style="${isBrt ? '' : 'background:' + color}">${esc(s.StationKey)}</span>
                                 <div class="names">
                                     <div class="th">${esc(stName(s))}
                                         ${crowded ? `<span class="badge crowd-b">${T('crowded')}</span>` : ''}
@@ -9975,9 +9981,10 @@ setOriginFromActionSheet() {
                     hasTransferAfter ? 'pre-transfer' : ''
                 ].filter(Boolean).join(' ');
 
+                const isBrtKey = pick.lineId === 201 || (st.StationCode && String(st.StationCode).startsWith('B') && !String(st.StationCode).startsWith('BL'));
                 rows.push(`<div class="${stepClasses}" style="color:${pick.color}">
-                    <span class="ndw"><span class="nd"></span></span>
-                    <span class="nm" style="color:var(--ink)"><span class="st-key" style="background:${pick.color};font-size:9.5px;padding:1px 5px;min-width:28px;height:18px;margin-right:6px;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;color:#fff;line-height:1;">${esc(st.StationCode)}</span>${esc(destName(st.Title))}</span>
+                    <span class="ndw"><span class="nd${isBrtKey ? ' node-brt' : ''}"></span></span>
+                    <span class="nm" style="color:var(--ink)"><span class="st-key ${isBrtKey ? 'st-key-brt' : ''}" style="${isBrtKey ? '' : 'background:' + pick.color + ';'}font-size:9.5px;padding:1px 5px;min-width:28px;height:18px;margin-right:6px;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;color:#fff;line-height:1;">${esc(st.StationCode)}</span>${esc(destName(st.Title))}</span>
                     <span class="tm">${esc(st.TimeRoute || '')}</span></div>`);
             });
 

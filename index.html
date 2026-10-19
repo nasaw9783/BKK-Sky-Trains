@@ -1667,27 +1667,29 @@
             border-color: transparent !important;
         }
 
-        /* ===== BRT (Line 201) Special Banner & Tab Styling ===== */
-        /* ข้อกำหนด: กรอบแบนเนอร์สีเขียวอ่อน, icon รถสีเขียวคาดเหลือง, พื้นหลังสีเหลืองอ่อน, ตัวหนังสือสีขาวแบบเดิม */
-        .tabs .tab.tab-brt,
-        .tabs .tab[data-line="201"],
-        .line-filter-pill.tab-brt,
-        .line-filter-pill[data-line-id="201"] {
-            border: 1.5px solid #82C341 !important;
-            background: rgba(254, 240, 138, 0.16) !important;
+        /* ===== BRT (Line 201) Special Banner, Track & Station Code Styling ===== */
+        /* ข้อกำหนด: เมื่อยังไม่มีการแตะปุ่ม BRT ให้ กรอบและพื้นหลังสีแบบ APL หรือ MRT, ตัวหนังสือสีขาวชัดไม่แตก */
+        .tabs .tab.tab-brt:not(.on),
+        .tabs .tab[data-line="201"]:not(.on),
+        .line-filter-pill.tab-brt:not(.active),
+        .line-filter-pill[data-line-id="201"]:not(.active) {
+            background: var(--card) !important;
+            border: 1px solid var(--line) !important;
             color: #ffffff !important;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85);
-            font-weight: 700;
+            text-shadow: none !important;
+            font-weight: 600 !important;
+            -webkit-font-smoothing: antialiased;
         }
 
-        .tabs .tab.tab-brt:hover,
-        .tabs .tab[data-line="201"]:hover,
-        .line-filter-pill.tab-brt:hover,
-        .line-filter-pill[data-line-id="201"]:hover {
-            border-color: #99d94a !important;
-            background: rgba(254, 240, 138, 0.25) !important;
+        .tabs .tab.tab-brt:not(.on):hover,
+        .tabs .tab[data-line="201"]:not(.on):hover,
+        .line-filter-pill.tab-brt:not(.active):hover,
+        .line-filter-pill[data-line-id="201"]:not(.active):hover {
+            border-color: var(--muted) !important;
+            background: var(--bg-subtle) !important;
         }
 
+        /* เมื่อแตะปุ่ม BRT (Active / .on / .active): กรอบสีเขียวอ่อน, พื้นหลังสีเหลืองอ่อน, ตัวหนังสือสีขาวชัดไม่แตก */
         .tabs .tab.tab-brt.on,
         .tabs .tab[data-line="201"].on,
         .line-filter-pill.tab-brt.active,
@@ -1695,7 +1697,8 @@
             border: 2px solid #82C341 !important;
             background: linear-gradient(135deg, #FEF9C3 0%, #FEF08A 50%, #FDE047 100%) !important;
             color: #ffffff !important;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.95), 0 0 2px rgba(0, 0, 0, 0.9) !important;
+            -webkit-text-stroke: 0.4px #0f172a;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.95), 0 0 2px rgba(0, 0, 0, 0.9) !important;
             box-shadow: 0 3px 12px rgba(130, 195, 65, 0.45) !important;
             font-weight: 800 !important;
         }
@@ -1706,6 +1709,63 @@
         .line-filter-pill[data-line-id="201"] span {
             color: #ffffff !important;
             text-shadow: inherit !important;
+        }
+
+        /* ===== BRT (Line 201) เส้นราง-จุดต่อสถานี และ แบนเนอร์ รหัสสถานี แสดงสีเขียวคาดเหลือง ===== */
+        /* เส้นราง (Track): สีเขียวคาดเหลือง */
+        .st-rail .track.track-brt,
+        .st-row.brt-row .st-rail .track,
+        #strip[data-active-line="201"] .st-rail .track {
+            width: 5px !important;
+            background: linear-gradient(
+                to right,
+                #82C341 0%,
+                #82C341 33%,
+                #FFD100 33%,
+                #FFD100 67%,
+                #82C341 67%,
+                #82C341 100%
+            ) !important;
+            border-radius: 2.5px;
+            box-shadow: 0 0 3px rgba(130, 195, 65, 0.35);
+        }
+
+        /* จุดต่อสถานี (Station Node): สีเขียวคาดเหลือง (ขอบเขียว แกนกลางเหลืองสว่าง) */
+        .st-rail .node.node-brt,
+        .st-row.brt-row .st-rail .node,
+        #strip[data-active-line="201"] .st-rail .node {
+            border: 3.5px solid #82C341 !important;
+            background: #FFD100 !important;
+            box-shadow: 0 0 0 2px var(--card) !important;
+            box-sizing: border-box;
+        }
+
+        /* แบนเนอร์ รหัสสถานี (Station Code Banner / st-key): แสดงสีเขียวคาดเหลือง */
+        .st-key.st-key-brt,
+        .st-row.brt-row .st-key,
+        #strip[data-active-line="201"] .st-key,
+        .alt-chip .st-key.st-key-brt,
+        .chip-code.chip-code-brt {
+            background: linear-gradient(
+                to bottom,
+                #82C341 0%,
+                #82C341 33%,
+                #FFD100 33%,
+                #FFD100 67%,
+                #82C341 67%,
+                #82C341 100%
+            ) !important;
+            border: 1px solid #5f9628 !important;
+            color: #ffffff !important;
+            -webkit-text-stroke: 0.45px #0f172a;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.95), 0 0 2px rgba(0, 0, 0, 0.95) !important;
+            font-weight: 800 !important;
+            box-shadow: 0 1.5px 4px rgba(0, 0, 0, 0.3) !important;
+        }
+
+        .j-step .nd.node-brt {
+            border: 2px solid #82C341 !important;
+            background: #FFD100 !important;
         }
 
         /* ===== Search Input ===== */

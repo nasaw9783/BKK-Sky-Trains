@@ -72,7 +72,7 @@
 | **103** | **SRTET สายสีแดงเข้ม** (ธานีรัถยา) | `#B91C1C` | <img src="icons/lines/line-103.svg" width="24" height="24" alt="SRT Dark Red" style="vertical-align:middle;"> | Commuter EMU ขบวนชานเมือง (Hitachi) พร้อมเสารับไฟ Overhead Pantograph |
 | **105** | **SRTET สายสีแดงอ่อน** (นครวิถี) | `#F87171` | <img src="icons/lines/line-105.svg" width="24" height="24" alt="SRT Light Red" style="vertical-align:middle;"> | Light Commuter EMU ขบวนชานเมืองพร้อมแขนรับไฟ Single-arm Pantograph |
 | **104** | **ARL รถไฟฟ้าแอร์พอร์ต เรล ลิงก์** | `#8A1538` | <img src="icons/lines/line-104.svg" width="24" height="24" alt="ARL" style="vertical-align:middle;"> | Airport Express Bullet Train รถไฟฟ้าเชื่อมสนามบินสุวรรณภูมิพร้อมไอคอนเครื่องบิน |
-| **201** | **BRT รถโดยสารด่วนพิเศษ** | `#82C341` | <img src="icons/lines/line-201.svg" width="24" height="24" alt="BRT" style="vertical-align:middle;"> | Bus Rapid Transit รถโดยสารปรับอากาศพร้อมช่องทางวิ่งเฉพาะ |
+| **201** | **BRT รถโดยสารด่วนพิเศษ** | `#FCF173` | <img src="icons/lines/line-201.svg" width="24" height="24" alt="BRT" style="vertical-align:middle;"> | Bus Rapid Transit รถโดยสารปรับอากาศพร้อมช่องทางวิ่งเฉพาะ |
 | **106** | **MRT สายสีส้ม** *(โครงการในอนาคต)* | `#F58220` | <img src="icons/lines/line-106.svg" width="24" height="24" alt="MRT Orange" style="vertical-align:middle;"> | Underground Tunnel Metro รถไฟฟ้าขนส่งมวลชนเชื่อมฝั่งตะวันออก-ตก |
 | **0** | **สถานีเชื่อมต่อโครงข่าย** (Transit Hub) | `#64748B` | <img src="icons/lines/line-0.svg" width="24" height="24" alt="Transit Hub" style="vertical-align:middle;"> | สัญลักษณ์ชุมทางเชื่อมต่อโครงข่ายระบบรางทั้งหมด |
 

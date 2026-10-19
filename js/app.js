@@ -34,7 +34,7 @@
         const GOLD_LINE_ID = 3;
         const MRT_BLUE_FARE_CHANGE_AT = new Date('2026-07-03T00:00:00+07:00').getTime();
         const MRT_LINE_IDS = { BLUE: 101, PURPLE: 102, RED: 103, DARK_RED: 103, LIGHT_RED: 105, ARL: 104, BRT: 201, ORANGE: 106 };
-        const MRT_COLORS = { BLUE: '#0284c7', PURPLE: '#8a2c9b', RED: '#b91c1c', DARK_RED: '#b91c1c', LIGHT_RED: '#f87171', ARL: '#8a1538', BRT: '#82c341', ORANGE: '#f58220' };
+        const MRT_COLORS = { BLUE: '#0284c7', PURPLE: '#8a2c9b', RED: '#b91c1c', DARK_RED: '#b91c1c', LIGHT_RED: '#f87171', ARL: '#8a1538', BRT: '#FCF173', ORANGE: '#f58220' };
 
         const MRT_STATIC_DB = {
             lines: [
@@ -659,7 +659,7 @@ gQIDAQAB
             103: '#B91C1C',  // Dark Red (SRT Commuter - Dark Red / ธานีรัถยา)
             105: '#F87171',  // Light Red (SRT Commuter - Light Red / นครวิถี)
             104: '#8A1538',  // ARL (Airport Express)
-            201: '#82C341',  // BRT (Bus Rapid Transit)
+            201: '#FCF173',  // BRT (Bus Rapid Transit)
             106: '#F58220',  // Orange (MRT Orange Line)
             0: '#64748B'     // All lines
         };
@@ -904,7 +904,7 @@ gQIDAQAB
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(201)" title="รถโดยสารด่วนพิเศษ BRT (สาทร ↔ ราชพฤกษ์)" aria-label="รถโดยสารด่วนพิเศษ BRT">
-            <div class="footer-card-icon" style="background:rgba(130,195,65,0.12);border-color:rgba(130,195,65,0.3)">${getLineIconSvg(201, false, 20)}</div>
+            <div class="footer-card-icon" style="background:rgba(252,241,115,0.15);border-color:rgba(252,241,115,0.35)">${getLineIconSvg(201, false, 20)}</div>
             <div class="footer-card-info"><span class="footer-card-name">BRT สาทร-ราชพฤกษ์</span><span class="footer-card-dot">·</span><span class="footer-card-route">สาทร ↔ ราชพฤกษ์</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
@@ -966,7 +966,7 @@ gQIDAQAB
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(201)" title="รถโดยสารด่วนพิเศษ BRT (สาทร ↔ ราชพฤกษ์)" aria-label="รถโดยสารด่วนพิเศษ BRT" aria-hidden="true" tabindex="-1">
-            <div class="footer-card-icon" style="background:rgba(130,195,65,0.12);border-color:rgba(130,195,65,0.3)">${getLineIconSvg(201, false, 20)}</div>
+            <div class="footer-card-icon" style="background:rgba(252,241,115,0.15);border-color:rgba(252,241,115,0.35)">${getLineIconSvg(201, false, 20)}</div>
             <div class="footer-card-info"><span class="footer-card-name">BRT สาทร-ราชพฤกษ์</span><span class="footer-card-dot">·</span><span class="footer-card-route">สาทร ↔ ราชพฤกษ์</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
@@ -1187,7 +1187,7 @@ gQIDAQAB
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(201)" title="Bangkok BRT (Sathorn ↔ Ratchapruek)" aria-label="Bangkok BRT">
-            <div class="footer-card-icon" style="background:rgba(130,195,65,0.12);border-color:rgba(130,195,65,0.3)">${getLineIconSvg(201, false, 20)}</div>
+            <div class="footer-card-icon" style="background:rgba(252,241,115,0.15);border-color:rgba(252,241,115,0.35)">${getLineIconSvg(201, false, 20)}</div>
             <div class="footer-card-info"><span class="footer-card-name">Bangkok BRT</span><span class="footer-card-dot">·</span><span class="footer-card-route">Sathorn ↔ Ratchapruek</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
@@ -1249,7 +1249,7 @@ gQIDAQAB
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(201)" title="Bangkok BRT (Sathorn ↔ Ratchapruek)" aria-label="Bangkok BRT" aria-hidden="true" tabindex="-1">
-            <div class="footer-card-icon" style="background:rgba(130,195,65,0.12);border-color:rgba(130,195,65,0.3)">${getLineIconSvg(201, false, 20)}</div>
+            <div class="footer-card-icon" style="background:rgba(252,241,115,0.15);border-color:rgba(252,241,115,0.35)">${getLineIconSvg(201, false, 20)}</div>
             <div class="footer-card-info"><span class="footer-card-name">Bangkok BRT</span><span class="footer-card-dot">·</span><span class="footer-card-route">Sathorn ↔ Ratchapruek</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
@@ -1470,7 +1470,7 @@ gQIDAQAB
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(201)" title="BRT 快捷公交 (沙吞 ↔ 拉差蓬)" aria-label="BRT 快捷公交">
-            <div class="footer-card-icon" style="background:rgba(130,195,65,0.12);border-color:rgba(130,195,65,0.3)">${getLineIconSvg(201, false, 20)}</div>
+            <div class="footer-card-icon" style="background:rgba(252,241,115,0.15);border-color:rgba(252,241,115,0.35)">${getLineIconSvg(201, false, 20)}</div>
             <div class="footer-card-info"><span class="footer-card-name">BRT 快捷公交</span><span class="footer-card-dot">·</span><span class="footer-card-route">沙吞 ↔ 拉差蓬</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
@@ -1532,7 +1532,7 @@ gQIDAQAB
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(201)" title="BRT 快捷公交 (沙吞 ↔ 拉差蓬)" aria-label="BRT 快捷公交" aria-hidden="true" tabindex="-1">
-            <div class="footer-card-icon" style="background:rgba(130,195,65,0.12);border-color:rgba(130,195,65,0.3)">${getLineIconSvg(201, false, 20)}</div>
+            <div class="footer-card-icon" style="background:rgba(252,241,115,0.15);border-color:rgba(252,241,115,0.35)">${getLineIconSvg(201, false, 20)}</div>
             <div class="footer-card-info"><span class="footer-card-name">BRT 快捷公交</span><span class="footer-card-dot">·</span><span class="footer-card-route">沙吞 ↔ 拉差蓬</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
@@ -3182,7 +3182,7 @@ gQIDAQAB
                 id: 201,
                 nameTH: 'BRT', nameZH: 'BRT',
                 nameEN: 'BRT',
-                color: '#82C341',
+                color: '#FCF173',
                 operatorTH: 'กทม. / ระบบรถโดยสารด่วนพิเศษ BRT',
                 operatorEN: 'BMA / Bangkok BRT Express Bus',
                 operatorZH: '曼谷市政府 (BMA) / BRT 快速公交',
@@ -3292,14 +3292,16 @@ gQIDAQAB
                 ${TRANSIT_LINES_CATALOG.map(l => {
                     const isActive = l.id === activeLineId;
                     const name = getLineOptLabel(l);
+                    const isBright = isActive && isBrightColor(l.color);
+                    const activeTextColor = isBright ? '#0f172a' : '#ffffff';
                     const activeStyle = isActive
-                        ? `background:${l.color};color:#ffffff;border-color:${l.color};font-weight:700;box-shadow:0 3px 10px ${l.color}55;`
+                        ? `background:${l.color};color:${activeTextColor};border-color:${l.color};font-weight:700;box-shadow:0 3px 10px ${l.color}55;`
                         : '';
-                    return `<button type="button" class="line-filter-pill ${isActive ? 'active' : ''}"
+                    return `<button type="button" class="line-filter-pill ${isActive ? 'active' : ''}${isBright ? ' bright' : ''}"
                         data-line-id="${l.id}"
                         style="${activeStyle}"
                         onclick="App.${onClickHandlerName}(${l.id})">
-                        <span class="pill-icon" style="display:inline-flex;align-items:center;">${getLineIconSvg(l.id, isActive, 15)}</span>
+                        <span class="pill-icon" style="display:inline-flex;align-items:center;">${getLineIconSvg(l.id, isBright ? '#0f172a' : isActive, 15)}</span>
                         <span>${esc(name)}</span>
                     </button>`;
                 }).join('')}
@@ -4171,10 +4173,12 @@ gQIDAQAB
                         allLines.forEach((l, idx) => {
                             const btn = existingTabs[idx + 1];
                             const on = l.LineId === this.exitFilterLine;
-                            btn.className = `tab ${on ? 'on' : ''}`;
-                            btn.style.cssText = on ? `background:${l.LineColor};color:#fff;` : '';
+                            const isBright = on && isBrightColor(l.LineColor);
+                            const textColor = on ? (isBright ? '#0f172a' : '#fff') : '';
+                            btn.className = `tab ${on ? 'on' : ''}${isBright ? ' bright' : ''}`;
+                            btn.style.cssText = on ? `background:${l.LineColor};color:${textColor};` : '';
                             btn.innerHTML = `
-                                ${getLineIconSvg(l.LineId, on, 17)}
+                                ${getLineIconSvg(l.LineId, isBright ? '#0f172a' : on, 17)}
                                 <span>${esc(getLineOptLabel(l))}</span>`;
                         });
                     } else {
@@ -4184,8 +4188,10 @@ gQIDAQAB
                                 <span>${lang === 'th' ? 'ทุกสาย' : (lang === 'zh' ? '全部线路' : 'All Lines')}</span>
                             </button>` + allLines.map(l => {
                             const on = l.LineId === this.exitFilterLine;
-                            return `<button class="tab ${on ? 'on' : ''}" style="${on ? 'background:' + l.LineColor + ';color:#fff;' : ''}" onclick="App.filterExitLine(${l.LineId})">
-                                ${getLineIconSvg(l.LineId, on, 17)}
+                            const isBright = on && isBrightColor(l.LineColor);
+                            const textColor = on ? (isBright ? '#0f172a' : '#fff') : '';
+                            return `<button class="tab ${on ? 'on' : ''}${isBright ? ' bright' : ''}" style="${on ? 'background:' + l.LineColor + ';color:' + textColor + ';' : ''}" onclick="App.filterExitLine(${l.LineId})">
+                                ${getLineIconSvg(l.LineId, isBright ? '#0f172a' : on, 17)}
                                 <span>${esc(getLineOptLabel(l))}</span></button>`;
                         }).join('');
                     }
@@ -5173,9 +5179,9 @@ setOriginFromActionSheet() {
                     } else if (activeId === 201) {
                         // BRT
                         specificContent = `
-                            <div class="info-card" style="background:linear-gradient(135deg,#82c34110,#82c34120);border-color:#82c34155">
-                                <span class="fare-badge-20" style="background:#82C341">฿15 ${isZh ? '单一票价' : (isEn ? 'Flat Rate' : 'ราคาเดียวตลอดสาย')}</span>
-                                <h3 style="color:#5f9628">
+                            <div class="info-card" style="background:linear-gradient(135deg,#fcf17315,#fcf17325);border-color:#fcf17355">
+                                <span class="fare-badge-20" style="background:#FCF173;color:#0f172a">฿15 ${isZh ? '单一票价' : (isEn ? 'Flat Rate' : 'ราคาเดียวตลอดสาย')}</span>
+                                <h3 style="color:#a89d00">
                                     <span>${isZh ? '全线单一票价 15 泰铢' : (isEn ? 'Flat 15 Baht Fare' : 'อัตราค่าโดยสาร 15 บาท ตลอดสาย')}</span>
                                 </h3>
                                 <div style="font-size:12.5px;color:var(--ink);line-height:1.6">
@@ -5288,15 +5294,18 @@ setOriginFromActionSheet() {
                     pills.forEach((p) => {
                         const lineId = Number(p.getAttribute('data-line-id'));
                         const isActive = lineId === activeId;
-                        p.classList.toggle('active', isActive);
                         const lineData = TRANSIT_LINES_CATALOG.find(l => l.id === lineId);
+                        const isBright = isActive && lineData && isBrightColor(lineData.color);
+                        p.classList.toggle('active', isActive);
+                        p.classList.toggle('bright', isBright);
                         if (lineData) {
+                            const activeTextColor = isBright ? '#0f172a' : '#ffffff';
                             p.style.cssText = isActive
-                                ? `background:${lineData.color};color:#ffffff;border-color:${lineData.color};font-weight:700;box-shadow:0 3px 10px ${lineData.color}55;`
+                                ? `background:${lineData.color};color:${activeTextColor};border-color:${lineData.color};font-weight:700;box-shadow:0 3px 10px ${lineData.color}55;`
                                 : '';
                             const iconWrap = p.querySelector('.pill-icon');
                             if (iconWrap) {
-                                iconWrap.innerHTML = getLineIconSvg(lineData.id, isActive, 15);
+                                iconWrap.innerHTML = getLineIconSvg(lineData.id, isBright ? '#0f172a' : isActive, 15);
                             }
                         }
                         if (isActive) activePill = p;
@@ -5645,15 +5654,18 @@ setOriginFromActionSheet() {
                     pills.forEach((p) => {
                         const lineId = Number(p.getAttribute('data-line-id'));
                         const isActive = lineId === activeId;
-                        p.classList.toggle('active', isActive);
                         const lineData = TRANSIT_LINES_CATALOG.find(l => l.id === lineId);
+                        const isBright = isActive && lineData && isBrightColor(lineData.color);
+                        p.classList.toggle('active', isActive);
+                        p.classList.toggle('bright', isBright);
                         if (lineData) {
+                            const activeTextColor = isBright ? '#0f172a' : '#ffffff';
                             p.style.cssText = isActive
-                                ? `background:${lineData.color};color:#ffffff;border-color:${lineData.color};font-weight:700;box-shadow:0 3px 10px ${lineData.color}55;`
+                                ? `background:${lineData.color};color:${activeTextColor};border-color:${lineData.color};font-weight:700;box-shadow:0 3px 10px ${lineData.color}55;`
                                 : '';
                             const iconWrap = p.querySelector('.pill-icon');
                             if (iconWrap) {
-                                iconWrap.innerHTML = getLineIconSvg(lineData.id, isActive, 15);
+                                iconWrap.innerHTML = getLineIconSvg(lineData.id, isBright ? '#0f172a' : isActive, 15);
                             }
                         }
                         if (isActive) activePill = p;
@@ -6450,9 +6462,9 @@ setOriginFromActionSheet() {
                 const j = this.journey;
                 const field = (which, key) => {
                     const st = key ? this.findStation(key) : null;
-                    const isYellow = st && (st.StationLineId === 4 || (st.StationLineColor && String(st.StationLineColor).toUpperCase() === '#FFD100'));
+                    const isBright = st && (isBrightColor(st.StationLineColor) || st.StationLineId === 4 || st.StationLineId === 201);
                     const keyStyle = st
-                        ? `background:${st.StationLineColor};color:${isYellow ? '#0f172a' : '#ffffff'};`
+                        ? `background:${st.StationLineColor};color:${isBright ? '#0f172a' : '#ffffff'};`
                         : '';
                     const nameStr = st ? stName(st) : T('jSelect');
                     const nameLen = nameStr.length;
@@ -6639,12 +6651,13 @@ setOriginFromActionSheet() {
                         const on = l.LineId === this.journey.pickerLine;
                         const st = this.traffic?.lines?.find(x => x.LineId === l.LineId);
                         const warn = st && st.TrafficStatus !== 1 ? ` ${getUiIcon('alert', 12, '#ef4444')}` : '';
-                        const textColor = on ? (isBrightColor(l.LineColor) ? '#0f172a' : '#fff') : '';
-                        btn.className = `tab ${on ? 'on' : ''}`;
+                        const isBright = on && isBrightColor(l.LineColor);
+                        const textColor = on ? (isBright ? '#0f172a' : '#fff') : '';
+                        btn.className = `tab ${on ? 'on' : ''}${isBright ? ' bright' : ''}`;
                         btn.style.cssText = on ? `background:${l.LineColor};color:${textColor};` : '';
                         btn.setAttribute('aria-pressed', on ? 'true' : 'false');
                         btn.innerHTML = `
-                            ${getLineIconSvg(l.LineId, on, 18)}
+                            ${getLineIconSvg(l.LineId, isBright ? '#0f172a' : on, 18)}
                             <span>${esc(getLineOptLabel(l))}${warn}</span>`;
                     });
                 } else {
@@ -6657,10 +6670,11 @@ setOriginFromActionSheet() {
                         const on = l.LineId === this.journey.pickerLine;
                         const st = this.traffic?.lines?.find(x => x.LineId === l.LineId);
                         const warn = st && st.TrafficStatus !== 1 ? ` ${getUiIcon('alert', 12, '#ef4444')}` : '';
-                        const textColor = on ? (isBrightColor(l.LineColor) ? '#0f172a' : '#fff') : '';
-                        return `<button class="tab ${on ? 'on' : ''}" style="${on ? 'background:' + l.LineColor + ';color:' + textColor + ';' : ''}"
+                        const isBright = on && isBrightColor(l.LineColor);
+                        const textColor = on ? (isBright ? '#0f172a' : '#fff') : '';
+                        return `<button class="tab ${on ? 'on' : ''}${isBright ? ' bright' : ''}" style="${on ? 'background:' + l.LineColor + ';color:' + textColor + ';' : ''}"
                             aria-pressed="${on ? 'true' : 'false'}" onclick="App.setPickerLine(${l.LineId})">
-                            ${getLineIconSvg(l.LineId, on, 18)}
+                            ${getLineIconSvg(l.LineId, isBright ? '#0f172a' : on, 18)}
                             <span>${esc(getLineOptLabel(l))}${warn}</span></button>`;
                     }).join('');
                 }
@@ -7854,7 +7868,7 @@ setOriginFromActionSheet() {
                         onclick="App.pinStation('${r.station.StationKey}')">
                         <span class="chip-row-top">
                             ${getLineIconSvg(lineId, iconColor, 15)}
-                            <span class="st-key" style="background:${stColor}">${esc(r.station.StationKey)}</span>
+                            <span class="st-key" style="background:${stColor}${isBrightColor(stColor) ? ';color:#0f172a' : ''}">${esc(r.station.StationKey)}</span>
                             <span class="${nameClass}">${esc(nm)}</span>
                         </span>
                         <span class="km km-bottom">${distStr}</span></button>`;
@@ -7911,10 +7925,11 @@ setOriginFromActionSheet() {
                         const on = l.LineId === this.activeLine;
                         const st = this.traffic?.lines?.find(x => x.LineId === l.LineId);
                         const warn = st && st.TrafficStatus !== 1 ? ` ${getUiIcon('alert', 12, '#ef4444')}` : '';
-                        tabBtn.className = `tab ${on ? 'on' : ''}`;
+                        const isBright = on && isBrightColor(l.LineColor);
+                        tabBtn.className = `tab ${on ? 'on' : ''}${isBright ? ' bright' : ''}`;
                         tabBtn.style.background = on ? l.LineColor : '';
                         tabBtn.innerHTML = `
-                            ${getLineIconSvg(l.LineId, on, 18)}
+                            ${getLineIconSvg(l.LineId, isBright ? '#0f172a' : on, 18)}
                             <span>${esc(getLineOptLabel(l))}${warn}</span>`;
                     });
                     return;
@@ -7923,9 +7938,10 @@ setOriginFromActionSheet() {
                     const on = l.LineId === this.activeLine;
                     const st = this.traffic?.lines?.find(x => x.LineId === l.LineId);
                     const warn = st && st.TrafficStatus !== 1 ? ` ${getUiIcon('alert', 12, '#ef4444')}` : '';
-                    return `<button class="tab ${on ? 'on' : ''}" style="${on ? 'background:' + l.LineColor : ''}"
+                    const isBright = on && isBrightColor(l.LineColor);
+                    return `<button class="tab ${on ? 'on' : ''}${isBright ? ' bright' : ''}" style="${on ? 'background:' + l.LineColor : ''}"
                         onclick="App.setLine(${l.LineId})">
-                        ${getLineIconSvg(l.LineId, on, 18)}
+                        ${getLineIconSvg(l.LineId, isBright ? '#0f172a' : on, 18)}
                             <span>${esc(getLineOptLabel(l))}${warn}</span></button>`;
                 }).join('');
             },
@@ -8109,7 +8125,7 @@ setOriginFromActionSheet() {
                         </div>
                         <div class="st-main">
                             <button class="st-btn" onclick="App.toggleStation('${esc(s.StationKey)}')">
-                                <span class="st-key" style="background:${color}">${esc(s.StationKey)}</span>
+                                <span class="st-key" style="background:${color}${isBrightColor(color) ? ';color:#0f172a' : ''}">${esc(s.StationKey)}</span>
                                 <div class="names">
                                     <div class="th">${esc(stName(s))}
                                         ${crowded ? `<span class="badge crowd-b">${T('crowded')}</span>` : ''}
@@ -9015,9 +9031,9 @@ setOriginFromActionSheet() {
             if (typeof activeOrColor === 'string' && (activeOrColor.startsWith('#') || activeOrColor.startsWith('rgb'))) {
                 c = activeOrColor;
             } else {
-                c = activeOrColor ? '#ffffff' : color;
+                c = activeOrColor ? (isBrightColor(color) ? '#0f172a' : '#ffffff') : color;
             }
-            const isYellow = id === 4;
+            const isYellow = id === 4 || id === 201;
             const filter = (String(c).toLowerCase() === '#ffffff' && isYellow) ? 'filter: drop-shadow(0 1px 2px rgba(0,0,0,0.6));' : '';
 
             let inner = '';
@@ -9154,8 +9170,9 @@ setOriginFromActionSheet() {
 
         function isBrightColor(col) {
             if (!col) return false;
-            if (col === '#FFD100' || col === '#F5C242' || col === '#EAB308' || col === '#F1A80A') return true;
-            const c = String(col).replace('#', '');
+            const up = String(col).toUpperCase();
+            if (up === '#FFD100' || up === '#F5C242' || up === '#EAB308' || up === '#F1A80A' || up === '#FCF173') return true;
+            const c = up.replace('#', '');
             if (c.length === 6) {
                 const r = parseInt(c.slice(0, 2), 16);
                 const g = parseInt(c.slice(2, 4), 16);

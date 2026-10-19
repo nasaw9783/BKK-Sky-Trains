@@ -5627,13 +5627,14 @@ setOriginFromActionSheet() {
                 set('sheetLiveSub', T('sheetLiveSub'));
 
                 // Planner view
-                const hubChev = this.hubOpen !== false ? '▲' : '▼';
+                const hubChev = this.hubOpen ? '▲' : '▼';
                 const hubTitle = lang === 'th'
                     ? `${getUiIcon('star', 15, '#f59e0b')} <span>สถานียอดนิยม (แตะเพื่อเลือกด่วน)</span> <span class="hub-toggle-chev" id="plannerHubChev">${hubChev}</span>`
                     : (lang === 'zh'
                         ? `${getUiIcon('star', 15, '#f59e0b')} <span>热门车站（快捷选择）</span> <span class="hub-toggle-chev" id="plannerHubChev">${hubChev}</span>`
                         : `${getUiIcon('star', 15, '#f59e0b')} <span>Popular Stations (Quick Select)</span> <span class="hub-toggle-chev" id="plannerHubChev">${hubChev}</span>`);
                 set('plannerHubTitle', hubTitle);
+                setAttr('plannerHubToggle', 'aria-expanded', String(!!this.hubOpen));
 
                 // Exits view
                 set('nearestExitTitle', T('nearestExitTitle') || (lang === 'th' ? 'ทางออกใกล้คุณที่สุด' : 'Nearest Exit to You'));
@@ -6082,10 +6083,10 @@ setOriginFromActionSheet() {
             },
 
             /* ---------- journey planner (from → to) ---------- */
-            hubOpen: true,
+            hubOpen: false,
 
             togglePopularHubs() {
-                this.hubOpen = this.hubOpen === false ? true : false;
+                this.hubOpen = !this.hubOpen;
                 const chipsEl = document.getElementById('quickHubChips');
                 const chevEl = document.getElementById('plannerHubChev');
                 const btnEl = document.getElementById('plannerHubToggle');
@@ -6241,7 +6242,7 @@ setOriginFromActionSheet() {
             renderQuickHubChips() {
                 const el = document.getElementById('quickHubChips');
                 if (!el) return;
-                el.style.display = this.hubOpen === false ? 'none' : 'grid';
+                el.style.display = this.hubOpen ? 'grid' : 'none';
                 const hubs = [
                     { key: 'CEN', lineId: 1, nameTh: 'สยาม', nameEn: 'Siam', nameZh: '暹罗', subTh: 'BTS สุขุมวิท ⇄ สีลม', subEn: 'BTS Sukhumvit ⇄ Silom', subZh: 'BTS 素坤逸 ⇄ 是隆' },
                     { key: 'E4', lineId: 1, nameTh: 'อโศก', nameEn: 'Asok', nameZh: '阿索克', subTh: 'เชื่อม MRT สุขุมวิท', subEn: 'Connect MRT Sukhumvit', subZh: '换乘 MRT 素坤逸' },
@@ -8949,7 +8950,7 @@ setOriginFromActionSheet() {
             if (royal?.th) {
                 return `${name} · (${royal.th})`;
             }
-            return en ? `${name} (${en})` : name;
+            return name;
         }
 
         // คืน {text, now} สำหรับ ETA (นาทีคงเหลือ ณ ตอนนี้) — approx = ค่าจากความจำ ใส่ ~ นำหน้า

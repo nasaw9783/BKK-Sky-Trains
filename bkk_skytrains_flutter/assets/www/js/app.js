@@ -2811,22 +2811,30 @@ gQIDAQAB
                 color: '#64748B',
                 operatorTH: 'โครงข่ายรถไฟฟ้า 12 สาย กทม. และปริมณฑล',
                 operatorEN: '12 Transit Lines Network in Bangkok',
+                operatorZH: '曼谷及周边地区 12 条轨道交通线路网络',
                 terminusTH: 'ทุกเส้นทางครอบคลุมทั้งระบบ',
                 terminusEN: 'Comprehensive Network Coverage',
+                terminusZH: '覆盖全网所有线路',
                 minFare: 12,
                 maxFare: 62,
                 pricingModelTH: 'ขึ้นกับแต่ละสาย (ตามระยะทาง / นโยบาย 20 บาท)',
                 pricingModelEN: 'Line-dependent (Distance / 20 Baht Flat Cap)',
+                pricingModelZH: '按各线路计费标准（阶梯计费 / 20泰铢封顶）',
                 ticketsTH: 'EMV Contactless, Rabbit, Token, Smart Pass',
                 ticketsEN: 'EMV Contactless, Rabbit, Token, Smart Pass',
+                ticketsZH: 'EMV Contactless, 兔子卡 (Rabbit), 单程票/代币, Smart Pass',
                 firstTrainTH: '05:00 - 06:00 น.',
                 firstTrainEN: '05:00 - 06:00',
+                firstTrainZH: '05:00 - 06:00',
                 lastTrainTH: '23:30 - 00:30 น.',
                 lastTrainEN: '23:30 - 00:30',
+                lastTrainZH: '23:30 - 00:30',
                 peakFreqTH: '2.30 - 5.00 นาที',
                 peakFreqEN: '2.30 - 5.00 min',
+                peakFreqZH: '2.30 - 5.00 分钟',
                 offPeakFreqTH: '5.00 - 15.00 นาที',
-                offPeakFreqEN: '5.00 - 15.00 min'
+                offPeakFreqEN: '5.00 - 15.00 min',
+                offPeakFreqZH: '5.00 - 15.00 分钟'
             },
             {
                 id: 1,
@@ -2835,24 +2843,32 @@ gQIDAQAB
                 color: '#7AB420',
                 operatorTH: 'BTSC (ระบบรถไฟฟ้าบีทีเอส)',
                 operatorEN: 'BTSC (Bangkok Mass Transit System)',
+                operatorZH: 'BTSC (曼谷大众运输系统公司)',
                 terminusTH: 'คูคต ↔ เคหะฯ (47 สถานี)',
                 terminusEN: 'Khu Khot ↔ Kheha (47 Stations)',
+                terminusZH: '库阔 ↔ 壳哈 (47 个车站)',
                 minFare: 17,
                 maxFare: 62,
                 pricingModelTH: 'ตามจำนวนสถานี (สัมปทานหลัก ฿17-฿47 + ส่วนต่อขยาย +฿15)',
                 pricingModelEN: 'By stations (Core ฿17-฿47 + Extensions +฿15)',
+                pricingModelZH: '按站计费（特许核心段 ฿17-฿47 + 延伸段 +฿15）',
                 ticketsTH: 'บัตร Rabbit, บัตรเที่ยวเดียว, One-Day Pass (฿150)',
                 ticketsEN: 'Rabbit Card, Single Journey Ticket, One-Day Pass (฿150)',
+                ticketsZH: '兔子卡 (Rabbit Card), 单程票, 一日通票 (฿150)',
                 firstTrainTH: '05:15 - 05:30 น.',
                 firstTrainEN: '05:15 - 05:30',
+                firstTrainZH: '05:15 - 05:30',
                 lastTrainTH: '24:00 - 00:30 น.',
                 lastTrainEN: '24:00 - 00:30',
+                lastTrainZH: '24:00 - 00:30',
                 peakFreqTH: '2.30 - 3.50 นาที',
                 peakFreqEN: '2.30 - 3.50 min',
+                peakFreqZH: '2.30 - 3.50 分钟',
                 offPeakFreqTH: '5.00 - 8.00 นาที',
                 offPeakFreqEN: '5.00 - 8.00 min',
-                dir1: { code: 'N24', toTH: 'คูคต', toEN: 'Khu Khot', first: '05:15', last: '23:30' },
-                dir2: { code: 'E23', toTH: 'เคหะฯ', toEN: 'Kheha', first: '05:15', last: '23:30' }
+                offPeakFreqZH: '5.00 - 8.00 分钟',
+                dir1: { code: 'N24', toTH: 'คูคต', toEN: 'Khu Khot', toZH: '库阔', first: '05:15', last: '23:30' },
+                dir2: { code: 'E23', toTH: 'เคหะฯ', toEN: 'Kheha', toZH: '壳哈', first: '05:15', last: '23:30' }
             },
             {
                 id: 2,
@@ -2861,24 +2877,32 @@ gQIDAQAB
                 color: '#00807D',
                 operatorTH: 'BTSC (ระบบรถไฟฟ้าบีทีเอส)',
                 operatorEN: 'BTSC (Bangkok Mass Transit System)',
+                operatorZH: 'BTSC (曼谷大众运输系统公司)',
                 terminusTH: 'สนามกีฬาแห่งชาติ ↔ บางหว้า (14 สถานี)',
                 terminusEN: 'National Stadium ↔ Bang Wa (14 Stations)',
+                terminusZH: '国家体育场 ↔ 挽哇 (14 个车站)',
                 minFare: 17,
                 maxFare: 62,
                 pricingModelTH: 'ตามจำนวนสถานี (สัมปทานหลัก ฿17-฿47 + ส่วนต่อขยาย +฿15)',
                 pricingModelEN: 'By stations (Core ฿17-฿47 + Extensions +฿15)',
+                pricingModelZH: '按站计费（特许核心段 ฿17-฿47 + 延伸段 +฿15）',
                 ticketsTH: 'บัตร Rabbit, บัตรเที่ยวเดียว, One-Day Pass (฿150)',
                 ticketsEN: 'Rabbit Card, Single Journey Ticket, One-Day Pass (฿150)',
+                ticketsZH: '兔子卡 (Rabbit Card), 单程票, 一日通票 (฿150)',
                 firstTrainTH: '05:30 น.',
                 firstTrainEN: '05:30',
+                firstTrainZH: '05:30',
                 lastTrainTH: '24:00 น.',
                 lastTrainEN: '24:00',
+                lastTrainZH: '24:00',
                 peakFreqTH: '3.45 นาที',
                 peakFreqEN: '3.45 min',
+                peakFreqZH: '3.45 分钟',
                 offPeakFreqTH: '6.00 - 8.00 นาที',
                 offPeakFreqEN: '6.00 - 8.00 min',
-                dir1: { code: 'W1', toTH: 'สนามกีฬาแห่งชาติ', toEN: 'National Stadium', first: '05:30', last: '24:00' },
-                dir2: { code: 'S12', toTH: 'บางหว้า', toEN: 'Bang Wa', first: '05:30', last: '24:00' }
+                offPeakFreqZH: '6.00 - 8.00 分钟',
+                dir1: { code: 'W1', toTH: 'สนามกีฬาแห่งชาติ', toEN: 'National Stadium', toZH: '国家体育场', first: '05:30', last: '24:00' },
+                dir2: { code: 'S12', toTH: 'บางหว้า', toEN: 'Bang Wa', toZH: '挽哇', first: '05:30', last: '24:00' }
             },
             {
                 id: 3,
@@ -2887,24 +2911,32 @@ gQIDAQAB
                 color: '#C9A038',
                 operatorTH: 'กรุงเทพธนาคม (KT) / BTSC',
                 operatorEN: 'Krungthep Thanakom / BTSC',
+                operatorZH: '曼谷塔纳空 (KT) / BTSC',
                 terminusTH: 'กรุงธนบุรี ↔ คลองสาน (3 สถานี)',
                 terminusEN: 'Krung Thon Buri ↔ Khlong San (3 Stations)',
+                terminusZH: '吞武里城 ↔ 空讪 (3 个车站)',
                 minFare: 16,
                 maxFare: 16,
                 pricingModelTH: 'ราคาเดียว 16 บาท ตลอดสาย (Flat Rate ฿16)',
                 pricingModelEN: 'Flat Rate ฿16 regardless of distance',
+                pricingModelZH: '全线单一票价 16 泰铢',
                 ticketsTH: 'บัตร Rabbit, บัตรโดยสารเที่ยวเดียว',
                 ticketsEN: 'Rabbit Card, Single Journey Ticket',
+                ticketsZH: '兔子卡 (Rabbit Card), 单程票',
                 firstTrainTH: '06:00 น.',
                 firstTrainEN: '06:00',
+                firstTrainZH: '06:00',
                 lastTrainTH: '24:00 น.',
                 lastTrainEN: '24:00',
+                lastTrainZH: '24:00',
                 peakFreqTH: '8.00 นาที',
                 peakFreqEN: '8.00 min',
+                peakFreqZH: '8.00 分钟',
                 offPeakFreqTH: '10.00 - 15.00 นาที',
                 offPeakFreqEN: '10.00 - 15.00 min',
-                dir1: { code: 'G1', toTH: 'กรุงธนบุรี', toEN: 'Krung Thon Buri', first: '06:00', last: '24:00' },
-                dir2: { code: 'G3', toTH: 'คลองสาน', toEN: 'Khlong San', first: '06:00', last: '24:00' }
+                offPeakFreqZH: '10.00 - 15.00 分钟',
+                dir1: { code: 'G1', toTH: 'กรุงธนบุรี', toEN: 'Krung Thon Buri', toZH: '吞武里城', first: '06:00', last: '24:00' },
+                dir2: { code: 'G3', toTH: 'คลองสาน', toEN: 'Khlong San', toZH: '空讪', first: '06:00', last: '24:00' }
             },
             {
                 id: 4,
@@ -2913,24 +2945,32 @@ gQIDAQAB
                 color: '#FFD100',
                 operatorTH: 'EBM (Eastern Bangkok Monorail)',
                 operatorEN: 'EBM (Eastern Bangkok Monorail)',
+                operatorZH: 'EBM (曼谷东部单轨铁路)',
                 terminusTH: 'ลาดพร้าว ↔ สำโรง (23 สถานี)',
                 terminusEN: 'Lat Phrao ↔ Samrong (23 Stations)',
+                terminusZH: '拉抛 ↔ 三隆 (23 个车站)',
                 minFare: 15,
                 maxFare: 45,
                 pricingModelTH: 'ตามระยะทาง (บุคคล ฿15-฿45 / ผู้สูงอายุ ฿8-฿23 / นักเรียนมีเหมา ฿20)',
                 pricingModelEN: 'By distance (Adult ฿15-฿45 / Senior ฿8-฿23 / Student Pass ฿20)',
+                pricingModelZH: '按里程计费（成人 ฿15-฿45 / 长者 ฿8-฿23 / 学生计次 ฿20）',
                 ticketsTH: 'บัตร Rabbit, บัตร EMV Contactless, บัตรเที่ยวเดียว (ผู้สูงอายุลด 50%)',
                 ticketsEN: 'Rabbit Card, EMV Contactless, Single Journey (Senior 50% off)',
+                ticketsZH: '兔子卡, EMV Contactless, 单程票 (长者5折)',
                 firstTrainTH: '06:00 น.',
                 firstTrainEN: '06:00',
+                firstTrainZH: '06:00',
                 lastTrainTH: '24:00 น.',
                 lastTrainEN: '24:00',
+                lastTrainZH: '24:00',
                 peakFreqTH: '5.00 นาที',
                 peakFreqEN: '5.00 min',
+                peakFreqZH: '5.00 分钟',
                 offPeakFreqTH: '10.00 นาที',
                 offPeakFreqEN: '10.00 min',
-                dir1: { code: 'YL01', toTH: 'ลาดพร้าว', toEN: 'Lat Phrao', first: '06:00', last: '24:00' },
-                dir2: { code: 'YL23', toTH: 'สำโรง', toEN: 'Samrong', first: '06:00', last: '24:00' }
+                offPeakFreqZH: '10.00 分钟',
+                dir1: { code: 'YL01', toTH: 'ลาดพร้าว', toEN: 'Lat Phrao', toZH: '拉抛', first: '06:00', last: '24:00' },
+                dir2: { code: 'YL23', toTH: 'สำโรง', toEN: 'Samrong', toZH: '三隆', first: '06:00', last: '24:00' }
             },
             {
                 id: 5,
@@ -2939,24 +2979,32 @@ gQIDAQAB
                 color: '#EC4899',
                 operatorTH: 'NBM (Northern Bangkok Monorail)',
                 operatorEN: 'NBM (Northern Bangkok Monorail)',
+                operatorZH: 'NBM (曼谷北部单轨铁路)',
                 terminusTH: 'ศูนย์ราชการนนทบุรี ↔ มีนบุรี (30 สถานี)',
                 terminusEN: 'Nonthaburi Civic Center ↔ Min Buri (30 Stations)',
+                terminusZH: '暖武里政务中心 ↔ 敏武里 (30 个车站)',
                 minFare: 15,
                 maxFare: 45,
                 pricingModelTH: 'ตามระยะทาง (บุคคล ฿15-฿45 / ผู้สูงอายุ ฿8-฿23 / นักเรียนมีเหมา ฿20)',
                 pricingModelEN: 'By distance (Adult ฿15-฿45 / Senior ฿8-฿23 / Student Pass ฿20)',
+                pricingModelZH: '按里程计费（成人 ฿15-฿45 / 长者 ฿8-฿23 / 学生计次 ฿20）',
                 ticketsTH: 'บัตร Rabbit, บัตร EMV Contactless, บัตรเที่ยวเดียว (ผู้สูงอายุลด 50%)',
                 ticketsEN: 'Rabbit Card, EMV Contactless, Single Journey (Senior 50% off)',
+                ticketsZH: '兔子卡, EMV Contactless, 单程票 (长者5折)',
                 firstTrainTH: '06:00 น.',
                 firstTrainEN: '06:00',
+                firstTrainZH: '06:00',
                 lastTrainTH: '24:00 น.',
                 lastTrainEN: '24:00',
+                lastTrainZH: '24:00',
                 peakFreqTH: '5.00 นาที',
                 peakFreqEN: '5.00 min',
+                peakFreqZH: '5.00 分钟',
                 offPeakFreqTH: '10.00 นาที',
                 offPeakFreqEN: '10.00 min',
-                dir1: { code: 'PK01', toTH: 'ศูนย์ราชการนนทบุรี', toEN: 'Nonthaburi Civic Center', first: '06:00', last: '24:00' },
-                dir2: { code: 'PK30', toTH: 'มีนบุรี', toEN: 'Min Buri', first: '06:00', last: '24:00' }
+                offPeakFreqZH: '10.00 分钟',
+                dir1: { code: 'PK01', toTH: 'ศูนย์ราชการนนทบุรี', toEN: 'Nonthaburi Civic Center', toZH: '暖武里政务中心', first: '06:00', last: '24:00' },
+                dir2: { code: 'PK30', toTH: 'มีนบุรี', toEN: 'Min Buri', toZH: '敏武里', first: '06:00', last: '24:00' }
             },
             {
                 id: 101,
@@ -2965,24 +3013,32 @@ gQIDAQAB
                 color: '#0284C7',
                 operatorTH: 'BEM (Bangkok Expressway and Metro) / รฟม.',
                 operatorEN: 'BEM / MRTA (Mass Rapid Transit Authority)',
+                operatorZH: 'BEM (曼谷高速与地铁) / 泰国大众捷运局 (MRTA)',
                 terminusTH: 'ท่าพระ ↔ หลักสอง (สายวงกลม, 38 สถานี)',
                 terminusEN: 'Tha Phra ↔ Lak Song (Loop Line, 38 Stations)',
+                terminusZH: '塔帕 ↔ 叻颂 (环线, 38 个车站)',
                 minFare: 17,
                 maxFare: 43,
                 pricingModelTH: 'คำนวณตามจำนวนสถานี (฿17 - ฿43)',
                 pricingModelEN: 'Calculated by stations (฿17 - ฿43)',
+                pricingModelZH: '按站数计费（฿17 - ฿43）',
                 ticketsTH: 'เหรียญโดยสาร (Token), บัตร MRT, บัตร EMV Contactless',
                 ticketsEN: 'Single Journey Token, MRT Card, EMV Contactless',
+                ticketsZH: '单程代币 (Token), MRT卡, EMV Contactless',
                 firstTrainTH: '06:00 น. (วันหยุด 06:00 น.)',
                 firstTrainEN: '06:00 (Holidays 06:00)',
+                firstTrainZH: '06:00 (节假日 06:00)',
                 lastTrainTH: '23:30 - 24:00 น.',
                 lastTrainEN: '23:30 - 24:00',
+                lastTrainZH: '23:30 - 24:00',
                 peakFreqTH: '3.30 - 4.00 นาที',
                 peakFreqEN: '3.30 - 4.00 min',
+                peakFreqZH: '3.30 - 4.00 分钟',
                 offPeakFreqTH: '5.00 - 8.00 นาที',
                 offPeakFreqEN: '5.00 - 8.00 min',
-                dir1: { code: 'BL01', toTH: 'ท่าพระ (ผ่านบางซื่อ)', toEN: 'Tha Phra (via Bang Sue)', first: '05:30', last: '23:30' },
-                dir2: { code: 'BL38', toTH: 'หลักสอง (ผ่านหัวลำโพง)', toEN: 'Lak Song (via Hua Lamphong)', first: '05:30', last: '23:30' }
+                offPeakFreqZH: '5.00 - 8.00 分钟',
+                dir1: { code: 'BL01', toTH: 'ท่าพระ (ผ่านบางซื่อ)', toEN: 'Tha Phra (via Bang Sue)', toZH: '塔帕 (途经挽赐)', first: '05:30', last: '23:30' },
+                dir2: { code: 'BL38', toTH: 'หลักสอง (ผ่านหัวลำโพง)', toEN: 'Lak Song (via Hua Lamphong)', toZH: '叻颂 (途经华南蓬)', first: '05:30', last: '23:30' }
             },
             {
                 id: 102,
@@ -2991,24 +3047,32 @@ gQIDAQAB
                 color: '#8A2C9B',
                 operatorTH: 'BEM / รฟม.',
                 operatorEN: 'BEM / MRTA',
+                operatorZH: 'BEM / 泰国大众捷运局 (MRTA)',
                 terminusTH: 'คลองบางไผ่ ↔ เตาปูน (16 สถานี)',
                 terminusEN: 'Khlong Bang Phai ↔ Tao Poon (16 Stations)',
+                terminusZH: '曼艾空邦派 ↔ 岛本 (16 个车站)',
                 minFare: 14,
                 maxFare: 20,
                 pricingModelTH: 'นโยบาย 20 บาทตลอดสาย (สูงสุดไม่เกิน ฿20)',
                 pricingModelEN: 'Flat 20 Baht Policy (Capped at ฿20 max)',
+                pricingModelZH: '全线 20 泰铢封顶（最高不超过 ฿20）',
                 ticketsTH: 'เหรียญโดยสาร (Token), บัตร MRT Plus, บัตร EMV Contactless',
                 ticketsEN: 'Single Journey Token, MRT Plus Card, EMV Contactless',
+                ticketsZH: '单程代币 (Token), MRT Plus卡, EMV Contactless',
                 firstTrainTH: '05:30 น. (วันหยุด 06:00 น.)',
                 firstTrainEN: '05:30 (Holidays 06:00)',
+                firstTrainZH: '05:30 (节假日 06:00)',
                 lastTrainTH: '23:30 - 24:00 น.',
                 lastTrainEN: '23:30 - 24:00',
+                lastTrainZH: '23:30 - 24:00',
                 peakFreqTH: '4.30 - 6.00 นาที',
                 peakFreqEN: '4.30 - 6.00 min',
+                peakFreqZH: '4.30 - 6.00 分钟',
                 offPeakFreqTH: '7.00 - 9.00 นาที',
                 offPeakFreqEN: '7.00 - 9.00 min',
-                dir1: { code: 'PP16', toTH: 'เตาปูน', toEN: 'Tao Poon', first: '05:30', last: '23:25' },
-                dir2: { code: 'PP01', toTH: 'คลองบางไผ่', toEN: 'Khlong Bang Phai', first: '06:00', last: '23:55' }
+                offPeakFreqZH: '7.00 - 9.00 分钟',
+                dir1: { code: 'PP16', toTH: 'เตาปูน', toEN: 'Tao Poon', toZH: '岛本', first: '05:30', last: '23:25' },
+                dir2: { code: 'PP01', toTH: 'คลองบางไผ่', toEN: 'Khlong Bang Phai', toZH: '曼艾空邦派', first: '06:00', last: '23:55' }
             },
             {
                 id: 103,
@@ -3017,24 +3081,32 @@ gQIDAQAB
                 color: '#B91C1C',
                 operatorTH: 'SRTET (รถไฟฟ้า ร.ฟ.ท.)',
                 operatorEN: 'SRTET (State Railway of Thailand Electrified Train)',
+                operatorZH: 'SRTET (泰国国家铁路电气化列车)',
                 terminusTH: 'กรุงเทพอภิวัฒน์ ↔ รังสิต (10 สถานี)',
                 terminusEN: 'Krung Thep Aphiwat ↔ Rangsit (10 Stations)',
+                terminusZH: '曼谷阿披瓦中央车站 ↔ 兰实 (10 个车站)',
                 minFare: 12,
                 maxFare: 20,
                 pricingModelTH: 'นโยบาย 20 บาทตลอดสาย (สูงสุดไม่เกิน ฿20)',
                 pricingModelEN: 'Flat 20 Baht Policy (Capped at ฿20 max)',
+                pricingModelZH: '全线 20 泰铢封顶（最高不超过 ฿20）',
                 ticketsTH: 'เหรียญโดยสาร (Token), บัตร SRTET, บัตร EMV Contactless',
                 ticketsEN: 'Single Journey Token, SRTET Card, EMV Contactless',
+                ticketsZH: '单程代币 (Token), SRTET卡, EMV Contactless',
                 firstTrainTH: '05:00 น.',
                 firstTrainEN: '05:00',
+                firstTrainZH: '05:00',
                 lastTrainTH: '24:00 น.',
                 lastTrainEN: '24:00',
+                lastTrainZH: '24:00',
                 peakFreqTH: '10.00 นาที',
                 peakFreqEN: '10.00 min',
+                peakFreqZH: '10.00 分钟',
                 offPeakFreqTH: '20.00 นาที',
                 offPeakFreqEN: '20.00 min',
-                dir1: { code: 'RN10', toTH: 'รังสิต', toEN: 'Rangsit', first: '05:00', last: '24:00' },
-                dir2: { code: 'RN01', toTH: 'กรุงเทพอภิวัฒน์', toEN: 'Krung Thep Aphiwat', first: '05:00', last: '24:00' }
+                offPeakFreqZH: '20.00 分钟',
+                dir1: { code: 'RN10', toTH: 'รังสิต', toEN: 'Rangsit', toZH: '兰实', first: '05:00', last: '24:00' },
+                dir2: { code: 'RN01', toTH: 'กรุงเทพอภิวัฒน์', toEN: 'Krung Thep Aphiwat', toZH: '曼谷阿披瓦', first: '05:00', last: '24:00' }
             },
             {
                 id: 105,
@@ -3043,24 +3115,32 @@ gQIDAQAB
                 color: '#F87171',
                 operatorTH: 'SRTET (รถไฟฟ้า ร.ฟ.ท.)',
                 operatorEN: 'SRTET (State Railway of Thailand Electrified Train)',
+                operatorZH: 'SRTET (泰国国家铁路电气化列车)',
                 terminusTH: 'กรุงเทพอภิวัฒน์ ↔ ตลิ่งชัน (4 สถานี)',
                 terminusEN: 'Krung Thep Aphiwat ↔ Taling Chan (4 Stations)',
+                terminusZH: '曼谷阿披瓦中央车站 ↔ 大铃昌 (4 个车站)',
                 minFare: 12,
                 maxFare: 20,
                 pricingModelTH: 'นโยบาย 20 บาทตลอดสาย (สูงสุดไม่เกิน ฿20)',
                 pricingModelEN: 'Flat 20 Baht Policy (Capped at ฿20 max)',
+                pricingModelZH: '全线 20 泰铢封顶（最高不超过 ฿20）',
                 ticketsTH: 'เหรียญโดยสาร (Token), บัตร SRTET, บัตร EMV Contactless',
                 ticketsEN: 'Single Journey Token, SRTET Card, EMV Contactless',
+                ticketsZH: '单程代币 (Token), SRTET卡, EMV Contactless',
                 firstTrainTH: '05:00 น.',
                 firstTrainEN: '05:00',
+                firstTrainZH: '05:00',
                 lastTrainTH: '24:00 น.',
                 lastTrainEN: '24:00',
+                lastTrainZH: '24:00',
                 peakFreqTH: '20.00 นาที',
                 peakFreqEN: '20.00 min',
+                peakFreqZH: '20.00 分钟',
                 offPeakFreqTH: '30.00 นาที',
                 offPeakFreqEN: '30.00 min',
-                dir1: { code: 'RW04', toTH: 'ตลิ่งชัน', toEN: 'Taling Chan', first: '05:00', last: '24:00' },
-                dir2: { code: 'RW01', toTH: 'กรุงเทพอภิวัฒน์', toEN: 'Krung Thep Aphiwat', first: '05:00', last: '24:00' }
+                offPeakFreqZH: '30.00 分钟',
+                dir1: { code: 'RW04', toTH: 'ตลิ่งชัน', toEN: 'Taling Chan', toZH: '大铃昌', first: '05:00', last: '24:00' },
+                dir2: { code: 'RW01', toTH: 'กรุงเทพอภิวัฒน์', toEN: 'Krung Thep Aphiwat', toZH: '曼谷阿披瓦', first: '05:00', last: '24:00' }
             },
             {
                 id: 104,
@@ -3069,24 +3149,32 @@ gQIDAQAB
                 color: '#8A1538',
                 operatorTH: 'รถไฟฟ้า ร.ฟ.ท. (เอเชีย เอรา วัน)',
                 operatorEN: 'SRT Electrified Train (Asia Era One)',
+                operatorZH: '亚洲第一快铁 (Asia Era One) / 泰国国家铁路',
                 terminusTH: 'พญาไท ↔ สุวรรณภูมิ (8 สถานี)',
                 terminusEN: 'Phaya Thai ↔ Suvarnabhumi (8 Stations)',
+                terminusZH: '披耶泰 ↔ 素万那普机场 (8 个车站)',
                 minFare: 15,
                 maxFare: 45,
                 pricingModelTH: 'คำนวณตามระยะทาง (฿15 - ฿45)',
                 pricingModelEN: 'Distance-based tariff (฿15 - ฿45)',
+                pricingModelZH: '按里程计费（฿15 - ฿45）',
                 ticketsTH: 'เหรียญโดยสาร (Smart Token), บัตร Smart Pass ARL',
                 ticketsEN: 'Smart Token, ARL Smart Pass Card',
+                ticketsZH: '智能代币 (Smart Token), ARL Smart Pass 乘车卡',
                 firstTrainTH: '05:30 น.',
                 firstTrainEN: '05:30',
+                firstTrainZH: '05:30',
                 lastTrainTH: '24:00 น.',
                 lastTrainEN: '24:00',
+                lastTrainZH: '24:00',
                 peakFreqTH: '9.00 นาที',
                 peakFreqEN: '9.00 min',
+                peakFreqZH: '9.00 分钟',
                 offPeakFreqTH: '10.00 - 15.00 นาที',
                 offPeakFreqEN: '10.00 - 15.00 min',
-                dir1: { code: 'A1', toTH: 'สุวรรณภูมิ', toEN: 'Suvarnabhumi Airport', first: '05:30', last: '24:00' },
-                dir2: { code: 'A8', toTH: 'พญาไท', toEN: 'Phaya Thai', first: '05:30', last: '24:00' }
+                offPeakFreqZH: '10.00 - 15.00 分钟',
+                dir1: { code: 'A1', toTH: 'สุวรรณภูมิ', toEN: 'Suvarnabhumi Airport', toZH: '素万那普机场', first: '05:30', last: '24:00' },
+                dir2: { code: 'A8', toTH: 'พญาไท', toEN: 'Phaya Thai', toZH: '披耶泰', first: '05:30', last: '24:00' }
             },
             {
                 id: 201,
@@ -3095,89 +3183,105 @@ gQIDAQAB
                 color: '#82C341',
                 operatorTH: 'กทม. / ระบบรถโดยสารด่วนพิเศษ BRT',
                 operatorEN: 'BMA / Bangkok BRT Express Bus',
+                operatorZH: '曼谷市政府 (BMA) / BRT 快速公交',
                 terminusTH: 'สาทร ↔ ราชพฤกษ์ (12 สถานี)',
                 terminusEN: 'Sathorn ↔ Ratchaphruek (12 Stations)',
+                terminusZH: '沙吞 ↔ 叻差普 (12 个车站)',
                 minFare: 15,
                 maxFare: 15,
                 pricingModelTH: 'ค่าโดยสารอัตราเดียว 15 บาทตลอดสาย (ผู้สูงอายุ 8 บาท)',
                 pricingModelEN: 'Flat Rate ฿15 regardless of distance (Senior ฿8)',
+                pricingModelZH: '全线单一票价 15 泰铢（长者 8 泰铢）',
                 ticketsTH: 'บัตร Rabbit, บัตรโดยสารเที่ยวเดียว',
                 ticketsEN: 'Rabbit Card, Single Journey Ticket',
+                ticketsZH: '兔子卡 (Rabbit Card), 单程票',
                 firstTrainTH: '06:00 น.',
                 firstTrainEN: '06:00',
+                firstTrainZH: '06:00',
                 lastTrainTH: '24:00 น.',
                 lastTrainEN: '24:00',
+                lastTrainZH: '24:00',
                 peakFreqTH: '5.00 - 7.00 นาที',
                 peakFreqEN: '5.00 - 7.00 min',
+                peakFreqZH: '5.00 - 7.00 分钟',
                 offPeakFreqTH: '10.00 - 15.00 นาที',
                 offPeakFreqEN: '10.00 - 15.00 min',
-                dir1: { code: 'B12', toTH: 'ราชพฤกษ์', toEN: 'Ratchaphruek', first: '06:00', last: '24:00' },
-                dir2: { code: 'B1', toTH: 'สาทร', toEN: 'Sathorn', first: '06:00', last: '24:00' }
+                offPeakFreqZH: '10.00 - 15.00 分钟',
+                dir1: { code: 'B12', toTH: 'ราชพฤกษ์', toEN: 'Ratchaphruek', toZH: '叻差普', first: '06:00', last: '24:00' },
+                dir2: { code: 'B1', toTH: 'สาทร', toEN: 'Sathorn', toZH: '沙吞', first: '06:00', last: '24:00' }
             },
             {
                 id: 106,
-                nameTH: 'MRT สายสีส้ม (ยังไม่เปิดให้บริการ)',
+                nameTH: 'MRT สายสีส้ม (ยังไม่เปิดให้บริการ)', nameZH: 'MRT 橙线 (尚未开通)',
                 nameEN: 'MRT Orange Line (Not in Service)',
                 color: '#F58220',
                 operatorTH: 'BEM / รฟม. (ยังไม่เปิดให้บริการ)',
                 operatorEN: 'BEM / MRTA (Not in Service)',
+                operatorZH: 'BEM / 泰国大众捷运局 (尚未开通运营)',
                 terminusTH: 'บางขุนนนท์ ↔ แยกร่มเกล้า (ยังไม่เปิดให้บริการ)',
                 terminusEN: 'Bang Khun Non ↔ Yaek Rom Klao (Not in Service)',
+                terminusZH: '挽坤暖 ↔ 耶隆高 (尚未开通运营)',
                 minFare: '-',
                 maxFare: '-',
                 pricingModelTH: 'ยังไม่เปิดให้บริการเดินรถแก่ประชาชน',
                 pricingModelEN: 'Not yet opened for commercial service',
+                pricingModelZH: '尚未向公众开放商业客运运营',
                 ticketsTH: 'ยังไม่เปิดให้บริการ',
                 ticketsEN: 'Not in service',
+                ticketsZH: '尚未开通运营',
                 firstTrainTH: 'ยังไม่เปิดให้บริการ',
                 firstTrainEN: 'Not in service',
+                firstTrainZH: '尚未开通运营',
                 lastTrainTH: 'ยังไม่เปิดให้บริการ',
                 lastTrainEN: 'Not in service',
+                lastTrainZH: '尚未开通运营',
                 peakFreqTH: 'ยังไม่เปิดให้บริการ',
                 peakFreqEN: 'Not in service',
+                peakFreqZH: '尚未开通运营',
                 offPeakFreqTH: 'ยังไม่เปิดให้บริการ',
                 offPeakFreqEN: 'Not in service',
-                dir1: { code: 'OR28', toTH: 'แยกร่มเกล้า (ยังไม่เปิดให้บริการ)', toEN: 'Yaek Rom Klao (Not in Service)', first: '-', last: '-' },
-                dir2: { code: 'OR01', toTH: 'บางขุนนนท์ (ยังไม่เปิดให้บริการ)', toEN: 'Bang Khun Non (Not in Service)', first: '-', last: '-' }
+                offPeakFreqZH: '尚未开通运营',
+                dir1: { code: 'OR28', toTH: 'แยกร่มเกล้า (ยังไม่เปิดให้บริการ)', toEN: 'Yaek Rom Klao (Not in Service)', toZH: '耶隆高 (尚未开通)', first: '-', last: '-' },
+                dir2: { code: 'OR01', toTH: 'บางขุนนนท์ (ยังไม่เปิดให้บริการ)', toEN: 'Bang Khun Non (Not in Service)', toZH: '挽坤暖 (尚未开通)', first: '-', last: '-' }
             }
         ];
 
         const BTS_STATION_FARES = [
-            { stnTH: '1 สถานี', stnEN: '1 Station', adult: 17, student: 12, senior: 9 },
-            { stnTH: '2 สถานี', stnEN: '2 Stations', adult: 25, student: 18, senior: 13 },
-            { stnTH: '3 สถานี', stnEN: '3 Stations', adult: 28, student: 20, senior: 14 },
-            { stnTH: '4 สถานี', stnEN: '4 Stations', adult: 32, student: 23, senior: 16 },
-            { stnTH: '5 สถานี', stnEN: '5 Stations', adult: 35, student: 25, senior: 18 },
-            { stnTH: '6 สถานี', stnEN: '6 Stations', adult: 40, student: 28, senior: 20 },
-            { stnTH: '7 สถานี', stnEN: '7 Stations', adult: 43, student: 30, senior: 22 },
-            { stnTH: '8 สถานีขึ้นไป', stnEN: '8+ Stations', adult: 47, student: 33, senior: 24 },
-            { stnTH: 'ส่วนต่อขยาย (Extensions)', stnEN: 'Extensions', adult: '+15', student: '+15', senior: '+8' }
+            { stnTH: '1 สถานี', stnEN: '1 Station', stnZH: '1 站', adult: 17, student: 12, senior: 9 },
+            { stnTH: '2 สถานี', stnEN: '2 Stations', stnZH: '2 站', adult: 25, student: 18, senior: 13 },
+            { stnTH: '3 สถานี', stnEN: '3 Stations', stnZH: '3 站', adult: 28, student: 20, senior: 14 },
+            { stnTH: '4 สถานี', stnEN: '4 Stations', stnZH: '4 站', adult: 32, student: 23, senior: 16 },
+            { stnTH: '5 สถานี', stnEN: '5 Stations', stnZH: '5 站', adult: 35, student: 25, senior: 18 },
+            { stnTH: '6 สถานี', stnEN: '6 Stations', stnZH: '6 站', adult: 40, student: 28, senior: 20 },
+            { stnTH: '7 สถานี', stnEN: '7 Stations', stnZH: '7 站', adult: 43, student: 30, senior: 22 },
+            { stnTH: '8 สถานีขึ้นไป', stnEN: '8+ Stations', stnZH: '8 站以上', adult: 47, student: 33, senior: 24 },
+            { stnTH: 'ส่วนต่อขยาย (Extensions)', stnEN: 'Extensions', stnZH: '延伸段 (Extensions)', adult: '+15', student: '+15', senior: '+8' }
         ];
 
         const MRT_BLUE_FARES = [
-            { stnTH: '1 สถานี', stnEN: '1 Station', adult: 17, student: 15, senior: 9 },
-            { stnTH: '2 - 3 สถานี', stnEN: '2 - 3 Stations', adult: '20 - 23', student: '18 - 21', senior: '10 - 12' },
-            { stnTH: '4 - 6 สถานี', stnEN: '4 - 6 Stations', adult: '26 - 31', student: '23 - 28', senior: '13 - 16' },
-            { stnTH: '7 - 9 สถานี', stnEN: '7 - 9 Stations', adult: '33 - 38', student: '30 - 34', senior: '17 - 19' },
-            { stnTH: '10 - 12 สถานีขึ้นไป', stnEN: '10 - 12+ Stations', adult: '41 - 43', student: '37 - 39', senior: '21 - 22' }
+            { stnTH: '1 สถานี', stnEN: '1 Station', stnZH: '1 站', adult: 17, student: 15, senior: 9 },
+            { stnTH: '2 - 3 สถานี', stnEN: '2 - 3 Stations', stnZH: '2 - 3 站', adult: '20 - 23', student: '18 - 21', senior: '10 - 12' },
+            { stnTH: '4 - 6 สถานี', stnEN: '4 - 6 Stations', stnZH: '4 - 6 站', adult: '26 - 31', student: '23 - 28', senior: '13 - 16' },
+            { stnTH: '7 - 9 สถานี', stnEN: '7 - 9 Stations', stnZH: '7 - 9 站', adult: '33 - 38', student: '30 - 34', senior: '17 - 19' },
+            { stnTH: '10 - 12 สถานีขึ้นไป', stnEN: '10 - 12+ Stations', stnZH: '10 - 12 站以上', adult: '41 - 43', student: '37 - 39', senior: '21 - 22' }
         ];
 
         const MONORAIL_FARES = [
-            { stnTH: '1 สถานี', stnEN: '1 Station', price: '฿15 - ฿18', adult: '15 - 18', student: '15 - 18', senior: '8 - 9' },
-            { stnTH: '2 - 4 สถานี', stnEN: '2 - 4 Stations', price: '฿21 - ฿28', adult: '21 - 28', student: '21 - 28', senior: '11 - 14' },
-            { stnTH: '5 - 8 สถานี', stnEN: '5 - 8 Stations', price: '฿31 - ฿37', adult: '31 - 37', student: '31 - 37', senior: '16 - 19' },
-            { stnTH: '9 สถานีขึ้นไป', stnEN: '9+ Stations', price: '฿40 - ฿45', adult: '40 - 45', student: '40 - 45', senior: '20 - 23' }
+            { stnTH: '1 สถานี', stnEN: '1 Station', stnZH: '1 站', price: '฿15 - ฿18', adult: '15 - 18', student: '15 - 18', senior: '8 - 9' },
+            { stnTH: '2 - 4 สถานี', stnEN: '2 - 4 Stations', stnZH: '2 - 4 站', price: '฿21 - ฿28', adult: '21 - 28', student: '21 - 28', senior: '11 - 14' },
+            { stnTH: '5 - 8 สถานี', stnEN: '5 - 8 Stations', stnZH: '5 - 8 站', price: '฿31 - ฿37', adult: '31 - 37', student: '31 - 37', senior: '16 - 19' },
+            { stnTH: '9 สถานีขึ้นไป', stnEN: '9+ Stations', stnZH: '9 站以上', price: '฿40 - ฿45', adult: '40 - 45', student: '40 - 45', senior: '20 - 23' }
         ];
 
         const ARL_STATION_FARES = [
-            { code: 'A8', th: 'พญาไท', en: 'Phaya Thai', price: '-' },
-            { code: 'A7', th: 'ราชปรารภ', en: 'Ratchaprarop', price: '฿15' },
-            { code: 'A6', th: 'มักกะสัน (เชื่อม MRT เพชรบุรี)', en: 'Makkasan (MRT Phetchaburi)', price: '฿20' },
-            { code: 'A5', th: 'รามคำแหง', en: 'Ramkhamhaeng', price: '฿25' },
-            { code: 'A4', th: 'หัวหมาก (เชื่อม MRT สีเหลือง)', en: 'Hua Mak (MRT Yellow)', price: '฿30' },
-            { code: 'A3', th: 'บ้านทับช้าง', en: 'Ban Thap Chang', price: '฿35' },
-            { code: 'A2', th: 'ลาดกระบัง', en: 'Lat Krabang', price: '฿40' },
-            { code: 'A1', th: 'สุวรรณภูมิ (สนามบิน)', en: 'Suvarnabhumi Airport', price: '฿45' }
+            { code: 'A8', th: 'พญาไท', en: 'Phaya Thai', zh: '披耶泰', price: '-' },
+            { code: 'A7', th: 'ราชปรารภ', en: 'Ratchaprarop', zh: '叻猜巴罗', price: '฿15' },
+            { code: 'A6', th: 'มักกะสัน (เชื่อม MRT เพชรบุรี)', en: 'Makkasan (MRT Phetchaburi)', zh: '目甲讪 (换乘 MRT 碧武里)', price: '฿20' },
+            { code: 'A5', th: 'รามคำแหง', en: 'Ramkhamhaeng', zh: '兰甘亨', price: '฿25' },
+            { code: 'A4', th: 'หัวหมาก (เชื่อม MRT สีเหลือง)', en: 'Hua Mak (MRT Yellow)', zh: '华目 (换乘 MRT 黄线)', price: '฿30' },
+            { code: 'A3', th: 'บ้านทับช้าง', en: 'Ban Thap Chang', zh: '班塔昌', price: '฿35' },
+            { code: 'A2', th: 'ลาดกระบัง', en: 'Lat Krabang', zh: '拉甲邦', price: '฿40' },
+            { code: 'A1', th: 'สุวรรณภูมิ (สนามบิน)', en: 'Suvarnabhumi Airport', zh: '素万那普机场', price: '฿45' }
         ];
 
         function renderLineFilterBar(activeLineId, onClickHandlerName, barId = '') {
@@ -3257,6 +3361,7 @@ gQIDAQAB
         function renderFrequencyTablesHtml(sched, activeLine, activeTab) {
             if (!sched || (!sched.weekday.length && !sched.weekend.length)) return '';
             const isEn = lang === 'en';
+            const isZh = lang === 'zh';
             const we = isWeekend();
             const line = activeLine || (App && App.timetablesActiveLine ? TRANSIT_LINES_CATALOG.find(l => l.id === App.timetablesActiveLine) : null) || { color: '#16a34a', id: 1 };
             const lineColor = line.color || '#16a34a';
@@ -3275,7 +3380,7 @@ gQIDAQAB
                         ${r.isCurrent ? `
                             <span class="freq-live-now-tag">
                                 <span class="freq-pulse-dot"></span>
-                                <span>${isEn ? 'NOW' : 'ขณะนี้'}</span>
+                                <span>${isZh ? '当前' : (isEn ? 'NOW' : 'ขณะนี้')}</span>
                             </span>
                         ` : ''}
                     </div>
@@ -3293,15 +3398,15 @@ gQIDAQAB
                         <div class="freq-dual-box">
                             <div class="freq-dual-pill">
                                 <span class="freq-dual-tag core" style="background:${lineColor}22;color:${lineColor}">
-                                    ${isEn ? 'Core (Mo Chit–Samrong)' : 'สายหลัก (หมอชิต–สำโรง)'}
+                                    ${isZh ? '核心区段 (莫奇–三隆)' : (isEn ? 'Core (Mo Chit–Samrong)' : 'สายหลัก (หมอชิต–สำโรง)')}
                                 </span>
-                                <span class="freq-dual-val">~${esc(p1)} <span class="freq-unit">${isEn ? 'min' : 'นาที'}</span></span>
+                                <span class="freq-dual-val">~${esc(p1)} <span class="freq-unit">${isZh ? '分钟' : (isEn ? 'min' : 'นาที')}</span></span>
                             </div>
                             <div class="freq-dual-pill">
                                 <span class="freq-dual-tag ext">
-                                    ${isEn ? 'Ext. (Khu Khot / Kheha)' : 'ส่วนต่อขยาย (คูคต/เคหะฯ)'}
+                                    ${isZh ? '延伸区段 (库阔/壳哈)' : (isEn ? 'Ext. (Khu Khot / Kheha)' : 'ส่วนต่อขยาย (คูคต/เคหะฯ)')}
                                 </span>
-                                <span class="freq-dual-val">~${esc(p2)} <span class="freq-unit">${isEn ? 'min' : 'นาที'}</span></span>
+                                <span class="freq-dual-val">~${esc(p2)} <span class="freq-unit">${isZh ? '分钟' : (isEn ? 'min' : 'นาที')}</span></span>
                             </div>
                         </div>
                     `;
@@ -3310,9 +3415,9 @@ gQIDAQAB
                 const clean = raw.replace(/^~/, '').trim();
                 return `
                     <div class="freq-single-pill">
-                        <span class="freq-prefix">${isEn ? 'Every ~' : 'ทุก ~'}</span>
+                        <span class="freq-prefix">${isZh ? '约每 ~' : (isEn ? 'Every ~' : 'ทุก ~')}</span>
                         <b style="font-size:13.5px;color:var(--ink);letter-spacing:-0.2px;">${esc(clean)}</b>
-                        <span class="freq-unit">${isEn ? 'min' : 'นาที'}</span>
+                        <span class="freq-unit">${isZh ? '分钟' : (isEn ? 'min' : 'นาที')}</span>
                     </div>
                 `;
             };
@@ -3323,14 +3428,14 @@ gQIDAQAB
                     <div style="margin-bottom:12px;">
                         <div class="mrt-freq-daytype">
                             <span>${title}</span>
-                            ${isToday ? `<span class="freq-today-badge"><span class="live-dot" style="width:6px;height:6px;margin:0 4px 0 0;display:inline-block;"></span>${isEn ? 'Today' : 'วันนี้'}</span>` : ''}
+                            ${isToday ? `<span class="freq-today-badge"><span class="live-dot" style="width:6px;height:6px;margin:0 4px 0 0;display:inline-block;"></span>${isZh ? '今日' : (isEn ? 'Today' : 'วันนี้')}</span>` : ''}
                         </div>
                         <div class="mrt-freq-table-container">
                             <table class="mrt-freq-table">
                                 <thead>
                                     <tr>
-                                        <th>${getUiIcon('clock', 13, 'currentColor')} ${isEn ? 'Service Hours' : 'ช่วงเวลาให้บริการ'}</th>
-                                        <th>${getUiIcon('timer', 13, 'currentColor')} ${isEn ? 'Train Frequency' : 'ความถี่ขบวนรถ'}</th>
+                                        <th>${getUiIcon('clock', 13, 'currentColor')} ${isZh ? '运营时段' : (isEn ? 'Service Hours' : 'ช่วงเวลาให้บริการ')}</th>
+                                        <th>${getUiIcon('timer', 13, 'currentColor')} ${isZh ? '发车频次/间隔' : (isEn ? 'Train Frequency' : 'ความถี่ขบวนรถ')}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -3347,8 +3452,8 @@ gQIDAQAB
                 `;
             };
 
-            const weekdayTitle = `${getUiIcon('calendar', 14, 'currentColor')} ${isEn ? 'Monday – Friday (Weekday)' : 'วันจันทร์ – ศุกร์ (วันธรรมดา)'}`;
-            const weekendTitle = `${getUiIcon('calendar', 14, 'currentColor')} ${isEn ? 'Saturday – Sunday & Public Holidays' : 'วันเสาร์ – อาทิตย์ และวันหยุดนักขัตฤกษ์'}`;
+            const weekdayTitle = `${getUiIcon('calendar', 14, 'currentColor')} ${isZh ? '周一至周五 (工作日)' : (isEn ? 'Monday – Friday (Weekday)' : 'วันจันทร์ – ศุกร์ (วันธรรมดา)')}`;
+            const weekendTitle = `${getUiIcon('calendar', 14, 'currentColor')} ${isZh ? '周六、周日及法定节假日' : (isEn ? 'Saturday – Sunday & Public Holidays' : 'วันเสาร์ – อาทิตย์ และวันหยุดนักขัตฤกษ์')}`;
 
             let tablesContentHtml = '';
             if (curTab === 'weekday') {
@@ -3368,24 +3473,24 @@ gQIDAQAB
                     <button type="button" class="freq-tab-btn ${curTab === 'weekday' ? 'active' : ''}" onclick="App.setFreqTab('weekday')">
                         <span class="freq-tab-icon">${getUiIcon('calendar', 12, 'currentColor')}</span>
                         <span class="freq-tab-lbl">
-                            <span class="lbl-full">${isEn ? 'Weekday (Mon–Fri)' : 'วันธรรมดา (จ.-ศ.)'}</span>
-                            <span class="lbl-short">${isEn ? 'Weekday' : 'วันธรรมดา'}</span>
+                            <span class="lbl-full">${isZh ? '工作日 (周一至五)' : (isEn ? 'Weekday (Mon–Fri)' : 'วันธรรมดา (จ.-ศ.)')}</span>
+                            <span class="lbl-short">${isZh ? '工作日' : (isEn ? 'Weekday' : 'วันธรรมดา')}</span>
                         </span>
-                        ${!we ? `<span class="freq-today-badge">${isEn ? 'Today' : 'วันนี้'}</span>` : ''}
+                        ${!we ? `<span class="freq-today-badge">${isZh ? '今日' : (isEn ? 'Today' : 'วันนี้')}</span>` : ''}
                     </button>
                     <button type="button" class="freq-tab-btn ${curTab === 'weekend' ? 'active' : ''}" onclick="App.setFreqTab('weekend')">
                         <span class="freq-tab-icon">${getUiIcon('calendar', 12, 'currentColor')}</span>
                         <span class="freq-tab-lbl">
-                            <span class="lbl-full">${isEn ? 'Weekend (Sat–Sun)' : 'วันหยุด (ส.-อา.)'}</span>
-                            <span class="lbl-short">${isEn ? 'Weekend' : 'วันหยุด'}</span>
+                            <span class="lbl-full">${isZh ? '周末与节假日 (周六日)' : (isEn ? 'Weekend (Sat–Sun)' : 'วันหยุด (ส.-อา.)')}</span>
+                            <span class="lbl-short">${isZh ? '周末/假日' : (isEn ? 'Weekend' : 'วันหยุด')}</span>
                         </span>
-                        ${we ? `<span class="freq-today-badge">${isEn ? 'Today' : 'วันนี้'}</span>` : ''}
+                        ${we ? `<span class="freq-today-badge">${isZh ? '今日' : (isEn ? 'Today' : 'วันนี้')}</span>` : ''}
                     </button>
                     <button type="button" class="freq-tab-btn ${curTab === 'all' ? 'active' : ''}" onclick="App.setFreqTab('all')">
                         <span class="freq-tab-icon">${getUiIcon('check', 12, 'currentColor')}</span>
                         <span class="freq-tab-lbl">
-                            <span class="lbl-full">${isEn ? 'Show Both' : 'แสดงทั้งหมด'}</span>
-                            <span class="lbl-short">${isEn ? 'Both' : 'ทั้งหมด'}</span>
+                            <span class="lbl-full">${isZh ? '显示全部' : (isEn ? 'Show Both' : 'แสดงทั้งหมด')}</span>
+                            <span class="lbl-short">${isZh ? '全部' : (isEn ? 'Both' : 'ทั้งหมด')}</span>
                         </span>
                     </button>
                 </div>
@@ -3396,7 +3501,7 @@ gQIDAQAB
                     <div class="mrt-freq-note-card" style="border-left:3px solid ${lineColor};">
                         <span class="note-icon">${getUiIcon('bulb', 14, '#f59e0b')}</span>
                         <div style="flex:1;min-width:0;word-break:break-word;">
-                            <b style="color:var(--ink);">${isEn ? 'Operating Note:' : 'หมายเหตุการเดินรถ:'}</b>
+                            <b style="color:var(--ink);">${isZh ? '运营备注:' : (isEn ? 'Operating Note:' : 'หมายเหตุการเดินรถ:')}</b>
                             <span style="color:var(--muted);margin-left:4px;">${esc(sched.note)}</span>
                         </div>
                     </div>
@@ -4673,6 +4778,7 @@ setOriginFromActionSheet() {
                 if (!el) return;
 
                 const isEn = lang === 'en';
+                const isZh = lang === 'zh';
                 const activeId = this.faresActiveLine || 0;
                 const activeLine = TRANSIT_LINES_CATALOG.find(l => l.id === activeId) || TRANSIT_LINES_CATALOG[0];
 
@@ -4683,29 +4789,29 @@ setOriginFromActionSheet() {
                     bodyHtml = `
                         <!-- 20 Baht Flat Fare Policy Banner -->
                         <div class="info-card" style="background:linear-gradient(135deg,#dc26260d,#ef444415);border-color:#ef444444">
-                            <span class="fare-badge-20">${lang === 'zh' ? '20 泰铢封顶票价政策' : (isEn ? '20 Baht Flat Fare Policy' : 'นโยบาย 20 บาทตลอดสาย')}</span>
+                            <span class="fare-badge-20">${isZh ? '20 泰铢封顶票价政策' : (isEn ? '20 Baht Flat Fare Policy' : 'นโยบาย 20 บาทตลอดสาย')}</span>
                             <h3 style="color:#b91c1c;display:flex;align-items:center;gap:8px">
                                 <span style="display:inline-flex;gap:4px;align-items:center">${getLineIconSvg(102, false, 20)} ${getLineIconSvg(103, false, 20)} ${getLineIconSvg(105, false, 20)}</span>
-                                <span>${lang === 'zh' ? '全线 20 泰铢封顶 (EMV Contactless)' : (isEn ? 'Flat 20 Baht Fare (EMV Contactless)' : 'รถไฟฟ้า 20 บาทตลอดสาย (EMV Contactless)')}</span>
+                                <span>${isZh ? '全线 20 泰铢封顶 (EMV Contactless)' : (isEn ? 'Flat 20 Baht Fare (EMV Contactless)' : 'รถไฟฟ้า 20 บาทตลอดสาย (EMV Contactless)')}</span>
                             </h3>
                             <div style="font-size:12.5px;color:var(--ink);line-height:1.6">
-                                ${isEn ? 'Passengers paying with <b>EMV Contactless</b> credit/debit cards pay a maximum fare of <b>฿20</b>:' : 'ผู้โดยสารที่แตะจ่ายด้วยบัตรเครดิต/เดบิต <b>EMV Contactless</b> เดินทางด้วยค่าโดยสารสูงสุดไม่เกิน <b>20 บาท</b>:'}
+                                ${isZh ? '使用 <b>EMV Contactless</b> 信用卡/借记卡刷卡乘车，单程最高票价不超过 <b>20 泰铢</b>：' : (isEn ? 'Passengers paying with <b>EMV Contactless</b> credit/debit cards pay a maximum fare of <b>฿20</b>:' : 'ผู้โดยสารที่แตะจ่ายด้วยบัตรเครดิต/เดบิต <b>EMV Contactless</b> เดินทางด้วยค่าโดยสารสูงสุดไม่เกิน <b>20 บาท</b>:')}
                                 <ul style="margin:8px 0 8px 6px;padding-left:14px;list-style:none">
                                     <li style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
                                         ${getLineIconSvg(102, false, 18)}
-                                        <span><b>${isEn ? 'MRT Purple Line | (Chalong Ratchatham):' : 'MRT สายสีม่วง | (ฉลองรัชธรรม):'}</b> ${isEn ? 'Khlong Bang Phai ↔ Tao Poon (Max ฿20)' : 'คลองบางไผ่ ↔ เตาปูน (สูงสุด 20 บาท)'}</span>
+                                        <span><b>${isZh ? 'MRT 紫线 | (差隆拉差探):' : (isEn ? 'MRT Purple Line | (Chalong Ratchatham):' : 'MRT สายสีม่วง | (ฉลองรัชธรรม):')}</b> ${isZh ? '空磅派 ↔ 岛本 (最高 20 泰铢)' : (isEn ? 'Khlong Bang Phai ↔ Tao Poon (Max ฿20)' : 'คลองบางไผ่ ↔ เตาปูน (สูงสุด 20 บาท)')}</span>
                                     </li>
                                     <li style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
                                         ${getLineIconSvg(103, false, 18)}
-                                        <span><b>${isEn ? 'SRT Dark Red Line | (Thani Ratthaya):' : 'SRT สายสีแดงเข้ม | (ธานีรัถยา):'}</b> ${isEn ? 'Krung Thep Aphiwat ↔ Rangsit (Max ฿20)' : 'กรุงเทพอภิวัฒน์ ↔ รังสิต (สูงสุด 20 บาท)'}</span>
+                                        <span><b>${isZh ? 'SRT 暗红线 | (塔尼拉塔雅):' : (isEn ? 'SRT Dark Red Line | (Thani Ratthaya):' : 'SRT สายสีแดงเข้ม | (ธานีรัถยา):')}</b> ${isZh ? '曼谷阿披瓦中央车站 ↔ 兰实 (最高 20 泰铢)' : (isEn ? 'Krung Thep Aphiwat ↔ Rangsit (Max ฿20)' : 'กรุงเทพอภิวัฒน์ ↔ รังสิต (สูงสุด 20 บาท)')}</span>
                                     </li>
                                     <li style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
                                         ${getLineIconSvg(105, false, 18)}
-                                        <span><b>${isEn ? 'SRT Light Red Line | (Nakhon Withi):' : 'SRT สายสีแดงอ่อน | (นครวิถี):'}</b> ${isEn ? 'Krung Thep Aphiwat ↔ Taling Chan (Max ฿20)' : 'กรุงเทพอภิวัฒน์ ↔ ตลิ่งชัน (สูงสุด 20 บาท)'}</span>
+                                        <span><b>${isZh ? 'SRT 浅红线 | (那空威提):' : (isEn ? 'SRT Light Red Line | (Nakhon Withi):' : 'SRT สายสีแดงอ่อน | (นครวิถี):')}</b> ${isZh ? '曼谷阿披瓦中央车站 ↔ 达林参 (最高 20 泰铢)' : (isEn ? 'Krung Thep Aphiwat ↔ Taling Chan (Max ฿20)' : 'กรุงเทพอภิวัฒน์ ↔ ตลิ่งชัน (สูงสุด 20 บาท)')}</span>
                                     </li>
                                     <li style="display:flex;align-items:center;gap:8px">
                                         <span style="display:inline-flex;align-items:center;gap:3px">${getLineIconSvg(102, false, 15)}⇄${getLineIconSvg(103, false, 15)}/${getLineIconSvg(105, false, 15)}</span>
-                                        <span><b>${isEn ? 'Cross-line Transfer (Purple ⇄ Red):' : 'เชื่อมต่อข้ามสายสีม่วงและสายสีแดง:'}</b> ${isEn ? 'Max ฿20 combined (transfer at Bang Sue / Bang Son within 30 mins)' : 'สูงสุดรวมไม่เกิน 20 บาท (แตะเปลี่ยนขบวนที่สถานีบางซื่อ/บางซ่อน ภายใน 30 นาที)'}</span>
+                                        <span><b>${isZh ? '紫线与红线换乘 (Purple ⇄ Red):' : (isEn ? 'Cross-line Transfer (Purple ⇄ Red):' : 'เชื่อมต่อข้ามสายสีม่วงและสายสีแดง:')}</b> ${isZh ? '两线合并最高不超 20 泰铢 (需在挽赐/曼颂站 30 分钟内换乘)' : (isEn ? 'Max ฿20 combined (transfer at Bang Sue / Bang Son within 30 mins)' : 'สูงสุดรวมไม่เกิน 20 บาท (แตะเปลี่ยนขบวนที่สถานีบางซื่อ/บางซ่อน ภายใน 30 นาที)')}</span>
                                     </li>
                                 </ul>
                             </div>
@@ -4714,20 +4820,20 @@ setOriginFromActionSheet() {
                         <!-- All Lines Comparison Table -->
                         <div class="info-card">
                             <h3 style="display:flex;align-items:center;gap:8px">
-                                <span>${getUiIcon('card', 16, 'var(--primary,#0284c7)')}</span>
-                                <span>${lang === 'zh' ? '12 条线路票价对比' : (isEn ? 'Fare Comparison across 12 Lines' : 'เปรียบเทียบอัตราค่าโดยสารทั้ง 12 สาย')}</span>
+                                <span>${getUiIcon('chart', 16, 'var(--primary,#0284c7)')}</span>
+                                <span>${isZh ? '全曼谷 12 条轨道交通线票价速查' : (isEn ? 'All Lines Fare Rate Comparison' : 'ตารางเปรียบเทียบอัตราค่าโดยสารทั้งระบบ (12 สาย)')}</span>
                             </h3>
                             <div style="font-size:12px;color:var(--muted);margin-bottom:8px">
-                                ${isEn ? 'Tap any line below or use the pills above to view detailed fare structure' : 'แตะที่สายรถไฟฟ้าหรือแถบด้านบนเพื่อดูตารางราคาแบบละเอียด'}
+                                ${isZh ? '点击下方任一线路线条或上方导航标签，即可查看该线路详细阶梯票价' : (isEn ? 'Tap any line below or use the pills above to view detailed fare structure' : 'แตะที่สายรถไฟฟ้าหรือแถบด้านบนเพื่อดูตารางราคาแบบละเอียด')}
                             </div>
                             <div class="fare-table-wrap">
                                 <table class="fare-grid-table">
                                     <thead>
                                         <tr>
-                                            <th>${lang === 'zh' ? '线路' : (isEn ? 'Line' : 'สายรถไฟฟ้า')}</th>
-                                            <th>${lang === 'zh' ? '起步 - 最高' : (isEn ? 'Min - Max' : 'อัตราเริ่มต้น - สูงสุด')}</th>
-                                            <th>${lang === 'zh' ? '计费方式' : (isEn ? 'Pricing Model' : 'รูปแบบราคา')}</th>
-                                            <th>${lang === 'zh' ? '车票 / 乘车卡' : (isEn ? 'Cards / Tickets' : 'บัตรโดยสาร')}</th>
+                                            <th>${isZh ? '线路' : (isEn ? 'Line' : 'สายรถไฟฟ้า')}</th>
+                                            <th>${isZh ? '起步 - 最高' : (isEn ? 'Min - Max' : 'อัตราเริ่มต้น - สูงสุด')}</th>
+                                            <th>${isZh ? '计费方式' : (isEn ? 'Pricing Model' : 'รูปแบบราคา')}</th>
+                                            <th>${isZh ? '车票 / 乘车卡' : (isEn ? 'Cards / Tickets' : 'บัตรโดยสาร')}</th>
                                             <th></th>
                                         </tr>
                                     </thead>
@@ -4737,15 +4843,15 @@ setOriginFromActionSheet() {
                                                 <td style="white-space:nowrap;">
                                                     <span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap;">
                                                         ${getLineIconSvg(l.id, false, 16)}
-                                                        <b>${esc(lang === 'zh' ? (l.nameZH || l.nameEN) : (isEn ? l.nameEN : l.nameTH))}</b>
+                                                        <b>${esc(isZh ? (l.nameZH || l.nameEN) : (isEn ? l.nameEN : l.nameTH))}</b>
                                                     </span>
                                                 </td>
                                                 <td style="white-space:nowrap;"><b style="color:${l.color}">฿${l.minFare} - ฿${l.maxFare}</b></td>
-                                                <td style="white-space:nowrap;">${esc(isEn ? l.pricingModelEN : l.pricingModelTH)}</td>
-                                                <td style="white-space:nowrap;font-size:11.5px;color:var(--muted)">${esc(isEn ? l.ticketsEN : l.ticketsTH)}</td>
+                                                <td style="white-space:nowrap;">${esc(isZh ? (l.pricingModelZH || l.pricingModelEN) : (isEn ? l.pricingModelEN : l.pricingModelTH))}</td>
+                                                <td style="white-space:nowrap;font-size:11.5px;color:var(--muted)">${esc(isZh ? (l.ticketsZH || l.ticketsEN) : (isEn ? l.ticketsEN : l.ticketsTH))}</td>
                                                 <td style="white-space:nowrap;">
                                                     <button type="button" class="btn btn-ghost" style="padding:4px 8px;font-size:11px;white-space:nowrap;" onclick="event.stopPropagation();App.setFaresLine(${l.id})">
-                                                        ${lang === 'zh' ? '查看详情' : (isEn ? 'Details' : 'ดูราคา')} ➔
+                                                        ${isZh ? '查看详情' : (isEn ? 'Details' : 'ดูราคา')} ➔
                                                     </button>
                                                 </td>
                                             </tr>
@@ -4757,57 +4863,62 @@ setOriginFromActionSheet() {
 
                         <!-- Payment & Card Guide -->
                         <div class="info-card">
-                            <h3>${getUiIcon('ticket', 17, '#f59e0b')} ${isEn ? 'Tickets & Payment Methods Guide' : 'คู่มือประเภทบัตรและวิธีการชำระค่าโดยสาร'}</h3>
+                            <h3>${getUiIcon('ticket', 17, '#f59e0b')} ${isZh ? '车票类型与支付方式指南' : (isEn ? 'Tickets & Payment Methods Guide' : 'คู่มือประเภทบัตรและวิธีการชำระค่าโดยสาร')}</h3>
                             <div style="font-size:12.5px;color:var(--ink);line-height:1.6">
                                 <div style="margin-bottom:10px">
-                                    <b style="color:var(--sky)">${getUiIcon('card', 14, 'var(--sky)')} บัตร EMV Contactless (Visa / Mastercard)</b>:
-                                    ${isEn ? 'Tap to pay at MRT Blue, Purple, Yellow, Pink lines, and SRT Red Line. Enjoy transfer fee waivers between connecting lines within 30 minutes.' : 'แตะจ่ายได้ทันทีผ่านประตูอัตโนมัติของ MRT สายสีน้ำเงิน, สายสีม่วง, สายสีเหลือง, สายสีชมพู และ SRT สายสีแดง พร้อมสิทธิ์ยกเว้นค่าแรกเข้าเมื่อแตะเปลี่ยนสายภายใน 30 นาที'}
+                                    <b style="color:var(--sky)">${getUiIcon('card', 14, 'var(--sky)')} ${isZh ? 'EMV Contactless 非接触式卡 (Visa / Mastercard)' : (isEn ? 'EMV Contactless (Visa / Mastercard)' : 'บัตร EMV Contactless (Visa / Mastercard)')}</b>:
+                                    ${isZh
+                                        ? '可在 MRT 蓝线、紫线、黄线、粉红线以及 SRT 红线直接刷卡进出闸机。30 分钟内在接驳线路之间换乘可自动免除第二次进站起步费。'
+                                        : (isEn ? 'Tap to pay at MRT Blue, Purple, Yellow, Pink lines, and SRT Red Line. Enjoy transfer fee waivers between connecting lines within 30 minutes.' : 'แตะจ่ายได้ทันทีผ่านประตูอัตโนมัติของ MRT สายสีน้ำเงิน, สายสีม่วง, สายสีเหลือง, สายสีชมพู และ SRT สายสีแดง พร้อมสิทธิ์ยกเว้นค่าแรกเข้าเมื่อแตะเปลี่ยนสายภายใน 30 นาที')
+                                    }
                                 </div>
                                 <div style="margin-bottom:10px">
-                                    <b style="color:#f59e0b">${getUiIcon('card', 14, '#f59e0b')} บัตรแรบบิท (Rabbit Card)</b>:
-                                    ${isEn
-                                        ? 'Accepted on BTS Sukhumvit, Silom, Gold lines, and MRT Yellow, Pink lines. Stored-value and 30-day passes available.<br>• <b>Senior Card (Purple):</b> 50% discount for Thai seniors 60+.<br>• <b>Student Card (Green):</b> Eligible for discount trip pass packages (averaging ฿20/trip on Yellow/Pink lines) via Rabbit Rewards.'
-                                        : 'บัตรแตะเดินทางยอดนิยม ใช้ได้กับ BTS สายสุขุมวิท, สายสีลม, สายสีทอง, MRT สายสีเหลือง และสายสีชมพู รองรับทั้งการเติมเงินและแพ็กเกจเที่ยวเดินทาง 30 วัน<br>• <b>บัตรผู้สูงอายุ (สีม่วง):</b> ลด 50% สำหรับผู้สูงอายุ 60 ปีขึ้นไป<br>• <b>บัตรนักเรียน/นักศึกษา (สีเขียว):</b> อายุไม่เกิน 23 ปี รับสิทธิ์ซื้อแพ็กเกจเที่ยวเดินทางเหมาเที่ยวสุดคุ้ม (สายสีเหลือง/ชมพู เฉลี่ยเริ่มต้น ฿20/เที่ยว) ผ่าน Rabbit Rewards'
+                                    <b style="color:#f59e0b">${getUiIcon('card', 14, '#f59e0b')} ${isZh ? '兔卡 (Rabbit Card)' : (isEn ? 'Rabbit Card' : 'บัตรแรบบิท (Rabbit Card)')}</b>:
+                                    ${isZh
+                                        ? '曼谷通用的储值交通卡，适用于 BTS 素坤逸线、是隆线、金线以及 MRT 黄线、粉红线。支持储值扣费及 30 天计次月票套餐。<br>• <b>长者卡 (紫色):</b> 泰国籍 60 岁以上长者享受 50% 半价优惠。<br>• <b>学生卡 (绿色):</b> 23 岁以下学生可通过 Rabbit Rewards 购买计次优惠包 (黄线/粉红线平均每次仅约 20 泰铢)。'
+                                        : (isEn
+                                            ? 'Accepted on BTS Sukhumvit, Silom, Gold lines, and MRT Yellow, Pink lines. Stored-value and 30-day passes available.<br>• <b>Senior Card (Purple):</b> 50% discount for Thai seniors 60+.<br>• <b>Student Card (Green):</b> Eligible for discount trip pass packages (averaging ฿20/trip on Yellow/Pink lines) via Rabbit Rewards.'
+                                            : 'บัตรแตะเดินทางยอดนิยม ใช้ได้กับ BTS สายสุขุมวิท, สายสีลม, สายสีทอง, MRT สายสีเหลือง และสายสีชมพู รองรับทั้งการเติมเงินและแพ็กเกจเที่ยวเดินทาง 30 วัน<br>• <b>บัตรผู้สูงอายุ (สีม่วง):</b> ลด 50% สำหรับผู้สูงอายุ 60 ปีขึ้นไป<br>• <b>บัตรนักเรียน/นักศึกษา (สีเขียว):</b> อายุไม่เกิน 23 ปี รับสิทธิ์ซื้อแพ็กเกจเที่ยวเดินทางเหมาเที่ยวสุดคุ้ม (สายสีเหลือง/ชมพู เฉลี่ยเริ่มต้น ฿20/เที่ยว) ผ่าน Rabbit Rewards'
+                                        )
                                     }
                                 </div>
                                 <div>
-                                    <b style="color:var(--muted)">${getUiIcon('coins', 14, 'var(--muted)')} เหรียญ / ตั๋วเที่ยวเดียว (Single Journey Token & Card)</b>:
-                                    ${isEn ? 'Available at automatic ticket vending machines and ticket offices at every station across all networks.' : 'หยอดเหรียญหรือสแกน QR Code ซื้อได้ที่ตู้จำหน่ายตั๋วอัตโนมัติและเคาน์เตอร์ทุกสถานี'}
+                                    <b style="color:var(--muted)">${getUiIcon('coins', 14, 'var(--muted)')} ${isZh ? '单程票 / 代币 (Single Journey Token & Card)' : (isEn ? 'Single Journey Token & Card' : 'เหรียญ / ตั๋วเที่ยวเดียว (Single Journey Token & Card)')}</b>:
+                                    ${isZh ? '可在各线全线车站的自动售票机投币/扫码购买，或至人工票务窗口购买。' : (isEn ? 'Available at automatic ticket vending machines and ticket offices at every station across all networks.' : 'หยอดเหรียญหรือสแกน QR Code ซื้อได้ที่ตู้จำหน่ายตั๋วอัตโนมัติและเคาน์เตอร์ทุกสถานี')}
                                 </div>
                             </div>
                         </div>
                     `;
                 } else {
                     // ข้อมูลเฉพาะสาย (Specific Line View)
-                    const lineName = isEn ? activeLine.nameEN : activeLine.nameTH;
-                    const terminus = isEn ? activeLine.terminusEN : activeLine.terminusTH;
-                    const operator = isEn ? activeLine.operatorEN : activeLine.operatorTH;
+                    const lineName = isZh ? (activeLine.nameZH || activeLine.nameEN) : (isEn ? activeLine.nameEN : activeLine.nameTH);
+                    const terminus = isZh ? (activeLine.terminusZH || activeLine.terminusEN) : (isEn ? activeLine.terminusEN : activeLine.terminusTH);
+                    const operator = isZh ? (activeLine.operatorZH || activeLine.operatorEN) : (isEn ? activeLine.operatorEN : activeLine.operatorTH);
 
-                    // ส่วนเฉพาะของแต่ละสาย
                     let specificContent = '';
 
                     if (activeId === 1 || activeId === 2) {
-                        // BTS Sukhumvit or Silom
+                        // Sukhumvit & Silom Lines
                         specificContent = `
                             <div class="info-card">
-                                <h3>${getUiIcon('chart', 16, '#0284c7')} ${isEn ? 'Station Count Fare Structure' : 'ตารางอัตราค่าโดยสารตามจำนวนสถานี'}</h3>
+                                <h3>${getUiIcon('chart', 16, '#0284c7')} ${isZh ? '核心线路阶梯票价表 (Mo Chit - On Nut / National Stadium - Saphan Taksin)' : (isEn ? 'Core Section Station Fare Matrix' : 'ตารางอัตราค่าโดยสารเส้นทางสัมปทานหลัก (หมอชิต–อ่อนนุช / สนามกีฬาฯ–สะพานตากสิน)')}</h3>
                                 <div style="font-size:12px;color:var(--muted);margin-bottom:8px">
-                                    ${isEn ? 'Standard concession fare calculated by number of stations traveled' : 'คำนวณตามจำนวนสถานีในเส้นทางสัมปทานหลัก'}
+                                    ${isZh ? '票价根据乘坐车站数量递增，1 站 ฿17 起至最高 ฿47' : (isEn ? 'Station count fare structure starting at ฿17 up to ฿47' : 'คิดตามจำนวนสถานีที่เดินทาง เริ่มต้น 17 บาท สูงสุด 47 บาท')}
                                 </div>
                                 <div class="fare-table-wrap">
                                     <table class="fare-grid-table compact-table">
                                         <thead>
                                             <tr>
-                                                <th style="white-space:nowrap;">${isEn ? 'Stations' : 'จำนวนสถานี'}</th>
-                                                <th style="white-space:nowrap;">${isEn ? 'Adult' : 'บุคคลทั่วไป'}</th>
-                                                <th style="white-space:nowrap;">${isEn ? 'Student' : 'นักเรียน/นักศึกษา'}</th>
-                                                <th style="white-space:nowrap;">${isEn ? 'Senior' : 'ผู้สูงอายุ'}</th>
+                                                <th style="white-space:nowrap;">${isZh ? '乘坐车站数' : (isEn ? 'Stations' : 'จำนวนสถานี')}</th>
+                                                <th style="white-space:nowrap;">${isZh ? '普通成人' : (isEn ? 'Adult' : 'บุคคลทั่วไป')}</th>
+                                                <th style="white-space:nowrap;">${isZh ? '学生卡' : (isEn ? 'Student' : 'นักเรียน/นักศึกษา')}</th>
+                                                <th style="white-space:nowrap;">${isZh ? '长者卡' : (isEn ? 'Senior' : 'ผู้สูงอายุ')}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             ${BTS_STATION_FARES.map(r => `
                                                 <tr>
-                                                    <td style="white-space:nowrap;"><b>${esc(isEn ? r.stnEN : r.stnTH)}</b></td>
+                                                    <td style="white-space:nowrap;"><b>${esc(isZh ? (r.stnZH || r.stnEN) : (isEn ? r.stnEN : r.stnTH))}</b></td>
                                                     <td style="white-space:nowrap;color:${activeLine.color}"><b>฿${r.adult}</b></td>
                                                     <td style="white-space:nowrap;">฿${r.student}</td>
                                                     <td style="white-space:nowrap;">฿${r.senior}</td>
@@ -4817,10 +4928,14 @@ setOriginFromActionSheet() {
                                     </table>
                                 </div>
                                 <div style="font-size:12px;color:var(--muted);margin-top:8px;line-height:1.5;">
-                                    ${getUiIcon('bulb', 14, '#f59e0b')} <b>${isEn ? 'Extension Fee Rule:' : 'เงื่อนไขส่วนต่อขยาย:'}</b>
+                                    ${getUiIcon('bulb', 14, '#f59e0b')} <b>${isZh ? '延伸线计费规则:' : (isEn ? 'Extension Fee Rule:' : 'เงื่อนไขส่วนต่อขยาย:')}</b>
                                     ${activeId === 1
-                                        ? (isEn ? 'Traveling into extension sections (Mo Chit–Khu Khot or On Nut–Kheha) adds ฿15 (Senior ฿8). Maximum fare is capped at ฿62.' : 'การเดินทางเข้าสู่ส่วนต่อขยาย (หมอชิต–คูคต หรือ อ่อนนุช–เคหะฯ) คิดค่าโดยสารเพิ่ม 15 บาท (ผู้สูงอายุ 8 บาท) รวมค่าโดยสารสูงสุดไม่เกิน 62 บาท')
-                                        : (isEn ? 'Traveling into extension section (Krung Thon Buri–Bang Wa) adds ฿15 (Senior ฿8). Maximum fare is capped at ฿62.' : 'การเดินทางเข้าสู่ส่วนต่อขยาย (กรุงธนบุรี–บางหว้า) คิดค่าโดยสารเพิ่ม 15 บาท (ผู้สูงอายุ 8 บาท) รวมค่าโดยสารสูงสุดไม่เกิน 62 บาท')
+                                        ? (isZh
+                                            ? '跨入延伸线段 (莫奇–库括 或 翁聿–凯哈) 加收 15 泰铢 (长者 8 泰铢)，全线最高票价封顶不超过 62 泰铢。'
+                                            : (isEn ? 'Traveling into extension sections (Mo Chit–Khu Khot or On Nut–Kheha) adds ฿15 (Senior ฿8). Maximum fare is capped at ฿62.' : 'การเดินทางเข้าสู่ส่วนต่อขยาย (หมอชิต–คูคต หรือ อ่อนนุช–เคหะฯ) คิดค่าโดยสารเพิ่ม 15 บาท (ผู้สูงอายุ 8 บาท) รวมค่าโดยสารสูงสุดไม่เกิน 62 บาท'))
+                                        : (isZh
+                                            ? '跨入延伸线段 (吞武里城–曼瓦) 加收 15 泰铢 (长者 8 泰铢)，全线最高票价封顶不超过 62 泰铢。'
+                                            : (isEn ? 'Traveling into extension section (Krung Thon Buri–Bang Wa) adds ฿15 (Senior ฿8). Maximum fare is capped at ฿62.' : 'การเดินทางเข้าสู่ส่วนต่อขยาย (กรุงธนบุรี–บางหว้า) คิดค่าโดยสารเพิ่ม 15 บาท (ผู้สูงอายุ 8 บาท) รวมค่าโดยสารสูงสุดไม่เกิน 62 บาท'))
                                     }
                                 </div>
                             </div>
@@ -4829,14 +4944,16 @@ setOriginFromActionSheet() {
                         // Gold Line
                         specificContent = `
                             <div class="info-card" style="background:linear-gradient(135deg,#c9a03810,#c9a03820);border-color:#c9a03855">
-                                <span class="fare-badge-20" style="background:#C9A038">฿16 ${isEn ? 'Flat Rate' : 'ราคาเดียวตลอดสาย'}</span>
+                                <span class="fare-badge-20" style="background:#C9A038">฿16 ${isZh ? '单一票价' : (isEn ? 'Flat Rate' : 'ราคาเดียวตลอดสาย')}</span>
                                 <h3 style="color:#a17c24">
-                                    <span>${isEn ? 'Flat 16 Baht Fare' : 'อัตราค่าโดยสาร 16 บาท ตลอดสาย'}</span>
+                                    <span>${isZh ? '全线统一票价 16 泰铢' : (isEn ? 'Flat 16 Baht Fare' : 'อัตราค่าโดยสาร 16 บาท ตลอดสาย')}</span>
                                 </h3>
                                 <div style="font-size:12.5px;color:var(--ink);line-height:1.6">
-                                    ${isEn
-                                        ? 'The Gold Line operates under a single flat fare of <b>฿16</b> regardless of distance across all 3 stations (Krung Thon Buri ↔ Charoen Nakhon ↔ Khlong San).'
-                                        : 'รถไฟฟ้าสายสีทองคิดค่าโดยสารอัตราเดียว <b>16 บาท</b> ตลอดสายครอบคลุมทั้ง 3 สถานี (กรุงธนบุรี ↔ เจริญนคร (ไอคอนสยาม) ↔ คลองสาน) เดินทาง 1 สถานี หรือจนสุดสายราคาเท่ากัน'
+                                    ${isZh
+                                        ? '金色线全线 3 座车站 (吞武里城 ↔ 乍能纳空 (ICONSIAM) ↔ 空讪) 实行单一统一定价 <b>16 泰铢</b>，乘车 1 站或坐至终点站均为统一价格。'
+                                        : (isEn
+                                            ? 'The Gold Line operates under a single flat fare of <b>฿16</b> regardless of distance across all 3 stations (Krung Thon Buri ↔ Charoen Nakhon ↔ Khlong San).'
+                                            : 'รถไฟฟ้าสายสีทองคิดค่าโดยสารอัตราเดียว <b>16 บาท</b> ตลอดสายครอบคลุมทั้ง 3 สถานี (กรุงธนบุรี ↔ เจริญนคร (ไอคอนสยาม) ↔ คลองสาน) เดินทาง 1 สถานี หรือจนสุดสายราคาเท่ากัน')
                                     }
                                 </div>
                             </div>
@@ -4845,24 +4962,24 @@ setOriginFromActionSheet() {
                         // Yellow / Pink Line Monorails
                         specificContent = `
                             <div class="info-card">
-                                <h3>${getUiIcon('chart', 16, '#0284c7')} ${isEn ? 'Distance-Based Fare Tiers' : 'ตารางอัตราค่าโดยสารตามระยะทาง'}</h3>
+                                <h3>${getUiIcon('chart', 16, '#0284c7')} ${isZh ? '按里程计费阶梯票价表' : (isEn ? 'Distance-Based Fare Tiers' : 'ตารางอัตราค่าโดยสารตามระยะทาง')}</h3>
                                 <div style="font-size:12px;color:var(--muted);margin-bottom:8px">
-                                    ${isEn ? 'Distance-based tariff structure starting at ฿15 up to ฿45' : 'อัตราค่าโดยสารตามระยะทางเริ่มต้น 15 บาท ถึงสูงสุด 45 บาท'}
+                                    ${isZh ? '按行驶里程计价，起步 15 泰铢至最高 45 泰铢' : (isEn ? 'Distance-based tariff structure starting at ฿15 up to ฿45' : 'อัตราค่าโดยสารตามระยะทางเริ่มต้น 15 บาท ถึงสูงสุด 45 บาท')}
                                 </div>
                                 <div class="fare-table-wrap">
                                     <table class="fare-grid-table compact-table">
                                         <thead>
                                             <tr>
-                                                <th style="white-space:nowrap;">${isEn ? 'Distance Traveled' : 'ระยะทาง / สถานีที่เดินทาง'}</th>
-                                                <th style="white-space:nowrap;">${isEn ? 'Adult' : 'บุคคลทั่วไป'}</th>
-                                                <th style="white-space:nowrap;">${isEn ? 'Student' : 'นักเรียน/นักศึกษา'}</th>
-                                                <th style="white-space:nowrap;">${isEn ? 'Senior (-50%)' : 'ผู้สูงอายุ (-50%)'}</th>
+                                                <th style="white-space:nowrap;">${isZh ? '乘车站数 / 距离' : (isEn ? 'Distance Traveled' : 'ระยะทาง / สถานีที่เดินทาง')}</th>
+                                                <th style="white-space:nowrap;">${isZh ? '普通成人' : (isEn ? 'Adult' : 'บุคคลทั่วไป')}</th>
+                                                <th style="white-space:nowrap;">${isZh ? '学生' : (isEn ? 'Student' : 'นักเรียน/นักศึกษา')}</th>
+                                                <th style="white-space:nowrap;">${isZh ? '长者 (-50%)' : (isEn ? 'Senior (-50%)' : 'ผู้สูงอายุ (-50%)')}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             ${MONORAIL_FARES.map(r => `
                                                 <tr>
-                                                    <td style="white-space:nowrap;"><b>${esc(isEn ? r.stnEN : r.stnTH)}</b></td>
+                                                    <td style="white-space:nowrap;"><b>${esc(isZh ? (r.stnZH || r.stnEN) : (isEn ? r.stnEN : r.stnTH))}</b></td>
                                                     <td style="white-space:nowrap;color:${activeLine.color}"><b>฿${r.adult}</b></td>
                                                     <td style="white-space:nowrap;">฿${r.student}</td>
                                                     <td style="white-space:nowrap;color:#10b981;"><b>฿${r.senior}</b></td>
@@ -4874,49 +4991,57 @@ setOriginFromActionSheet() {
                                 <div style="margin-top:12px;display:flex;flex-direction:column;gap:8px;">
                                     <div style="background:rgba(255,255,255,0.03);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:12px;line-height:1.6;">
                                         <div style="font-weight:700;color:#10b981;display:flex;align-items:center;gap:6px;margin-bottom:2px;">
-                                            <span>${getUiIcon('senior', 15, '#10b981')}</span>
-                                            <span>${isEn ? 'Senior Citizen Discount (50% Off):' : 'อัตราค่าโดยสารผู้สูงอายุ (ส่วนลด 50%):'}</span>
+                                            <span>${getUiIcon('check', 15, '#10b981')}</span>
+                                            <span>${isZh ? '长者乘车优惠 (泰国籍 60 岁以上):' : (isEn ? 'Senior Citizen Fare (Thai Seniors 60+):' : 'อัตราค่าโดยสารผู้สูงอายุ (60 ปีขึ้นไป):')}</span>
                                         </div>
                                         <div style="color:var(--ink);">
-                                            ${isEn
-                                                ? 'Thai seniors aged 60+ receive a <b>50% discount</b> on standard fare (approx. <b>฿8 - ฿23</b>). Valid using <b>Rabbit Senior Card</b> (Purple) or by presenting Thai National ID card at the ticket office.'
-                                                : 'ผู้สูงอายุสัญชาติไทย (อายุ 60 ปีขึ้นไป) ได้รับส่วนลด <b>50%</b> จากอัตราปกติ (เหลือประมาณ <b>8 – 23 บาท</b>) เมื่อใช้ <b>บัตรแรบบิทผู้สูงอายุ (สีม่วง)</b> แตะผ่านประตู หรือแสดงบัตรประชาชนซื้อตั๋วเที่ยวเดียวที่ห้องจำหน่ายตั๋ว'
+                                            ${isZh
+                                                ? '泰国籍 60 岁以上长者可享受标准票价 <b>50% 半价优惠</b> (实付约 <b>฿8 - ฿23</b>)。使用 <b>兔卡长者卡 (紫色)</b> 刷卡或于车站票务处出示泰国国民身份证购买单程票均可享受。'
+                                                : (isEn
+                                                    ? 'Thai seniors aged 60+ receive a <b>50% discount</b> on standard fare (approx. <b>฿8 - ฿23</b>). Valid using <b>Rabbit Senior Card</b> (Purple) or by presenting Thai National ID card at the ticket office.'
+                                                    : 'ผู้สูงอายุสัญชาติไทย (อายุ 60 ปีขึ้นไป) ได้รับส่วนลด <b>50%</b> จากอัตราปกติ (เหลือประมาณ <b>8 – 23 บาท</b>) เมื่อใช้ <b>บัตรแรบบิทผู้สูงอายุ (สีม่วง)</b> แตะผ่านประตู หรือแสดงบัตรประชาชนซื้อตั๋วเที่ยวเดียวที่ห้องจำหน่ายตั๋ว')
                                             }
                                         </div>
                                     </div>
                                     <div style="background:rgba(255,255,255,0.03);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:12px;line-height:1.6;">
                                         <div style="font-weight:700;color:var(--accent);display:flex;align-items:center;gap:6px;margin-bottom:2px;">
                                             <span>${getUiIcon('student', 15, 'var(--accent)')}</span>
-                                            <span>${isEn ? 'Student Fares & Special Trip Pass:' : 'อัตราค่าโดยสารนักเรียน / นักศึกษา:'}</span>
+                                            <span>${isZh ? '学生优惠票价与计次特惠包:' : (isEn ? 'Student Fares & Special Trip Pass:' : 'อัตราค่าโดยสารนักเรียน / นักศึกษา:')}</span>
                                         </div>
                                         <div style="color:var(--ink);">
-                                            ${isEn
-                                                ? '<b>Single Journey:</b> Charged at regular adult fare (<b>฿15 - ฿45</b>).<br><b>Discount Pass:</b> Students (under 23) can purchase special trip packages averaging <b>฿20 per trip</b> via <b>Rabbit Rewards</b> (paired with Rabbit Student Card) or at station ticket offices.'
-                                                : '<b>รายเที่ยว:</b> คิดตามอัตราค่าโดยสารปกติ (<b>15 – 45 บาท</b> ไม่มีส่วนลดเปอร์เซ็นต์รายเที่ยว)<br><b>แพ็กเกจเหมาเที่ยว:</b> นักเรียน/นักศึกษา (อายุไม่เกิน 23 ปี) สามารถซื้อ <b>"แพ็กเกจเที่ยวเดินทางเหมาเที่ยว"</b> ราคาพิเศษเฉลี่ยเริ่มต้นเพียง <b>20 บาทต่อเที่ยว</b> ผ่านแอป <b>Rabbit Rewards</b> (ผูกบัตร Rabbit Student สีเขียว) หรือห้องจำหน่ายตั๋ว'
+                                            ${isZh
+                                                ? '<b>单程票:</b> 按常规成人票价计费 (<b>15 – 45 泰铢</b>，单次购票无折扣)。<br><b>计次包:</b> 23 岁以下学生可通过 <b>Rabbit Rewards</b> 应用程序 (绑定绿色 Rabbit Student 卡) 或车站人工窗口购买<b>计次特惠套餐</b>，平均每次低至 <b>20 泰铢</b>。'
+                                                : (isEn
+                                                    ? '<b>Single Journey:</b> Charged at regular adult fare (<b>฿15 - ฿45</b>).<br><b>Discount Pass:</b> Students (under 23) can purchase special trip packages averaging <b>฿20 per trip</b> via <b>Rabbit Rewards</b> (paired with Rabbit Student Card) or at station ticket offices.'
+                                                    : '<b>รายเที่ยว:</b> คิดตามอัตราค่าโดยสารปกติ (<b>15 – 45 บาท</b> ไม่มีส่วนลดเปอร์เซ็นต์รายเที่ยว)<br><b>แพ็กเกจเหมาเที่ยว:</b> นักเรียน/นักศึกษา (อายุไม่เกิน 23 ปี) สามารถซื้อ <b>"แพ็กเกจเที่ยวเดินทางเหมาเที่ยว"</b> ราคาพิเศษเฉลี่ยเริ่มต้นเพียง <b>20 บาทต่อเที่ยว</b> ผ่านแอป <b>Rabbit Rewards</b> (ผูกบัตร Rabbit Student สีเขียว) หรือห้องจำหน่ายตั๋ว')
                                             }
                                         </div>
                                     </div>
                                     <div style="background:rgba(255,255,255,0.03);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:12px;line-height:1.6;">
                                         <div style="font-weight:700;color:#38bdf8;display:flex;align-items:center;gap:6px;margin-bottom:2px;">
                                             <span>${getUiIcon('child', 15, '#38bdf8')}</span>
-                                            <span>${isEn ? 'Children & Persons with Disabilities:' : 'เด็กเล็กและผู้พิการ:'}</span>
+                                            <span>${isZh ? '幼童与残障人士免票政策:' : (isEn ? 'Children & Persons with Disabilities:' : 'เด็กเล็กและผู้พิการ:')}</span>
                                         </div>
                                         <div style="color:var(--ink);">
-                                            ${isEn
-                                                ? 'Children under 90 cm in height and persons with disabilities travel <b>FREE</b>.'
-                                                : 'เด็กส่วนสูงไม่เกิน 90 ซม. และผู้พิการ (แสดงบัตรคนพิการ) เดินทาง <b>ฟรี</b>'
+                                            ${isZh
+                                                ? '身高不超过 90 厘米的儿童及残障人士 (出示残疾证) <b>免费乘车</b>。'
+                                                : (isEn
+                                                    ? 'Children under 90 cm in height and persons with disabilities travel <b>FREE</b>.'
+                                                    : 'เด็กส่วนสูงไม่เกิน 90 ซม. และผู้พิการ (แสดงบัตรคนพิการ) เดินทาง <b>ฟรี</b>')
                                             }
                                         </div>
                                     </div>
                                     <div style="background:rgba(255,255,255,0.03);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:12px;line-height:1.6;">
                                         <div style="font-weight:700;color:#fbbf24;display:flex;align-items:center;gap:6px;margin-bottom:2px;">
                                             <span>${getUiIcon('bulb', 15, '#fbbf24')}</span>
-                                            <span>${isEn ? 'EMV Transfer Waiver:' : 'สิทธิประโยชน์การเปลี่ยนสาย (EMV Transfer):'}</span>
+                                            <span>${isZh ? '换乘优惠 (EMV Transfer Waiver):' : (isEn ? 'EMV Transfer Waiver:' : 'สิทธิประโยชน์การเปลี่ยนสาย (EMV Transfer):')}</span>
                                         </div>
                                         <div style="color:var(--ink);">
-                                            ${isEn
-                                                ? 'When transferring with connecting MRT or SRT lines via the same EMV Contactless card within 30 minutes, the second entry fee (฿14 - ฿15) is waived automatically.'
-                                                : 'เมื่อเดินทางเปลี่ยนสายไปยังระบบรถไฟฟ้าที่เชื่อมต่อกัน (เช่น สายสีน้ำเงิน, สายสีม่วง, สายสีแดง) ด้วยบัตร EMV ใบเดิมภายใน 30 นาที จะได้รับยกเว้นค่าแรกเข้าของสายที่สองทันที (ประหยัดได้ 14 – 15 บาท)'
+                                            ${isZh
+                                                ? '在 30 分钟内使用同一张 EMV 非接触卡换乘相连的捷运系统 (如 MRT 蓝线、紫线、SRT 红线) 时，第二条线路的起步进站费 (14 – 15 泰铢) 将被自动免除。'
+                                                : (isEn
+                                                    ? 'When transferring with connecting MRT or SRT lines via the same EMV Contactless card within 30 minutes, the second entry fee (฿14 - ฿15) is waived automatically.'
+                                                    : 'เมื่อเดินทางเปลี่ยนสายไปยังระบบรถไฟฟ้าที่เชื่อมต่อกัน (เช่น สายสีน้ำเงิน, สายสีม่วง, สายสีแดง) ด้วยบัตร EMV ใบเดิมภายใน 30 นาที จะได้รับยกเว้นค่าแรกเข้าของสายที่สองทันที (ประหยัดได้ 14 – 15 บาท)')
                                             }
                                         </div>
                                     </div>
@@ -4927,21 +5052,21 @@ setOriginFromActionSheet() {
                         // MRT Blue Line
                         specificContent = `
                             <div class="info-card">
-                                <h3>${getUiIcon('chart', 16, '#0284c7')} ${isEn ? 'Station Count Fare Structure' : 'ตารางอัตราค่าโดยสารตามจำนวนสถานี'}</h3>
+                                <h3>${getUiIcon('chart', 16, '#0284c7')} ${isZh ? '按乘车站数计费标准表' : (isEn ? 'Station Count Fare Structure' : 'ตารางอัตราค่าโดยสารตามจำนวนสถานี')}</h3>
                                 <div class="fare-table-wrap">
                                     <table class="fare-grid-table compact-table">
                                         <thead>
                                             <tr>
-                                                <th style="white-space:nowrap;">${isEn ? 'Stations' : 'จำนวนสถานี'}</th>
-                                                <th style="white-space:nowrap;">${isEn ? 'Adult' : 'บุคคลทั่วไป'}</th>
-                                                <th style="white-space:nowrap;">${isEn ? 'Student (-10%)' : 'นักเรียน/นักศึกษา (-10%)'}</th>
-                                                <th style="white-space:nowrap;">${isEn ? 'Children/Senior (-50%)' : 'เด็ก/ผู้สูงอายุ (-50%)'}</th>
+                                                <th style="white-space:nowrap;">${isZh ? '乘坐车站数' : (isEn ? 'Stations' : 'จำนวนสถานี')}</th>
+                                                <th style="white-space:nowrap;">${isZh ? '普通成人' : (isEn ? 'Adult' : 'บุคคลทั่วไป')}</th>
+                                                <th style="white-space:nowrap;">${isZh ? '学生 (-10%)' : (isEn ? 'Student (-10%)' : 'นักเรียน/นักศึกษา (-10%)')}</th>
+                                                <th style="white-space:nowrap;">${isZh ? '儿童/长者 (-50%)' : (isEn ? 'Children/Senior (-50%)' : 'เด็ก/ผู้สูงอายุ (-50%)')}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             ${MRT_BLUE_FARES.map(r => `
                                                 <tr>
-                                                    <td style="white-space:nowrap;"><b>${esc(isEn ? r.stnEN : r.stnTH)}</b></td>
+                                                    <td style="white-space:nowrap;"><b>${esc(isZh ? (r.stnZH || r.stnEN) : (isEn ? r.stnEN : r.stnTH))}</b></td>
                                                     <td style="white-space:nowrap;color:${activeLine.color}"><b>฿${r.adult}</b></td>
                                                     <td style="white-space:nowrap;">฿${r.student}</td>
                                                     <td style="white-space:nowrap;">฿${r.senior}</td>
@@ -4951,26 +5076,30 @@ setOriginFromActionSheet() {
                                     </table>
                                 </div>
                                 <div style="font-size:12px;color:var(--muted);margin-top:8px;line-height:1.5;">
-                                    ${getUiIcon('bulb', 14, '#f59e0b')} <b>${isEn ? 'Loop Calculation Principle:' : 'หลักการคำนวณราคาเส้นทางวงกลม:'}</b>
-                                    ${isEn
-                                        ? 'For round trips or connecting via Tha Phra junction, the fare is always charged based on the shortest geometric distance between origin and destination.'
-                                        : 'สำหรับการเดินทางในสายวงกลมหรือผ่านสถานีชุมทางท่าพระ ระบบจะคำนวณและคิดค่าโดยสารตามเส้นทางที่สั้นที่สุดเสมอ แม้ผู้โดยสารจะเลือกเดินทางผ่านทางที่ยาวกว่า'
+                                    ${getUiIcon('bulb', 14, '#f59e0b')} <b>${isZh ? '环线最短路径计费原则:' : (isEn ? 'Loop Calculation Principle:' : 'หลักการคำนวณราคาเส้นทางวงกลม:')}</b>
+                                    ${isZh
+                                        ? '在环形线路或途经塔帕 (Tha Phra) 换乘站乘车时，系统一律按照起点与终点之间的最短路径里程计费，即便乘客实际乘坐了较长路线也不会多扣费。'
+                                        : (isEn
+                                            ? 'When traveling across the loop or passing Tha Phra interchange, the system always calculates and charges based on the shortest geometric route between your origin and destination stations, even if you travel via a longer path.'
+                                            : 'สำหรับการเดินทางในสายวงกลมหรือผ่านสถานีชุมทางท่าพระ ระบบจะคำนวณและคิดค่าโดยสารตามเส้นทางที่สั้นที่สุดเสมอ แม้ผู้โดยสารจะเลือกเดินทางผ่านทางที่ยาวกว่า')
                                     }
                                 </div>
                             </div>
                         `;
                     } else if (activeId === 102 || activeId === 103 || activeId === 105) {
-                        // MRT Purple or SRT Red Line
+                        // 20 Baht Flat Cap Lines
                         specificContent = `
-                            <div class="info-card" style="background:linear-gradient(135deg,#dc26260d,#ef444415);border-color:#ef444444">
-                                <span class="fare-badge-20">${isEn ? '20 Baht Flat Fare Policy' : 'นโยบาย 20 บาทตลอดสาย'}</span>
+                            <div class="info-card" style="background:linear-gradient(135deg,#dc262610,#ef444420);border-color:#ef444455">
+                                <span class="fare-badge-20" style="background:#b91c1c">฿20 ${isZh ? '全线封顶' : (isEn ? 'Max Flat Fare' : 'สูงสุดตลอดสาย')}</span>
                                 <h3 style="color:#b91c1c">
-                                    <span>${isEn ? 'Government 20 Baht Maximum Cap' : 'มาตรการค่าโดยสารสูงสุด 20 บาท'}</span>
+                                    <span>${isZh ? '20 泰铢全线封顶票价政策' : (isEn ? '20 Baht Flat Cap Policy' : 'นโยบาย 20 บาทตลอดสาย')}</span>
                                 </h3>
                                 <div style="font-size:12.5px;color:var(--ink);line-height:1.6">
-                                    ${isEn
-                                        ? `Passengers pay a maximum of <b>฿20</b> for any distance traveled on this line. When transferring between <b>MRT Purple Line ⇄ SRT Red Line</b> at Bang Sue / Bang Son within 30 minutes via the same EMV Contactless card, the total combined fare is capped at only <b>฿20</b>!`
-                                        : `ผู้โดยสารเดินทางด้วยค่าโดยสารสูงสุด <b>ไม่เกิน 20 บาท</b> ตลอดสาย (ราคาปกติตามระยะทางคือ ฿${activeLine.minFare} - ฿20 หากคำนวณเกิน 20 บาทจะคิดเพียง 20 บาท) และเมื่อแตะเปลี่ยนขบวนระหว่าง <b>สายสีม่วง ⇄ สายสีแดง</b> ที่สถานีบางซื่อ/บางซ่อน ภายใน 30 นาทีด้วยบัตร EMV ใบเดิม รวมค่าเดินทางทั้ง 2 สายสูงสุดไม่เกิน <b>20 บาท</b> เช่นกัน`
+                                    ${isZh
+                                        ? `使用 EMV Contactless 刷卡乘车，无论乘坐多少站，单线最高仅需 <b>20 泰铢</b>！(按实际里程原价为 ฿${activeLine.minFare} - ฿20)。且在 30 分钟内于挽赐/曼颂站换乘 <b>MRT 紫线 ⇄ SRT 红线</b>，两线总费用同样封顶仅 <b>20 泰铢</b>！`
+                                        : (isEn
+                                            ? `Passengers pay a maximum of <b>฿20</b> for any distance traveled on this line. When transferring between <b>MRT Purple Line ⇄ SRT Red Line</b> at Bang Sue / Bang Son within 30 minutes via the same EMV Contactless card, the total combined fare is capped at only <b>฿20</b>!`
+                                            : `ผู้โดยสารเดินทางด้วยค่าโดยสารสูงสุด <b>ไม่เกิน 20 บาท</b> ตลอดสาย (ราคาปกติตามระยะทางคือ ฿${activeLine.minFare} - ฿20 หากคำนวณเกิน 20 บาทจะคิดเพียง 20 บาท) และเมื่อแตะเปลี่ยนขบวนระหว่าง <b>สายสีม่วง ⇄ สายสีแดง</b> ที่สถานีบางซื่อ/บางซ่อน ภายใน 30 นาทีด้วยบัตร EMV ใบเดิม รวมค่าเดินทางทั้ง 2 สายสูงสุดไม่เกิน <b>20 บาท</b> เช่นกัน`)
                                     }
                                 </div>
                             </div>
@@ -4979,13 +5108,13 @@ setOriginFromActionSheet() {
                         // ARL
                         specificContent = `
                             <div class="info-card">
-                                <h3>${getUiIcon('chart', 16, '#0284c7')} ${isEn ? 'Airport Rail Link Station Fare Matrix' : 'อัตราค่าโดยสารสถานี แอร์พอร์ต เรล ลิงก์ (จากพญาไท)'}</h3>
+                                <h3>${getUiIcon('chart', 16, '#0284c7')} ${isZh ? '机场快线各站票价表 (从披耶泰 A8 出发)' : (isEn ? 'Airport Rail Link Station Fare Matrix' : 'อัตราค่าโดยสารสถานี แอร์พอร์ต เรล ลิงก์ (จากพญาไท)')}</h3>
                                 <div class="fare-table-wrap">
                                     <table class="fare-grid-table compact-table">
                                         <thead>
                                             <tr>
-                                                <th style="white-space:nowrap;">${isEn ? 'Station' : 'สถานี'}</th>
-                                                <th style="white-space:nowrap;">${isEn ? 'From Phaya Thai (A8)' : 'ราคาจากพญาไท (A8)'}</th>
+                                                <th style="white-space:nowrap;">${isZh ? '车站' : (isEn ? 'Station' : 'สถานี')}</th>
+                                                <th style="white-space:nowrap;">${isZh ? '从披耶泰 (A8) 票价' : (isEn ? 'From Phaya Thai (A8)' : 'ราคาจากพญาไท (A8)')}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -4993,7 +5122,7 @@ setOriginFromActionSheet() {
                                                 <tr>
                                                     <td style="white-space:nowrap;">
                                                         <span class="stn-code-badge" style="background:${activeLine.color};margin-right:6px;">${r.code}</span>
-                                                        <b>${esc(isEn ? r.en : r.th)}</b>
+                                                        <b>${esc(isZh ? (r.zh || r.en) : (isEn ? r.en : r.th))}</b>
                                                     </td>
                                                     <td style="white-space:nowrap;color:${activeLine.color}"><b>${r.price}</b></td>
                                                 </tr>
@@ -5002,7 +5131,7 @@ setOriginFromActionSheet() {
                                     </table>
                                 </div>
                                 <div style="font-size:12px;color:var(--muted);margin-top:8px;">
-                                    ${getUiIcon('plane', 14, '#0284c7')} ${isEn ? 'Express travel from downtown (Phaya Thai) direct to Suvarnabhumi Airport in just 26 minutes for only ฿45.' : 'เดินทางจากใจกลางเมือง (พญาไท) ตรงสู่สนามบินสุวรรณภูมิ รวดเร็วเพียง 26 นาที ในราคา 45 บาท'}
+                                    ${getUiIcon('plane', 14, '#0284c7')} ${isZh ? '从市中心 (披耶泰站) 直达素万那普机场，仅需 26 分钟，单程仅 45 泰铢。' : (isEn ? 'Express travel from downtown (Phaya Thai) direct to Suvarnabhumi Airport in just 26 minutes for only ฿45.' : 'เดินทางจากใจกลางเมือง (พญาไท) ตรงสู่สนามบินสุวรรณภูมิ รวดเร็วเพียง 26 นาที ในราคา 45 บาท')}
                                 </div>
                             </div>
                         `;
@@ -5010,14 +5139,16 @@ setOriginFromActionSheet() {
                         // BRT
                         specificContent = `
                             <div class="info-card" style="background:linear-gradient(135deg,#82c34110,#82c34120);border-color:#82c34155">
-                                <span class="fare-badge-20" style="background:#82C341">฿15 ${isEn ? 'Flat Rate' : 'ราคาเดียวตลอดสาย'}</span>
+                                <span class="fare-badge-20" style="background:#82C341">฿15 ${isZh ? '单一票价' : (isEn ? 'Flat Rate' : 'ราคาเดียวตลอดสาย')}</span>
                                 <h3 style="color:#5f9628">
-                                    <span>${isEn ? 'Flat 15 Baht Fare' : 'อัตราค่าโดยสาร 15 บาท ตลอดสาย'}</span>
+                                    <span>${isZh ? '全线单一票价 15 泰铢' : (isEn ? 'Flat 15 Baht Fare' : 'อัตราค่าโดยสาร 15 บาท ตลอดสาย')}</span>
                                 </h3>
                                 <div style="font-size:12.5px;color:var(--ink);line-height:1.6">
-                                    ${isEn
-                                        ? 'Bangkok BRT operates under a flat fare of <b>฿15</b> across all 12 stations (Sathorn ↔ Ratchaphruek). Thai seniors (60+) pay a discounted fare of only <b>฿8</b>.'
-                                        : 'รถโดยสารด่วนพิเศษ BRT คิดค่าโดยสารอัตราเดียว <b>15 บาท</b> ตลอดสายครอบคลุมทั้ง 12 สถานี (สาทร ↔ ราชพฤกษ์) โดยผู้สูงอายุสัญชาติไทย (60 ปีขึ้นไป) ได้รับส่วนลดเหลือเพียง <b>8 บาท</b>'
+                                    ${isZh
+                                        ? '曼谷快捷公交 BRT 实行全线单一票价 <b>15 泰铢</b>，覆盖全部 12 座车站 (沙吞 ↔ 拉差普鲁)。泰国籍 60 岁以上长者享受优惠票价仅 <b>8 泰铢</b>。'
+                                        : (isEn
+                                            ? 'Bangkok BRT operates under a flat fare of <b>฿15</b> across all 12 stations (Sathorn ↔ Ratchaphruek). Thai seniors (60+) pay a discounted fare of only <b>฿8</b>.'
+                                            : 'รถโดยสารด่วนพิเศษ BRT คิดค่าโดยสารอัตราเดียว <b>15 บาท</b> ตลอดสายครอบคลุมทั้ง 12 สถานี (สาทร ↔ ราชพฤกษ์) โดยผู้สูงอายุสัญชาติไทย (60 ปีขึ้นไป) ได้รับส่วนลดเหลือเพียง <b>8 บาท</b>')
                                     }
                                 </div>
                             </div>
@@ -5026,21 +5157,21 @@ setOriginFromActionSheet() {
                         // MRT Orange Line
                         specificContent = `
                             <div class="info-card">
-                                <h3>${getUiIcon('chart', 16, '#f58220')} ${isEn ? 'Station Count Fare Structure' : 'ตารางอัตราค่าโดยสารตามจำนวนสถานี'}</h3>
+                                <h3>${getUiIcon('chart', 16, '#f58220')} ${isZh ? '按乘车站数计费标准表' : (isEn ? 'Station Count Fare Structure' : 'ตารางอัตราค่าโดยสารตามจำนวนสถานี')}</h3>
                                 <div class="fare-table-wrap">
                                     <table class="fare-grid-table compact-table">
                                         <thead>
                                             <tr>
-                                                <th style="white-space:nowrap;">${isEn ? 'Stations' : 'จำนวนสถานี'}</th>
-                                                <th style="white-space:nowrap;">${isEn ? 'Adult' : 'บุคคลทั่วไป'}</th>
-                                                <th style="white-space:nowrap;">${isEn ? 'Student (-10%)' : 'นักเรียน/นักศึกษา (-10%)'}</th>
-                                                <th style="white-space:nowrap;">${isEn ? 'Children/Senior (-50%)' : 'เด็ก/ผู้สูงอายุ (-50%)'}</th>
+                                                <th style="white-space:nowrap;">${isZh ? '乘坐车站数' : (isEn ? 'Stations' : 'จำนวนสถานี')}</th>
+                                                <th style="white-space:nowrap;">${isZh ? '普通成人' : (isEn ? 'Adult' : 'บุคคลทั่วไป')}</th>
+                                                <th style="white-space:nowrap;">${isZh ? '学生 (-10%)' : (isEn ? 'Student (-10%)' : 'นักเรียน/นักศึกษา (-10%)')}</th>
+                                                <th style="white-space:nowrap;">${isZh ? '儿童/长者 (-50%)' : (isEn ? 'Children/Senior (-50%)' : 'เด็ก/ผู้สูงอายุ (-50%)')}</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             ${MRT_BLUE_FARES.map(r => `
                                                 <tr>
-                                                    <td style="white-space:nowrap;"><b>${esc(isEn ? r.stnEN : r.stnTH)}</b></td>
+                                                    <td style="white-space:nowrap;"><b>${esc(isZh ? (r.stnZH || r.stnEN) : (isEn ? r.stnEN : r.stnTH))}</b></td>
                                                     <td style="white-space:nowrap;color:${activeLine.color}"><b>฿${r.adult}</b></td>
                                                     <td style="white-space:nowrap;">฿${r.student}</td>
                                                     <td style="white-space:nowrap;">฿${r.senior}</td>
@@ -5050,10 +5181,12 @@ setOriginFromActionSheet() {
                                     </table>
                                 </div>
                                 <div style="font-size:12px;color:var(--muted);margin-top:8px;line-height:1.5;">
-                                    ${getUiIcon('bulb', 14, '#f59e0b')} <b>${isEn ? 'Standard MRT Tariff:' : 'โครงสร้างราคามาตรฐาน รฟม.:'}</b>
-                                    ${isEn
-                                        ? 'Calculated based on distance traveled starting from ฿17 up to ฿44 maximum. Passengers with EMV Contactless cards receive transfer fee waivers when connecting to other MRT lines within 30 minutes.'
-                                        : 'คิดค่าโดยสารตามระยะทางเริ่มต้น 17 บาท สูงสุดไม่เกิน 44 บาท รองรับบัตร EMV Contactless และได้รับยกเว้นค่าแรกเข้าเมื่อเปลี่ยนถ่ายกับสายสีน้ำเงินหรือสายสีอื่นในระบบภายใน 30 นาที'
+                                    ${getUiIcon('bulb', 14, '#f59e0b')} <b>${isZh ? '泰国大众捷运局 (MRTA) 标准计费结构:' : (isEn ? 'Standard MRT Tariff:' : 'โครงสร้างราคามาตรฐาน รฟม.:')}</b>
+                                    ${isZh
+                                        ? '按照乘车里程计费，起步 17 泰铢至最高 44 泰铢。支持 EMV Contactless 刷卡乘车，30 分钟内换乘蓝线或其他捷运线路可免除第二次起步费。'
+                                        : (isEn
+                                            ? 'Calculated based on distance traveled starting from ฿17 up to ฿44 maximum. Passengers with EMV Contactless cards receive transfer fee waivers when connecting to other MRT lines within 30 minutes.'
+                                            : 'คิดค่าโดยสารตามระยะทางเริ่มต้น 17 บาท สูงสุดไม่เกิน 44 บาท รองรับบัตร EMV Contactless และได้รับยกเว้นค่าแรกเข้าเมื่อเปลี่ยนถ่ายกับสายสีน้ำเงินหรือสายสีอื่นในระบบภายใน 30 นาที')
                                     }
                                 </div>
                             </div>
@@ -5072,26 +5205,26 @@ setOriginFromActionSheet() {
                                     </div>
                                 </div>
                                 <button type="button" class="btn btn-ghost" style="padding:5px 10px;font-size:11.5px;margin-left:auto;white-space:nowrap;flex-shrink:0;" onclick="App.setFaresLine(0)">
-                                    ${isEn ? 'View All Lines' : 'ดูทุกสาย'} ↺
+                                    ${isZh ? '查看全部线路' : (isEn ? 'View All Lines' : 'ดูทุกสาย')} ↺
                                 </button>
                             </div>
 
                             <div class="line-metrics-grid">
                                 <div class="line-metric-box">
-                                    <div class="label">${isEn ? 'Starting Fare' : 'ราคาเริ่มต้น'}</div>
+                                    <div class="label">${isZh ? '起步票价' : (isEn ? 'Starting Fare' : 'ราคาเริ่มต้น')}</div>
                                     <div class="val" style="color:${activeLine.color}">฿${activeLine.minFare}</div>
                                 </div>
                                 <div class="line-metric-box">
-                                    <div class="label">${isEn ? 'Maximum Fare' : 'ราคาสูงสุด'}</div>
+                                    <div class="label">${isZh ? '最高封顶票价' : (isEn ? 'Maximum Fare' : 'ราคาสูงสุด')}</div>
                                     <div class="val" style="color:${activeLine.color}">฿${activeLine.maxFare}</div>
                                 </div>
                                 <div class="line-metric-box full-col">
-                                    <div class="label">${isEn ? 'Pricing Basis' : 'การคำนวณราคา'}</div>
-                                    <div class="val">${esc(isEn ? activeLine.pricingModelEN : activeLine.pricingModelTH)}</div>
+                                    <div class="label">${isZh ? '计费方式' : (isEn ? 'Pricing Basis' : 'การคำนวณราคา')}</div>
+                                    <div class="val">${esc(isZh ? (activeLine.pricingModelZH || activeLine.pricingModelEN) : (isEn ? activeLine.pricingModelEN : activeLine.pricingModelTH))}</div>
                                 </div>
                                 <div class="line-metric-box full-col">
-                                    <div class="label">${isEn ? 'Tickets & Cards' : 'บัตรโดยสารที่รองรับ'}</div>
-                                    <div class="val" style="color:var(--muted);">${esc(isEn ? activeLine.ticketsEN : activeLine.ticketsTH)}</div>
+                                    <div class="label">${isZh ? '支持车票/乘车卡' : (isEn ? 'Tickets & Cards' : 'บัตรโดยสารที่รองรับ')}</div>
+                                    <div class="val" style="color:var(--muted);">${esc(isZh ? (activeLine.ticketsZH || activeLine.ticketsEN) : (isEn ? activeLine.ticketsEN : activeLine.ticketsTH))}</div>
                                 </div>
                             </div>
                         </div>
@@ -5102,7 +5235,7 @@ setOriginFromActionSheet() {
                         <div style="text-align:center;margin:16px 0 6px;">
                             <button type="button" class="btn btn-primary" style="background:${activeLine.color};border-color:${activeLine.color};box-shadow:0 4px 14px ${activeLine.color}40;display:inline-flex;align-items:center;gap:8px;white-space:nowrap;padding:11px 22px;max-width:100%;"
                                 onclick="App.switchView('timetables');App.setTimetablesLine(${activeLine.id})">
-                                <span>${getUiIcon('clock', 14, '#fff')} ${isEn ? 'View Timetables of This Line' : 'ดูเวลาเดินรถ & ความถี่สายนี้'}</span>
+                                <span>${getUiIcon('clock', 14, '#fff')} ${isZh ? '查看该线路列车时刻与发车频次' : (isEn ? 'View Timetables of This Line' : 'ดูเวลาเดินรถ & ความถี่สายนี้')}</span>
                                 <span>➔</span>
                             </button>
                         </div>
@@ -5144,7 +5277,7 @@ setOriginFromActionSheet() {
                                 <span>${T('faresTitle')}</span>
                             </h2>
                             <div style="font-size:12px;color:var(--muted)">
-                                ${isEn ? 'Select a transit line below to view fare rates, pricing models, and payment methods' : 'เลือกสายรถไฟฟ้าด้านล่าง เพื่อดูอัตราค่าโดยสาร โครงสร้างราคา และบัตรโดยสารที่รองรับ'}
+                                ${isZh ? '选择下方轨道交通线路，查看具体票价、计费规则及支持的车票支付方式' : (isEn ? 'Select a transit line below to view fare rates, pricing models, and payment methods' : 'เลือกสายรถไฟฟ้าด้านล่าง เพื่อดูอัตราค่าโดยสาร โครงสร้างราคา และบัตรโดยสารที่รองรับ')}
                             </div>
                         </div>
                         ${renderLineFilterBar(activeId, 'setFaresLine', 'faresLineFilterBar')}
@@ -5168,6 +5301,7 @@ setOriginFromActionSheet() {
                 if (!el) return;
 
                 const isEn = lang === 'en';
+                const isZh = lang === 'zh';
                 const activeId = this.timetablesActiveLine || 0;
                 const activeLine = TRANSIT_LINES_CATALOG.find(l => l.id === activeId) || TRANSIT_LINES_CATALOG[0];
 
@@ -5176,23 +5310,23 @@ setOriginFromActionSheet() {
                 if (activeId === 0) {
                     // ทั้งหมด (All Lines Timetables Overview)
                     bodyHtml = `
-                        <!-- All Lines Timetable Summary Table -->
+                        <!-- All Lines Timetable Overview Table -->
                         <div class="info-card">
                             <h3 style="display:flex;align-items:center;gap:8px">
-                                <span>⏰</span>
-                                <span>${lang === 'zh' ? '12 线首末班车时刻一览' : (isEn ? 'First & Last Train Timetables across 12 Lines' : 'ตารางเวลาเดินรถขบวนแรกและขบวนสุดท้าย 12 สาย')}</span>
+                                <span>${getUiIcon('clock', 16, 'var(--primary,#0284c7)')}</span>
+                                <span>${isZh ? '全曼谷 12 条轨道交通线列车时刻表速查' : (isEn ? 'All Lines Timetable Overview' : 'ตารางสรุปเวลาเดินรถทั้งระบบ (12 สาย)')}</span>
                             </h3>
                             <div style="font-size:12px;color:var(--muted);margin-bottom:8px">
-                                ${isEn ? 'Tap any line below or use the pills above to view official frequency schedule table' : 'แตะที่สายรถไฟฟ้าหรือแถบด้านบนเพื่อดูตารางความถี่การเดินรถแบบละเอียด'}
+                                ${isZh ? '点击下方任一线路或上方导航标签，即可查看该线路详细发车时刻表与频次' : (isEn ? 'Tap any line below or use the pills above to view official frequency schedule table' : 'แตะที่สายรถไฟฟ้าหรือแถบด้านบนเพื่อดูตารางความถี่การเดินรถแบบละเอียด')}
                             </div>
                             <div class="fare-table-wrap">
                                 <table class="fare-grid-table">
                                     <thead>
                                         <tr>
-                                            <th>${lang === 'zh' ? '线路' : (isEn ? 'Line' : 'สายรถไฟฟ้า')}</th>
-                                            <th>${lang === 'zh' ? '首班车' : (isEn ? 'First Train' : 'ขบวนแรก')}</th>
-                                            <th>${lang === 'zh' ? '末班车' : (isEn ? 'Last Train' : 'ขบวนสุดท้าย')}</th>
-                                            <th>${lang === 'zh' ? '高峰发车间隔' : (isEn ? 'Peak Frequency' : 'ความถี่ช่วงเร่งด่วน')}</th>
+                                            <th>${isZh ? '线路' : (isEn ? 'Line' : 'สายรถไฟฟ้า')}</th>
+                                            <th>${isZh ? '首班车' : (isEn ? 'First Train' : 'ขบวนแรก')}</th>
+                                            <th>${isZh ? '末班车' : (isEn ? 'Last Train' : 'ขบวนสุดท้าย')}</th>
+                                            <th>${isZh ? '高峰发车间隔' : (isEn ? 'Peak Frequency' : 'ความถี่ช่วงเร่งด่วน')}</th>
                                             <th></th>
                                         </tr>
                                     </thead>
@@ -5202,15 +5336,15 @@ setOriginFromActionSheet() {
                                                 <td style="white-space:nowrap;">
                                                     <span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap;">
                                                         ${getLineIconSvg(l.id, false, 16)}
-                                                        <b>${esc(lang === 'zh' ? (l.nameZH || l.nameEN) : (isEn ? l.nameEN : l.nameTH))}</b>
+                                                        <b>${esc(isZh ? (l.nameZH || l.nameEN) : (isEn ? l.nameEN : l.nameTH))}</b>
                                                     </span>
                                                 </td>
-                                                <td style="white-space:nowrap;"><b>${esc(isEn ? l.firstTrainEN : l.firstTrainTH)}</b></td>
-                                                <td style="white-space:nowrap;"><b>${esc(isEn ? l.lastTrainEN : l.lastTrainTH)}</b></td>
-                                                <td style="white-space:nowrap;color:${l.color}"><b>${esc(isEn ? l.peakFreqEN : l.peakFreqTH)}</b></td>
+                                                <td style="white-space:nowrap;"><b>${esc(isZh ? (l.firstTrainZH || l.firstTrainEN) : (isEn ? l.firstTrainEN : l.firstTrainTH))}</b></td>
+                                                <td style="white-space:nowrap;"><b>${esc(isZh ? (l.lastTrainZH || l.lastTrainEN) : (isEn ? l.lastTrainEN : l.lastTrainTH))}</b></td>
+                                                <td style="white-space:nowrap;color:${l.color}"><b>${esc(isZh ? (l.peakFreqZH || l.peakFreqEN) : (isEn ? l.peakFreqEN : l.peakFreqTH))}</b></td>
                                                 <td style="white-space:nowrap;">
                                                     <button type="button" class="btn btn-ghost" style="padding:4px 8px;font-size:11px;white-space:nowrap;" onclick="event.stopPropagation();App.setTimetablesLine(${l.id})">
-                                                        ${lang === 'zh' ? '时刻表' : (isEn ? 'Timetable' : 'ดูตาราง')} ➔
+                                                        ${isZh ? '查看时刻' : (isEn ? 'Timetable' : 'ดูตาราง')} ➔
                                                     </button>
                                                 </td>
                                             </tr>
@@ -5222,20 +5356,29 @@ setOriginFromActionSheet() {
 
                         <!-- General Operating Tips -->
                         <div class="info-card">
-                            <h3>${getUiIcon('bulb', 16, '#0284c7')} ${isEn ? 'Bangkok Transit Operating Guidelines' : 'ข้อแนะนำเวลาการให้บริการและการเดินทาง'}</h3>
+                            <h3>${getUiIcon('bulb', 16, '#0284c7')} ${isZh ? '曼谷轨道交通运营与出行时间建议' : (isEn ? 'Bangkok Transit Operating Guidelines' : 'ข้อแนะนำเวลาการให้บริการและการเดินทาง')}</h3>
                             <div style="font-size:12.5px;color:var(--ink);line-height:1.6">
                                 <ul style="margin:0;padding-left:16px;">
                                     <li style="margin-bottom:6px">
-                                        <b>${isEn ? 'Morning Services:' : 'เวลาเปิดให้บริการตอนเช้า:'}</b>
-                                        ${isEn ? 'SRT Red Line starts earliest at 05:00, BTS at 05:15-05:30, ARL at 05:30, and MRT lines at 05:30-06:00.' : 'SRT สายสีแดงเปิดให้บริการเร็วที่สุดตั้งแต่ 05:00 น., BTS เริ่ม 05:15–05:30 น., ARL เริ่ม 05:30 น. และ MRT สายต่างๆ เริ่ม 05:30–06:00 น.'}
+                                        <b>${isZh ? '早间始发运营时间:' : (isEn ? 'Morning Services:' : 'เวลาเปิดให้บริการตอนเช้า:')}</b>
+                                        ${isZh
+                                            ? 'SRT 红线最早自 05:00 开始运营，BTS 轻轨约为 05:15–05:30，ARL 机场快线为 05:30，各条 MRT 地铁线约为 05:30–06:00。'
+                                            : (isEn ? 'SRT Red Line starts earliest at 05:00, BTS at 05:15-05:30, ARL at 05:30, and MRT lines at 05:30-06:00.' : 'SRT สายสีแดงเปิดให้บริการเร็วที่สุดตั้งแต่ 05:00 น., BTS เริ่ม 05:15–05:30 น., ARL เริ่ม 05:30 น. และ MRT สายต่างๆ เริ่ม 05:30–06:00 น.')
+                                        }
                                     </li>
                                     <li style="margin-bottom:6px">
-                                        <b>${isEn ? 'Night Closing:' : 'เวลาปิดให้บริการตอนกลางคืน:'}</b>
-                                        ${isEn ? 'All transit lines close between 24:00 (Midnight) and 00:30.' : 'ทุกสายสิ้นสุดการให้บริการประมาณ 24:00 น. (เที่ยงคืน) ถึง 00:30 น.'}
+                                        <b>${isZh ? '夜间末班收车时间:' : (isEn ? 'Night Closing:' : 'เวลาปิดให้บริการตอนกลางคืน:')}</b>
+                                        ${isZh
+                                            ? '全路网所有线路通常于 24:00 (午夜) 至 00:30 之间结束运营。'
+                                            : (isEn ? 'All transit lines close between 24:00 (Midnight) and 00:30.' : 'ทุกสายสิ้นสุดการให้บริการประมาณ 24:00 น. (เที่ยงคืน) ถึง 00:30 น.')
+                                        }
                                     </li>
                                     <li>
-                                        <b>${isEn ? 'Connecting Trains:' : 'คำแนะนำสำหรับผู้โดยสารที่ต้องเปลี่ยนสาย:'}</b>
-                                        ${isEn ? 'For late night journeys requiring interchanges, plan to reach transfer stations before 23:30 to avoid missing the final train.' : 'ในเที่ยวเดินทางรอบดึกที่ต้องเปลี่ยนสาย ควรเดินทางถึงสถานีเปลี่ยนสายก่อน 23:30 น. เพื่อให้ทันขบวนสุดท้ายของอีกสาย'}
+                                        <b>${isZh ? '换乘跨线乘客注意事项:' : (isEn ? 'Connecting Trains:' : 'คำแนะนำสำหรับผู้โดยสารที่ต้องเปลี่ยนสาย:')}</b>
+                                        ${isZh
+                                            ? '深夜乘车如需跨线换乘，建议在 23:30 前到达换乘枢纽车站，以免错过换乘线路的末班车。'
+                                            : (isEn ? 'For late night journeys requiring interchanges, plan to reach transfer stations before 23:30 to avoid missing the final train.' : 'ในเที่ยวเดินทางรอบดึกที่ต้องเปลี่ยนสาย ควรเดินทางถึงสถานีเปลี่ยนสายก่อน 23:30 น. เพื่อให้ทันขบวนสุดท้ายของอีกสาย')
+                                        }
                                     </li>
                                 </ul>
                             </div>
@@ -5243,23 +5386,24 @@ setOriginFromActionSheet() {
                     `;
                 } else {
                     // ข้อมูลเวลาเดินรถเฉพาะสาย (Specific Line Timetable)
-                    const lineName = isEn ? activeLine.nameEN : activeLine.nameTH;
-                    const operator = isEn ? activeLine.operatorEN : activeLine.operatorTH;
+                    const lineName = isZh ? (activeLine.nameZH || activeLine.nameEN) : (isEn ? activeLine.nameEN : activeLine.nameTH);
+                    const operator = isZh ? (activeLine.operatorZH || activeLine.operatorEN) : (isEn ? activeLine.operatorEN : activeLine.operatorTH);
 
                     // ปลายทางเส้นทาง
-                    const tRaw = isEn ? activeLine.terminusEN : activeLine.terminusTH;
+                    const tRaw = isZh ? (activeLine.terminusZH || activeLine.terminusEN) : (isEn ? activeLine.terminusEN : activeLine.terminusTH);
                     const terminusHtml = esc(tRaw);
 
                     // ข้อมูลทิศทางปลายทางและรหัสสถานี
                     const d1Code = activeLine.dir1?.code || '';
-                    const d1Name = isEn ? (activeLine.dir1?.toEN || '') : (activeLine.dir1?.toTH || '');
+                    const d1Name = isZh ? (activeLine.dir1?.toZH || activeLine.dir1?.toEN || '') : (isEn ? (activeLine.dir1?.toEN || '') : (activeLine.dir1?.toTH || ''));
                     const d2Code = activeLine.dir2?.code || '';
-                    const d2Name = isEn ? (activeLine.dir2?.toEN || '') : (activeLine.dir2?.toTH || '');
+                    const d2Name = isZh ? (activeLine.dir2?.toZH || activeLine.dir2?.toEN || '') : (isEn ? (activeLine.dir2?.toEN || '') : (activeLine.dir2?.toTH || ''));
 
-                    const d1First = activeLine.dir1?.first ? `${activeLine.dir1.first}${activeLine.dir1.first !== '-' ? ' น.' : ''}` : '-';
-                    const d1Last = activeLine.dir1?.last ? `${activeLine.dir1.last}${activeLine.dir1.last !== '-' ? ' น.' : ''}` : '-';
-                    const d2First = activeLine.dir2?.first ? `${activeLine.dir2.first}${activeLine.dir2.first !== '-' ? ' น.' : ''}` : '-';
-                    const d2Last = activeLine.dir2?.last ? `${activeLine.dir2.last}${activeLine.dir2.last !== '-' ? ' น.' : ''}` : '-';
+                    const timeUnit = isZh ? '' : (isEn ? '' : ' น.');
+                    const d1First = activeLine.dir1?.first ? `${activeLine.dir1.first}${activeLine.dir1.first !== '-' ? timeUnit : ''}` : '-';
+                    const d1Last = activeLine.dir1?.last ? `${activeLine.dir1.last}${activeLine.dir1.last !== '-' ? timeUnit : ''}` : '-';
+                    const d2First = activeLine.dir2?.first ? `${activeLine.dir2.first}${activeLine.dir2.first !== '-' ? timeUnit : ''}` : '-';
+                    const d2Last = activeLine.dir2?.last ? `${activeLine.dir2.last}${activeLine.dir2.last !== '-' ? timeUnit : ''}` : '-';
 
                     // คำนวณความถี่สด
                     const liveFreq = getCurrentMrtFreq(activeLine.id);
@@ -5269,7 +5413,7 @@ setOriginFromActionSheet() {
                         liveFreqHtml = `
                             <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(245,130,32,0.15);color:#ea580c;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap;border:1px solid rgba(245,130,32,0.3);">
                                 <span>🚧</span>
-                                <span>${isEn ? 'Orange Line (Not in Service)' : 'สายสีส้ม (ยังไม่เปิดให้บริการ)'}</span>
+                                <span>${isZh ? 'MRT 橙线 (尚未开通)' : (isEn ? 'Orange Line (Not in Service)' : 'สายสีส้ม (ยังไม่เปิดให้บริการ)')}</span>
                             </div>
                         `;
                     } else if (liveFreq) {
@@ -5277,14 +5421,14 @@ setOriginFromActionSheet() {
                         liveFreqHtml = `
                             <div style="display:inline-flex;align-items:center;gap:6px;background:#22c55e18;color:#16a34a;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap;">
                                 <span class="live-dot" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#16a34a;animation:pulse 1.5s infinite;"></span>
-                                <span>${isEn ? `Current Headway: ~${cleanLabel} min` : `ความถี่ขณะนี้: รถมาทุก ~${cleanLabel} นาที`}</span>
+                                <span>${isZh ? `当前发车间隔: 约 ~${cleanLabel} 分钟` : (isEn ? `Current Headway: ~${cleanLabel} min` : `ความถี่ขณะนี้: รถมาทุก ~${cleanLabel} นาที`)}</span>
                             </div>
                         `;
                     } else {
                         liveFreqHtml = `
                             <div style="display:inline-flex;align-items:center;gap:6px;background:var(--line);color:var(--muted);padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600;white-space:nowrap;">
                                 <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--muted);margin-right:2px;vertical-align:middle;"></span>
-                                <span>${isEn ? 'Currently Out of Service Hours' : 'ขณะนี้นอกเวลาให้บริการ'}</span>
+                                <span>${isZh ? '当前非运营时段' : (isEn ? 'Currently Out of Service Hours' : 'ขณะนี้นอกเวลาให้บริการ')}</span>
                             </div>
                         `;
                     }
@@ -5294,7 +5438,7 @@ setOriginFromActionSheet() {
                         <div class="dir-timetables-grid">
                             <div class="dir-time-card">
                                 <div class="dir-card-header">
-                                    <span class="dir-label">${isEn ? 'Towards Direction' : 'ทิศทางมุ่งหน้า'}</span>
+                                    <span class="dir-label">${isZh ? '开往方向' : (isEn ? 'Towards Direction' : 'ทิศทางมุ่งหน้า')}</span>
                                     <div class="dir-dest-wrap">
                                         ${d1Code ? `<span class="stn-code-badge" style="background:${activeLine.color}">${esc(d1Code)}</span>` : ''}
                                         <b class="dir-dest-title">${esc(d1Name)}</b>
@@ -5302,18 +5446,18 @@ setOriginFromActionSheet() {
                                 </div>
                                 <div class="dir-times-grid">
                                     <div class="dir-time-item">
-                                        <span class="dir-time-sub">${isEn ? 'First Train' : 'ขบวนแรก'}</span>
+                                        <span class="dir-time-sub">${isZh ? '首班车' : (isEn ? 'First Train' : 'ขบวนแรก')}</span>
                                         <b class="dir-time-num" style="color:${activeLine.color}">${esc(d1First)}</b>
                                     </div>
                                     <div class="dir-time-item">
-                                        <span class="dir-time-sub">${isEn ? 'Last Train' : 'ขบวนสุดท้าย'}</span>
+                                        <span class="dir-time-sub">${isZh ? '末班车' : (isEn ? 'Last Train' : 'ขบวนสุดท้าย')}</span>
                                         <b class="dir-time-num">${esc(d1Last)}</b>
                                     </div>
                                 </div>
                             </div>
                             <div class="dir-time-card">
                                 <div class="dir-card-header">
-                                    <span class="dir-label">${isEn ? 'Towards Direction' : 'ทิศทางมุ่งหน้า'}</span>
+                                    <span class="dir-label">${isZh ? '开往方向' : (isEn ? 'Towards Direction' : 'ทิศทางมุ่งหน้า')}</span>
                                     <div class="dir-dest-wrap">
                                         ${d2Code ? `<span class="stn-code-badge" style="background:${activeLine.color}">${esc(d2Code)}</span>` : ''}
                                         <b class="dir-dest-title">${esc(d2Name)}</b>
@@ -5321,11 +5465,11 @@ setOriginFromActionSheet() {
                                 </div>
                                 <div class="dir-times-grid">
                                     <div class="dir-time-item">
-                                        <span class="dir-time-sub">${isEn ? 'First Train' : 'ขบวนแรก'}</span>
+                                        <span class="dir-time-sub">${isZh ? '首班车' : (isEn ? 'First Train' : 'ขบวนแรก')}</span>
                                         <b class="dir-time-num" style="color:${activeLine.color}">${esc(d2First)}</b>
                                     </div>
                                     <div class="dir-time-item">
-                                        <span class="dir-time-sub">${isEn ? 'Last Train' : 'ขบวนสุดท้าย'}</span>
+                                        <span class="dir-time-sub">${isZh ? '末班车' : (isEn ? 'Last Train' : 'ขบวนสุดท้าย')}</span>
                                         <b class="dir-time-num">${esc(d2Last)}</b>
                                     </div>
                                 </div>
@@ -5347,14 +5491,12 @@ setOriginFromActionSheet() {
 
                         const stationChips = lineStations.map(s => {
                             const sKey = s.StationKey;
-                            const sTh = s.StationNameTH || (s.StationName ? s.StationName.split('|')[0].trim() : '');
-                            const sEn = s.StationNameEN || s.StationName_EN || '';
-                            const name = isEn ? (sEn || sTh) : sTh;
+                            const name = stName(s);
                             const nameLen = name.length;
                             const sizeClass = nameLen > 20 ? 'chip-name-xxlong' : (nameLen > 15 ? 'chip-name-xlong' : (nameLen > 11 ? 'chip-name-long' : ''));
                             return `
-                                <button type="button" class="station-picker-chip"
-                                    onclick="App.showNearestPopupFor(App.findStation('${esc(sKey)}') || { StationKey: '${esc(sKey)}', StationNameTH: '${esc(sTh)}', StationNameEN: '${esc(sEn)}', StationLineId: ${activeLine.id}, StationLineColor: '${esc(color)}' })"
+                                <button type="button" class="line-stn-chip"
+                                    onclick="App.showStationDetail('${esc(sKey)}')"
                                     title="${esc(name)}">
                                     <span class="chip-code" style="background:${color};color:${codeTextColor}">${esc(sKey)}</span>
                                     <span class="chip-name ${sizeClass}" title="${esc(name)}">${esc(name)}</span>
@@ -5367,7 +5509,7 @@ setOriginFromActionSheet() {
                                 <div style="position:relative;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:2px 24px;text-align:center;" onclick="App.toggleTimetableStations()">
                                     <h3 style="margin:0;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-align:center;">
                                         <span style="display:inline-flex;align-items:center;justify-content:center;">${getLineIconSvg(activeLine.id, activeLine.color, 18)}</span>
-                                        <span>${isEn ? `Stations on Line (${lineStations.length})` : `รายชื่อสถานี & รหัสสถานีในสายนี้ (${lineStations.length} สถานี)`}</span>
+                                        <span>${isZh ? `线路车站一览与代码 (${lineStations.length} 站)` : (isEn ? `Stations on Line (${lineStations.length})` : `รายชื่อสถานี & รหัสสถานีในสายนี้ (${lineStations.length} สถานี)`)}</span>
                                     </h3>
                                     <span id="stnListChev" style="position:absolute;right:0;font-size:12px;color:var(--muted);transition:transform .2s ease;display:inline-flex;align-items:center;justify-content:center;">▼</span>
                                 </div>
@@ -5392,7 +5534,7 @@ setOriginFromActionSheet() {
                                     </div>
                                 </div>
                                 <button type="button" class="btn btn-ghost" style="padding:5px 10px;font-size:11.5px;margin-left:auto;white-space:nowrap;flex-shrink:0;" onclick="App.setTimetablesLine(0)">
-                                    ${isEn ? 'View All Lines' : 'ดูทุกสาย'} ↺
+                                    ${isZh ? '查看全部线路' : (isEn ? 'View All Lines' : 'ดูทุกสาย')} ↺
                                 </button>
                             </div>
 
@@ -5402,27 +5544,27 @@ setOriginFromActionSheet() {
 
                             <div class="line-metrics-grid">
                                 <div class="line-metric-box">
-                                    <div class="label">${isEn ? 'First Train Service' : 'เวลาขบวนแรก'}</div>
-                                    <div class="val" style="color:${activeLine.color};">${esc(isEn ? activeLine.firstTrainEN : activeLine.firstTrainTH)}</div>
+                                    <div class="label">${isZh ? '首班发车时间' : (isEn ? 'First Train Service' : 'เวลาขบวนแรก')}</div>
+                                    <div class="val" style="color:${activeLine.color};">${esc(isZh ? (activeLine.firstTrainZH || activeLine.firstTrainEN) : (isEn ? activeLine.firstTrainEN : activeLine.firstTrainTH))}</div>
                                 </div>
                                 <div class="line-metric-box">
-                                    <div class="label">${isEn ? 'Last Train Service' : 'เวลาขบวนสุดท้าย'}</div>
-                                    <div class="val">${esc(isEn ? activeLine.lastTrainEN : activeLine.lastTrainTH)}</div>
+                                    <div class="label">${isZh ? '末班收车时间' : (isEn ? 'Last Train Service' : 'เวลาขบวนสุดท้าย')}</div>
+                                    <div class="val">${esc(isZh ? (activeLine.lastTrainZH || activeLine.lastTrainEN) : (isEn ? activeLine.lastTrainEN : activeLine.lastTrainTH))}</div>
                                 </div>
                                 <div class="line-metric-box">
-                                    <div class="label">${isEn ? 'Peak Hour Headway' : 'ความถี่ช่วงเร่งด่วน'}</div>
-                                    <div class="val" style="font-size:13px;color:${activeLine.color};">${esc(isEn ? activeLine.peakFreqEN : activeLine.peakFreqTH)}</div>
+                                    <div class="label">${isZh ? '高峰发车间隔' : (isEn ? 'Peak Hour Headway' : 'ความถี่ช่วงเร่งด่วน')}</div>
+                                    <div class="val" style="font-size:13px;color:${activeLine.color};">${esc(isZh ? (activeLine.peakFreqZH || activeLine.peakFreqEN) : (isEn ? activeLine.peakFreqEN : activeLine.peakFreqTH))}</div>
                                 </div>
                                 <div class="line-metric-box">
-                                    <div class="label">${isEn ? 'Off-Peak Headway' : 'ความถี่ช่วงปกติ'}</div>
-                                    <div class="val" style="font-size:13px;">${esc(isEn ? activeLine.offPeakFreqEN : activeLine.offPeakFreqTH)}</div>
+                                    <div class="label">${isZh ? '平峰发车间隔' : (isEn ? 'Off-Peak Headway' : 'ความถี่ช่วงปกติ')}</div>
+                                    <div class="val" style="font-size:13px;">${esc(isZh ? (activeLine.offPeakFreqZH || activeLine.offPeakFreqEN) : (isEn ? activeLine.offPeakFreqEN : activeLine.offPeakFreqTH))}</div>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Terminal Directions Timetable -->
                         <div class="info-card">
-                            <h3>${getUiIcon('compass', 16, activeLine.color)} ${isEn ? 'First & Last Train by Terminal Direction' : 'เวลาขบวนแรกและขบวนสุดท้ายแยกตามทิศทาง'}</h3>
+                            <h3>${getUiIcon('compass', 16, activeLine.color)} ${isZh ? '按终点方向首末班发车时刻' : (isEn ? 'First & Last Train by Terminal Direction' : 'เวลาขบวนแรกและขบวนสุดท้ายแยกตามทิศทาง')}</h3>
                             ${dirCards}
                         </div>
 
@@ -5431,15 +5573,15 @@ setOriginFromActionSheet() {
                             <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:6px;">
                                 <h3 style="margin:0;display:flex;align-items:center;gap:8px;">
                                     <span>${getUiIcon('calendar', 16, activeLine.color)}</span>
-                                    <span>${isEn ? 'Official Headway Frequency Schedule' : 'ตารางความถี่การเดินรถอย่างเป็นทางการ'}</span>
+                                    <span>${isZh ? '官方列车发车频次时刻表' : (isEn ? 'Official Headway Frequency Schedule' : 'ตารางความถี่การเดินรถอย่างเป็นทางการ')}</span>
                                 </h3>
                                 <span style="background:${activeLine.color}18;color:${activeLine.color};border:1px solid ${activeLine.color}35;padding:3px 10px;border-radius:12px;font-size:11.5px;font-weight:700;">
-                                    ${esc(isEn ? activeLine.nameEN : activeLine.nameTH)}
+                                    ${esc(isZh ? (activeLine.nameZH || activeLine.nameEN) : (isEn ? activeLine.nameEN : activeLine.nameTH))}
                                 </span>
                             </div>
                             <div class="freq-notice-box">
                                 <span class="freq-pulse-dot"></span>
-                                <span>${isEn ? 'Highlighted row indicates active operational headway right now' : 'แถบไฮไลต์สีเขียวพร้อมป้าย <span class="live-dot" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#16a34a;margin-right:2px;vertical-align:middle;"></span> ขณะนี้ แสดงช่วงเวลาเดินรถที่กำลังให้บริการอยู่ ณ ปัจจุบัน'}</span>
+                                <span>${isZh ? '绿色高亮行带 <span class="live-dot" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#16a34a;margin-right:2px;vertical-align:middle;"></span> 当前 标签表示当前时刻正在执行的发车间隔' : (isEn ? 'Highlighted row indicates active operational headway right now' : 'แถบไฮไลต์สีเขียวพร้อมป้าย <span class="live-dot" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#16a34a;margin-right:2px;vertical-align:middle;"></span> ขณะนี้ แสดงช่วงเวลาเดินรถที่กำลังให้บริการอยู่ ณ ปัจจุบัน')}</span>
                             </div>
                             ${schedTablesHtml}
                         </div>
@@ -5450,7 +5592,7 @@ setOriginFromActionSheet() {
                         <div style="text-align:center;margin:16px 0 6px;">
                             <button type="button" class="btn btn-primary" style="background:${activeLine.color};border-color:${activeLine.color};box-shadow:0 4px 14px ${activeLine.color}40;display:inline-flex;align-items:center;gap:8px;white-space:nowrap;padding:11px 22px;max-width:100%;"
                                 onclick="App.switchView('fares');App.setFaresLine(${activeLine.id})">
-                                <span>${getUiIcon('card', 14, '#fff')} ${isEn ? 'Check Fares of This Line' : 'เช็คอัตราค่าโดยสารสายนี้'}</span>
+                                <span>${getUiIcon('card', 14, '#fff')} ${isZh ? '查询该线路票价与计费' : (isEn ? 'Check Fares of This Line' : 'เช็คอัตราค่าโดยสารสายนี้')}</span>
                                 <span>➔</span>
                             </button>
                         </div>
@@ -5492,7 +5634,7 @@ setOriginFromActionSheet() {
                                 <span>${T('timetablesTitle')}</span>
                             </h2>
                             <div style="font-size:12px;color:var(--muted)">
-                                ${isEn ? 'Select a transit line below to view first & last trains and official frequency schedules' : 'เลือกสายรถไฟฟ้าด้านล่าง เพื่อดูเวลาขบวนแรก ขบวนสุดท้าย และตารางความถี่การเดินรถ'}
+                                ${isZh ? '选择下方轨道交通线路，查看首末班车时间及官方发车频次表' : (isEn ? 'Select a transit line below to view first & last trains and official frequency schedules' : 'เลือกสายรถไฟฟ้าด้านล่าง เพื่อดูเวลาขบวนแรก ขบวนสุดท้าย และตารางความถี่การเดินรถ')}
                             </div>
                         </div>
                         ${renderLineFilterBar(activeId, 'setTimetablesLine', 'timetablesLineFilterBar')}
@@ -5655,6 +5797,11 @@ setOriginFromActionSheet() {
                 setAttr('tab-planner', 'aria-label', T('navPlanner'));
                 setAttr('tab-fares', 'aria-label', T('navFares'));
                 setAttr('tab-timetables', 'aria-label', T('navTimetables'));
+                setAttr('tab-home', 'title', T('navHome'));
+                setAttr('tab-map', 'title', T('navMap'));
+                setAttr('tab-planner', 'title', T('navPlanner'));
+                setAttr('tab-fares', 'title', T('navFares'));
+                setAttr('tab-timetables', 'title', T('navTimetables'));
 
                 // Nearest Station Popup Modal
                 set('nearestPopupTitle', T('popupTitle'));

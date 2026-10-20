@@ -20,6 +20,7 @@ param(
     [string]$GitHubToken = $env:GITHUB_TOKEN,
     [switch]$PurgeRemoteReleases = $true,
     [switch]$BuildAndroid = $true,
+    [switch]$BuildSplitApks = $true,
     [switch]$BuildAppBundle = $true,
     [switch]$BuildIOS = $true,
     [switch]$PushToGitHub = $true,
@@ -359,8 +360,8 @@ if ($BuildAndroid) {
         Write-Host "   ✓ การทดสอบทั้งหมดผ่านเรียบร้อย" -ForegroundColor Green
     }
 
-    # 5.4 คอมไพล์ Release APK
-    Write-Host "   -> กำลังบิลด์ Android Release APK (flutter build apk --release)..." -ForegroundColor Gray
+    # 5.4 คอมไพล์ Release APK (Universal)
+    Write-Host "   -> กำลังบิลด์ Android Universal Release APK (flutter build apk --release)..." -ForegroundColor Gray
     Push-Location "bkk_skytrains_flutter"
     flutter build apk --release
     $buildCode = $LASTEXITCODE
@@ -386,9 +387,37 @@ if ($BuildAndroid) {
     $hash = (Get-FileHash -LiteralPath $TargetApk -Algorithm SHA256).Hash.ToLower()
     "$hash  $ApkFileName" | Set-Content -LiteralPath $TargetSha -Encoding ASCII
 
-    Write-Host "   ✓ บิลด์ Android APK สำเร็จเรียบร้อย:" -ForegroundColor Green
+    Write-Host "   ✓ บิลด์ Android Universal APK สำเร็จเรียบร้อย:" -ForegroundColor Green
     Write-Host "     ไฟล์: $TargetApk" -ForegroundColor Gray
     Write-Host "     SHA-256: $hash" -ForegroundColor Yellow
+
+    # 5.5 คอมไพล์ Android Split APKs (แยกตามสถาปัตยกรรม CPU: arm64-v8a, armeabi-v7a, x86_64)
+    if ($BuildSplitApks) {
+        Write-Host "   -> กำลังบิลด์ Android Split APKs (flutter build apk --release --split-per-abi)..." -ForegroundColor Gray
+        Push-Location "bkk_skytrains_flutter"
+        flutter build apk --release --split-per-abi
+        $splitCode = $LASTEXITCODE
+        Pop-Location
+
+        if ($splitCode -eq 0) {
+            $abis = @("arm64-v8a", "armeabi-v7a", "x86_64")
+            foreach ($abi in $abis) {
+                $builtSplitApk = Join-Path $Workspace "bkk_skytrains_flutter\build\app\outputs\flutter-apk\app-$abi-release.apk"
+                if (Test-Path $builtSplitApk) {
+                    $splitFileName = "BKK_SkyTrains_V.${Version}_$abi.apk"
+                    $targetSplitApk = Join-Path $ApkDir $splitFileName
+                    $targetSplitSha = Join-Path $ApkDir "$splitFileName.sha256"
+                    Copy-Item -LiteralPath $builtSplitApk -Destination $targetSplitApk -Force
+                    $splitHash = (Get-FileHash -LiteralPath $targetSplitApk -Algorithm SHA256).Hash.ToLower()
+                    "$splitHash  $splitFileName" | Set-Content -LiteralPath $targetSplitSha -Encoding ASCII
+                    Write-Host "     ✓ Split APK ($abi): $targetSplitApk" -ForegroundColor Green
+                    Write-Host "       SHA-256: $splitHash" -ForegroundColor Yellow
+                }
+            }
+        } else {
+            Write-Warning "การบิลด์ Split APKs ล้มเหลว"
+        }
+    }
 } else {
     Write-Host "`n[Step 5/8] ⏩ ข้ามการบิลด์ Android APK ตามคำสั่ง (-BuildAndroid:`$false)" -ForegroundColor Yellow
 }

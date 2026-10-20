@@ -104,11 +104,20 @@ bkk_skytrains_flutter/
 
 ## 📦 การบิลด์แพ็กเกจติดตั้ง (Building Releases)
 
-### บิลด์ Android APK:
+### บิลด์ Android Universal APK:
 ```bash
 flutter build apk --release
 ```
-*ไฟล์ APK ที่สร้างเสร็จแล้วจะอยู่ที่ `build/app/outputs/flutter-apk/app-release.apk` และถูกคัดลอกไปไว้ที่โฟลเดอร์ `../releases/Android/APK/BKK_SkyTrains_V.1.3.6.apk` สำหรับการแจกจ่าย*
+*ไฟล์ APK รวมทุกสถาปัตยกรรมจะอยู่ที่ `build/app/outputs/flutter-apk/app-release.apk` และคัดลอกไปยัง `../releases/Android/APK/BKK_SkyTrains_V.1.3.6.apk`*
+
+### บิลด์ Android Split APKs (แยกตาม CPU ABI):
+```bash
+flutter build apk --release --split-per-abi
+```
+*ผลลัพธ์แยกตามสถาปัตยกรรม (ขนาดกะทัดรัด 14-18 MB):*
+- `app-arm64-v8a-release.apk` -> `../releases/Android/APK/BKK_SkyTrains_V.1.3.6_arm64-v8a.apk`
+- `app-armeabi-v7a-release.apk` -> `../releases/Android/APK/BKK_SkyTrains_V.1.3.6_armeabi-v7a.apk`
+- `app-x86_64-release.apk` -> `../releases/Android/APK/BKK_SkyTrains_V.1.3.6_x86_64.apk`
 
 ### บิลด์ Android App Bundle (AAB):
 ```bash

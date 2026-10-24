@@ -3721,6 +3721,9 @@ gQIDAQAB
                 } else if (viewName === 'map') {
                     this.renderInteractiveMap();
                     this.updateMapTheme();
+                    requestAnimationFrame(() => {
+                        this.resetMapZoom(false);
+                    });
                 } else if (viewName === 'exits') {
                     const fallback = this.pinnedStation()?.StationKey || this.nearest?.station?.StationKey || 'CEN';
                     this.renderExitsView(this.selectedExitKey || fallback);
@@ -4333,33 +4336,206 @@ gQIDAQAB
                 }).join('');
             },
 
-            /* ---------- THE SKYTRAINs: Interactive Transit Network Map ---------- */
-            zoomMap(factor) {
-                this.mapZoom = Math.min(2.5, Math.max(0.6, (this.mapZoom || 1.0) * factor));
-                const container = document.getElementById('networkMapContainer');
-                if (container) container.style.transform = `scale(${this.mapZoom})`;
+            /* ---------- THE SKYTRAINs: Interactive Transit Network Map (Smooth GPU Camera Engine) ---------- */
+            getMapMinZoom() {
+                const vp = document.getElementById('mapViewport');
+                if (!vp || vp.clientWidth <= 0 || vp.clientHeight <= 0) {
+                    return this.mapMinZoom || 0.25;
+                }
+                const baseSize = 1672.44;
+                const fitX = vp.clientWidth / baseSize;
+                const fitY = vp.clientHeight / baseSize;
+                this.mapMinZoom = Math.min(fitX, fitY);
+                return this.mapMinZoom;
             },
 
-            resetMapZoom() {
-                this.mapZoom = 1.0;
+            clampMapTransform(panX, panY, scale) {
+                const vp = document.getElementById('mapViewport');
+                const baseSize = 1672.44;
+                const minZ = this.getMapMinZoom();
+                const maxZ = 2.5;
+                const s = Math.min(maxZ, Math.max(minZ, scale || minZ));
+
+                if (!vp || vp.clientWidth <= 0 || vp.clientHeight <= 0) {
+                    return { panX: 0, panY: 0, scale: s };
+                }
+
+                const vpW = vp.clientWidth;
+                const vpH = vp.clientHeight;
+                const scaledW = baseSize * s;
+                const scaledH = baseSize * s;
+
+                let cx, cy;
+                // จัดแผนที่ให้อยู่กึ่งกลางเสมอยามเมื่อขนาดย่อเล็กสุดหรือเล็กกว่ากรอบแสดงผล
+                if (scaledW <= vpW + 0.5) {
+                    cx = (vpW - scaledW) * 0.5;
+                } else {
+                    cx = Math.min(0, Math.max(vpW - scaledW, panX));
+                }
+
+                if (scaledH <= vpH + 0.5) {
+                    cy = (vpH - scaledH) * 0.5;
+                } else {
+                    cy = Math.min(0, Math.max(vpH - scaledH, panY));
+                }
+
+                return { panX: cx, panY: cy, scale: s };
+            },
+
+            applyMapTransformImmediate() {
                 const container = document.getElementById('networkMapContainer');
-                if (container) {
-                    container.style.transform = 'scale(1)';
-                    const vp = document.getElementById('mapViewport');
-                    if (vp) {
-                        const targetX = (850 / 1672) * vp.scrollWidth - (vp.clientWidth / 2);
-                        const targetY = (920 / 1672) * vp.scrollHeight - (vp.clientHeight / 2);
-                        if (typeof vp.scrollTo === 'function') {
-                            vp.scrollTo({
-                                left: Math.max(0, targetX),
-                                top: Math.max(0, targetY),
-                                behavior: 'smooth'
-                            });
-                        } else {
-                            vp.scrollLeft = Math.max(0, targetX);
-                            vp.scrollTop = Math.max(0, targetY);
-                        }
+                if (!container) return;
+                const px = Number.isFinite(this.mapPanX) ? this.mapPanX : 0;
+                const py = Number.isFinite(this.mapPanY) ? this.mapPanY : 0;
+                const sc = Number.isFinite(this.mapZoom) && this.mapZoom > 0 ? this.mapZoom : this.getMapMinZoom();
+                container.style.transform = `translate3d(${px.toFixed(3)}px, ${py.toFixed(3)}px, 0) scale(${sc.toFixed(5)})`;
+            },
+
+            startMapAnimationLoop() {
+                if (this._mapAnimFrame) return;
+                let lastTime = performance.now();
+
+                const step = (now) => {
+                    const dt = Math.min(48, Math.max(4, now - lastTime));
+                    lastTime = now;
+
+                    // Kinetic momentum gliding after touch/mouse swipe release
+                    if (!this._mapIsPointerDown && (Math.abs(this.mapVelX || 0) > 0.05 || Math.abs(this.mapVelY || 0) > 0.05)) {
+                        const decay = Math.pow(0.91, dt / 16.67);
+                        this.mapVelX *= decay;
+                        this.mapVelY *= decay;
+
+                        const nextTargetX = (this.mapTargetPanX || 0) + this.mapVelX * (dt / 16.67);
+                        const nextTargetY = (this.mapTargetPanY || 0) + this.mapVelY * (dt / 16.67);
+                        const clampedMom = this.clampMapTransform(nextTargetX, nextTargetY, this.mapTargetZoom || this.mapZoom);
+
+                        if (Math.abs(clampedMom.panX - nextTargetX) > 0.5) this.mapVelX = 0;
+                        if (Math.abs(clampedMom.panY - nextTargetY) > 0.5) this.mapVelY = 0;
+
+                        this.mapTargetPanX = clampedMom.panX;
+                        this.mapTargetPanY = clampedMom.panY;
                     }
+
+                    // Frame-rate independent smooth exponential interpolation
+                    const alpha = 1 - Math.pow(0.0006, dt / 210);
+                    const curZ = this.mapZoom || this.getMapMinZoom();
+                    const tgtZ = this.mapTargetZoom || curZ;
+                    const curX = Number.isFinite(this.mapPanX) ? this.mapPanX : 0;
+                    const curY = Number.isFinite(this.mapPanY) ? this.mapPanY : 0;
+                    const tgtX = Number.isFinite(this.mapTargetPanX) ? this.mapTargetPanX : curX;
+                    const tgtY = Number.isFinite(this.mapTargetPanY) ? this.mapTargetPanY : curY;
+
+                    const nextZ = curZ + (tgtZ - curZ) * alpha;
+                    const nextX = curX + (tgtX - curX) * alpha;
+                    const nextY = curY + (tgtY - curY) * alpha;
+
+                    const clamped = this.clampMapTransform(nextX, nextY, nextZ);
+                    this.mapZoom = clamped.scale;
+                    this.mapPanX = clamped.panX;
+                    this.mapPanY = clamped.panY;
+                    this.applyMapTransformImmediate();
+
+                    const zoomDiff = Math.abs(tgtZ - this.mapZoom);
+                    const panDiff = Math.hypot(tgtX - this.mapPanX, tgtY - this.mapPanY);
+                    const velMag = Math.hypot(this.mapVelX || 0, this.mapVelY || 0);
+
+                    if (zoomDiff > 0.00015 || panDiff > 0.1 || velMag > 0.08) {
+                        this._mapAnimFrame = requestAnimationFrame(step);
+                    } else {
+                        const finalClamped = this.clampMapTransform(tgtX, tgtY, tgtZ);
+                        this.mapZoom = finalClamped.scale;
+                        this.mapPanX = finalClamped.panX;
+                        this.mapPanY = finalClamped.panY;
+                        this.mapTargetZoom = finalClamped.scale;
+                        this.mapTargetPanX = finalClamped.panX;
+                        this.mapTargetPanY = finalClamped.panY;
+                        this.mapVelX = 0;
+                        this.mapVelY = 0;
+                        this._mapAnimFrame = null;
+                        this.applyMapTransformImmediate();
+                    }
+                };
+
+                this._mapAnimFrame = requestAnimationFrame(step);
+            },
+
+            zoomMapTo(targetScale, focalX, focalY, animated = true) {
+                const vp = document.getElementById('mapViewport');
+                const minZ = this.getMapMinZoom();
+                const maxZ = 2.5;
+                const fx = (typeof focalX === 'number') ? focalX : (vp ? vp.clientWidth * 0.5 : 0);
+                const fy = (typeof focalY === 'number') ? focalY : (vp ? vp.clientHeight * 0.5 : 0);
+
+                this.mapVelX = 0;
+                this.mapVelY = 0;
+
+                const curZ = this.mapZoom || minZ;
+                const curX = Number.isFinite(this.mapPanX) ? this.mapPanX : 0;
+                const curY = Number.isFinite(this.mapPanY) ? this.mapPanY : 0;
+
+                // พิกัดบนแผนผังจริงที่อยู่ใต้จุดโฟกัส (Focal Point) ณ ปัจจุบัน
+                const mapX = (fx - curX) / curZ;
+                const mapY = (fy - curY) / curZ;
+
+                let nextZ = Math.min(maxZ, Math.max(minZ, targetScale));
+                if (nextZ <= minZ * 1.02) nextZ = minZ;
+
+                const rawPanX = fx - (mapX * nextZ);
+                const rawPanY = fy - (mapY * nextZ);
+                const clamped = this.clampMapTransform(rawPanX, rawPanY, nextZ);
+
+                this.mapTargetZoom = clamped.scale;
+                this.mapTargetPanX = clamped.panX;
+                this.mapTargetPanY = clamped.panY;
+
+                if (!animated) {
+                    if (this._mapAnimFrame) {
+                        cancelAnimationFrame(this._mapAnimFrame);
+                        this._mapAnimFrame = null;
+                    }
+                    this.mapZoom = clamped.scale;
+                    this.mapPanX = clamped.panX;
+                    this.mapPanY = clamped.panY;
+                    this.applyMapTransformImmediate();
+                } else {
+                    this.startMapAnimationLoop();
+                }
+            },
+
+            zoomMap(factor) {
+                const vp = document.getElementById('mapViewport');
+                const minZ = this.getMapMinZoom();
+                const baseZ = this.mapTargetZoom || this.mapZoom || minZ;
+                const stepFactor = factor > 1 ? Math.max(factor, 1.32) : Math.min(factor, 0.76);
+                let nextZ = baseZ * stepFactor;
+                if (nextZ <= minZ * 1.04) nextZ = minZ;
+                this._mapUserInteracted = (nextZ > minZ * 1.01);
+                const cx = vp ? vp.clientWidth * 0.5 : 0;
+                const cy = vp ? vp.clientHeight * 0.5 : 0;
+                this.zoomMapTo(nextZ, cx, cy, true);
+            },
+
+            resetMapZoom(animated = true) {
+                const minZ = this.getMapMinZoom();
+                const clamped = this.clampMapTransform(0, 0, minZ);
+                this._mapUserInteracted = false;
+                this.mapVelX = 0;
+                this.mapVelY = 0;
+                this.mapTargetZoom = clamped.scale;
+                this.mapTargetPanX = clamped.panX;
+                this.mapTargetPanY = clamped.panY;
+
+                if (!animated) {
+                    if (this._mapAnimFrame) {
+                        cancelAnimationFrame(this._mapAnimFrame);
+                        this._mapAnimFrame = null;
+                    }
+                    this.mapZoom = clamped.scale;
+                    this.mapPanX = clamped.panX;
+                    this.mapPanY = clamped.panY;
+                    this.applyMapTransformImmediate();
+                } else {
+                    this.startMapAnimationLoop();
                 }
             },
 
@@ -4389,12 +4565,11 @@ gQIDAQAB
                 }
             },
 
-            setMapZoomDirect(zoomLevel) {
-                this.mapZoom = Math.min(2.5, Math.max(0.6, zoomLevel));
-                const container = document.getElementById('networkMapContainer');
-                if (container) container.style.transform = `scale(${this.mapZoom})`;
-                const svg = document.querySelector('#networkMapContainer svg');
-                if (svg && svg.style.transform) svg.style.transform = '';
+            setMapZoomDirect(zoomLevel, focalX, focalY) {
+                const vp = document.getElementById('mapViewport');
+                const cx = (typeof focalX === 'number') ? focalX : (vp ? vp.clientWidth * 0.5 : 0);
+                const cy = (typeof focalY === 'number') ? focalY : (vp ? vp.clientHeight * 0.5 : 0);
+                this.zoomMapTo(zoomLevel, cx, cy, false);
             },
 
             handleMapDoubleTapZoom(clientX, clientY) {
@@ -4402,33 +4577,37 @@ gQIDAQAB
                 const container = document.getElementById('networkMapContainer');
                 if (!vp || !container) return;
 
-                const curZoom = this.mapZoom || 1.0;
-                // สลับระดับการซูม: หากซูมขยายอยู่ (>= 1.45) ให้ย่อกลับเป็น 1.0 หากอยู่ที่ 1.0 ให้ขยายเป็น 1.85
-                const targetZoom = (curZoom >= 1.45) ? 1.0 : 1.85;
+                const minZ = this.getMapMinZoom();
+                const curZoom = this.mapTargetZoom || this.mapZoom || minZ;
+                // สลับระดับการซูม: หากอยู่ที่มุมมองย่อสุด ให้ซูมขยายเข้าจุดที่แตะ หากซูมขยายอยู่แล้ว ให้ย่อกลับไปกึ่งกลางเล็กสุด
+                const isZoomedOut = curZoom <= minZ * 1.35;
+                const targetZoom = isZoomedOut ? Math.min(2.5, Math.max(0.85, minZ * 2.6)) : minZ;
+                this._mapUserInteracted = isZoomedOut;
 
                 const vpRect = vp.getBoundingClientRect();
                 const tapX = clientX - vpRect.left;
                 const tapY = clientY - vpRect.top;
 
-                // พิกัดจริงบนแผนผังก่อนการซูม (Unscaled content coordinate)
-                const contentX = (vp.scrollLeft + tapX) / curZoom;
-                const contentY = (vp.scrollTop + tapY) / curZoom;
-
-                this.setMapZoomDirect(targetZoom);
-
-                // เลื่อนหน้าจอให้จุดที่ดับเบิ้ลคลิก/แตะสองครั้งอยู่กึ่งกลางสายตาอย่างนุ่มนวล
-                const targetScrollLeft = (contentX * targetZoom) - (vp.clientWidth / 2);
-                const targetScrollTop = (contentY * targetZoom) - (vp.clientHeight / 2);
-
-                if (typeof vp.scrollTo === 'function') {
-                    vp.scrollTo({
-                        left: Math.max(0, targetScrollLeft),
-                        top: Math.max(0, targetScrollTop),
-                        behavior: 'smooth'
-                    });
+                if (!isZoomedOut) {
+                    this.resetMapZoom(true);
                 } else {
-                    vp.scrollLeft = Math.max(0, targetScrollLeft);
-                    vp.scrollTop = Math.max(0, targetScrollTop);
+                    const curX = Number.isFinite(this.mapPanX) ? this.mapPanX : 0;
+                    const curY = Number.isFinite(this.mapPanY) ? this.mapPanY : 0;
+                    const actualCurZ = this.mapZoom || minZ;
+                    const mapX = (tapX - curX) / actualCurZ;
+                    const mapY = (tapY - curY) / actualCurZ;
+
+                    // ซูมขยายพร้อมเลื่อนจุดที่แตะสองครั้งให้อยู่กึ่งกลางหน้าจออย่างนุ่มนวล
+                    const rawPanX = (vp.clientWidth * 0.5) - (mapX * targetZoom);
+                    const rawPanY = (vp.clientHeight * 0.5) - (mapY * targetZoom);
+                    const clamped = this.clampMapTransform(rawPanX, rawPanY, targetZoom);
+
+                    this.mapVelX = 0;
+                    this.mapVelY = 0;
+                    this.mapTargetZoom = clamped.scale;
+                    this.mapTargetPanX = clamped.panX;
+                    this.mapTargetPanY = clamped.panY;
+                    this.startMapAnimationLoop();
                 }
             },
 
@@ -4437,20 +4616,79 @@ gQIDAQAB
                 if (!vp || vp._gestureInitialized) return;
                 vp._gestureInitialized = true;
 
+                // จัดกึ่งกลางและคำนวณขนาดย่อสุดอัตโนมัติเมื่อขนาดกรอบแสดงผลเปลี่ยน
+                const onViewportResize = () => {
+                    if (vp.clientWidth <= 0 || vp.clientHeight <= 0) return;
+                    const prevMinZ = this.mapMinZoom || 0.25;
+                    const newMinZ = this.getMapMinZoom();
+                    if (!this._mapUserInteracted || !this.mapZoom || this.mapZoom <= prevMinZ * 1.05) {
+                        this.resetMapZoom(false);
+                    } else {
+                        const clamped = this.clampMapTransform(this.mapPanX || 0, this.mapPanY || 0, Math.max(newMinZ, this.mapZoom));
+                        this.mapZoom = this.mapTargetZoom = clamped.scale;
+                        this.mapPanX = this.mapTargetPanX = clamped.panX;
+                        this.mapPanY = this.mapTargetPanY = clamped.panY;
+                        this.applyMapTransformImmediate();
+                    }
+                };
+
+                if (typeof ResizeObserver !== 'undefined') {
+                    const ro = new ResizeObserver(onViewportResize);
+                    ro.observe(vp);
+                }
+                window.addEventListener('resize', onViewportResize);
+
                 let isMouseDown = false;
                 let mouseStartX = 0, mouseStartY = 0;
-                let mouseScrollLeft = 0, mouseScrollTop = 0;
+                let mouseStartPanX = 0, mouseStartPanY = 0;
                 let isMouseDragging = false;
+                let pointerHistory = [];
 
-                // --- Mouse Pan Handler (Smooth 1:1 Natural Drag) ---
+                const recordPointerSample = (x, y) => {
+                    const now = performance.now();
+                    pointerHistory.push({ x, y, t: now });
+                    while (pointerHistory.length > 0 && now - pointerHistory[0].t > 90) {
+                        pointerHistory.shift();
+                    }
+                };
+
+                const applyReleaseInertia = () => {
+                    const now = performance.now();
+                    while (pointerHistory.length > 0 && now - pointerHistory[0].t > 90) {
+                        pointerHistory.shift();
+                    }
+                    if (pointerHistory.length >= 2) {
+                        const first = pointerHistory[0];
+                        const last = pointerHistory[pointerHistory.length - 1];
+                        const dt = Math.max(8, last.t - first.t);
+                        const vx = ((last.x - first.x) / dt) * 16.67;
+                        const vy = ((last.y - first.y) / dt) * 16.67;
+                        const maxV = 42;
+                        this.mapVelX = Math.max(-maxV, Math.min(maxV, vx));
+                        this.mapVelY = Math.max(-maxV, Math.min(maxV, vy));
+                        if (Math.hypot(this.mapVelX, this.mapVelY) > 0.8) {
+                            this.startMapAnimationLoop();
+                        }
+                    }
+                    pointerHistory = [];
+                };
+
+                // --- Mouse Pan Handler (Smooth GPU 1:1 Drag + Inertia) ---
                 vp.addEventListener('mousedown', (e) => {
-                    if (e.button !== 0) return; // Only primary (left) button
+                    if (e.button !== 0) return;
                     isMouseDown = true;
+                    this._mapIsPointerDown = true;
                     isMouseDragging = false;
+                    this.mapVelX = 0;
+                    this.mapVelY = 0;
+                    this.mapTargetPanX = this.mapPanX;
+                    this.mapTargetPanY = this.mapPanY;
+                    this.mapTargetZoom = this.mapZoom;
                     mouseStartX = e.clientX;
                     mouseStartY = e.clientY;
-                    mouseScrollLeft = vp.scrollLeft;
-                    mouseScrollTop = vp.scrollTop;
+                    mouseStartPanX = this.mapPanX || 0;
+                    mouseStartPanY = this.mapPanY || 0;
+                    pointerHistory = [{ x: e.clientX, y: e.clientY, t: performance.now() }];
                     vp.style.cursor = 'grabbing';
                 });
 
@@ -4463,23 +4701,28 @@ gQIDAQAB
                     }
                     if (isMouseDragging) {
                         e.preventDefault();
-                        vp.scrollLeft = mouseScrollLeft - dx;
-                        vp.scrollTop = mouseScrollTop - dy;
+                        recordPointerSample(e.clientX, e.clientY);
+                        const clamped = this.clampMapTransform(mouseStartPanX + dx, mouseStartPanY + dy, this.mapZoom);
+                        this.mapPanX = this.mapTargetPanX = clamped.panX;
+                        this.mapPanY = this.mapTargetPanY = clamped.panY;
+                        this.applyMapTransformImmediate();
                     }
                 }, { passive: false });
 
-                window.addEventListener('mouseup', (e) => {
+                window.addEventListener('mouseup', () => {
                     if (!isMouseDown) return;
                     isMouseDown = false;
+                    this._mapIsPointerDown = false;
                     vp.style.cursor = 'grab';
                     if (isMouseDragging) {
                         vp._preventClick = true;
                         setTimeout(() => { vp._preventClick = false; }, 120);
+                        applyReleaseInertia();
                     }
                     isMouseDragging = false;
                 });
 
-                // --- Desktop Mouse Double-Click Zoom (ซูม ย่อ-ขยาย แผนที่เมื่อดับเบิ้ลคลิก) ---
+                // --- Desktop Mouse Double-Click Zoom ---
                 vp.addEventListener('dblclick', (e) => {
                     e.preventDefault();
                     vp._preventClick = true;
@@ -4488,53 +4731,56 @@ gQIDAQAB
                     this.handleMapDoubleTapZoom(e.clientX, e.clientY);
                 });
 
-                // --- Desktop Mouse Wheel Zoom (ซูม ย่อ-ขยาย แผนที่ด้วยล้อเลื่อนเมาส์อย่างนุ่มนวล) ---
+                // --- Desktop Mouse Wheel & Trackpad Smooth Zoom around Cursor ---
                 vp.addEventListener('wheel', (e) => {
                     e.preventDefault();
-                    const curZoom = this.mapZoom || 1.0;
-                    const factor = e.deltaY < 0 ? 1.15 : 0.87;
-                    const nextZoom = Math.min(2.5, Math.max(0.6, curZoom * factor));
-                    if (Math.abs(nextZoom - curZoom) < 0.005) return;
+                    const minZ = this.getMapMinZoom();
+                    const baseZ = this.mapTargetZoom || this.mapZoom || minZ;
+                    const delta = e.deltaMode === 1 ? e.deltaY * 24 : (e.deltaMode === 2 ? e.deltaY * 120 : e.deltaY);
+                    const factor = Math.exp(-delta * 0.0022);
+                    let nextZoom = Math.min(2.5, Math.max(minZ, baseZ * factor));
+                    if (nextZoom <= minZ * 1.02) nextZoom = minZ;
+                    if (Math.abs(nextZoom - baseZ) < 0.0005) return;
 
+                    this._mapUserInteracted = (nextZoom > minZ * 1.01);
                     const vpRect = vp.getBoundingClientRect();
                     const mouseX = e.clientX - vpRect.left;
                     const mouseY = e.clientY - vpRect.top;
 
-                    const contentX = (vp.scrollLeft + mouseX) / curZoom;
-                    const contentY = (vp.scrollTop + mouseY) / curZoom;
-
-                    this.setMapZoomDirect(nextZoom);
-
-                    const targetScrollLeft = (contentX * nextZoom) - mouseX;
-                    const targetScrollTop = (contentY * nextZoom) - mouseY;
-
-                    vp.scrollLeft = Math.max(0, targetScrollLeft);
-                    vp.scrollTop = Math.max(0, targetScrollTop);
+                    this.zoomMapTo(nextZoom, mouseX, mouseY, true);
                 }, { passive: false });
 
-                // --- Touch Pan (1 finger), Pinch-to-zoom (2 fingers) & Double-tap zoom (แตะสองครั้ง) ---
+                // --- Touch Pan (1 finger + Inertia), Pinch-to-Zoom + Midpoint Pan (2 fingers) & Double-Tap ---
                 let touchStartX = 0, touchStartY = 0;
-                let touchScrollLeft = 0, touchScrollTop = 0;
+                let touchStartPanX = 0, touchStartPanY = 0;
                 let isTouchDragging = false;
                 let initialDist = 0;
                 let initialZoom = 1;
+                let pinchMapX = 0, pinchMapY = 0;
                 let lastTapTime = 0;
                 let lastTapX = 0;
                 let lastTapY = 0;
 
                 vp.addEventListener('touchstart', (e) => {
+                    this._mapIsPointerDown = true;
+                    this.mapVelX = 0;
+                    this.mapVelY = 0;
+
                     if (e.touches.length === 1) {
                         isTouchDragging = false;
                         touchStartX = e.touches[0].clientX;
                         touchStartY = e.touches[0].clientY;
-                        touchScrollLeft = vp.scrollLeft;
-                        touchScrollTop = vp.scrollTop;
+                        touchStartPanX = this.mapPanX || 0;
+                        touchStartPanY = this.mapPanY || 0;
+                        this.mapTargetPanX = touchStartPanX;
+                        this.mapTargetPanY = touchStartPanY;
+                        this.mapTargetZoom = this.mapZoom;
+                        pointerHistory = [{ x: touchStartX, y: touchStartY, t: performance.now() }];
 
                         const now = Date.now();
                         if (now - lastTapTime < 320) {
                             const dist = Math.hypot(touchStartX - lastTapX, touchStartY - lastTapY);
                             if (dist < 40) {
-                                // Double tap in progress: immediately suppress station sheet
                                 vp._preventClick = true;
                                 this.closeMapActionSheet();
                             }
@@ -4543,45 +4789,76 @@ gQIDAQAB
                         e.preventDefault();
                         isTouchDragging = false;
                         lastTapTime = 0;
-                        initialDist = Math.hypot(
-                            e.touches[0].clientX - e.touches[1].clientX,
-                            e.touches[0].clientY - e.touches[1].clientY
-                        );
-                        initialZoom = this.mapZoom || 1.0;
+                        pointerHistory = [];
+
+                        const x1 = e.touches[0].clientX, y1 = e.touches[0].clientY;
+                        const x2 = e.touches[1].clientX, y2 = e.touches[1].clientY;
+                        initialDist = Math.hypot(x2 - x1, y2 - y1);
+                        initialZoom = this.mapZoom || this.getMapMinZoom();
+
+                        const vpRect = vp.getBoundingClientRect();
+                        const midX = ((x1 + x2) * 0.5) - vpRect.left;
+                        const midY = ((y1 + y2) * 0.5) - vpRect.top;
+
+                        pinchMapX = (midX - (this.mapPanX || 0)) / initialZoom;
+                        pinchMapY = (midY - (this.mapPanY || 0)) / initialZoom;
                     }
                 }, { passive: false });
 
                 vp.addEventListener('touchmove', (e) => {
                     if (e.touches.length === 1) {
-                        const dx = e.touches[0].clientX - touchStartX;
-                        const dy = e.touches[0].clientY - touchStartY;
+                        const curX = e.touches[0].clientX;
+                        const curY = e.touches[0].clientY;
+                        const dx = curX - touchStartX;
+                        const dy = curY - touchStartY;
                         if (!isTouchDragging && (Math.abs(dx) > 3 || Math.abs(dy) > 3)) {
                             isTouchDragging = true;
                             lastTapTime = 0;
                         }
                         if (isTouchDragging) {
                             e.preventDefault();
-                            vp.scrollLeft = touchScrollLeft - dx;
-                            vp.scrollTop = touchScrollTop - dy;
+                            recordPointerSample(curX, curY);
+                            const clamped = this.clampMapTransform(touchStartPanX + dx, touchStartPanY + dy, this.mapZoom);
+                            this.mapPanX = this.mapTargetPanX = clamped.panX;
+                            this.mapPanY = this.mapTargetPanY = clamped.panY;
+                            this.applyMapTransformImmediate();
                         }
                     } else if (e.touches.length === 2 && initialDist > 0) {
                         e.preventDefault();
                         lastTapTime = 0;
-                        const currentDist = Math.hypot(
-                            e.touches[0].clientX - e.touches[1].clientX,
-                            e.touches[0].clientY - e.touches[1].clientY
-                        );
+                        const x1 = e.touches[0].clientX, y1 = e.touches[0].clientY;
+                        const x2 = e.touches[1].clientX, y2 = e.touches[1].clientY;
+                        const currentDist = Math.hypot(x2 - x1, y2 - y1);
                         const factor = currentDist / initialDist;
-                        this.setMapZoomDirect(initialZoom * factor);
+
+                        const minZ = this.getMapMinZoom();
+                        let nextScale = Math.min(2.5, Math.max(minZ, initialZoom * factor));
+                        if (nextScale <= minZ * 1.01) nextScale = minZ;
+                        this._mapUserInteracted = (nextScale > minZ * 1.01);
+
+                        const vpRect = vp.getBoundingClientRect();
+                        const midX = ((x1 + x2) * 0.5) - vpRect.left;
+                        const midY = ((y1 + y2) * 0.5) - vpRect.top;
+
+                        const rawPanX = midX - (pinchMapX * nextScale);
+                        const rawPanY = midY - (pinchMapY * nextScale);
+                        const clamped = this.clampMapTransform(rawPanX, rawPanY, nextScale);
+
+                        this.mapZoom = this.mapTargetZoom = clamped.scale;
+                        this.mapPanX = this.mapTargetPanX = clamped.panX;
+                        this.mapPanY = this.mapTargetPanY = clamped.panY;
+                        this.applyMapTransformImmediate();
                     }
                 }, { passive: false });
 
                 vp.addEventListener('touchend', (e) => {
                     if (e.touches.length === 0) {
+                        this._mapIsPointerDown = false;
                         if (isTouchDragging) {
                             vp._preventClick = true;
                             setTimeout(() => { vp._preventClick = false; }, 120);
                             lastTapTime = 0;
+                            applyReleaseInertia();
                         } else if (e.changedTouches && e.changedTouches.length === 1) {
                             const touch = e.changedTouches[0];
                             const now = Date.now();
@@ -4589,7 +4866,6 @@ gQIDAQAB
                             const dist = Math.hypot(touch.clientX - lastTapX, touch.clientY - lastTapY);
 
                             if (timeDiff > 40 && timeDiff < 320 && dist < 40) {
-                                // Double tap triggered!
                                 e.preventDefault();
                                 vp._preventClick = true;
                                 this.closeMapActionSheet();
@@ -4607,8 +4883,9 @@ gQIDAQAB
                     } else if (e.touches.length === 1) {
                         touchStartX = e.touches[0].clientX;
                         touchStartY = e.touches[0].clientY;
-                        touchScrollLeft = vp.scrollLeft;
-                        touchScrollTop = vp.scrollTop;
+                        touchStartPanX = this.mapPanX || 0;
+                        touchStartPanY = this.mapPanY || 0;
+                        pointerHistory = [{ x: touchStartX, y: touchStartY, t: performance.now() }];
                         isTouchDragging = false;
                         initialDist = 0;
                     }
@@ -4673,7 +4950,10 @@ gQIDAQAB
             renderInteractiveMap(force = false) {
                 const container = document.getElementById('networkMapContainer');
                 if (!container) return;
-                if (!force && container.innerHTML.trim() !== '') return;
+                if (!force && container.innerHTML.trim() !== '') {
+                    this.setupMapGestureHandlers();
+                    return;
+                }
 
                 const hotspotsSvg = Object.entries(MAP_STATION_HOTSPOTS).map(([key, coords]) => {
                     const cx = coords[0];
@@ -4687,6 +4967,7 @@ gQIDAQAB
 
                 container.innerHTML = `
                     <img src="${mapSvg}" 
+                         onload="if(!App._mapUserInteracted)App.resetMapZoom(false);"
                          onerror="this.onerror=null;this.src='bkk_transit_map.jpg';" 
                          alt="ผังโครงข่ายระบบขนส่งมวลชนกรุงเทพฯ 12 สาย" 
                          id="networkMapImage" 
@@ -4700,15 +4981,9 @@ gQIDAQAB
                     </svg>
                 `;
                 this.setupMapGestureHandlers();
-                const vp = document.getElementById('mapViewport');
-                if (vp) {
-                    setTimeout(() => {
-                        const targetX = (850 / 1672) * vp.scrollWidth - (vp.clientWidth / 2);
-                        const targetY = (920 / 1672) * vp.scrollHeight - (vp.clientHeight / 2);
-                        vp.scrollLeft = Math.max(0, targetX);
-                        vp.scrollTop = Math.max(0, targetY);
-                    }, 60);
-                }
+                requestAnimationFrame(() => {
+                    this.resetMapZoom(false);
+                });
             },
 
             updateMapTheme() {

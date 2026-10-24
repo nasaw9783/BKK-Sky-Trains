@@ -2153,32 +2153,44 @@ gQIDAQAB
                 }
             };
 
-            // Provider 1: ipwho.is
-            try {
-                const data = await fetchWithTimeout('https://ipwho.is/', timeoutMs);
-                if (data && data.success && data.latitude && data.longitude) {
-                    return { lat: Number(data.latitude), lon: Number(data.longitude) };
+            const parseCoords = (data) => {
+                if (!data) throw new Error('Empty response');
+                if (data.success === false) throw new Error('API reported failure');
+                const lat = Number(data.latitude ?? data.lat);
+                const lon = Number(data.longitude ?? data.lon);
+                if (!isFinite(lat) || !isFinite(lon) || (lat === 0 && lon === 0)) {
+                    throw new Error('Invalid coordinates');
                 }
-            } catch (e) {}
+                return { lat, lon };
+            };
 
-            // Provider 2: ipapi.co
-            try {
-                const data2 = await fetchWithTimeout('https://ipapi.co/json/', timeoutMs);
-                if (data2 && data2.latitude && data2.longitude) {
-                    return { lat: Number(data2.latitude), lon: Number(data2.longitude) };
-                }
-            } catch (e) {}
+            const urls = [
+                'https://ipwho.is/',
+                'https://get.geojs.io/v1/ip/geo.json',
+                'https://freeipapi.com/api/json',
+                'https://ipapi.co/json/'
+            ];
+
+            if (typeof Promise.any === 'function') {
+                return await Promise.any(urls.map(u => fetchWithTimeout(u, timeoutMs).then(parseCoords)));
+            }
+
+            for (const u of urls) {
+                try {
+                    return parseCoords(await fetchWithTimeout(u, timeoutMs));
+                } catch (e) {}
+            }
 
             throw new Error('All IP geolocation providers failed');
         }
 
         function isNativeFlutterEnvironment() {
-            return typeof window !== 'undefined' && (
-                !!window.isFlutterApp ||
-                !!window.FlutterLocation ||
-                !!(window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.FlutterLocation) ||
-                (typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.includes('BKKSkyTrains')) ||
-                (typeof window.location !== 'undefined' && window.location.protocol === 'file:')
+            if (typeof window === 'undefined') return false;
+            return Boolean(
+                window.isFlutterApp ||
+                window.FlutterLocation ||
+                (window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.FlutterLocation) ||
+                (typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.includes('BKKSkyTrains'))
             );
         }
 
@@ -7159,6 +7171,7 @@ setOriginFromActionSheet() {
                 clearTimeout(this.fallbackTimer);
                 clearTimeout(this._nativeLocationTimer);
                 clearTimeout(this._geoMasterTimer);
+                clearTimeout(this._ipFallbackTimer);
                 this.locating = false;
                 this.locError = null;
                 this.userPos = { lat, lon, accuracy: accuracy || 10, calibrated: false };
@@ -7178,6 +7191,7 @@ setOriginFromActionSheet() {
                 clearTimeout(this.fallbackTimer);
                 clearTimeout(this._nativeLocationTimer);
                 clearTimeout(this._geoMasterTimer);
+                clearTimeout(this._ipFallbackTimer);
                 this.locating = false;
                 this.updateRelocateBtn();
 
@@ -7202,6 +7216,8 @@ setOriginFromActionSheet() {
                             .catch(() => {
                                 if (this._lastLocateInteractive) this.showToast(T('geoFail'));
                                 if (!this.nearest) this.useFallbackStation();
+                                this.renderNearest();
+                                this.renderNearestExit();
                             });
                         return;
                     }
@@ -7209,6 +7225,7 @@ setOriginFromActionSheet() {
                     if (!this.nearest) this.useFallbackStation();
                 }
                 this.renderNearest();
+                this.renderNearestExit();
             },
 
             locate(interactive) {
@@ -7222,10 +7239,12 @@ setOriginFromActionSheet() {
                 clearTimeout(this.fallbackTimer);
                 clearTimeout(this._nativeLocationTimer);
                 clearTimeout(this._geoMasterTimer);
+                clearTimeout(this._ipFallbackTimer);
 
                 this.locating = true;
                 this.locError = null;
                 this.renderNearest();
+                this.renderNearestExit();
                 this.updateRelocateBtn();
 
                 // หากรันใน Flutter Native Mobile App (iOS / Android)
@@ -7235,6 +7254,8 @@ setOriginFromActionSheet() {
                         if (this.locating) {
                             this.locating = false;
                             this.updateRelocateBtn();
+                            this.renderNearest();
+                            this.renderNearestExit();
                             if (interactive && !this.userPos) {
                                 this.showToast(`${getUiIcon('alert', 16, '#f59e0b')} ค้นหาตำแหน่งนานเกินกำหนด โปรดลองใหม่อีกครั้ง`);
                             }
@@ -7254,47 +7275,109 @@ setOriginFromActionSheet() {
                         let bridgeRetries = 0;
                         const bridgeTimer = setInterval(() => {
                             bridgeRetries++;
-                            if (dispatchNativeLocation() || bridgeRetries >= 15) {
+                            if (dispatchNativeLocation()) {
                                 clearInterval(bridgeTimer);
+                            } else if (bridgeRetries >= 10) {
+                                clearInterval(bridgeTimer);
+                                this._locateBrowser(interactive);
                             }
                         }, 150);
                     }
-                    // ข้อห้ามเด็ดขาด: ห้ามเรียก _locateBrowser เมื่อรันใน Native App เพื่อป้องกันกล่องข้อความ Private Container ของ iOS
                     return;
                 }
 
-                // สำหรับ Web Browser ทั่วไป (https://...)
+                // สำหรับ Web Browser ทั่วไป (https://, http://, file://)
                 this._geoMasterTimer = setTimeout(() => {
                     if (this.locating) {
                         this.locating = false;
                         this.updateRelocateBtn();
+                        this.renderNearest();
+                        this.renderNearestExit();
                         if (interactive && !this.userPos) {
                             this.showToast(`${getUiIcon('alert', 16, '#f59e0b')} ค้นหาตำแหน่งนานเกินกำหนด โปรดลองใหม่อีกครั้ง`);
                         }
                     }
-                }, 10000);
+                }, 9000);
 
                 this._locateBrowser(interactive);
             },
 
             _locateBrowser(interactive) {
-                if (!navigator.geolocation) {
-                    clearTimeout(this._geoMasterTimer);
-                    this.locating = false;
-                    this.locError = T('geoUnsupported');
-                    this.renderNearest();
-                    this.updateRelocateBtn();
-                    if (!this.nearest) this.useFallbackStation();
-                    return;
-                }
-
                 if (!this.nearest) {
                     this.fallbackTimer = setTimeout(() => this.useFallbackStation(), 3500);
                 }
 
+                let resolvedByGps = false;
+                let ipApplied = false;
+
+                const applyIpFallback = (err) => {
+                    if (resolvedByGps || ipApplied) return;
+                    if (typeof fetch !== 'function') {
+                        clearTimeout(this.fallbackTimer);
+                        clearTimeout(this._geoMasterTimer);
+                        this.locating = false;
+                        this.updateRelocateBtn();
+                        if (interactive || (err && err.code !== 1)) {
+                            this.locError = (err && err.code === 1) ? T('geoDenied') : T('geoFail');
+                            if (interactive) this.showToast(this.locError);
+                        }
+                        this.renderNearest();
+                        this.renderNearestExit();
+                        if (!this.nearest) this.useFallbackStation();
+                        return;
+                    }
+
+                    fetchIpLocation(3000)
+                        .then(coords => {
+                            if (resolvedByGps) return;
+                            ipApplied = true;
+                            clearTimeout(this.fallbackTimer);
+                            clearTimeout(this._geoMasterTimer);
+                            this.locating = false;
+                            this.userPos = { lat: coords.lat, lon: coords.lon, accuracy: 2000, calibrated: false };
+                            this.computeNearest();
+                            this.locError = null;
+                            this.updateRelocateBtn();
+                            this.renderNearest();
+                            this.renderNearestExit();
+                            this.renderStrip();
+                            if (interactive && this.nearest?.station) {
+                                this.showToast(`${getUiIcon('pin', 16, '#38bdf8')} พบสถานีใกล้คุณ: ${stName(this.nearest.station)} (${fmtDist(this.nearest.km)})`);
+                            }
+                        })
+                        .catch(() => {
+                            if (resolvedByGps) return;
+                            clearTimeout(this.fallbackTimer);
+                            clearTimeout(this._geoMasterTimer);
+                            this.locating = false;
+                            this.updateRelocateBtn();
+                            if (interactive || (err && err.code !== 1)) {
+                                this.locError = (err && err.code === 1) ? T('geoDenied') : T('geoFail');
+                                if (interactive) this.showToast(this.locError);
+                            }
+                            if (!this.nearest) this.useFallbackStation();
+                            this.renderNearest();
+                            this.renderNearestExit();
+                        });
+                };
+
+                if (!navigator.geolocation) {
+                    applyIpFallback({ code: 2 });
+                    return;
+                }
+
+                // บน Desktop PC หรือ file:// ที่ไม่มีฮาร์ดแวร์ GPS ดาวเทียม ให้ดึงตำแหน่งผ่านเครือข่ายควบคู่ไปพร้อมกันหากรอนานเกิน 1.2 วินาที
+                this._ipFallbackTimer = setTimeout(() => {
+                    if (!resolvedByGps) {
+                        applyIpFallback(null);
+                    }
+                }, 1200);
+
                 const onPositionSuccess = (pos) => {
+                    resolvedByGps = true;
                     clearTimeout(this.fallbackTimer);
                     clearTimeout(this._geoMasterTimer);
+                    clearTimeout(this._ipFallbackTimer);
                     this.locating = false;
                     const acc = pos.coords.accuracy || 999;
                     const lat = pos.coords.latitude;
@@ -7314,71 +7397,36 @@ setOriginFromActionSheet() {
                     }
                 };
 
-                const handleFinalError = (err) => {
-                    clearTimeout(this.fallbackTimer);
-                    clearTimeout(this._geoMasterTimer);
-                    this.locating = false;
-                    this.updateRelocateBtn();
-
-                    // หาก GPS hardware ไม่พร้อมหรือล้มเหลว ให้ใช้ IP Geolocation ชั่วคราว
-                    if (typeof fetch === 'function') {
-                        fetchIpLocation(3500)
-                            .then(coords => {
-                                this.userPos = { lat: coords.lat, lon: coords.lon, accuracy: 2000, calibrated: false };
-                                // ไม่บันทึก IP Geolocation ลง localStorage ถาวร เพื่อป้องกันการจำพิกัดชุมสายมือถือข้ามวัน
-                                this.computeNearest();
-                                this.locError = null;
-                                this.renderNearest();
-                                this.renderNearestExit();
-                                this.renderStrip();
-                                if (interactive && this.nearest?.station) {
-                                    this.showToast(`${getUiIcon('pin', 16, '#38bdf8')} พบสถานีโดยประมาณ: ${stName(this.nearest.station)} (${fmtDist(this.nearest.km)})`);
-                                }
-                            })
-                            .catch(() => {
-                                if (interactive || (err && err.code !== 1)) {
-                                    this.locError = (err && err.code === 1) ? T('geoDenied') : T('geoFail');
-                                    if (interactive) this.showToast(this.locError);
-                                }
-                                this.renderNearest();
-                                if (!this.nearest) this.useFallbackStation();
-                            });
-                        return;
-                    }
-
-                    if (interactive || (err && err.code !== 1)) {
-                        this.locError = (err && err.code === 1) ? T('geoDenied') : T('geoFail');
-                        if (interactive) this.showToast(this.locError);
-                    }
-                    this.renderNearest();
-                    if (!this.nearest) this.useFallbackStation();
-                };
-
-                // ขั้นที่ 1: ลองค้นหาด้วยความแม่นยำสูง (Timeout 5 วินาที, maximumAge 15 วินาที)
+                // ขั้นที่ 1: ลองค้นหาด้วยความแม่นยำสูง (Timeout 3.5 วินาที, maximumAge 15 วินาที)
                 try {
                     navigator.geolocation.getCurrentPosition(
                         onPositionSuccess,
                         (err1) => {
-                            // หากถูกปฏิเสธสิทธิ์ (Permission Denied) ให้แจ้งเตือนทันที ไม่ต้องรอนาน
                             if (err1 && err1.code === 1) {
-                                handleFinalError(err1);
+                                clearTimeout(this._ipFallbackTimer);
+                                applyIpFallback(err1);
                                 return;
                             }
-                            // ขั้นที่ 2: สลับมาลอง Cellular / Wi-Fi Positioning ทันที (Timeout 4 วินาที, maximumAge 60 วินาที)
+                            // ขั้นที่ 2: สลับมาลอง Cellular / Wi-Fi Positioning ทันที (Timeout 3 วินาที, maximumAge 60 วินาที)
                             try {
                                 navigator.geolocation.getCurrentPosition(
                                     onPositionSuccess,
-                                    (err2) => handleFinalError(err2),
-                                    { enableHighAccuracy: false, maximumAge: 60000, timeout: 4000 }
+                                    (err2) => {
+                                        clearTimeout(this._ipFallbackTimer);
+                                        applyIpFallback(err2);
+                                    },
+                                    { enableHighAccuracy: false, maximumAge: 60000, timeout: 3000 }
                                 );
                             } catch (e2) {
-                                handleFinalError(err1);
+                                clearTimeout(this._ipFallbackTimer);
+                                applyIpFallback(err1);
                             }
                         },
-                        { enableHighAccuracy: true, maximumAge: 15000, timeout: 5000 }
+                        { enableHighAccuracy: true, maximumAge: 15000, timeout: 3500 }
                     );
                 } catch (e) {
-                    handleFinalError({ code: 2 });
+                    clearTimeout(this._ipFallbackTimer);
+                    applyIpFallback({ code: 2 });
                 }
             },
 

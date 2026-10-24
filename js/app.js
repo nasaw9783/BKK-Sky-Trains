@@ -2,7 +2,6 @@
 
         /* ================= CONFIG ================= */
         const REMOTE_API = (typeof window !== 'undefined' && window.BKK_CONFIG && window.BKK_CONFIG.apiBase) || 'https://bkkskytrain.online/api/bts-proxy';
-        const LOCAL_ORIGIN = 'http://localhost:3000';
         // ตรวจสอบว่าโฮสต์ปัจจุบันเป็น Localhost บนพอร์ต 3000 หรือไม่ (รองรับ relative /api/bts-proxy จาก Start-BKK-Transit.ps1)
         // สำหรับกรณีอื่นทั้งหมด (Web, WebView, file://, GitHub Pages, Vercel ฯลฯ) ชี้ตรงไปยัง REMOTE_API ทันที
         const hasRelativeProxyHost = Boolean(
@@ -28,9 +27,7 @@
         const SIAM_KEY = 'CEN';
         // สถานีสำรองเมื่อระบุตำแหน่งผู้ใช้ไม่ได้ (ปฏิเสธสิทธิ์ / รอนาน / อยู่นอกพื้นที่)
         const FALLBACK_STATION_KEY = 'E4';   // อโศก
-        const FALLBACK_AFTER_MS = 5000;      // รอตำแหน่งนานสุด 5 วิ ก่อนแสดงสถานีสำรอง
         const FALLBACK_MAX_KM = 120;         // ขยายขอบเขตตรวจจับสถานีใกล้เคียงครอบคลุมปริมณฑล (กทม. และจังหวัดใกล้เคียง)
-        const YELLOW_MAP_SRC = 'เส้นทางและอัตราค่าโดยสาร_files/yellow-map.jpg';
         const GOLD_LINE_ID = 3;
         const MRT_BLUE_FARE_CHANGE_AT = new Date('2026-07-03T00:00:00+07:00').getTime();
         const MRT_LINE_IDS = { BLUE: 101, PURPLE: 102, RED: 103, DARK_RED: 103, LIGHT_RED: 105, ARL: 104, BRT: 201, ORANGE: 106 };
@@ -2216,10 +2213,6 @@ gQIDAQAB
             return Number(id) === 5;
         }
 
-        function isPinkStationKey(key) {
-            return typeof key === 'string' && (key.startsWith('PK') || key.startsWith('MT'));
-        }
-
         function isMrtStationKey(key) {
             return !!MRT_STATION_BY_KEY[key] || key.startsWith('RN') || key.startsWith('RW') || key.startsWith('A') || key.startsWith('B') || key.startsWith('OR');
         }
@@ -2284,12 +2277,6 @@ gQIDAQAB
 
         function journeyLineById(id) {
             return App.lineById[id] || MRT_LINE_BY_ID[id] || null;
-        }
-
-        function allJourneyStations() {
-            const seen = new Set();
-            return allJourneyLines().flatMap(l => l.StationList)
-                .filter(s => !seen.has(s.StationKey) && seen.add(s.StationKey));
         }
 
         function journeyStationByKey(key) {
@@ -2577,7 +2564,6 @@ gQIDAQAB
                     Count_Station: railCount,
                     Count_InterChange: interchanges,
                     FareRate_Total: detail.totalFare || '-',
-                    StaticMapSrc: YELLOW_MAP_SRC,
                     LabelTag: labelTag,
                     FareRateInfo: [{
                         FareRate_List: [
@@ -3544,15 +3530,6 @@ gQIDAQAB
             `;
         }
 
-        function parseStationCodeAndName(text) {
-            if (!text) return { name: '', code: '' };
-            const match = String(text).match(/^(.*?)\s*\((.*?)\)$/);
-            if (match) {
-                return { name: match[1].trim(), code: match[2].trim() };
-            }
-            return { name: String(text).trim(), code: '' };
-        }
-
         function getLineStationsList(lineId) {
             const targetId = Number(lineId);
             if (!targetId) return [];
@@ -4029,10 +4006,6 @@ gQIDAQAB
                     body.innerHTML = `<button class="btn btn-big" disabled><span class="spin"></span> ${T('locating')}</button>`;
                 }
                 this.locate(interactive);
-            },
-
-            locateExit(interactive) {
-                this.locateExitGps(interactive);
             },
 
             scrollToExit(exitNum, stationKey) {
@@ -4577,13 +4550,6 @@ gQIDAQAB
                 }
             },
 
-            setMapZoomDirect(zoomLevel, focalX, focalY) {
-                const vp = document.getElementById('mapViewport');
-                const cx = (typeof focalX === 'number') ? focalX : (vp ? vp.clientWidth * 0.5 : 0);
-                const cy = (typeof focalY === 'number') ? focalY : (vp ? vp.clientHeight * 0.5 : 0);
-                this.zoomMapTo(zoomLevel, cx, cy, false);
-            },
-
             handleMapDoubleTapZoom(clientX, clientY) {
                 const vp = document.getElementById('mapViewport');
                 const container = document.getElementById('networkMapContainer');
@@ -5007,10 +4973,6 @@ gQIDAQAB
                 if (!curSrc.endsWith(targetSrc)) {
                     mapImg.setAttribute('src', targetSrc);
                 }
-            },
-
-            setupMapProximityClick() {
-                // Restricted: Only direct taps/clicks on the station code hotspot are allowed
             },
 
             /* ---------- THE SKYTRAINs: Tap-to-Route Floating Action Sheet ---------- */
@@ -6670,15 +6632,6 @@ setOriginFromActionSheet() {
                 }
             },
 
-            toggleJourney() {
-                const j = this.journey;
-                j.open = !j.open;
-                // เปิดครั้งแรก: เติม "จาก" ด้วยสถานีใกล้สุดให้เลย
-                if (j.open && !j.from && this.nearest) j.from = this.nearest.station.StationKey;
-                this.renderJourney();
-                this.syncUrl();
-            },
-
             swapJourney() {
                 const j = this.journey;
                 [j.from, j.to] = [j.to, j.from];
@@ -7110,15 +7063,6 @@ setOriginFromActionSheet() {
                 }
             },
 
-            /* ---------- เลือกขบวนเพื่อดูปลายทางของขบวนนั้น ---------- */
-            selectTrain(stationKey, platform, idx, trainNo) {
-                const k = stationKey + '|' + platform;
-                const cur = this.selTrain[k];
-                if (cur && cur.idx === idx && cur.trainNo === trainNo) delete this.selTrain[k]; // กดซ้ำ = ยกเลิก
-                else this.selTrain[k] = { idx, trainNo };
-                this.renderArrivalTargets(stationKey);
-            },
-
             /* ---------- location / nearest ---------- */
             saveUserPosition(pos, stationKey, isCalibrated = false) {
                 try {
@@ -7442,25 +7386,6 @@ setOriginFromActionSheet() {
                     el.classList.remove('visible');
                     setTimeout(() => { if (!el.classList.contains('visible')) el.style.display = 'none'; }, 260);
                 }, 2600);
-            },
-
-            handleNotificationOpen(stationKey) {
-                if (!stationKey) return;
-                const s = this.findStation(stationKey);
-                if (s) {
-                    this.pinnedKey = s.StationKey;
-                    this.selectedExitKey = s.StationKey;
-                    this.syncLineToStation(s, true);
-                    this.switchView('home');
-                    this.renderNearest();
-                    this.renderNearestExit();
-                    this.renderStrip();
-                    this.loadArrivals(s, true);
-                    requestAnimationFrame(() => {
-                        const el = document.getElementById('nearestCard');
-                        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    });
-                }
             },
 
             // แสดงสถานีเริ่มต้นเมื่อยังระบุตำแหน่งไม่ได้ (ไม่ทับสถานีจริงที่เคยหาเจอ)
@@ -7824,25 +7749,17 @@ setOriginFromActionSheet() {
                 if (panel) panel.hidden = true;
             },
 
-            selectNearestFromPopup() {
-                this.closeNearestPopup();
-                const st = this.popupStation || (this.nearest && this.nearest.station) || this.pinnedStation();
-                if (st) {
-                    this.pinnedKey = st.StationKey;
-                    this.syncLineToStation(st, true);
-                    this.switchView('home');
-                    this.loadArrivals(st, true);
-                    const hero = document.querySelector('.station-hero') || document.getElementById('nearestPlatforms');
-                    if (hero) hero.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            },
-
             handleNotificationOpen(stationKey) {
+                if (!stationKey) return;
                 const s = this.findStation(stationKey);
                 if (s) {
                     this.pinnedKey = s.StationKey;
+                    this.selectedExitKey = s.StationKey;
                     this.syncLineToStation(s, true);
                     this.switchView('home');
+                    this.renderNearest();
+                    this.renderNearestExit();
+                    this.renderStrip();
                     this.loadArrivals(s, true);
                     this.showNearestPopupFor(s);
                 }
@@ -8018,43 +7935,6 @@ setOriginFromActionSheet() {
                     isTimetable: !!data.isTimetable,
                     time: data.time, platforms: platList
                 };
-            },
-
-            // ดึงเวลารถของสถานีอื่นแบบเงียบ ๆ (ใช้กับสถานีข้างเคียงของ route map)
-            async ensureArrivals(station) {
-                if (!station) return [];
-                const k = station.StationKey;
-                if (usesStaticTimetable(station)) {
-                    if (!this.arrivals[k] || !this.arrivals[k].platforms || !this.arrivals[k].platforms.length) {
-                        const data = generateTimetableArrivals(station);
-                        if (data) this.storeArrivals(k, data);
-                    }
-                    return (this.arrivals[k] && this.arrivals[k].platforms) || [];
-                }
-                const cur = this.arrivals[k];
-                if (cur && !cur.loading && !cur.error && Date.now() - cur.fetchedAt < 10000)
-                    return cur.platforms || [];
-                try {
-                    let d = await fetchArrivals(station);
-                    const hasTrains = Array.isArray(d?.platform_list) && d.platform_list.some(p => Array.isArray(p.train_list) && p.train_list.length > 0);
-                    if (!hasTrains && isTransitOperatingHours(station.StationLineId, station.StationKey)) {
-                        const fallbackData = generateTimetableArrivals(station);
-                        if (fallbackData?.platform_list?.length) {
-                            d = fallbackData;
-                        }
-                    }
-                    this.storeArrivals(k, d);
-                    return this.arrivals[k].platforms;
-                } catch (e) {
-                    if (isTransitOperatingHours(station.StationLineId, station.StationKey)) {
-                        const fallbackData = generateTimetableArrivals(station);
-                        if (fallbackData?.platform_list?.length) {
-                            this.storeArrivals(k, fallbackData);
-                            return this.arrivals[k].platforms;
-                        }
-                    }
-                    return (cur && cur.platforms) || [];
-                }
             },
 
             /* ---------- สถานะการเดินรถ (btsapp1 TrafficInfoV2) ---------- */
@@ -9229,78 +9109,7 @@ setOriginFromActionSheet() {
             };
         }
 
-        /* ================= MRT FREQUENCY RENDER ================= */
-        function renderMrtFrequency(station) {
-            const key = station.StationKey;
-            const lineId = station.StationLineId;
-            const color = station.StationLineColor || LINE_BRAND_COLORS[lineId] || MRT_COLORS.BLUE;
-            const freq = getCurrentMrtFreq(lineId, key);
-            const table = getMrtFreqTable(lineId, key);
-
-            // Hero: แสดงความถี่ปัจจุบัน
-            let heroHtml;
-            if (freq) {
-                const cleanFreq = String(freq.label || '').replace(/^~/, '');
-                heroHtml = `<div class="mrt-freq-hero">
-                    <div class="big" style="color:${color}">${getUiIcon('train', 18, color)} ${T('mrtFreqNow', cleanFreq)}</div>
-                    <div class="sub">${T('mrtFreqTitle')}</div>
-                </div>`;
-            } else {
-                heroHtml = `<div class="mrt-freq-hero">
-                    <div class="big" style="color:var(--muted)">${getUiIcon('train', 18, 'var(--muted)')} ${T('mrtOutOfService')}</div>
-                    <div class="sub">${T('mrtFreqTitle')}</div>
-                </div>`;
-            }
-
-            // สร้างตาราง
-            const buildTable = (rows) => {
-                if (!rows.length) return '';
-                return `<div class="mrt-freq-table-container"><table class="mrt-freq-table">
-                    <thead><tr><th>${getUiIcon('clock', 13, 'currentColor')} ${T('mrtTimeRange')}</th><th>${getUiIcon('timer', 13, 'currentColor')} ${T('mrtFreqCol')}</th></tr></thead>
-                    <tbody>${rows.map(r => {
-                        const lbl = String(r.freqLabel || '').startsWith('~') ? r.freqLabel : `~${r.freqLabel}`;
-                        return `<tr class="${r.isCurrent ? 'now' : ''}">
-                            <td>
-                                <div class="freq-time-cell">
-                                    <span class="freq-time-range">${esc(r.timeStr)}</span>
-                                    ${r.isCurrent ? `<span class="freq-live-now-tag"><span class="freq-pulse-dot"></span> ${lang === 'en' ? 'NOW' : (lang === 'zh' ? '当前' : 'ขณะนี้')}</span>` : ''}
-                                </div>
-                            </td>
-                            <td>
-                                <div class="freq-single-pill">
-                                    <span class="freq-prefix">${lang === 'en' ? 'Every ~' : (lang === 'zh' ? '每 ~' : 'ทุก ~')}</span>
-                                    <b>${esc(String(lbl).replace(/^~/, ''))}</b>
-                                    <span class="freq-unit">${T('minUnit').trim()}</span>
-                                </div>
-                            </td>
-                        </tr>`;
-                    }).join('')}</tbody>
-                </table></div>`;
-            };
-
-            // segment note สำหรับ Blue outer stations
-            let segNote = '';
-            if (table.isBlueOuter) {
-                const segName = lang === 'en'
-                    ? (key.startsWith('BL3') || key === 'BL38' ? 'Phetkasem 48–Lak Song' : 'Tha Phra–Bang Pho')
-                    : (lang === 'zh'
-                        ? (key.startsWith('BL3') || key === 'BL38' ? '碧甲盛48–拉颂' : '塔帕–邦坡')
-                        : (key.startsWith('BL3') || key === 'BL38' ? 'เพชรเกษม 48–หลักสอง' : 'ท่าพระ–บางโพ'));
-                segNote = `<div class="mrt-freq-note">${T('mrtSegmentNote').replace('{seg}', segName)}</div>`;
-            }
-
-            return `<div class="mrt-freq">
-                ${heroHtml}
-                <div class="mrt-freq-daytype">${getUiIcon('calendar', 14, 'currentColor')} ${T('mrtWeekday')}</div>
-                ${buildTable(table.weekday)}
-                <div class="mrt-freq-daytype">${getUiIcon('calendar', 14, 'currentColor')} ${T('mrtWeekend')}</div>
-                ${buildTable(table.weekend)}
-                ${segNote}
-                <div class="mrt-freq-note">${T('mrtFreqNote')}</div>
-            </div>`;
-        }
-
-        /* ===== BTS Green Line frequency table (แสดงตอนไม่มีรถวิ่ง เช่น กลางคืน) ===== */
+        /* ===== BTS Green Line frequency table helper ===== */
         function buildBtsFreqRows(schedule, isActive) {
             const now = new Date();
             const nowMin = timeToMinutes(now.getHours(), now.getMinutes());
@@ -9314,93 +9123,6 @@ setOriginFromActionSheet() {
             });
         }
 
-        function renderBtsFrequency(station) {
-            // หาสายสีเขียวที่จะแสดงตาราง (สยามมี 2 สาย — ใช้สายที่กำลังดูอยู่)
-            const ids = [];
-            if (App.activeLine === 1 || App.activeLine === 2) ids.push(App.activeLine);
-            if ((station.StationLineId === 1 || station.StationLineId === 2)
-                && !ids.includes(station.StationLineId)) ids.push(station.StationLineId);
-            if (!ids.length) return '';
-            const we = isWeekend();
-            const tbl = rows => `<div class="mrt-freq-table-container"><table class="mrt-freq-table">
-                <thead><tr><th>${getUiIcon('clock', 13, 'currentColor')} ${T('mrtTimeRange')}</th><th>${getUiIcon('timer', 13, 'currentColor')} ${T('mrtFreqCol')}</th></tr></thead>
-                <tbody>${rows.map(r => {
-                    const raw = String(r.freqLabel || '').trim();
-                    let freqCellHtml = '';
-                    if (raw.includes('*') && raw.includes('/')) {
-                        const splitted = raw.split('/').map(s => s.trim());
-                        const p1 = splitted[0].replace(/\*/g, '').trim();
-                        const p2 = splitted[1].replace(/\*/g, '').trim();
-                        freqCellHtml = `
-                            <div class="freq-dual-box">
-                                <div class="freq-dual-pill">
-                                    <span class="freq-dual-tag core" style="background:rgba(122,180,32,0.18);color:#5c8e14;">
-                                        ${lang === 'en' ? 'Core (Mo Chit–Samrong)' : (lang === 'zh' ? '主线 (莫奇–三隆)' : 'สายหลัก (หมอชิต–สำโรง)')}
-                                    </span>
-                                    <span class="freq-dual-val">~${esc(p1)} <span class="freq-unit">${T('minUnit').trim()}</span></span>
-                                </div>
-                                <div class="freq-dual-pill">
-                                    <span class="freq-dual-tag ext">
-                                        ${lang === 'en' ? 'Ext. (Khu Khot / Kheha)' : (lang === 'zh' ? '延伸线 (库括 / 凯哈)' : 'ส่วนต่อขยาย (คูคต/เคหะฯ)')}
-                                    </span>
-                                    <span class="freq-dual-val">~${esc(p2)} <span class="freq-unit">${T('minUnit').trim()}</span></span>
-                                </div>
-                            </div>
-                        `;
-                    } else {
-                        const lbl = raw.startsWith('~') ? raw : `~${raw}`;
-                        freqCellHtml = `
-                            <div class="freq-single-pill">
-                                <span class="freq-prefix">${lang === 'en' ? 'Every ~' : (lang === 'zh' ? '每 ~' : 'ทุก ~')}</span>
-                                <b>${esc(String(lbl).replace(/^~/, ''))}</b>
-                                <span class="freq-unit">${T('minUnit').trim()}</span>
-                            </div>
-                        `;
-                    }
-                    return `<tr class="${r.isCurrent ? 'now' : ''}">
-                        <td>
-                            <div class="freq-time-cell">
-                                <span class="freq-time-range">${esc(r.timeStr)}</span>
-                                <span class="freq-live-now-tag">${lang === 'en' ? 'NOW' : (lang === 'zh' ? '当前' : 'ขณะนี้')}</span>
-                            </div>
-                        </td>
-                        <td>
-                            ${freqCellHtml}
-                        </td>
-                    </tr>`;
-                }).join('')}</tbody>
-            </table></div>`;
-            return ids.map(lineId => {
-                const data = getBtsFreqData(lineId);
-                if (!data) return '';
-                const line = App.lineById[lineId];
-                const color = line?.LineColor || '#7AB420';
-                const lineName = line ? shortLineName(line) : '';
-                const freq = getCurrentMrtFreq(lineId, station.StationKey);
-                let heroHtml;
-                if (freq) {
-                    const cleanFreq = String(freq.label || '').replace(/^~/, '');
-                    heroHtml = `<div class="mrt-freq-hero">
-                        <div class="big" style="color:${color}">${getUiIcon('train', 18, color)} ${T('mrtFreqNow', cleanFreq)}</div>
-                        <div class="sub">${T('mrtFreqTitle')} · ${esc(lineName)}</div>
-                    </div>`;
-                } else {
-                    heroHtml = `<div class="mrt-freq-hero">
-                        <div class="big" style="color:var(--muted)">${getUiIcon('train', 18, 'var(--muted)')} ${T('mrtOutOfService')}</div>
-                        <div class="sub">${T('mrtFreqTitle')} · ${esc(lineName)}</div>
-                    </div>`;
-                }
-                return `<div class="mrt-freq">
-                    ${heroHtml}
-                    <div class="mrt-freq-daytype">${getUiIcon('calendar', 14, 'currentColor')} ${T('mrtWeekday')}</div>
-                    ${tbl(buildBtsFreqRows(data.weekday, !we))}
-                    <div class="mrt-freq-daytype">${getUiIcon('calendar', 14, 'currentColor')} ${T('mrtWeekend')}</div>
-                    ${tbl(buildBtsFreqRows(data.weekend, we))}
-                    ${lineId === 1 ? `<div class="mrt-freq-note">${T('btsSegNote')}</div>` : ''}
-                    <div class="mrt-freq-note">${T('mrtFreqNote')}</div>
-                </div>`;
-            }).join('');
-        }
         /* ================= COLOR INTERPOLATION HELPERS ================= */
         function hexToRgb(hex) {
             let c = String(hex || '').replace('#', '');
@@ -9899,16 +9621,6 @@ setOriginFromActionSheet() {
             }
 
             return out.slice(0, 3);
-        }
-
-        function terminalSideForLine(stationKey, lineId) {
-            const line = App.lineById[lineId];
-            const list = line?.StationList || [];
-            const idx = list.findIndex(s => s.StationKey === stationKey);
-            if (idx < 0 || list.length < 2) return null;
-            if (idx === 0) return 'start';
-            if (idx === list.length - 1) return 'end';
-            return null;
         }
 
         function ensureTwoPlatformsForTerminal(station, platforms) {

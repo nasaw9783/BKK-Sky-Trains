@@ -2172,6 +2172,26 @@ gQIDAQAB
             throw new Error('All IP geolocation providers failed');
         }
 
+        function isNativeFlutterEnvironment() {
+            return typeof window !== 'undefined' && (
+                !!window.isFlutterApp ||
+                !!window.FlutterLocation ||
+                !!(window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.FlutterLocation) ||
+                (typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.includes('BKKSkyTrains')) ||
+                (typeof window.location !== 'undefined' && window.location.protocol === 'file:')
+            );
+        }
+
+        // ป้องกันไม่ให้ WKWebView บน iOS แสดงกล่องข้อความเตือนขอสิทธิ์ระบุตำแหน่งแบบพาธไฟล์ (/private/var/containers/...)
+        if (isNativeFlutterEnvironment() && typeof navigator !== 'undefined' && navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition = function() {
+                if (window.FlutterLocation && typeof window.FlutterLocation.postMessage === 'function') {
+                    window.FlutterLocation.postMessage(JSON.stringify({ action: 'getLocation', interactive: false }));
+                }
+            };
+            navigator.geolocation.watchPosition = function() { return 0; };
+        }
+
         function isMrtLineId(id) {
             return id === MRT_LINE_IDS.BLUE || id === MRT_LINE_IDS.PURPLE || id === 103 || id === 105 || id === MRT_LINE_IDS.ARL || id === MRT_LINE_IDS.BRT || id === MRT_LINE_IDS.ORANGE;
         }
@@ -6882,9 +6902,38 @@ setOriginFromActionSheet() {
             onNativeLocationError(reason) {
                 clearTimeout(this.fallbackTimer);
                 clearTimeout(this._nativeLocationTimer);
-                const wasInteractive = this._lastLocateInteractive;
-                // สลับมารัน browser/network geolocation โดยคงสถานะ interactive ไว้
-                this._locateBrowser(wasInteractive);
+                clearTimeout(this._geoMasterTimer);
+                this.locating = false;
+                this.updateRelocateBtn();
+
+                if (reason === 'permission_denied' || reason === 'permission_denied_forever') {
+                    this.locError = T('geoDenied');
+                    if (this._lastLocateInteractive) this.showToast(this.locError);
+                } else {
+                    // หากสัญญาณดาวเทียมไม่พร้อมหรือหลุด: ดึง IP Geolocation ชั่วคราว (ไม่บันทึกลงถาวร)
+                    if (typeof fetch === 'function') {
+                        fetchIpLocation(3500)
+                            .then(coords => {
+                                this.userPos = { lat: coords.lat, lon: coords.lon, accuracy: 2000, calibrated: false };
+                                this.computeNearest();
+                                this.locError = null;
+                                this.renderNearest();
+                                this.renderNearestExit();
+                                this.renderStrip();
+                                if (this._lastLocateInteractive && this.nearest?.station) {
+                                    this.showToast(`${getUiIcon('pin', 16, '#38bdf8')} พบสถานีโดยประมาณ: ${stName(this.nearest.station)} (${fmtDist(this.nearest.km)})`);
+                                }
+                            })
+                            .catch(() => {
+                                if (this._lastLocateInteractive) this.showToast(T('geoFail'));
+                                if (!this.nearest) this.useFallbackStation();
+                            });
+                        return;
+                    }
+                    if (this._lastLocateInteractive) this.showToast(T('geoFail'));
+                    if (!this.nearest) this.useFallbackStation();
+                }
+                this.renderNearest();
             },
 
             locate(interactive) {
@@ -6904,7 +6953,42 @@ setOriginFromActionSheet() {
                 this.renderNearest();
                 this.updateRelocateBtn();
 
-                // Master Safety Timer: 18 วินาที (เพื่อให้เวลา Native GPS จับสัญญาณดาวเทียม 14 วินาทีได้สมบูรณ์)
+                // หากรันใน Flutter Native Mobile App (iOS / Android)
+                if (isNativeFlutterEnvironment()) {
+                    // Safety Timer สำหรับ Native GPS (ให้เวลาจับสัญญาณดาวเทียมสูงสุด 18 วินาที)
+                    this._geoMasterTimer = setTimeout(() => {
+                        if (this.locating) {
+                            this.locating = false;
+                            this.updateRelocateBtn();
+                            if (interactive && !this.userPos) {
+                                this.showToast(`${getUiIcon('alert', 16, '#f59e0b')} ค้นหาตำแหน่งนานเกินกำหนด โปรดลองใหม่อีกครั้ง`);
+                            }
+                        }
+                    }, 18000);
+
+                    const dispatchNativeLocation = () => {
+                        if (window.FlutterLocation && typeof window.FlutterLocation.postMessage === 'function') {
+                            window.FlutterLocation.postMessage(JSON.stringify({ action: 'getLocation', interactive: !!interactive }));
+                            return true;
+                        }
+                        return false;
+                    };
+
+                    if (!dispatchNativeLocation()) {
+                        // หาก Bridge กำลังเชื่อมต่อในเสี้ยววินาทีแรก ให้รอและลองใหม่จนกว่า Bridge จะพร้อม
+                        let bridgeRetries = 0;
+                        const bridgeTimer = setInterval(() => {
+                            bridgeRetries++;
+                            if (dispatchNativeLocation() || bridgeRetries >= 15) {
+                                clearInterval(bridgeTimer);
+                            }
+                        }, 150);
+                    }
+                    // ข้อห้ามเด็ดขาด: ห้ามเรียก _locateBrowser เมื่อรันใน Native App เพื่อป้องกันกล่องข้อความ Private Container ของ iOS
+                    return;
+                }
+
+                // สำหรับ Web Browser ทั่วไป (https://...)
                 this._geoMasterTimer = setTimeout(() => {
                     if (this.locating) {
                         this.locating = false;
@@ -6913,23 +6997,7 @@ setOriginFromActionSheet() {
                             this.showToast(`${getUiIcon('alert', 16, '#f59e0b')} ค้นหาตำแหน่งนานเกินกำหนด โปรดลองใหม่อีกครั้ง`);
                         }
                     }
-                }, 18000);
-
-                // หากรันใน Flutter Native Mobile App
-                if (window.FlutterLocation && typeof window.FlutterLocation.postMessage === 'function') {
-                    this._nativeLocationTimer = setTimeout(() => {
-                        if (this.locating) {
-                            console.warn('FlutterLocation timeout, fallback to browser geolocation');
-                            this._locateBrowser(interactive);
-                        }
-                    }, 16000);
-                    try {
-                        window.FlutterLocation.postMessage(JSON.stringify({ action: 'getLocation', interactive: !!interactive }));
-                        return;
-                    } catch(e) {
-                        clearTimeout(this._nativeLocationTimer);
-                    }
-                }
+                }, 10000);
 
                 this._locateBrowser(interactive);
             },

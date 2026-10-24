@@ -6815,6 +6815,8 @@ setOriginFromActionSheet() {
             /* ---------- location / nearest ---------- */
             saveUserPosition(pos, stationKey, isCalibrated = false) {
                 try {
+                    // ไม่บันทึกตำแหน่งหยาบมาก (เช่น IP Geolocation หรือ Cell tower ที่ความแม่นยำต่ำกว่า 1 กม.) ลงหน่วยความจำถาวร
+                    if (pos && pos.accuracy && pos.accuracy >= 1000 && !isCalibrated) return;
                     localStorage.setItem('bts_user_pos', JSON.stringify({
                         lat: pos.lat,
                         lon: pos.lon,
@@ -6831,8 +6833,9 @@ setOriginFromActionSheet() {
                     const raw = localStorage.getItem('bts_user_pos');
                     if (!raw) return null;
                     const data = JSON.parse(raw);
-                    // จดจำสถานีเดิมได้สูงสุด 7 วัน (สำหรับผู้ใช้เดิมที่กลับมาเปิดแอป จะได้แสดงผลทันที 0ms)
-                    const maxAge = data.calibrated ? (14 * 24 * 3600 * 1000) : (7 * 24 * 3600 * 1000);
+                    // หากผู้ใช้จงใจเลือกสถานีเอง (calibrated) จำไว้ 14 วัน
+                    // หากเป็นตำแหน่ง GPS อัตโนมัติ จำไว้ไม่เกิน 30 นาที เพื่อป้องกันการแสดงสถานีเก่าข้ามวันข้ามเขต
+                    const maxAge = data.calibrated ? (14 * 24 * 3600 * 1000) : (30 * 60 * 1000);
                     if (Date.now() - data.timestamp < maxAge && data.lat && data.lon) {
                         return data;
                     }
@@ -6871,6 +6874,9 @@ setOriginFromActionSheet() {
                 this.renderStrip();
                 this.updateRelocateBtn();
                 this.renderExitsView(this.selectedExitKey);
+                if (this._lastLocateInteractive && this.nearest?.station) {
+                    this.showToast(`${getUiIcon('pin', 16, '#38bdf8')} พบสถานี ${stName(this.nearest.station)} (${fmtDist(this.nearest.km)})`);
+                }
             },
 
             onNativeLocationError(reason) {
@@ -6898,7 +6904,7 @@ setOriginFromActionSheet() {
                 this.renderNearest();
                 this.updateRelocateBtn();
 
-                // Master Safety Timer: ไม่ปล่อยให้ปุ่มค้างเกิน 9 วินาทีเด็ดขาด
+                // Master Safety Timer: 18 วินาที (เพื่อให้เวลา Native GPS จับสัญญาณดาวเทียม 14 วินาทีได้สมบูรณ์)
                 this._geoMasterTimer = setTimeout(() => {
                     if (this.locating) {
                         this.locating = false;
@@ -6907,7 +6913,7 @@ setOriginFromActionSheet() {
                             this.showToast(`${getUiIcon('alert', 16, '#f59e0b')} ค้นหาตำแหน่งนานเกินกำหนด โปรดลองใหม่อีกครั้ง`);
                         }
                     }
-                }, 9000);
+                }, 18000);
 
                 // หากรันใน Flutter Native Mobile App
                 if (window.FlutterLocation && typeof window.FlutterLocation.postMessage === 'function') {
@@ -6916,7 +6922,7 @@ setOriginFromActionSheet() {
                             console.warn('FlutterLocation timeout, fallback to browser geolocation');
                             this._locateBrowser(interactive);
                         }
-                    }, 7500);
+                    }, 16000);
                     try {
                         window.FlutterLocation.postMessage(JSON.stringify({ action: 'getLocation', interactive: !!interactive }));
                         return;
@@ -6971,19 +6977,19 @@ setOriginFromActionSheet() {
                     this.locating = false;
                     this.updateRelocateBtn();
 
-                    // หาก GPS hardware ไม่พร้อมหรือล้มเหลว ให้ใช้ IP Geolocation ทันที
+                    // หาก GPS hardware ไม่พร้อมหรือล้มเหลว ให้ใช้ IP Geolocation ชั่วคราว
                     if (typeof fetch === 'function') {
                         fetchIpLocation(3500)
                             .then(coords => {
                                 this.userPos = { lat: coords.lat, lon: coords.lon, accuracy: 2000, calibrated: false };
-                                this.saveUserPosition(this.userPos, null, false);
+                                // ไม่บันทึก IP Geolocation ลง localStorage ถาวร เพื่อป้องกันการจำพิกัดชุมสายมือถือข้ามวัน
                                 this.computeNearest();
                                 this.locError = null;
                                 this.renderNearest();
                                 this.renderNearestExit();
                                 this.renderStrip();
                                 if (interactive && this.nearest?.station) {
-                                    this.showToast(`${getUiIcon('pin', 16, '#38bdf8')} พบสถานี ${stName(this.nearest.station)} (${fmtDist(this.nearest.km)})`);
+                                    this.showToast(`${getUiIcon('pin', 16, '#38bdf8')} พบสถานีโดยประมาณ: ${stName(this.nearest.station)} (${fmtDist(this.nearest.km)})`);
                                 }
                             })
                             .catch(() => {

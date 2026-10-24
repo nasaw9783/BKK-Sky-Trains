@@ -28,10 +28,17 @@ class _BkkWebViewScreenState extends State<BkkWebViewScreen> {
       prefs.remove('bkk_native_geofence_radius');
     }).catchError((_) {});
 
-    final WebViewController controller = WebViewController()
+    // Watchdog to guarantee loading indicator is dismissed if onPageFinished stalls
+    Future.delayed(const Duration(seconds: 4), () {
+      if (mounted && _isLoading) {
+        setState(() => _isLoading = false);
+      }
+    });
+
+    late final WebViewController controller;
+    controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(const Color(0xFF10213A))
-      ..clearCache()
       ..setOnConsoleMessage((JavaScriptConsoleMessage message) {
         debugPrint('[JS ${message.level.name}] ${message.message}');
       })
@@ -49,10 +56,17 @@ class _BkkWebViewScreenState extends State<BkkWebViewScreen> {
           onPageFinished: (url) {
             if (mounted) setState(() => _isLoading = false);
             _injectBridgeHelpers();
-            _requestNativeLocation();
+            _requestNativeLocation(interactive: false);
           },
           onWebResourceError: (error) {
-            debugPrint('Web resource error: ${error.description}');
+            debugPrint('Web resource error: ${error.description} (code: ${error.errorCode})');
+            if (error.isForMainFrame ?? false) {
+              Future.delayed(const Duration(milliseconds: 500), () {
+                if (mounted) {
+                  controller.loadFlutterAsset('assets/www/index.html');
+                }
+              });
+            }
           },
         ),
       );
@@ -93,17 +107,18 @@ class _BkkWebViewScreenState extends State<BkkWebViewScreen> {
       final data = jsonDecode(message);
       if (data is Map) {
         final action = data['action'];
+        final isInteractive = data['interactive'] == true;
         if (action == 'getLocation') {
-          _requestNativeLocation();
+          _requestNativeLocation(interactive: isInteractive);
         }
       }
     } catch (e) {
       debugPrint('[JSBridge] Error handling message: $e');
-      _requestNativeLocation();
+      _requestNativeLocation(interactive: false);
     }
   }
 
-  Future<void> _requestNativeLocation() async {
+  Future<void> _requestNativeLocation({bool interactive = false}) async {
     try {
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
@@ -132,59 +147,64 @@ class _BkkWebViewScreenState extends State<BkkWebViewScreen> {
         return;
       }
 
-      Position? position;
-      try {
-        position = await Geolocator.getLastKnownPosition();
-        if (position != null) {
-          debugPrint('Last known location found: ${position.latitude}, ${position.longitude}');
-          _controller.runJavaScript(
-            "if (window.App && App.onNativeLocationSuccess) { App.onNativeLocationSuccess(${position.latitude}, ${position.longitude}, ${position.accuracy}); }",
-          );
+      // If user pressed "Relocate" (interactive == true), NEVER use stale cached lastKnownPosition.
+      // For initial background launch (interactive == false), only use if fresh (< 5 mins) and accurate (<= 100m).
+      if (!interactive) {
+        try {
+          final lastKnown = await Geolocator.getLastKnownPosition();
+          if (lastKnown != null) {
+            final age = DateTime.now().difference(lastKnown.timestamp);
+            if (age < const Duration(minutes: 5) && lastKnown.accuracy <= 100) {
+              debugPrint('Fresh last known location used (${age.inSeconds}s old): ${lastKnown.latitude}, ${lastKnown.longitude}');
+              _controller.runJavaScript(
+                "if (window.App && App.onNativeLocationSuccess) { App.onNativeLocationSuccess(${lastKnown.latitude}, ${lastKnown.longitude}, ${lastKnown.accuracy}); }",
+              );
+            } else {
+              debugPrint('Stale last known location discarded (${age.inMinutes}m old, acc: ${lastKnown.accuracy}m)');
+            }
+          }
+        } catch (e) {
+          debugPrint('getLastKnownPosition check error: $e');
         }
-      } catch (e) {
-        debugPrint('getLastKnownPosition error: $e');
       }
 
+      // Request fresh live GPS fix with adequate satellite lock window (14 seconds)
       try {
         final LocationSettings locationSettings;
         if (defaultTargetPlatform == TargetPlatform.android) {
           locationSettings = AndroidSettings(
             accuracy: LocationAccuracy.high,
             forceLocationManager: false,
-            timeLimit: const Duration(seconds: 7),
+            timeLimit: const Duration(seconds: 14),
           );
         } else {
           locationSettings = const LocationSettings(
             accuracy: LocationAccuracy.high,
-            timeLimit: Duration(seconds: 7),
+            timeLimit: Duration(seconds: 14),
           );
         }
         final livePos = await Geolocator.getCurrentPosition(locationSettings: locationSettings);
-        position = livePos;
-        debugPrint('Fresh native location obtained: ${position.latitude}, ${position.longitude}');
+        debugPrint('Fresh native GPS location obtained: ${livePos.latitude}, ${livePos.longitude}, acc: ${livePos.accuracy}');
         _controller.runJavaScript(
-          "if (window.App && App.onNativeLocationSuccess) { App.onNativeLocationSuccess(${position.latitude}, ${position.longitude}, ${position.accuracy}); }",
+          "if (window.App && App.onNativeLocationSuccess) { App.onNativeLocationSuccess(${livePos.latitude}, ${livePos.longitude}, ${livePos.accuracy}); }",
         );
       } catch (e) {
-        debugPrint('High accuracy fix failed ($e), falling back to balanced accuracy...');
+        debugPrint('High accuracy fix failed ($e), falling back to balanced/network accuracy...');
         try {
           final fallbackSettings = const LocationSettings(
             accuracy: LocationAccuracy.medium,
-            timeLimit: Duration(seconds: 5),
+            timeLimit: Duration(seconds: 8),
           );
           final fallbackPos = await Geolocator.getCurrentPosition(locationSettings: fallbackSettings);
-          position = fallbackPos;
-          debugPrint('Fallback balanced location obtained: ${position.latitude}, ${position.longitude}');
+          debugPrint('Fallback balanced location obtained: ${fallbackPos.latitude}, ${fallbackPos.longitude}, acc: ${fallbackPos.accuracy}');
           _controller.runJavaScript(
-            "if (window.App && App.onNativeLocationSuccess) { App.onNativeLocationSuccess(${position.latitude}, ${position.longitude}, ${position.accuracy}); }",
+            "if (window.App && App.onNativeLocationSuccess) { App.onNativeLocationSuccess(${fallbackPos.latitude}, ${fallbackPos.longitude}, ${fallbackPos.accuracy}); }",
           );
         } catch (e2) {
           debugPrint('Balanced fix failed ($e2)');
-          if (position == null) {
-            _controller.runJavaScript(
-              "if (window.App && App.onNativeLocationError) { App.onNativeLocationError('$e2'); }",
-            );
-          }
+          _controller.runJavaScript(
+            "if (window.App && App.onNativeLocationError) { App.onNativeLocationError('gps_timeout'); }",
+          );
         }
       }
     } catch (e) {

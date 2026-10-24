@@ -68,6 +68,11 @@ flutter:
   assets:
     - assets/www/
     - assets/www/js/
+    - assets/www/icons/
+    - assets/www/icons/lines/
+    - assets/www/icons/legend/
+    - assets/www/icons/nav/
+    - assets/www/icons/ui/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

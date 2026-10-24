@@ -8005,7 +8005,12 @@ setOriginFromActionSheet() {
                         const isBrt = l.LineId === 201;
                         tabBtn.className = `tab ${isBrt ? 'tab-brt' : ''} ${on ? 'on' : ''}`;
                         tabBtn.setAttribute('data-line', l.LineId);
-                        tabBtn.style.background = on ? (isBrt ? '' : l.LineColor) : '';
+                        if (isBrt) {
+                            tabBtn.style.removeProperty('background');
+                            tabBtn.style.removeProperty('background-color');
+                        } else {
+                            tabBtn.style.background = on ? l.LineColor : '';
+                        }
                         tabBtn.innerHTML = `
                             ${getLineIconSvg(l.LineId, on, 18)}
                             <span>${esc(getLineOptLabel(l))}${warn}</span>`;

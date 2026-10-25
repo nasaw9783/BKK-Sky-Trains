@@ -5355,13 +5355,19 @@ gQIDAQAB
                 }
             },
 
-            locateUserOnGeoMap(flyToUser = true) {
+            locateUserOnGeoMap(jumpToUser = true) {
                 if (!navigator.geolocation) {
-                    if (flyToUser) showToast('อุปกรณ์ไม่รองรับระบบตรวจจับพิกัด GPS');
+                    if (jumpToUser) showToast('อุปกรณ์ไม่รองรับระบบตรวจจับพิกัด GPS');
                     return;
                 }
 
-                if (flyToUser) {
+                // หากมีพิกัดตำแหน่งล่าสุดของผู้ใช้อยู่แล้ว ให้ย้ายไปทันทีทันควัน โดยไม่ต้องรอสัญญาณและไม่ต้องเลื่อน/ซูม
+                if (jumpToUser && this.userPos && this.userPos.lat && this.userPos.lon && this.geoMap) {
+                    const currentZoom = this.geoMap.getZoom() || 12;
+                    const targetZoom = currentZoom > 16 ? currentZoom : 16;
+                    this.geoMap.setView([this.userPos.lat, this.userPos.lon], targetZoom, { animate: false });
+                    this.updateGeoUserLocation(this.userPos.lat, this.userPos.lon, this.userPos.accuracy || 25);
+                } else if (jumpToUser) {
                     showToast('กำลังค้นหาพิกัดตำแหน่งปัจจุบันของคุณ (GPS)...');
                 }
 
@@ -5374,8 +5380,11 @@ gQIDAQAB
                         this.userPos = { lat, lon, accuracy: acc, at: Date.now() };
                         this.updateGeoUserLocation(lat, lon, acc);
 
-                        if (flyToUser && this.geoMap) {
-                            this.geoMap.flyTo([lat, lon], 16, { animate: true, duration: 1.2 });
+                        // ย้ายไปยังจุดตำแหน่งของผู้ใช้ทันที (Instant jump, animate: false) ไม่เลื่อนหาและไม่ค่อยๆ ซูมเข้า
+                        if (jumpToUser && this.geoMap) {
+                            const curZoom = this.geoMap.getZoom() || 12;
+                            const tgtZoom = curZoom > 16 ? curZoom : 16;
+                            this.geoMap.setView([lat, lon], tgtZoom, { animate: false });
                         }
 
                         // Calculate nearest station
@@ -5390,15 +5399,15 @@ gQIDAQAB
                             }
                         }
 
-                        if (nearest && flyToUser) {
+                        if (nearest && jumpToUser) {
                             const distStr = minKm < 1 ? `${Math.round(minKm * 1000)} เมตร` : `${minKm.toFixed(2)} กม.`;
                             const stnTh = stName(nearest);
-                            showToast(`📍 พิกัด GPS พร้อมใช้งาน: ใกล้สถานี ${stnTh} (${nearest.StationKey}) ~ ${distStr}`);
+                            showToast(`📍 พิกัดตำแหน่งของคุณ: ใกล้สถานี ${stnTh} (${nearest.StationKey}) ~ ${distStr}`);
                         }
                     },
                     err => {
                         console.warn('Geolocation error on geo map:', err.message);
-                        if (flyToUser) {
+                        if (jumpToUser && (!this.userPos || !this.userPos.lat)) {
                             showToast('ไม่สามารถระบุพิกัด GPS ได้ โปรดอนุญาตการเข้าถึงตำแหน่ง');
                         }
                     },

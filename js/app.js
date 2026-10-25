@@ -3678,11 +3678,21 @@ gQIDAQAB
             fallbackTimer: null,  // ตัวจับเวลา 10 วิ ก่อนใช้สถานีสำรอง (อโศก)
 
 
-            /* ---------- THE SKYTRAINs: View Navigation ---------- */
+            /* ---------- THE SKYTRAINs: View Navigation & Map Modes ---------- */
             currentView: 'home',
             selectedMapStationKey: 'CEN',
             selectedExitKey: 'CEN',
             mapZoom: 1.0,
+            mapMode: 'schematic', // 'schematic' | 'hybrid'
+            geoMap: null,
+            geoTileLayers: {},
+            geoCurrentLayer: 'hybrid',
+            geoStationMarkers: [],
+            geoLinesGroup: null,
+            geoMarkersGroup: null,
+            geoUserMarker: null,
+            geoAccuracyCircle: null,
+            geoActiveLineFilter: 0,
             faresActiveLine: 0,
             timetablesActiveLine: 0,
             freqTab: null,
@@ -3708,11 +3718,18 @@ gQIDAQAB
                 if (viewName === 'home') {
                     this.scrollActiveTabIntoView();
                 } else if (viewName === 'map') {
-                    this.renderInteractiveMap();
-                    this.updateMapTheme();
-                    requestAnimationFrame(() => {
-                        this.resetMapZoom(false);
-                    });
+                    if (this.mapMode === 'hybrid') {
+                        this.initGoogleHybridMap();
+                        setTimeout(() => {
+                            if (this.geoMap) this.geoMap.invalidateSize();
+                        }, 80);
+                    } else {
+                        this.renderInteractiveMap();
+                        this.updateMapTheme();
+                        requestAnimationFrame(() => {
+                            this.resetMapZoom(false);
+                        });
+                    }
                 } else if (viewName === 'exits') {
                     const fallback = this.pinnedStation()?.StationKey || this.nearest?.station?.StationKey || 'CEN';
                     this.renderExitsView(this.selectedExitKey || fallback);
@@ -4972,6 +4989,435 @@ gQIDAQAB
                 const curSrc = mapImg.getAttribute('src') || '';
                 if (!curSrc.endsWith(targetSrc)) {
                     mapImg.setAttribute('src', targetSrc);
+                }
+            },
+
+            /* ---------- THE SKYTRAINs: Google Maps Hybrid View & GPS Location ---------- */
+            setMapMode(mode) {
+                if (mode !== 'schematic' && mode !== 'hybrid') mode = 'schematic';
+                this.mapMode = mode;
+
+                const tabSchematic = document.getElementById('mapModeTabSchematic');
+                const tabHybrid = document.getElementById('mapModeTabHybrid');
+                const ctrlSchematic = document.getElementById('mapCtrlSchematic');
+                const ctrlHybrid = document.getElementById('mapCtrlHybrid');
+                const netContainer = document.getElementById('networkMapContainer');
+                const geoContainer = document.getElementById('googleHybridMapContainer');
+
+                if (tabSchematic) tabSchematic.classList.toggle('active', mode === 'schematic');
+                if (tabHybrid) tabHybrid.classList.toggle('active', mode === 'hybrid');
+
+                if (ctrlSchematic) ctrlSchematic.style.display = (mode === 'schematic') ? '' : 'none';
+                if (ctrlHybrid) ctrlHybrid.style.display = (mode === 'hybrid') ? '' : 'none';
+
+                if (netContainer) netContainer.style.display = (mode === 'schematic') ? '' : 'none';
+                if (geoContainer) geoContainer.style.display = (mode === 'hybrid') ? 'block' : 'none';
+
+                if (mode === 'hybrid') {
+                    this.initGoogleHybridMap();
+                    setTimeout(() => {
+                        if (this.geoMap) this.geoMap.invalidateSize();
+                    }, 80);
+                } else {
+                    requestAnimationFrame(() => {
+                        this.resetMapZoom(false);
+                    });
+                }
+            },
+
+            initGoogleHybridMap() {
+                const container = document.getElementById('googleHybridMapContainer');
+                if (!container || typeof L === 'undefined') return;
+
+                if (this.geoMap) {
+                    this.geoMap.invalidateSize();
+                    return;
+                }
+
+                // Create Leaflet Map centered on central Bangkok
+                const map = L.map('googleHybridMapContainer', {
+                    zoomControl: false,
+                    attributionControl: false,
+                    maxZoom: 19,
+                    minZoom: 9
+                }).setView([13.7563, 100.5018], 12);
+
+                this.geoMap = map;
+
+                // Zoom control on top-right
+                L.control.zoom({ position: 'topright' }).addTo(map);
+
+                // Google Map Tile Layers (Hybrid, Roadmap, Satellite)
+                this.geoTileLayers = {
+                    hybrid: L.tileLayer('https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
+                        subdomains: ['0', '1', '2', '3'],
+                        maxZoom: 20,
+                        detectRetina: true
+                    }),
+                    roadmap: L.tileLayer('https://mt{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+                        subdomains: ['0', '1', '2', '3'],
+                        maxZoom: 20,
+                        detectRetina: true
+                    }),
+                    satellite: L.tileLayer('https://mt{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+                        subdomains: ['0', '1', '2', '3'],
+                        maxZoom: 20,
+                        detectRetina: true
+                    })
+                };
+
+                this.geoTileLayers.hybrid.addTo(map);
+                this.geoCurrentLayer = 'hybrid';
+
+                // Line layer groups and marker layer groups
+                this.geoLinesGroup = L.layerGroup().addTo(map);
+                this.geoMarkersGroup = L.layerGroup().addTo(map);
+
+                // Draw Transit Route Polylines
+                this.renderGeoTransitLines();
+
+                // Plot Stations
+                this.renderGeoStationMarkers();
+
+                // Inset Floating Line Filter Bar
+                this.renderGeoFilterBar();
+
+                // If user position already exists, place GPS marker immediately
+                if (this.userPos && this.userPos.lat && this.userPos.lon) {
+                    this.updateGeoUserLocation(this.userPos.lat, this.userPos.lon, this.userPos.accuracy || 30);
+                } else {
+                    // Try to locate user automatically
+                    this.locateUserOnGeoMap(false);
+                }
+
+                // Invalidate size once rendered
+                setTimeout(() => {
+                    map.invalidateSize();
+                }, 100);
+            },
+
+            renderGeoTransitLines() {
+                if (!this.geoMap || !this.geoLinesGroup) return;
+                this.geoLinesGroup.clearLayers();
+
+                const allLines = this.getAllLines();
+
+                allLines.forEach(l => {
+                    const lineId = l.LineId;
+                    const stns = l.StationList || [];
+                    if (!stns.length) return;
+
+                    const color = l.LineColor || '#7AB420';
+                    const isOrange = (lineId === 106 || lineId === MRT_LINE_IDS.ORANGE);
+
+                    // Handle Pink Line Branch (MT01-MT02 branching from PK10)
+                    if (lineId === 5) {
+                        const trunkStns = stns.filter(s => !['MT01', 'MT02'].includes(s.StationKey));
+                        const trunkPts = trunkStns.map(s => [s.Latitude, s.Longitude]).filter(p => p[0] && p[1]);
+                        if (trunkPts.length > 1) {
+                            L.polyline(trunkPts, { color: '#000000', weight: 6, opacity: 0.65 }).addTo(this.geoLinesGroup);
+                            L.polyline(trunkPts, { color, weight: 3.8, opacity: 0.95 }).addTo(this.geoLinesGroup);
+                        }
+
+                        // Branch from PK10 to MT01 to MT02
+                        const pk10 = stns.find(s => s.StationKey === 'PK10');
+                        const mt01 = stns.find(s => s.StationKey === 'MT01');
+                        const mt02 = stns.find(s => s.StationKey === 'MT02');
+                        if (pk10 && mt01 && mt02) {
+                            const branchPts = [
+                                [pk10.Latitude, pk10.Longitude],
+                                [mt01.Latitude, mt01.Longitude],
+                                [mt02.Latitude, mt02.Longitude]
+                            ];
+                            L.polyline(branchPts, { color: '#000000', weight: 5, opacity: 0.65 }).addTo(this.geoLinesGroup);
+                            L.polyline(branchPts, { color, weight: 3.2, opacity: 0.95 }).addTo(this.geoLinesGroup);
+                        }
+                        return;
+                    }
+
+                    // Handle Blue Line Loop + Lak Song Branch
+                    if (lineId === 101 || lineId === MRT_LINE_IDS.BLUE) {
+                        // In MRT_STATIC_DB: 0..6 is Lak Song to Tha Phra branch, 6..38 is Tha Phra circular loop!
+                        const branchPts = stns.slice(0, 7).map(s => [s.Latitude, s.Longitude]).filter(p => p[0] && p[1]);
+                        const loopPts = stns.slice(6).map(s => [s.Latitude, s.Longitude]).filter(p => p[0] && p[1]);
+
+                        if (branchPts.length > 1) {
+                            L.polyline(branchPts, { color: '#000000', weight: 6, opacity: 0.65 }).addTo(this.geoLinesGroup);
+                            L.polyline(branchPts, { color, weight: 3.8, opacity: 0.95 }).addTo(this.geoLinesGroup);
+                        }
+                        if (loopPts.length > 1) {
+                            L.polyline(loopPts, { color: '#000000', weight: 6, opacity: 0.65 }).addTo(this.geoLinesGroup);
+                            L.polyline(loopPts, { color, weight: 3.8, opacity: 0.95 }).addTo(this.geoLinesGroup);
+                        }
+                        return;
+                    }
+
+                    // Standard sequential lines
+                    const pts = stns.map(s => [s.Latitude, s.Longitude]).filter(p => p[0] && p[1]);
+                    if (pts.length > 1) {
+                        L.polyline(pts, { color: '#000000', weight: 6, opacity: 0.65 }).addTo(this.geoLinesGroup);
+                        L.polyline(pts, {
+                            color,
+                            weight: 3.8,
+                            opacity: 0.95,
+                            dashArray: isOrange ? '7, 7' : null
+                        }).addTo(this.geoLinesGroup);
+                    }
+                });
+            },
+
+            renderGeoStationMarkers(filterLineId = 0) {
+                if (!this.geoMap || !this.geoMarkersGroup) return;
+                this.geoMarkersGroup.clearLayers();
+                this.geoStationMarkers = [];
+
+                const allLines = this.getAllLines();
+                const seen = new Set();
+                const bounds = L.latLngBounds([]);
+
+                allLines.forEach(line => {
+                    if (filterLineId !== 0 && line.LineId !== filterLineId) return;
+
+                    const lColor = line.LineColor || '#7AB420';
+                    const stns = line.StationList || [];
+
+                    stns.forEach(s => {
+                        if (!s.Latitude || !s.Longitude) return;
+                        if (filterLineId === 0 && seen.has(s.StationKey)) return;
+                        seen.add(s.StationKey);
+
+                        const lat = s.Latitude;
+                        const lng = s.Longitude;
+                        bounds.extend([lat, lng]);
+
+                        const isInterchange = Boolean(this.connections[s.StationKey]?.length);
+                        const iconHtml = `<div class="geo-stn-marker ${isInterchange ? 'geo-stn-interchange' : ''}" style="background:${lColor}"><span>${esc(s.StationKey)}</span></div>`;
+
+                        const customIcon = L.divIcon({
+                            className: 'geo-custom-div-icon',
+                            html: iconHtml,
+                            iconSize: [28, 20],
+                            iconAnchor: [14, 10],
+                            popupAnchor: [0, -12]
+                        });
+
+                        const marker = L.marker([lat, lng], { icon: customIcon }).addTo(this.geoMarkersGroup);
+
+                        // Popup content
+                        const thName = s.StationNameTH || s.StationName_TH || (s.StationName?.split('|')[0]?.trim()) || '';
+                        const enName = s.StationNameEN || s.StationName_EN || (s.StationName?.split('|')[1]?.trim()) || '';
+                        const lineName = line.LineName_TH || '';
+
+                        const popupHtml = `
+                            <div class="geo-popup-card">
+                                <div class="geo-popup-head">
+                                    <span class="geo-popup-badge" style="background:${lColor}">${esc(s.StationKey)}</span>
+                                    <div>
+                                        <div class="geo-popup-title">${esc(thName)}</div>
+                                        <div class="geo-popup-subtitle">${esc(enName)} · ${esc(lineName)}</div>
+                                    </div>
+                                </div>
+                                <div class="geo-popup-actions">
+                                    <button type="button" class="geo-popup-btn primary" onclick="App.openGeoStationDetail('${s.StationKey}')">เปิดข้อมูลสถานี & เวลาสด</button>
+                                    <div style="display:flex;gap:4px;">
+                                        <button type="button" class="geo-popup-btn" onclick="App.setOriginFromActionSheetKey('${s.StationKey}')">เป็นต้นทาง</button>
+                                        <button type="button" class="geo-popup-btn" onclick="App.setDestinationFromActionSheetKey('${s.StationKey}')">เป็นปลายทาง</button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+
+                        marker.bindPopup(popupHtml, { maxWidth: 260 });
+                        this.geoStationMarkers.push({ key: s.StationKey, lineId: line.LineId, marker, lat, lng });
+                    });
+                });
+
+                if (filterLineId !== 0 && bounds.isValid()) {
+                    this.geoMap.fitBounds(bounds, { padding: [30, 30], maxZoom: 15 });
+                }
+            },
+
+            openGeoStationDetail(stationKey) {
+                if (this.geoMap) this.geoMap.closePopup();
+                this.onMapStationClick(stationKey);
+            },
+
+            setOriginFromActionSheetKey(key) {
+                if (this.geoMap) this.geoMap.closePopup();
+                this.journey.from = key;
+                this.switchView('planner');
+                this.renderJourney();
+                if (this.journey.from && this.journey.to) this.findRoute();
+            },
+
+            setDestinationFromActionSheetKey(key) {
+                if (this.geoMap) this.geoMap.closePopup();
+                this.journey.to = key;
+                this.switchView('planner');
+                this.renderJourney();
+                if (this.journey.from && this.journey.to) this.findRoute();
+            },
+
+            renderGeoFilterBar() {
+                const container = document.getElementById('googleHybridMapContainer');
+                if (!container || document.getElementById('geoFilterBar')) return;
+
+                const filterBar = document.createElement('div');
+                filterBar.id = 'geoFilterBar';
+                filterBar.className = 'geo-filter-bar';
+
+                const lines = [
+                    { id: 0, name: 'ทั้งหมด' },
+                    { id: 1, name: 'สุขุมวิท' },
+                    { id: 2, name: 'สีลม' },
+                    { id: 101, name: 'สีน้ำเงิน' },
+                    { id: 102, name: 'สีม่วง' },
+                    { id: 5, name: 'สีชมพู' },
+                    { id: 4, name: 'สีเหลือง' },
+                    { id: 103, name: 'สีแดงเข้ม' },
+                    { id: 105, name: 'สีแดงอ่อน' },
+                    { id: 104, name: 'ARL' },
+                    { id: 201, name: 'BRT' },
+                    { id: 3, name: 'สีทอง' },
+                    { id: 106, name: 'สีส้ม' }
+                ];
+
+                filterBar.innerHTML = lines.map(l => `
+                    <button type="button" class="geo-filter-chip ${l.id === 0 ? 'active' : ''}" data-line="${l.id}" onclick="App.filterGeoMapLine(${l.id})">${l.name}</button>
+                `).join('');
+
+                container.appendChild(filterBar);
+            },
+
+            filterGeoMapLine(lineId) {
+                this.geoActiveLineFilter = Number(lineId) || 0;
+                document.querySelectorAll('.geo-filter-chip').forEach(chip => {
+                    chip.classList.toggle('active', Number(chip.getAttribute('data-line')) === this.geoActiveLineFilter);
+                });
+                this.renderGeoStationMarkers(this.geoActiveLineFilter);
+            },
+
+            cycleGeoMapLayer() {
+                if (!this.geoMap || !this.geoTileLayers) return;
+
+                const modes = ['hybrid', 'roadmap', 'satellite'];
+                const curIdx = modes.indexOf(this.geoCurrentLayer);
+                const nextMode = modes[(curIdx + 1) % modes.length];
+
+                Object.values(this.geoTileLayers).forEach(layer => {
+                    if (this.geoMap.hasLayer(layer)) this.geoMap.removeLayer(layer);
+                });
+
+                if (this.geoTileLayers[nextMode]) {
+                    this.geoTileLayers[nextMode].addTo(this.geoMap);
+                    this.geoCurrentLayer = nextMode;
+                }
+
+                const labelEl = document.getElementById('mapGeoLayerText');
+                if (labelEl) {
+                    labelEl.textContent = (nextMode === 'hybrid') ? 'Hybrid' : (nextMode === 'roadmap' ? 'ถนน' : 'ดาวเทียม');
+                }
+            },
+
+            recenterGeoMap() {
+                if (!this.geoMap) return;
+                const bounds = L.latLngBounds([]);
+                this.uniqueStations.forEach(s => {
+                    if (s.Latitude && s.Longitude) bounds.extend([s.Latitude, s.Longitude]);
+                });
+                if (bounds.isValid()) {
+                    this.geoMap.fitBounds(bounds, { padding: [25, 25], maxZoom: 14 });
+                } else {
+                    this.geoMap.setView([13.7563, 100.5018], 12);
+                }
+            },
+
+            locateUserOnGeoMap(flyToUser = true) {
+                if (!navigator.geolocation) {
+                    if (flyToUser) showToast('อุปกรณ์ไม่รองรับระบบตรวจจับพิกัด GPS');
+                    return;
+                }
+
+                if (flyToUser) {
+                    showToast('กำลังค้นหาพิกัดตำแหน่งปัจจุบันของคุณ (GPS)...');
+                }
+
+                navigator.geolocation.getCurrentPosition(
+                    pos => {
+                        const lat = pos.coords.latitude;
+                        const lon = pos.coords.longitude;
+                        const acc = pos.coords.accuracy || 25;
+
+                        this.userPos = { lat, lon, accuracy: acc, at: Date.now() };
+                        this.updateGeoUserLocation(lat, lon, acc);
+
+                        if (flyToUser && this.geoMap) {
+                            this.geoMap.flyTo([lat, lon], 16, { animate: true, duration: 1.2 });
+                        }
+
+                        // Calculate nearest station
+                        let nearest = null;
+                        let minKm = Infinity;
+                        for (const s of this.uniqueStations) {
+                            if (!s.Latitude || !s.Longitude) continue;
+                            const d = kmBetween(lat, lon, s.Latitude, s.Longitude);
+                            if (d < minKm) {
+                                minKm = d;
+                                nearest = s;
+                            }
+                        }
+
+                        if (nearest && flyToUser) {
+                            const distStr = minKm < 1 ? `${Math.round(minKm * 1000)} เมตร` : `${minKm.toFixed(2)} กม.`;
+                            const stnTh = stName(nearest);
+                            showToast(`📍 พิกัด GPS พร้อมใช้งาน: ใกล้สถานี ${stnTh} (${nearest.StationKey}) ~ ${distStr}`);
+                        }
+                    },
+                    err => {
+                        console.warn('Geolocation error on geo map:', err.message);
+                        if (flyToUser) {
+                            showToast('ไม่สามารถระบุพิกัด GPS ได้ โปรดอนุญาตการเข้าถึงตำแหน่ง');
+                        }
+                    },
+                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 10000 }
+                );
+            },
+
+            updateGeoUserLocation(lat, lon, acc) {
+                if (!this.geoMap) return;
+
+                const userIconHtml = `
+                    <div class="geo-user-marker">
+                        <div class="geo-user-pulse"></div>
+                        <div class="geo-user-dot"></div>
+                    </div>
+                `;
+
+                const userIcon = L.divIcon({
+                    className: 'geo-custom-user-icon',
+                    html: userIconHtml,
+                    iconSize: [24, 24],
+                    iconAnchor: [12, 12]
+                });
+
+                if (this.geoUserMarker) {
+                    this.geoUserMarker.setLatLng([lat, lon]);
+                } else {
+                    this.geoUserMarker = L.marker([lat, lon], { icon: userIcon, zIndexOffset: 2000 }).addTo(this.geoMap);
+                    this.geoUserMarker.bindTooltip('ตำแหน่งของคุณ (GPS)', { permanent: false, direction: 'top' });
+                }
+
+                if (this.geoAccuracyCircle) {
+                    this.geoAccuracyCircle.setLatLng([lat, lon]);
+                    this.geoAccuracyCircle.setRadius(Math.max(15, acc));
+                } else {
+                    this.geoAccuracyCircle = L.circle([lat, lon], {
+                        radius: Math.max(15, acc),
+                        color: '#0284c7',
+                        weight: 1.5,
+                        fillColor: '#38bdf8',
+                        fillOpacity: 0.18
+                    }).addTo(this.geoMap);
                 }
             },
 

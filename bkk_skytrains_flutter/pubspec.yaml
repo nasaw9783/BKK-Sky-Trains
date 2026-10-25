@@ -65,6 +65,7 @@ flutter:
   assets:
     - assets/www/
     - assets/www/js/
+    - assets/www/images/
     - assets/www/icons/
     - assets/www/icons/lines/
     - assets/www/icons/legend/

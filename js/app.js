@@ -3683,7 +3683,7 @@ gQIDAQAB
             selectedMapStationKey: 'CEN',
             selectedExitKey: 'CEN',
             mapZoom: 1.0,
-            mapMode: 'hybrid', // 'schematic' | 'hybrid' (default to standard Google Maps Hybrid view)
+            mapMode: 'schematic', // 'schematic' | 'hybrid'
             geoMap: null,
             geoTileLayers: {},
             geoCurrentLayer: 'hybrid',

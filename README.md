@@ -227,10 +227,7 @@ node -e "require('child_process').execSync('powershell ./Start-BKK-Transit.ps1',
 
 ### วิธีที่ 3: ติดตั้งแอปพลิเคชัน Android (.apk / .aab)
 สามารถนำไฟล์ตัวติดตั้ง Android ล่าสุดจากโฟลเดอร์ `releases/Android/` หรือจากหน้า GitHub Releases ไปติดตั้งหรือใช้งานได้ทันที:
-- `releases/Android/APK/BKK_SkyTrains_V.1.3.6.apk` (Universal APK รวมทุก CPU ติดตั้งได้ทุกเครื่อง พร้อม SHA-256 Checksum)
-- `releases/Android/APK/BKK_SkyTrains_V.1.3.6_arm64-v8a.apk` (Split APK สำหรับสมาร์ตโฟน 64-bit รุ่นใหม่ ขนาดกะทัดรัด ~17 MB พร้อม SHA-256 Checksum)
-- `releases/Android/APK/BKK_SkyTrains_V.1.3.6_armeabi-v7a.apk` (Split APK สำหรับสมาร์ตโฟน 32-bit รุ่นเก่า ขนาดกะทัดรัด ~14 MB พร้อม SHA-256 Checksum)
-- `releases/Android/APK/BKK_SkyTrains_V.1.3.6_x86_64.apk` (Split APK สำหรับ Emulator / x86_64 ขนาด ~18 MB พร้อม SHA-256 Checksum)
+- `releases/Android/APK/BKK_SkyTrains_V.1.3.6.apk` (Android Release APK พร้อม SHA-256 Checksum)
 - `releases/Android/AAB/BKK_SkyTrains_V.1.3.6.aab` (Android App Bundle สำหรับการแจกจ่ายบน Google Play Store พร้อม SHA-256 Checksum)
 
 ### วิธีที่ 4: ติดตั้งแอปพลิเคชัน iOS (.ipa)

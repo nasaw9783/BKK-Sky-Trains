@@ -89,19 +89,6 @@ jobs:
           cp build/app/outputs/flutter-apk/app-release.apk "../releases/Android/APK/BKK_SkyTrains_V.${VERSION_BASE}.apk"
           shasum -a 256 "../releases/Android/APK/BKK_SkyTrains_V.${VERSION_BASE}.apk" > "../releases/Android/APK/BKK_SkyTrains_V.${VERSION_BASE}.apk.sha256"
 
-      - name: Build Android Split APKs (Release per ABI)
-        working-directory: bkk_skytrains_flutter
-        run: |
-          VERSION_BASE="${{ steps.app_version.outputs.version_base }}"
-          echo "Building Android Split APKs for release v${VERSION_BASE}..."
-          flutter build apk --release --split-per-abi
-          for abi in arm64-v8a armeabi-v7a x86_64; do
-            if [ -f "build/app/outputs/flutter-apk/app-${abi}-release.apk" ]; then
-              cp "build/app/outputs/flutter-apk/app-${abi}-release.apk" "../releases/Android/APK/BKK_SkyTrains_V.${VERSION_BASE}_${abi}.apk"
-              shasum -a 256 "../releases/Android/APK/BKK_SkyTrains_V.${VERSION_BASE}_${abi}.apk" > "../releases/Android/APK/BKK_SkyTrains_V.${VERSION_BASE}_${abi}.apk.sha256"
-            fi
-          done
-
       - name: Build Android App Bundle (AAB Release)
         working-directory: bkk_skytrains_flutter
         run: |
@@ -182,7 +169,7 @@ jobs:
           body: |
             ### 🚆 BKK SkyTrains Production Release v${{ steps.app_version.outputs.version_base }}
             - **iOS Application**: Production IPA package (`BKK_SkyTrains_V.${{ steps.app_version.outputs.version_base }}.ipa`)
-            - **Android Application**: Production Universal APK (`BKK_SkyTrains_V.${{ steps.app_version.outputs.version_base }}.apk`), Split APKs (`BKK_SkyTrains_V.${{ steps.app_version.outputs.version_base }}_arm64-v8a.apk`, `_armeabi-v7a.apk`, `_x86_64.apk`), and App Bundle (`BKK_SkyTrains_V.${{ steps.app_version.outputs.version_base }}.aab`)
+            - **Android Application**: Production APK (`BKK_SkyTrains_V.${{ steps.app_version.outputs.version_base }}.apk`) and App Bundle (`BKK_SkyTrains_V.${{ steps.app_version.outputs.version_base }}.aab`)
             - **Key Features & Enhancements**:
               - High-resolution Transit Network Blueprint Map with interactive vector SVG overlay across 10 Bangkok transit lines (Sukhumvit, Silom, Gold, Blue, Purple, BRT, Pink, Yellow, Dark Red, Light Red, ARL, Orange).
               - Theme-aware vector SVG map auto-switching with high-contrast typography (Light / Dark mode).

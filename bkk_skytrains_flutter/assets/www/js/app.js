@@ -3683,7 +3683,7 @@ gQIDAQAB
             selectedMapStationKey: 'CEN',
             selectedExitKey: 'CEN',
             mapZoom: 1.0,
-            mapMode: 'schematic', // 'schematic' | 'hybrid'
+            mapMode: 'hybrid', // 'schematic' | 'hybrid' (default to standard Google Maps Hybrid view)
             geoMap: null,
             geoTileLayers: {},
             geoCurrentLayer: 'hybrid',
@@ -5084,18 +5084,26 @@ gQIDAQAB
                 this.geoTileLayers.hybrid.addTo(map);
                 this.geoCurrentLayer = 'hybrid';
 
-                // Line layer groups and marker layer groups
-                this.geoLinesGroup = L.layerGroup().addTo(map);
-                this.geoMarkersGroup = L.layerGroup().addTo(map);
-
-                // Draw Transit Route Polylines
-                this.renderGeoTransitLines();
-
-                // Plot Stations
-                this.renderGeoStationMarkers();
-
-                // Inset Floating Line Filter Bar
-                this.renderGeoFilterBar();
+                // Click anywhere on map to inspect nearest BTS/MRT station
+                map.on('click', (e) => {
+                    const lat = e.latlng.lat;
+                    const lon = e.latlng.lng;
+                    let nearest = null;
+                    let minKm = Infinity;
+                    for (const s of this.uniqueStations) {
+                        if (!s.Latitude || !s.Longitude) continue;
+                        const d = kmBetween(lat, lon, s.Latitude, s.Longitude);
+                        if (d < minKm) {
+                            minKm = d;
+                            nearest = s;
+                        }
+                    }
+                    if (nearest && minKm <= 4.0) {
+                        const distStr = minKm < 1 ? `${Math.round(minKm * 1000)} เมตร` : `${minKm.toFixed(2)} กม.`;
+                        const stnTh = stName(nearest);
+                        showToast(`📍 ใกล้สถานี ${stnTh} (${nearest.StationKey}) ~ ${distStr}`);
+                    }
+                });
 
                 // If user position already exists, place GPS marker immediately
                 if (this.userPos && this.userPos.lat && this.userPos.lon) {

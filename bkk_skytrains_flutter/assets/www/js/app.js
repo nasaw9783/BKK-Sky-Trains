@@ -4670,6 +4670,7 @@ gQIDAQAB
 
                 // --- Mouse Pan Handler (Smooth GPU 1:1 Drag + Inertia) ---
                 vp.addEventListener('mousedown', (e) => {
+                    if (this.mapMode === 'hybrid') return;
                     if (e.button !== 0) return;
                     isMouseDown = true;
                     this._mapIsPointerDown = true;
@@ -4688,6 +4689,7 @@ gQIDAQAB
                 });
 
                 window.addEventListener('mousemove', (e) => {
+                    if (this.mapMode === 'hybrid') return;
                     if (!isMouseDown) return;
                     const dx = e.clientX - mouseStartX;
                     const dy = e.clientY - mouseStartY;
@@ -4705,6 +4707,7 @@ gQIDAQAB
                 }, { passive: false });
 
                 window.addEventListener('mouseup', () => {
+                    if (this.mapMode === 'hybrid') return;
                     if (!isMouseDown) return;
                     isMouseDown = false;
                     this._mapIsPointerDown = false;
@@ -4719,6 +4722,7 @@ gQIDAQAB
 
                 // --- Desktop Mouse Double-Click Zoom ---
                 vp.addEventListener('dblclick', (e) => {
+                    if (this.mapMode === 'hybrid') return;
                     e.preventDefault();
                     vp._preventClick = true;
                     this.closeMapActionSheet();
@@ -4728,6 +4732,7 @@ gQIDAQAB
 
                 // --- Desktop Mouse Wheel & Trackpad Smooth Zoom around Cursor ---
                 vp.addEventListener('wheel', (e) => {
+                    if (this.mapMode === 'hybrid') return;
                     e.preventDefault();
                     const minZ = this.getMapMinZoom();
                     const baseZ = this.mapTargetZoom || this.mapZoom || minZ;
@@ -4757,6 +4762,7 @@ gQIDAQAB
                 let lastTapY = 0;
 
                 vp.addEventListener('touchstart', (e) => {
+                    if (this.mapMode === 'hybrid') return;
                     this._mapIsPointerDown = true;
                     this.mapVelX = 0;
                     this.mapVelY = 0;
@@ -4801,6 +4807,7 @@ gQIDAQAB
                 }, { passive: false });
 
                 vp.addEventListener('touchmove', (e) => {
+                    if (this.mapMode === 'hybrid') return;
                     if (e.touches.length === 1) {
                         const curX = e.touches[0].clientX;
                         const curY = e.touches[0].clientY;
@@ -4847,6 +4854,7 @@ gQIDAQAB
                 }, { passive: false });
 
                 vp.addEventListener('touchend', (e) => {
+                    if (this.mapMode === 'hybrid') return;
                     if (e.touches.length === 0) {
                         this._mapIsPointerDown = false;
                         if (isTouchDragging) {
@@ -5006,6 +5014,13 @@ gQIDAQAB
 
                 if (tabSchematic) tabSchematic.classList.toggle('active', mode === 'schematic');
                 if (tabHybrid) tabHybrid.classList.toggle('active', mode === 'hybrid');
+
+                const vp = document.getElementById('mapViewport');
+                if (vp) vp.style.touchAction = (mode === 'hybrid') ? 'auto' : 'none';
+                if (mode !== 'hybrid' && this.geoWatchId) {
+                    try { navigator.geolocation.clearWatch(this.geoWatchId); } catch (_) {}
+                    this.geoWatchId = null;
+                }
 
                 if (ctrlSchematic) ctrlSchematic.style.display = (mode === 'schematic') ? '' : 'none';
                 if (ctrlHybrid) ctrlHybrid.style.display = (mode === 'hybrid') ? '' : 'none';

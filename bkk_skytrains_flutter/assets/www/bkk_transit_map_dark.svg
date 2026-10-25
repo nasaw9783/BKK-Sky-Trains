@@ -60,7 +60,7 @@
       }
 
       .m-cls-78 {
-        fill: #027876;
+        fill: #00807D;
       }
 
       .m-cls-3 {
@@ -76,7 +76,7 @@
       }
 
       .m-cls-79 {
-        fill: #f16278;
+        fill: #F87171;
       }
 
       .m-cls-6 {
@@ -129,11 +129,11 @@
       }
 
       .m-cls-12, .m-cls-13 {
-        stroke: #027876;
+        stroke: #00807D;
       }
 
       .m-cls-83 {
-        fill: #c3a031;
+        fill: #B89D18;
       }
 
       .m-cls-84 {
@@ -141,7 +141,7 @@
       }
 
       .m-cls-14, .m-cls-74, .m-cls-28, .m-cls-54, .m-cls-70 {
-        stroke: #0b8bcc;
+        stroke: #0284C7;
       }
 
       .m-cls-15 {
@@ -179,11 +179,11 @@
       }
 
       .m-cls-86 {
-        fill: #79bc43;
+        fill: #7AB420;
       }
 
       .m-cls-87 {
-        fill: #f0493e;
+        fill: #B91C1C;
       }
 
       .m-cls-20 {
@@ -203,16 +203,16 @@
       }
 
       .m-cls-24 {
-        stroke: #fcf173;
+        stroke: #82C341;
         stroke-width: 1.42px;
       }
 
       .m-cls-88 {
-        fill: #0064a8;
+        fill: #0284C7;
       }
 
       .m-cls-89 {
-        fill: #fddd00;
+        fill: #EAB308;
       }
 
       .m-cls-25 {
@@ -224,7 +224,7 @@
       }
 
       .m-cls-26, .m-cls-27 {
-        stroke: #f599b0;
+        stroke: #EC4899;
       }
 
       .m-cls-28 {
@@ -236,7 +236,7 @@
       }
 
       .m-cls-30 {
-        stroke: #79bc43;
+        stroke: #7AB420;
       }
 
       .m-cls-31, .Int_Line {
@@ -244,7 +244,7 @@
       }
 
       .m-cls-90 {
-        fill: #fcf173;
+        fill: #82C341;
       }
 
       .m-cls-32 {
@@ -252,7 +252,7 @@
       }
 
       .m-cls-33 {
-        stroke: #fddd00;
+        stroke: #EAB308;
       }
 
       .m-cls-34 {
@@ -268,7 +268,7 @@
       }
 
       .m-cls-75, .m-cls-91 {
-        fill: #0b8bcc;
+        fill: #0284C7;
       }
 
       .m-cls-92 {
@@ -372,11 +372,11 @@
       }
 
       .m-cls-116 {
-        fill: #961b4b;
+        fill: #8A1538;
       }
 
       .m-cls-39 {
-        stroke: #f16278;
+        stroke: #F87171;
       }
 
       .m-cls-41 {
@@ -388,7 +388,7 @@
       }
 
       .m-cls-43 {
-        stroke: #961b4b;
+        stroke: #8A1538;
       }
 
       .m-cls-44 {
@@ -408,7 +408,7 @@
       }
 
       .m-cls-117 {
-        fill: #813d97;
+        fill: #8A2C9B;
       }
 
       .m-cls-48 {
@@ -440,7 +440,7 @@
       }
 
       .m-cls-55 {
-        stroke: #813d97;
+        stroke: #8A2C9B;
       }
 
       .m-cls-56 {
@@ -448,7 +448,7 @@
       }
 
       .m-cls-119 {
-        fill: #971b4a;
+        fill: #8A1538;
       }
 
       .m-cls-57 {
@@ -456,7 +456,7 @@
       }
 
       .m-cls-58 {
-        stroke: #f0493e;
+        stroke: #B91C1C;
       }
 
       .m-cls-59 {
@@ -488,11 +488,11 @@
       }
 
       .m-cls-121 {
-        fill: #f599b0;
+        fill: #EC4899;
       }
 
       .m-cls-64 {
-        stroke: #c3a031;
+        stroke: #B89D18;
       }
 
       .m-cls-65 {
@@ -504,7 +504,7 @@
       }
 
       .m-cls-66 {
-        stroke: #0064a8;
+        stroke: #0284C7;
       }
 
       .m-cls-122 { fill: #94a3b8; }
@@ -536,8 +536,8 @@
 <symbol id="_2L-Case" data-name="2L-Case" viewBox="0 0 28.35 17.01">
       <rect width="28.35" height="17.01" rx="5.67" ry="5.67"/>
     </symbol>
-    <symbol id="Airplane" viewBox="0 0 9.45 9.95">
-      <path class="m-cls-77" d="M.44,4.98l-.27,1.55.48.04.44-1.12h3.31s-1.27,4.35-1.27,4.35c.16,0,.52,0,.64-.24l2.19-4.11h2.75c.27,0,.6-.22.6-.48,0-.26-.34-.48-.6-.48h-2.75S3.75.38,3.75.38c-.12-.24-.48-.23-.64-.24l1.28,4.35H1.09s-.44-1.11-.44-1.11l-.48.04.27,1.56Z"/>
+    <symbol id="Airplane" viewBox="0 0 24 24">
+      <path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3.5c-.5-.5-2.5 0-4 1.5L13.5 8.5 5.3 6.7c-.7-.1-1.3.2-1.6.8l-.5 1 5.3 3.5-3.2 3.2-2.3-.5c-.4-.1-.8.1-1 .5l-.3.6 2.8 1.8 1.8 2.8.6-.3c.4-.2.6-.6.5-1l-.5-2.3 3.2-3.2 3.5 5.3 1-.5c.6-.3.9-.9.8-1.6z" fill="#0284c7" fill-opacity="0.2" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </symbol>
     <symbol id="BTS-Int-Case" viewBox="0 0 17.01 17.01">
       <circle class="m-cls-85" cx="8.5" cy="8.5" r="8.5"/>
@@ -552,27 +552,37 @@
         <circle class="m-cls-19" cx="6.38" cy="6.38" r="4.25"/>
       </g>
     </symbol>
+    <symbol id="Intermodal-Boat" viewBox="0 0 24 24">
+      <rect width="22" height="22" x="1" y="1" rx="5" fill="#0f172a" fill-opacity="0.95"/>
+      <path d="M2 21c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.5 0 2.5 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M19.38 20A11.6 11.6 0 0 0 21 14l-9-4-9 4c0 2.9.94 5.34 2.81 7.76" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M12 2v8" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </symbol>
     <symbol id="Int-Boat" viewBox="0 0 14.88 9.21">
       <rect class="m-cls-75" x=".35" y=".35" width="14.17" height="8.5" rx="4.25" ry="4.25"/>
     </symbol>
-    <symbol id="Int-SRT" viewBox="0 0 8.5 8.5">
-      <g>
-        <circle class="m-cls-85" cx="4.25" cy="4.25" r="4.25"/>
-        <circle class="m-cls-81" cx="4.25" cy="4.25" r="2.83"/>
-        <circle class="m-cls-84" cx="4.25" cy="4.25" r="2.13"/>
-      </g>
+    <symbol id="Int-SRT" viewBox="0 0 24 24">
+      <rect width="22" height="22" x="1" y="1" rx="5" fill="#0f172a" fill-opacity="0.96"/>
+      <rect width="16" height="15" x="4" y="3" rx="3.5" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M4 10.5h16" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M12 3v7.5" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="m8 18-3 3" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="m16 18 3 3" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="8" cy="14.5" r="1.2" fill="#ef4444"/>
+      <circle cx="16" cy="14.5" r="1.2" fill="#ef4444"/>
     </symbol>
-    <symbol id="Intermodal-IntercityBus" viewBox="0 0 11.59 11.59">
-      <g>
-        <path class="m-cls-76" d="M.12,10.05V1.54C.12.76.76.12,1.54.12h8.5c.78,0,1.42.63,1.42,1.42v8.5c0,.78-.63,1.42-1.42,1.42H1.54c-.78,0-1.42-.63-1.42-1.42Z"/>
-        <path class="m-cls-85" d="M8.41,5.67H3.21c-.19,0-.34-.16-.32-.35.05-.76.1-1.18.19-1.94.02-.16.16-.28.37-.28h4.69c.21,0,.35.13.37.29.1.8.14,1.15.19,1.92.02.22-.13.35-.3.35M8.23,7.9c-.26,0-.47-.21-.47-.47s.21-.47.47-.47.47.21.47.47-.21.47-.47.47M3.36,7.9c-.26,0-.47-.21-.47-.47s.21-.47.47-.47.47.21.47.47-.21.47-.47.47M4.34,2.18h2.93c.12,0,.21.1.21.22s-.1.21-.21.21h-2.93c-.12,0-.21-.1-.21-.21s.1-.22.21-.22M9.33,5.65s-.17-1.7-.24-2.38c-.08-.75-.25-.97-.78-1.22-.76-.36-1.61-.51-2.51-.51s-1.75.15-2.51.51c-.53.25-.7.47-.78,1.22-.07.68-.24,2.38-.24,2.38v3.36s.63,0,.63,0c0,0,0,.42,0,.57,0,.26.21.47.47.47s.47-.21.47-.47v-.57h3.93v.57c0,.26.21.47.47.47s.47-.21.47-.47c0-.14,0-.57,0-.57h.63s0-3.36,0-3.36Z"/>
-      </g>
+    <symbol id="Intermodal-IntercityBus" viewBox="0 0 24 24">
+      <rect width="22" height="22" x="1" y="1" rx="5" fill="#0f172a" fill-opacity="0.95"/>
+      <path d="M8 6v6" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M16 6v6" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M4 6h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-1H7v1a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2Z" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="7" cy="15" r="1" fill="#f59e0b"/>
+      <circle cx="17" cy="15" r="1" fill="#f59e0b"/>
     </symbol>
-    <symbol id="Intermodal-ParkAndRide" viewBox="0 0 7.59 7.59">
-      <g>
-        <rect class="m-cls-72" x=".25" y=".25" width="7.09" height="7.09" rx="1.42" ry="1.42"/>
-        <path class="m-cls-85" d="M6.11,3.05l-.46-1.2c-.09-.23-.28-.43-.64-.43h-2.44c-.36,0-.55.2-.64.43l-.46,1.2c-.18.02-.51.24-.51.65v1.53h.45v.49c0,.6.85.59.85,0v-.49h3.06v.49c0,.59.85.6.85,0v-.49h.45v-1.53c0-.41-.33-.63-.51-.65ZM1.85,4.31c-.22,0-.39-.18-.39-.4,0-.22.18-.41.39-.4.22,0,.39.18.39.4,0,.22-.18.4-.39.4ZM3.79,3.04h-1.84l.35-.94c.04-.13.11-.23.26-.23h2.45c.15,0,.22.1.26.23l.35.94h-1.84ZM5.74,4.31c-.22,0-.39-.18-.4-.4,0-.22.18-.41.4-.4.22,0,.39.18.39.4,0,.22-.18.4-.39.4Z"/>
-      </g>
+    <symbol id="Intermodal-ParkAndRide" viewBox="0 0 24 24">
+      <rect width="20" height="20" x="2" y="2" rx="4.5" fill="#0f172a" fill-opacity="0.95"/>
+      <rect width="18" height="18" x="3" y="3" rx="4" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M9 17V7h4a3 3 0 0 1 0 6H9" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </symbol>
     <symbol id="MRT-Int-Case" viewBox="0 0 17.01 17.01">
       <rect class="m-cls-85" x="0" y="0" width="17.01" height="17.01" rx="5.67" ry="5.67"/>
@@ -658,10 +668,15 @@
         <circle class="m-cls-81" cx="8.5" cy="8.5" r="6.38"/>
       </g>
     </symbol>
-    <symbol id="Train" viewBox="0 0 7.6 11.51">
-      <g id="g2275">
-        <path id="path2269" class="m-cls-81" d="M1.51,10.67c.31-.46.59-.86.61-.88.03-.04.15-.04,1.68-.04h1.64l.6.88.6.88h.47c.26,0,.47,0,.47-.02s-.36-.56-.81-1.23c-.51-.76-.8-1.23-.79-1.25,0-.02.03-.04.05-.04s.12-.04.23-.1c.36-.18.66-.56.75-.96.06-.23.06-5.62,0-5.86-.12-.5-.55-.93-1.07-1.06-.22-.06-4.08-.05-4.31,0-.49.12-.92.52-1.07,1.03-.04.14-.04.3-.04,2.96,0,3.14-.01,2.94.17,3.29.16.31.47.58.76.68.07.02.13.05.14.06.01.01-.32.53-.79,1.24-.45.67-.81,1.23-.81,1.25,0,.02.12.03.47.03h.47l.57-.84ZM1.64,8.14c-.23-.13-.34-.35-.32-.61.05-.51.62-.76,1.02-.46.31.24.34.71.06.97-.15.14-.24.17-.45.17-.15,0-.2-.01-.3-.07ZM5.33,8.16c-.12-.06-.27-.21-.31-.33-.02-.05-.03-.16-.03-.25,0-.14.01-.19.07-.3.16-.3.52-.42.82-.28.49.23.51.9.04,1.14-.17.09-.42.1-.58.02ZM1.84,4.81c-.23-.06-.43-.24-.5-.45-.02-.06-.02-.34-.02-.77v-.68s.07-.11.07-.11c.09-.15.18-.23.33-.3l.12-.06h3.91l.14.07c.16.08.27.2.34.38.04.12.05.19.05.75,0,.34-.01.66-.03.71-.05.17-.17.32-.35.41l-.17.09h-1.88c-1.46,0-1.91,0-2.01-.02ZM2.93,2.08q-.08-.07-.09-.34c0-.21,0-.28.03-.34.07-.14.11-.15.91-.15.46,0,.76,0,.81.03.13.04.15.11.15.43,0,.47.04.45-.96.45h-.77l-.08-.07ZM3.48.74c.09-.06.18-.22.18-.34C3.66.17,3.48,0,3.24,0c-.23,0-.38.17-.38.41,0,.15.07.27.22.34.13.07.27.06.4-.02ZM4.56.74c.14-.09.22-.32.16-.48-.12-.31-.56-.35-.73-.07-.07.13-.07.33.02.45.12.17.37.21.55.1Z"/>
-      </g>
+    <symbol id="Train" viewBox="0 0 24 24">
+      <rect width="22" height="22" x="1" y="1" rx="5" fill="#0f172a" fill-opacity="0.96"/>
+      <rect width="16" height="15" x="4" y="3" rx="3.5" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M4 10.5h16" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M12 3v7.5" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="m8 18-3 3" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="m16 18 3 3" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="8" cy="14.5" r="1.2" fill="#ef4444"/>
+      <circle cx="16" cy="14.5" r="1.2" fill="#ef4444"/>
     </symbol>
     <clipPath id="clippath">
       <rect class="m-cls-1" x="1538.03" y="1030.16" width="14.17" height="14.17" rx="2.83" ry="2.83" transform="translate(-8.57 12.89) rotate(-.48)"/>
@@ -2564,6 +2579,7 @@
       </g>
       <g>
         <use width="14.88" height="9.21" transform="translate(759.33 1238.46)" xlink:href="#Int-Boat"/>
+        <use width="9.21" height="9.21" transform="translate(749.53 1238.46)" xlink:href="#Intermodal-Boat"/>
         <g>
           <path class="m-cls-81" d="M763.5,1240.64c.96,0,1.38.78,1.45,1.25l-.7.08c-.05-.31-.29-.69-.75-.69-.63,0-.97.61-.97,1.66v.19c0,1.05.35,1.66.97,1.66.46,0,.71-.37.75-.69l.7.08c-.07.47-.49,1.25-1.45,1.25-1.31,0-1.68-1.25-1.68-2.3v-.19c0-1.04.37-2.3,1.68-2.3Z"/>
           <path class="m-cls-81" d="M765.49,1240.75h2.47v.65h-1.8v1.36h1.62v.59h-1.62v1.3h1.87v.65h-2.54v-4.55Z"/>
@@ -2572,6 +2588,7 @@
       </g>
       <g>
         <use width="14.88" height="9.21" transform="translate(515.2 747.41)" xlink:href="#Int-Boat"/>
+        <use width="9.21" height="9.21" transform="translate(505.40 747.41)" xlink:href="#Intermodal-Boat"/>
         <g>
           <path class="m-cls-81" d="M518.09,749.78l.58-.08,1.67,3.19v-3.19h.66v4.55h-.58l-1.67-3.19v3.19h-.66v-4.47Z"/>
           <path class="m-cls-81" d="M522.88,751.9c.35-.29.63-.56.63-.99,0-.36-.13-.71-.56-.71-.29,0-.5.29-.55.6l-.68-.08c.07-.41.41-1.12,1.22-1.12,1.06,0,1.22.94,1.22,1.32,0,.75-.52,1.22-.86,1.51-.43.36-.78.69-.87,1.18h1.76v.65h-2.46s-.04-.13-.04-.3c0-1.03.69-1.64,1.2-2.05Z"/>
@@ -2580,6 +2597,7 @@
       </g>
       <g>
         <use width="14.88" height="9.21" transform="translate(521.99 1050.95)" xlink:href="#Int-Boat"/>
+        <use width="9.21" height="9.21" transform="translate(512.19 1050.95)" xlink:href="#Intermodal-Boat"/>
         <g>
           <path class="m-cls-81" d="M525.72,1053.3l.6-.06,2.27,3.42v-3.42h.68v4.55h-.6l-2.27-3.42v3.42h-.68v-4.48Z"/>
           <path class="m-cls-81" d="M530.18,1053.24h2.98l.05.38c-.63.86-1.38,2.51-1.38,3.88v.29h-.72v-.29c0-1.26.68-2.76,1.28-3.71h-2.21v-.54Z"/>
@@ -2587,6 +2605,7 @@
       </g>
       <g>
         <use width="14.88" height="9.21" transform="translate(353.37 546.73)" xlink:href="#Int-Boat"/>
+        <use width="9.21" height="9.21" transform="translate(343.57 546.73)" xlink:href="#Intermodal-Boat"/>
         <g>
           <path class="m-cls-81" d="M355.35,549.1l.54-.08,1.57,3.19v-3.19h.62v4.55h-.54l-1.57-3.19v3.19h-.62v-4.47Z"/>
           <path class="m-cls-81" d="M358.94,552.64c.05.17.18.45.57.45.5,0,.63-.41.63-.78s-.15-.69-.6-.69h-.48v-.6h.42c.33,0,.57-.32.57-.78,0-.36-.12-.71-.53-.71-.27,0-.47.29-.51.59l-.64-.08c.06-.41.38-1.13,1.14-1.13.99,0,1.15.94,1.15,1.32,0,.49-.21.8-.43,1,.42.21.55.69.55,1.03,0,.47-.18,1.43-1.27,1.43-.81,0-1.12-.63-1.19-.9l.61-.15Z"/>
@@ -2728,6 +2747,7 @@
       </g>
       <g>
         <use width="14.88" height="9.21" transform="translate(1139.96 881.77)" xlink:href="#Int-Boat"/>
+        <use width="9.21" height="9.21" transform="translate(1130.16 881.77)" xlink:href="#Intermodal-Boat"/>
         <g>
           <path class="m-cls-81" d="M1142.07,884.07h2.32v.65h-1.69v1.36h1.52v.59h-1.52v1.3h1.75v.65h-2.39v-4.55Z"/>
           <path class="m-cls-81" d="M1145.94,884.04l.44.06v3.87h.63v.65h-2.06v-.65h.81v-3.02l-.72.59-.26-.59,1.16-.91Z"/>
@@ -2738,6 +2758,7 @@
       </g>
       <g>
         <use width="14.88" height="9.21" transform="translate(984.17 928.49)" xlink:href="#Int-Boat"/>
+        <use width="9.21" height="9.21" transform="translate(974.37 928.49)" xlink:href="#Intermodal-Boat"/>
         <g>
           <path class="m-cls-81" d="M988.23,930.79h3v.54h-2.3v1.51h2.09v.5h-2.09v1.45h2.39v.54h-3.09v-4.55Z"/>
           <path class="m-cls-81" d="M992.68,934.44c.06.18.26.5.85.5.76,0,.94-.54.94-.97,0-.46-.16-.98-.84-.98-.41,0-.75.29-.92.55h0s0,0,0,0l-.51-.27.08-2.48h2.62v.5h-1.98l-.05,1.5c.21-.15.5-.28.89-.28,1.19,0,1.42.99,1.42,1.42,0,.49-.24,1.51-1.64,1.51-1.05,0-1.44-.62-1.53-.87l.68-.13Z"/>
@@ -2931,12 +2952,11 @@
       <g>
         <g>
           <path class="m-cls-22" d="M1006.3,807.96l-70.87.02c-7.83,0-14.17,6.35-14.17,14.17v106.21c0,7.82-6.34,14.16-14.16,14.16-39.01,0-131.95,0-168.29,0-7.51,0-14.71,2.98-20.02,8.29l-33.01,33.01c-5.32,5.32-12.53,8.3-20.04,8.3h-241.25"/>
-          <path class="m-cls-52" d="M1006.3,807.96l-70.87.02c-7.83,0-14.17,6.35-14.17,14.17v106.21c0,7.82-6.34,14.16-14.16,14.16-39.01,0-131.95,0-168.29,0-7.51,0-14.71,2.98-20.02,8.29l-33.01,33.01c-5.32,5.32-12.53,8.3-20.04,8.3h-241.25"/>
-          <path class="m-cls-10" d="M1006.3,807.96l-70.87.02c-7.83,0-14.17,6.35-14.17,14.17v106.21c0,7.82-6.34,14.16-14.16,14.16-39.01,0-131.95,0-168.29,0-7.51,0-14.71,2.98-20.02,8.29l-33.01,33.01c-5.32,5.32-12.53,8.3-20.04,8.3h-241.25"/>
+          <path d="M1006.3,807.96l-70.87.02c-7.83,0-14.17,6.35-14.17,14.17v106.21c0,7.82-6.34,14.16-14.16,14.16-39.01,0-131.95,0-168.29,0-7.51,0-14.71,2.98-20.02,8.29l-33.01,33.01c-5.32,5.32-12.53,8.3-20.04,8.3h-241.25" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-dasharray="5.5 4.5" stroke-miterlimit="10"/>
         </g>
         <g>
           <path class="m-cls-22" d="M1561.08,494.04l-305.55,305.54c-5.31,5.31-12.52,8.3-20.04,8.3l-229.2.07"/>
-          <path class="m-cls-10" d="M1561.08,494.04l-305.55,305.54c-5.31,5.31-12.52,8.3-20.04,8.3l-229.2.07"/>
+          <path d="M1561.08,494.04l-305.55,305.54c-5.31,5.31-12.52,8.3-20.04,8.3l-229.2.07" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-dasharray="5.5 4.5" stroke-miterlimit="10"/>
         </g>
       </g>
     </g>
@@ -13853,7 +13873,7 @@
         <rect class="m-cls-47" x="745.38" y="243.78" width="45.35" height="22.68" rx="2.83" ry="2.83"/>
       </g>
       <g id="Airport-BKK">
-        <use width="9.45" height="9.95" transform="translate(1532.37 983.86) rotate(-45) scale(1.8)" xlink:href="#Airplane"/>
+        <use width="9.45" height="9.95" transform="translate(1536.2 974.5) scale(1.8)" xlink:href="#Airplane"/>
         <g>
           <path class="m-cls-85" d="M1541.4,1001.17c0,1.24-1.11,1.96-2.67,1.96-1.01,0-2.18-.07-2.33-.08v-6.5c.13,0,1.18-.07,2.08-.07,1.26,0,2.29.57,2.29,1.63,0,.66-.38,1.08-.88,1.33.92.25,1.5.82,1.5,1.72ZM1539.8,998.2c0-.71-.58-1.01-1.43-1.01-.42,0-.84.03-1.02.04v2.11c.41-.02.91-.03,1.39-.03.54-.06,1.07-.41,1.07-1.11ZM1538.62,1002.41c.99,0,1.8-.32,1.8-1.24s-.81-1.21-1.8-1.21c-.45,0-.97.02-1.27.03v2.38c.31.02.82.03,1.27.03Z"/>
           <path class="m-cls-85" d="M1542.61,996.55h.97v3.1l2.73-3.1,1.12.08v.05l-2.51,2.62,2.86,3.7v.05h-1.17l-2.32-3.07-.71.73v2.34h-.97v-6.5Z"/>

@@ -1036,6 +1036,10 @@ gQIDAQAB
                 navTimetables: 'เวลาเดินรถ',
                 faresTitle: 'อัตราค่าโดยสารรถไฟฟ้าตามสาย',
                 timetablesTitle: 'ตารางเวลาเดินรถ & ความถี่ตามสาย',
+                mapModeSchematic: 'ผังโครงข่าย 12 สาย',
+                mapModeHybrid: 'Google Maps Hybrid',
+                mapMyLocation: 'ตำแหน่งของฉัน',
+                mapBkkCenter: 'กทม.',
                 mapTitle: `${getUiIcon('map', 15, 'currentColor')} ผังโครงข่ายรถไฟฟ้า 12 สาย`,
                 mapZoomIn: `${getUiIcon('zoomIn', 13, 'currentColor')} ขยาย`,
                 mapZoomOut: `${getUiIcon('zoomOut', 13, 'currentColor')} ย่อ`,
@@ -1319,6 +1323,10 @@ gQIDAQAB
                 navTimetables: 'Timetable',
                 faresTitle: 'Transit Fares & Pricing by Line',
                 timetablesTitle: 'Train Timetables & Frequency by Line',
+                mapModeSchematic: '12-Line Network',
+                mapModeHybrid: 'Google Maps Hybrid',
+                mapMyLocation: 'My Location',
+                mapBkkCenter: 'BKK',
                 mapTitle: `${getUiIcon('map', 15, 'currentColor')} 12 Transit Lines Network Map`,
                 mapZoomIn: `${getUiIcon('zoomIn', 13, 'currentColor')} Zoom In`,
                 mapZoomOut: `${getUiIcon('zoomOut', 13, 'currentColor')} Zoom Out`,
@@ -1602,6 +1610,10 @@ gQIDAQAB
                 navTimetables: '时刻表',
                 faresTitle: '各线轨道交通票价一览',
                 timetablesTitle: '各线列车时刻与发车频次',
+                mapModeSchematic: '12 线线网图',
+                mapModeHybrid: 'Google Maps 混合地图',
+                mapMyLocation: '我的位置',
+                mapBkkCenter: '曼谷',
                 mapTitle: `${getUiIcon('map', 15, 'currentColor')} 12 线轨道交通全景图`,
                 mapZoomIn: `${getUiIcon('zoomIn', 13, 'currentColor')} 放大`,
                 mapZoomOut: `${getUiIcon('zoomOut', 13, 'currentColor')} 缩小`,
@@ -4545,10 +4557,11 @@ gQIDAQAB
                 const sheet = document.getElementById('mapLegendSheet');
                 if (sheet) {
                     const isActive = sheet.classList.toggle('active');
+                    const label = isActive ? (lang === 'en' ? 'Close' : (lang === 'zh' ? '关闭图例' : 'ปิดสัญลักษณ์')) : (lang === 'en' ? 'Legend' : (lang === 'zh' ? '图例' : 'สัญลักษณ์'));
                     const btnText = document.getElementById('mapLegendBtnText');
-                    if (btnText) {
-                        btnText.textContent = isActive ? (lang === 'en' ? 'Close' : (lang === 'zh' ? '关闭图例' : 'ปิดสัญลักษณ์')) : (lang === 'en' ? 'Legend' : (lang === 'zh' ? '图例' : 'สัญลักษณ์'));
-                    }
+                    if (btnText) btnText.textContent = label;
+                    const geoBtnText = document.getElementById('mapGeoLegendText');
+                    if (geoBtnText) geoBtnText.textContent = label;
                     return;
                 }
                 const el = document.getElementById('mapLegendGroup');
@@ -5338,7 +5351,7 @@ gQIDAQAB
 
                 const labelEl = document.getElementById('mapGeoLayerText');
                 if (labelEl) {
-                    labelEl.textContent = (nextMode === 'hybrid') ? 'Hybrid' : (nextMode === 'roadmap' ? 'ถนน' : 'ดาวเทียม');
+                    labelEl.textContent = (nextMode === 'hybrid') ? 'Hybrid' : (nextMode === 'roadmap' ? (lang === 'en' ? 'Road' : (lang === 'zh' ? '道路' : 'ถนน')) : (lang === 'en' ? 'Satellite' : (lang === 'zh' ? '卫星' : 'ดาวเทียม')));
                 }
             },
 
@@ -6517,17 +6530,27 @@ setOriginFromActionSheet() {
                 if (si) si.placeholder = T('searchPh');
 
                 // Map view
+                set('mapModeTabSchematicText', T('mapModeSchematic'));
+                set('mapModeTabHybridText', T('mapModeHybrid'));
+                set('mapGeoLocateText', T('mapMyLocation'));
+                set('mapGeoRecenterText', T('mapBkkCenter'));
+                const curLayer = this.geoCurrentLayer || 'hybrid';
+                const layerEl = document.getElementById('mapGeoLayerText');
+                if (layerEl) {
+                    layerEl.textContent = curLayer === 'hybrid' ? 'Hybrid' : (curLayer === 'roadmap' ? (lang === 'en' ? 'Road' : (lang === 'zh' ? '道路' : 'ถนน')) : (lang === 'en' ? 'Satellite' : (lang === 'zh' ? '卫星' : 'ดาวเทียม')));
+                }
                 set('mapTitle', T('mapTitle'));
                 set('mapZoomInBtn', T('mapZoomIn'));
                 set('mapZoomOutBtn', T('mapZoomOut'));
                 set('mapResetBtn', T('mapReset'));
                 set('mapHintCard', T('mapHint'));
+                const sheet = document.getElementById('mapLegendSheet');
+                const isLegendActive = sheet && sheet.classList.contains('active');
+                const legendLabel = isLegendActive ? (lang === 'en' ? 'Close' : (lang === 'zh' ? '关闭图例' : 'ปิดสัญลักษณ์')) : T('mapLegendBtn');
                 const mapLegendBtn = document.getElementById('mapLegendBtnText');
-                if (mapLegendBtn) {
-                    const sheet = document.getElementById('mapLegendSheet');
-                    const isActive = sheet && sheet.classList.contains('active');
-                    mapLegendBtn.textContent = isActive ? (lang === 'en' ? 'Close' : (lang === 'zh' ? '关闭图例' : 'ปิดสัญลักษณ์')) : T('mapLegendBtn');
-                }
+                if (mapLegendBtn) mapLegendBtn.textContent = legendLabel;
+                const mapGeoLegendBtn = document.getElementById('mapGeoLegendText');
+                if (mapGeoLegendBtn) mapGeoLegendBtn.textContent = legendLabel;
 
                 // Map legend sheet
                 set('mapLegendSheetTitle', T('legTitle'));

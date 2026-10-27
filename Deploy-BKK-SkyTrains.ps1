@@ -190,6 +190,8 @@ $AssetsToSync = @(
     "index.html",
     "js\app.js",
     "js\jsencrypt.min.js",
+    "js\leaflet.js",
+    "leaflet.css",
     "sw.js",
     "manifest.json",
     "robots.txt",
@@ -215,6 +217,13 @@ $srcIconsDir = Join-Path $Workspace "icons"
 $destIconsDir = Join-Path $FlutterAssetDir "icons"
 if (Test-Path $srcIconsDir) {
     Copy-Item -Path $srcIconsDir -Destination $FlutterAssetDir -Recurse -Force
+}
+
+# ซิงค์โฟลเดอร์ images/ ทั้งหมด (Leaflet assets)
+$srcImagesDir = Join-Path $Workspace "images"
+$destImagesDir = Join-Path $FlutterAssetDir "images"
+if (Test-Path $srcImagesDir) {
+    Copy-Item -Path $srcImagesDir -Destination $FlutterAssetDir -Recurse -Force
 }
 Write-Host "   ✓ จัดระเบียบและซิงค์ไฟล์เรียบร้อยสมบูรณ์" -ForegroundColor Green
 

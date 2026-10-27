@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
+import '../services/live_transit_service.dart';
 
 class BkkWebViewScreen extends StatefulWidget {
   const BkkWebViewScreen({super.key});
@@ -47,6 +48,12 @@ class _BkkWebViewScreenState extends State<BkkWebViewScreen> {
         'FlutterLocation',
         onMessageReceived: (JavaScriptMessage message) {
           _handleLocationMessage(message.message);
+        },
+      )
+      ..addJavaScriptChannel(
+        'BKKLiveBridge',
+        onMessageReceived: (JavaScriptMessage message) {
+          _handleLiveBridgeMessage(message.message);
         },
       )
       ..setNavigationDelegate(
@@ -116,6 +123,31 @@ class _BkkWebViewScreenState extends State<BkkWebViewScreen> {
     } catch (e) {
       debugPrint('[JSBridge] Error handling message: $e');
       _requestNativeLocation(interactive: false);
+    }
+  }
+
+  void _handleLiveBridgeMessage(String message) async {
+    try {
+      final dynamic data = jsonDecode(message);
+      if (data is Map) {
+        final action = data['action'];
+        if (action == 'updateLiveStation') {
+          await LiveTransitService().updateLiveTransit(
+            stationKey: (data['stationKey'] ?? '').toString(),
+            stationName: (data['stationName'] ?? '').toString(),
+            distanceText: (data['distanceText'] ?? '').toString(),
+            lineColor: (data['lineColor'] ?? '#7AB420').toString(),
+            plat1Dest: (data['plat1Dest'] ?? '').toString(),
+            plat1Time: (data['plat1Time'] ?? '').toString(),
+            plat2Dest: (data['plat2Dest'] ?? '').toString(),
+            plat2Time: (data['plat2Time'] ?? '').toString(),
+          );
+        } else if (action == 'cancelLiveStation') {
+          await LiveTransitService().cancelLiveTransit();
+        }
+      }
+    } catch (e) {
+      debugPrint('[BKKLiveBridge] Error handling message: $e');
     }
   }
 

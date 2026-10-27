@@ -344,6 +344,10 @@ flowchart LR
 ## 8. แผนการพัฒนาในอนาคต (Product Roadmap)
 
 - **v1.3.6 (Completed / Current Production Release):**
+  - ระบบแสดงผลสถานีใกล้ตัวและเวลารถเข้าบนหน้าจอล็อก & หน้าจอโฮม (Lock Screen Live Notification & Home Screen Widget):
+    - Ongoing Persistent Notification (`VISIBILITY_PUBLIC`) บน Android แสดงการ์ดสถานี รหัสสถานี ชานชาลา 1 & 2 และเวลานับถอยหลังสดบน Lock Screen
+    - รองรับ Live Activities บน iOS 16.1+ ผ่าน ActivityKit / WidgetKit
+    - Home Screen Widget (Android AppWidget RemoteViews & iOS WidgetKit) แสดงข้อมูลสถานีและเวลารถเข้าเทียบชานชาลา พร้อมแตะเปิดแอปตรงสู่สถานีได้ทันที
   - แผนผังโครงข่ายรถไฟฟ้าความละเอียดสูงแบบเวกเตอร์พิมพ์เขียว (Transit Blueprint Vector Map) ครอบคลุม 10 สายรถไฟฟ้า กทม. และปริมณฑล รองรับการสลับโหมดมืด/สว่างอัตโนมัติ (`bkk_transit_map.svg`, `bkk_transit_map_dark.svg`)
   - จุดฮอตสปอตสถานีแบบโต้ตอบบนแผนที่ (`MAP_STATION_HOTSPOTS`) แตะเลือกสถานีต้นทาง, ปลายทาง หรือเปิดดูข้อมูลประตูทางออกได้ทันที
   - หน้าต่างคำอธิบายสัญลักษณ์โครงข่ายและจุดเชื่อมต่อ (Transit Network Legend: Airport, Pier/Boat, SRT, Bus, Park & Ride)

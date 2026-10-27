@@ -6576,6 +6576,11 @@ setOriginFromActionSheet() {
                         } catch (e) {}
                     }
                 }
+                if (!enabled && window.BKKLiveBridge && typeof window.BKKLiveBridge.postMessage === 'function') {
+                    try {
+                        window.BKKLiveBridge.postMessage(JSON.stringify({ action: 'cancelLiveStation' }));
+                    } catch (e) {}
+                }
                 this.renderMoreView();
             },
 
@@ -8399,6 +8404,68 @@ setOriginFromActionSheet() {
                         } catch(e){}
                     }
                 }
+
+                // 7. ซิงค์ข้อมูลสถานีและเวลาเดินรถไปยัง Lock Screen Live Notification & Home Screen Widget
+                this.syncToNativeLiveWidgets(s, distText);
+            },
+
+            syncToNativeLiveWidgets(station, distText) {
+                if (!station) return;
+                const key = station.StationKey;
+                const arr = this.arrivals[key];
+                const plats = (arr && arr.platforms) ? visiblePlatformsForStation(station, arr.platforms) : [];
+                
+                let p1Dest = '1 ชานชาลา 1', p1Time = '--';
+                let p2Dest = '2 ชานชาลา 2', p2Time = '--';
+
+                if (plats.length > 0) {
+                    const p1 = plats[0];
+                    const dest1 = shortDest(destName(p1.DestinationStation));
+                    p1Dest = `1 ไป${dest1}`;
+                    const trains1 = (arr && arr.fetchedAt) ? displayTrains(key, p1.platform, p1.train_list, arr.fetchedAt) : [];
+                    if (trains1.length) {
+                        const eta1 = bestEta(key, p1.platform, trains1[0], arr.fetchedAt);
+                        if (trains1[0].status === 'arriving') p1Time = T('arrived');
+                        else if (eta1) {
+                            const m = Math.round(eta1.base - (Date.now() - eta1.at) / 60000);
+                            p1Time = m <= 0 ? T('arrived') : `${m} นาที`;
+                        }
+                    }
+                }
+
+                if (plats.length > 1) {
+                    const p2 = plats[1];
+                    const dest2 = shortDest(destName(p2.DestinationStation));
+                    p2Dest = `2 ไป${dest2}`;
+                    const trains2 = (arr && arr.fetchedAt) ? displayTrains(key, p2.platform, p2.train_list, arr.fetchedAt) : [];
+                    if (trains2.length) {
+                        const eta2 = bestEta(key, p2.platform, trains2[0], arr.fetchedAt);
+                        if (trains2[0].status === 'arriving') p2Time = T('arrived');
+                        else if (eta2) {
+                            const m = Math.round(eta2.base - (Date.now() - eta2.at) / 60000);
+                            p2Time = m <= 0 ? T('arrived') : `${m} นาที`;
+                        }
+                    }
+                }
+
+                const payload = {
+                    action: 'updateLiveStation',
+                    stationKey: key || '',
+                    stationName: station.StationNameTH || station.StationName || '',
+                    distanceText: distText || (this.nearest?.km != null ? fmtDist(this.nearest.km) : ''),
+                    lineColor: station.StationLineColor || '#7AB420',
+                    plat1Dest: p1Dest,
+                    plat1Time: p1Time,
+                    plat2Dest: p2Dest,
+                    plat2Time: p2Time
+                };
+
+                // ส่งข้อมูลไปยัง Flutter Native Bridge สำหรับ Lock Screen & Home Screen Widget
+                if (window.BKKLiveBridge && typeof window.BKKLiveBridge.postMessage === 'function') {
+                    try {
+                        window.BKKLiveBridge.postMessage(JSON.stringify(payload));
+                    } catch (e) {}
+                }
             },
 
             showNearestPopupFor(station, openModal = true) {
@@ -8800,6 +8867,7 @@ setOriginFromActionSheet() {
                 if (this.pinnedStation()?.StationKey === key) {
                     this.renderNearest();
                     this.renderTraffic();
+                    this.syncToNativeLiveWidgets(this.pinnedStation(), this.nearest?.km != null ? fmtDist(this.nearest.km) : '');
                 }
                 if (this.expandedKey === key) this.renderStrip();
                 if (this.popupStation?.StationKey === key) {

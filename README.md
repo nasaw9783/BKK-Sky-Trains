@@ -53,6 +53,9 @@
 14. <img src="icons/legend/branch.svg" width="110" height="18" alt="Branch" style="vertical-align:middle;"> **รองรับสายแยกเมืองทองธานี (Muang Thong Branch PK10 ⇄ MT01, MT02)**
     - กำหนดสถานีเมืองทองธานี (`PK10`) เป็นจุดเชื่อมต่อข้ามสายสำหรับสายแยก
     - การ์ดแนะนำการเปลี่ยนขบวน (Transfer Card) ที่แสดงไอคอนโมโนเรลสายสีชมพู พร้อมชานชาลาเฉพาะ (MT01 ชานชาลา 3 & 4, MT02 ชานชาลา 4)
+15. <img src="icons/ui/timer.svg" width="18" height="18" alt="Widget" style="vertical-align:middle;"> **วิดเจ็ตหน้าจอโฮมและการแจ้งเตือนสดบนหน้าจอล็อก (Home Screen Widget & Lock Screen Live Notification)**
+    - **หน้าจอล็อก (Lock Screen):** แสดงการ์ดสถานีใกล้ตัวคุณ รหัสสถานี ชานชาลา 1 และชานชาลา 2 พร้อมเวลานับถอยหลังสด ผ่าน Ongoing Persistent Notification (`VISIBILITY_PUBLIC`) บน Android และระบบ Live Activities บน iOS 16.1+
+    - **หน้าจอโฮม (Home Screen Widget):** แอปวิดเจ็ตบนหน้าจอหลักแสดงสถานีที่ใกล้ที่สุด ระยะทาง ชานชาลา 1 & 2 และเวลารถเข้าเทียบชานชาลาแบบเรียลไทม์ พร้อมแตะเปิดแอปตรงสู่สถานีได้ทันที
 
 ---
 

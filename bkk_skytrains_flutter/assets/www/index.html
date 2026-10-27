@@ -7584,8 +7584,19 @@
             font-weight: 700;
         }
         .settings-segment-btn .segment-flag {
-            font-size: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             line-height: 1;
+            margin-bottom: 2px;
+        }
+        .settings-segment-btn .segment-flag svg {
+            display: block;
+            margin: auto;
+            flex-shrink: 0;
+            border-radius: 3px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.28);
+            overflow: hidden;
         }
         .settings-segment-btn .segment-name {
             font-size: 12px;
@@ -8110,17 +8121,40 @@
                     <div class="settings-desc" id="moreLangDesc">เลือกภาษาที่ต้องการให้แสดงผลในระบบ</div>
                     <div class="settings-segment-grid">
                         <button type="button" class="settings-segment-btn" id="langOptTh" onclick="App.setLang('th')">
-                            <span class="segment-flag">🇹🇭</span>
+                            <span class="segment-flag">
+                                <svg class="flag-icon" viewBox="0 0 27 18" width="27" height="18" aria-hidden="true">
+                                    <rect width="27" height="18" fill="#A51931"/>
+                                    <rect y="3" width="27" height="12" fill="#F4F5F8"/>
+                                    <rect y="6" width="27" height="6" fill="#2D2A4A"/>
+                                </svg>
+                            </span>
                             <span class="segment-name">ภาษาไทย</span>
                             <span class="segment-code">TH</span>
                         </button>
                         <button type="button" class="settings-segment-btn" id="langOptEn" onclick="App.setLang('en')">
-                            <span class="segment-flag">🇬🇧</span>
+                            <span class="segment-flag">
+                                <svg class="flag-icon" viewBox="0 0 60 40" width="27" height="18" aria-hidden="true">
+                                    <path d="M0 0h60v40H0z" fill="#012169"/>
+                                    <path d="M0 0l60 40M60 0L0 40" stroke="#fff" stroke-width="8"/>
+                                    <path d="M0 0l30 20M60 40L30 20M30 20l30-20M0 40l30-20" stroke="#C8102E" stroke-width="2.8"/>
+                                    <path d="M30 0v40M0 20h60" stroke="#fff" stroke-width="12"/>
+                                    <path d="M30 0v40M0 20h60" stroke="#C8102E" stroke-width="7.2"/>
+                                </svg>
+                            </span>
                             <span class="segment-name">English</span>
                             <span class="segment-code">EN</span>
                         </button>
                         <button type="button" class="settings-segment-btn" id="langOptZh" onclick="App.setLang('zh')">
-                            <span class="segment-flag">🇨🇳</span>
+                            <span class="segment-flag">
+                                <svg class="flag-icon" viewBox="0 0 30 20" width="27" height="18" aria-hidden="true">
+                                    <rect width="30" height="20" fill="#DE2910"/>
+                                    <polygon fill="#FFDE00" points="5.00,2.00 5.68,4.07 7.85,4.07 6.09,5.36 6.76,7.43 5.00,6.15 3.24,7.43 3.91,5.36 2.15,4.07 4.32,4.07"/>
+                                    <polygon fill="#FFDE00" points="9.14,2.51 9.62,1.97 9.25,1.34 9.91,1.63 10.39,1.08 10.33,1.80 11.00,2.09 10.29,2.25 10.22,2.97 9.85,2.35"/>
+                                    <polygon fill="#FFDE00" points="11.01,4.14 11.66,3.82 11.56,3.10 12.07,3.63 12.72,3.30 12.38,3.95 12.88,4.47 12.17,4.34 11.83,4.99 11.73,4.26"/>
+                                    <polygon fill="#FFDE00" points="11.04,6.73 11.77,6.70 11.96,6.00 12.21,6.68 12.94,6.66 12.37,7.10 12.62,7.79 12.01,7.38 11.44,7.83 11.64,7.13"/>
+                                    <polygon fill="#FFDE00" points="9.22,8.38 9.90,8.63 10.35,8.06 10.32,8.79 11.00,9.05 10.30,9.24 10.26,9.96 9.87,9.36 9.16,9.55 9.62,8.98"/>
+                                </svg>
+                            </span>
                             <span class="segment-name">中文</span>
                             <span class="segment-code">ZH</span>
                         </button>

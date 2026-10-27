@@ -96,7 +96,7 @@
 
 ## 🧭 สัญลักษณ์แถบควบคุมด้านล่าง (Floating Bottom Navigation Dock Icons)
 
-ไอคอนควบคุมมุมมองหลักทั้ง 5 หน้าจอในแถบนำทางด้านล่าง (`nav.bottom-nav`):
+ไอคอนควบคุมมุมมองหลักทั้ง 6 หน้าจอในแถบนำทางด้านล่าง (`nav.bottom-nav`):
 
 | ไอคอนเวกเตอร์ (Vector SVG) | ชื่อแท็บ (Tab Name) | รหัสแท็บ (Tab ID) | การทำงานในระบบ (Functionality) |
 | :---: | :--- | :---: | :--- |
@@ -105,6 +105,7 @@
 | <img src="icons/nav/planner.svg" width="22" height="22" alt="Planner" style="vertical-align:middle;"> | **วางแผน (Planner)** | `tab-planner` | วางแผนการเดินทางอัจฉริยะ คำนวณเวลา ค่าโดยสาร และจุดเปลี่ยนสายข้ามทุกระบบ |
 | <img src="icons/nav/fares.svg" width="22" height="22" alt="Fares" style="vertical-align:middle;"> | **ค่าโดยสาร (Fares)** | `tab-fares` | ตารางอัตราค่าโดยสารแต่ละสาย นโยบายส่วนลด และการชำระเงิน EMV Contactless |
 | <img src="icons/nav/timetables.svg" width="22" height="22" alt="Timetables" style="vertical-align:middle;"> | **เวลาเดินรถ (Timetables)** | `tab-timetables` | ตารางเวลาเดินรถขบวนแรก-สุดท้าย และความถี่การปล่อยขบวนรถแยกวันทำงาน/วันหยุด |
+| <img src="icons/nav/more.svg" width="22" height="22" alt="More" style="vertical-align:middle;"> | **เพิ่มเติม (More)** | `tab-more` | เมนูแฮมเบอร์เกอร์สามขีด: วิดเจ็ตแจ้งเตือนเบื้องหลังอัตโนมัติ (True Background Geofencing), สวิตช์สลับภาษา (TH/EN/ZH), สวิตช์สลับธีม (Dark/Light), และข้อมูลเวอร์ชันแอปพลิเคชัน |
 
 ---
 

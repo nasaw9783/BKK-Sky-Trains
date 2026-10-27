@@ -1085,6 +1085,28 @@ gQIDAQAB
                 popupPlatSub: 'กำลังเข้า / นับถอยหลังสด',
                 popupAction: 'ดูรายละเอียดสถานี & ทางออกเต็มจอ',
                 popupDismiss: 'รับทราบ',
+                navMore: 'เพิ่มเติม',
+                moreNotifTitle: 'การแจ้งเตือนเบื้องหลังอัตโนมัติ (True Background Geofencing)',
+                moreNotifDesc: 'แจ้งเตือนสถานีใกล้คุณ ขบวนรถถัดไป และเวลานับถอยหลังสดอัตโนมัติเมื่อเข้าใกล้สถานี แม้ปิดแอปหรือล็อกหน้าจอ',
+                moreNotifActive: 'เปิดใช้งานอยู่ (ตรวจจับสถานีเบื้องหลัง)',
+                moreNotifInactive: 'ปิดการทำงาน (ประหยัดพลังงาน)',
+                moreNotifTestBtn: 'ทดสอบการแจ้งเตือน',
+                moreNotifTestTitle: '🔔 ทดสอบการแจ้งเตือน BKK SkyTrains',
+                moreNotifTestBody: 'ระบบแจ้งเตือนเบื้องหลังทำงานปกติ พร้อมส่งข้อมูลรถไฟฟ้าสดถึงคุณ',
+                moreNotifPermissionDenied: 'กรุณาอนุญาตการแจ้งเตือน (Notifications) ในการตั้งค่าเบราว์เซอร์หรืออุปกรณ์ของคุณ',
+                moreLangTitle: 'ภาษา / Language',
+                moreLangDesc: 'เลือกภาษาที่ต้องการให้แสดงผลในระบบ',
+                moreThemeTitle: 'ธีมการแสดงผล / Display Theme',
+                moreThemeDesc: 'ปรับแต่งธีมสว่างหรือมืดตามสภาพแสง',
+                themeDark: 'โหมดมืด (Dark)',
+                themeLight: 'โหมดสว่าง (Light)',
+                moreVersionTitle: 'ข้อมูลแอปพลิเคชัน (App Information)',
+                moreVersionUpToDate: 'เวอร์ชันล่าสุด',
+                moreVersionLabel: 'เวอร์ชัน',
+                moreNetworkLabel: 'โครงข่ายรถไฟฟ้า',
+                moreGatewayLabel: 'สถานะสัญญาณสด',
+                moreGatewayValue: 'เชื่อมต่อเรียลไทม์ 100%',
+                morePlatformLabel: 'แพลตฟอร์ม',
             },
             en: {
                 appName: 'BKK SKYTRAINs',
@@ -1372,6 +1394,28 @@ gQIDAQAB
                 popupPlatSub: 'Arriving / Live countdown',
                 popupAction: 'View Full Station & Exit Details',
                 popupDismiss: 'Got it',
+                navMore: 'More',
+                moreNotifTitle: 'True Background Geofencing Notifications',
+                moreNotifDesc: 'Automatic alerts for nearest station, next train, and live countdown when near a station, even when the app is closed or screen is locked.',
+                moreNotifActive: 'Active (Background Geofencing On)',
+                moreNotifInactive: 'Disabled (Battery Saver)',
+                moreNotifTestBtn: 'Test Notification',
+                moreNotifTestTitle: '🔔 BKK SkyTrains Notification Test',
+                moreNotifTestBody: 'Background notification service is working properly with live transit data.',
+                moreNotifPermissionDenied: 'Please grant notification permissions in your browser or device settings.',
+                moreLangTitle: 'Language / ภาษา',
+                moreLangDesc: 'Select system display language',
+                moreThemeTitle: 'Display Theme',
+                moreThemeDesc: 'Choose between dark mode and light mode',
+                themeDark: 'Dark Mode',
+                themeLight: 'Light Mode',
+                moreVersionTitle: 'App Information',
+                moreVersionUpToDate: 'Latest Release',
+                moreVersionLabel: 'Version',
+                moreNetworkLabel: 'Transit Network',
+                moreGatewayLabel: 'Live Signal',
+                moreGatewayValue: 'Connected 100% Real-time',
+                morePlatformLabel: 'Platform',
             },
             zh: {
                 appName: 'BKK SKYTRAINs',
@@ -1659,6 +1703,28 @@ gQIDAQAB
                 popupPlatSub: '即将进站 / 实时倒计时',
                 popupAction: '查看车站详情与全部出入口',
                 popupDismiss: '知道了',
+                navMore: '更多',
+                moreNotifTitle: '后台地理围栏自动通知 (True Background Geofencing)',
+                moreNotifDesc: '接近车站时自动接收最近车站、下一班列车及实时倒计时提醒，即使关闭应用或锁屏状态下也能运行。',
+                moreNotifActive: '已开启（后台地理围栏检测中）',
+                moreNotifInactive: '已关闭（省电模式）',
+                moreNotifTestBtn: '测试通知',
+                moreNotifTestTitle: '🔔 BKK SkyTrains 通知测试',
+                moreNotifTestBody: '后台通知服务正常运行，随时为您提供实时列车信息。',
+                moreNotifPermissionDenied: '请在浏览器或设备设置中允许通知权限。',
+                moreLangTitle: '语言 / Language',
+                moreLangDesc: '选择系统显示语言',
+                moreThemeTitle: '显示主题',
+                moreThemeDesc: '根据喜好选择深色模式或浅色模式',
+                themeDark: '深色模式',
+                themeLight: '浅色模式',
+                moreVersionTitle: '应用信息',
+                moreVersionUpToDate: '最新版本',
+                moreVersionLabel: '版本',
+                moreNetworkLabel: '轨道交通网络',
+                moreGatewayLabel: '实时信号状态',
+                moreGatewayValue: '100% 实时连接',
+                morePlatformLabel: '运行平台',
             }
         };
 
@@ -3710,7 +3776,7 @@ gQIDAQAB
             freqTab: null,
 
             switchView(viewName) {
-                const validViews = ['home', 'map', 'planner', 'exits', 'fares', 'timetables'];
+                const validViews = ['home', 'map', 'planner', 'exits', 'fares', 'timetables', 'more'];
                 if (!validViews.includes(viewName)) viewName = 'home';
                 this.currentView = viewName;
 
@@ -3762,6 +3828,8 @@ gQIDAQAB
                         const activePill = bar ? bar.querySelector('.line-filter-pill.active') : null;
                         if (bar && activePill) scrollActivePillIntoView(bar, activePill, false);
                     });
+                } else if (viewName === 'more') {
+                    this.renderMoreView();
                 }
 
                 window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -6468,11 +6536,152 @@ setOriginFromActionSheet() {
                 try { localStorage.setItem('bts_theme', next); } catch (e) { }
                 this.updateThemeBtn();
                 this.updateMapTheme();
+                this.renderMoreView();
             },
 
             updateThemeBtn() {
                 const b = document.getElementById('themeBtn');
                 if (b) b.innerHTML = document.documentElement.classList.contains('dark') ? getUiIcon('sun', 16, '#f59e0b') : getUiIcon('moon', 16, 'currentColor');
+                const isDark = document.documentElement.classList.contains('dark');
+                const darkBtn = document.getElementById('themeOptDark');
+                const lightBtn = document.getElementById('themeOptLight');
+                if (darkBtn) darkBtn.classList.toggle('active', isDark);
+                if (lightBtn) lightBtn.classList.toggle('active', !isDark);
+            },
+
+            /* ---------- background geofencing & more settings ---------- */
+            isBgGeofenceNotifEnabled() {
+                try {
+                    const val = localStorage.getItem('bkk_bg_geofence_enabled');
+                    return val === null ? true : val === 'true';
+                } catch (e) {
+                    return true;
+                }
+            },
+
+            toggleBgGeofence(enabled) {
+                try {
+                    localStorage.setItem('bkk_bg_geofence_enabled', enabled ? 'true' : 'false');
+                } catch (e) {}
+
+                if (enabled && typeof Notification !== 'undefined') {
+                    if (Notification.permission === 'default') {
+                        try {
+                            Notification.requestPermission().then(() => {
+                                this.renderMoreView();
+                            });
+                        } catch (e) {}
+                    }
+                }
+                this.renderMoreView();
+            },
+
+            async testBgGeofenceNotif() {
+                const title = T('moreNotifTestTitle');
+                const body = T('moreNotifTestBody');
+
+                if (typeof Notification !== 'undefined') {
+                    if (Notification.permission === 'default') {
+                        try {
+                            const res = await Notification.requestPermission();
+                            if (res !== 'granted') {
+                                alert(T('moreNotifPermissionDenied'));
+                                return;
+                            }
+                        } catch (e) {
+                            alert(T('moreNotifPermissionDenied'));
+                            return;
+                        }
+                    } else if (Notification.permission === 'denied') {
+                        alert(T('moreNotifPermissionDenied'));
+                        return;
+                    }
+                }
+
+                // Web Notification via ServiceWorker or window.Notification
+                let sent = false;
+                if ('serviceWorker' in navigator) {
+                    try {
+                        const reg = await navigator.serviceWorker.ready;
+                        if (reg && reg.showNotification) {
+                            await reg.showNotification(title, {
+                                body: body,
+                                icon: 'icon.svg',
+                                badge: 'icon.svg',
+                                tag: 'test-geofence',
+                                vibrate: [100, 50, 100],
+                                data: { test: true }
+                            });
+                            sent = true;
+                        }
+                    } catch (e) {}
+                }
+
+                if (!sent && typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+                    try {
+                        new Notification(title, {
+                            body: body,
+                            icon: 'icon.svg',
+                            badge: 'icon.svg',
+                            tag: 'test-geofence'
+                        });
+                        sent = true;
+                    } catch (e) {}
+                }
+
+                // Native Android Bridge support
+                if (window.AndroidBridge && window.AndroidBridge.showNotification) {
+                    try {
+                        window.AndroidBridge.showNotification(title, body, 'TEST');
+                        sent = true;
+                    } catch (e) {}
+                }
+
+                if (!sent && typeof Notification === 'undefined' && !window.AndroidBridge) {
+                    alert(title + '\n' + body);
+                }
+            },
+
+            renderMoreView() {
+                // 1. Notification Switch & Status Badge
+                const isEnabled = this.isBgGeofenceNotifEnabled();
+                const switchEl = document.getElementById('bgGeofenceSwitch');
+                if (switchEl) switchEl.checked = isEnabled;
+
+                const badgeEl = document.getElementById('moreNotifStatusBadge');
+                const dotEl = document.getElementById('moreNotifDot');
+                const statusTxtEl = document.getElementById('moreNotifStatusText');
+                if (badgeEl && dotEl && statusTxtEl) {
+                    if (isEnabled) {
+                        badgeEl.classList.add('active');
+                        dotEl.classList.add('active');
+                        statusTxtEl.textContent = T('moreNotifActive');
+                    } else {
+                        badgeEl.classList.remove('active');
+                        dotEl.classList.remove('active');
+                        statusTxtEl.textContent = T('moreNotifInactive');
+                    }
+                }
+
+                // 2. Language Segmented Buttons
+                const curLang = lang || 'th';
+                ['th', 'en', 'zh'].forEach(l => {
+                    const btn = document.getElementById('langOpt' + l.charAt(0).toUpperCase() + l.slice(1));
+                    if (btn) btn.classList.toggle('active', curLang === l);
+                });
+
+                // 3. Theme Segmented Buttons
+                const isDark = document.documentElement.classList.contains('dark');
+                const darkBtn = document.getElementById('themeOptDark');
+                const lightBtn = document.getElementById('themeOptLight');
+                if (darkBtn) darkBtn.classList.toggle('active', isDark);
+                if (lightBtn) lightBtn.classList.toggle('active', !isDark);
+
+                // 4. Platform info
+                const platEl = document.getElementById('morePlatformValue');
+                if (platEl) {
+                    platEl.textContent = (typeof window !== 'undefined' && window.isFlutterApp) ? 'Flutter Hybrid Native' : 'PWA / Web Mobile';
+                }
             },
 
             /* ---------- language ---------- */
@@ -6608,16 +6817,38 @@ setOriginFromActionSheet() {
                 set('navLblPlanner', T('navPlanner'));
                 set('navLblFares', T('navFares'));
                 set('navLblTimetables', T('navTimetables'));
+                set('navLblMore', T('navMore'));
                 setAttr('tab-home', 'aria-label', T('navHome'));
                 setAttr('tab-map', 'aria-label', T('navMap'));
                 setAttr('tab-planner', 'aria-label', T('navPlanner'));
                 setAttr('tab-fares', 'aria-label', T('navFares'));
                 setAttr('tab-timetables', 'aria-label', T('navTimetables'));
+                setAttr('tab-more', 'aria-label', T('navMore'));
                 setAttr('tab-home', 'title', T('navHome'));
                 setAttr('tab-map', 'title', T('navMap'));
                 setAttr('tab-planner', 'title', T('navPlanner'));
                 setAttr('tab-fares', 'title', T('navFares'));
                 setAttr('tab-timetables', 'title', T('navTimetables'));
+                setAttr('tab-more', 'title', T('navMore'));
+
+                // More / Settings View
+                set('moreNotifTitle', T('moreNotifTitle'));
+                set('moreNotifDesc', T('moreNotifDesc'));
+                set('moreNotifTestBtn', `<span>${T('moreNotifTestBtn')}</span>`);
+                set('moreLangTitle', T('moreLangTitle'));
+                set('moreLangDesc', T('moreLangDesc'));
+                set('moreThemeTitle', T('moreThemeTitle'));
+                set('moreThemeDesc', T('moreThemeDesc'));
+                set('moreThemeDarkLbl', T('themeDark'));
+                set('moreThemeLightLbl', T('themeLight'));
+                set('moreVersionTitle', T('moreVersionTitle'));
+                set('moreVersionUpToDate', T('moreVersionUpToDate'));
+                set('moreVersionLabel', T('moreVersionLabel'));
+                set('moreNetworkLabel', T('moreNetworkLabel'));
+                set('moreGatewayLabel', T('moreGatewayLabel'));
+                set('moreGatewayValue', T('moreGatewayValue'));
+                set('morePlatformLabel', T('morePlatformLabel'));
+                this.renderMoreView();
 
                 // Nearest Station Popup Modal
                 set('nearestPopupTitle', T('popupTitle'));
@@ -6642,10 +6873,8 @@ setOriginFromActionSheet() {
                 this.updateThemeBtn();   // ธีมถูกตั้งไว้แล้วจากสคริปต์ใน <head> — ปรับไอคอนปุ่มให้ตรง
                 this.updateMapTheme();
                 this.startClock();
-                try {
-                    localStorage.removeItem('bkk_geofence_enabled');
-                    localStorage.removeItem('bkk_geofence_radius');
-                } catch (e) {}
+                // Initialize more view and notification state
+                this.renderMoreView();
                 if ('serviceWorker' in navigator) {
                     navigator.serviceWorker.addEventListener('message', (event) => {
                         if (event.data && event.data.action === 'openStation' && event.data.stationKey) {
@@ -6822,6 +7051,8 @@ setOriginFromActionSheet() {
                         this.switchView('fares');
                     } else if (e.key === '5') {
                         this.switchView('timetables');
+                    } else if (e.key === '6') {
+                        this.switchView('more');
                     }
                 });
             },
@@ -8092,51 +8323,58 @@ setOriginFromActionSheet() {
                     this.showNearestPopupFor(s, true);
                 }
 
-                // 5. แจ้งเตือน Web Notification พร้อม ข้อมูลสถานี / แพลตฟอร์ม / เวลา
-                if (typeof Notification !== 'undefined') {
-                    if (Notification.permission === 'granted') {
-                        const notifTitle = lang === 'en'
-                            ? `Nearest Station: ${s.StationKey} ${stName(s)} (${distText})`
-                            : (lang === 'zh'
-                                ? `离您最近的车站: ${s.StationKey} ${stName(s)} (${distText})`
-                                : `สถานีใกล้คุณ: ${s.StationKey} ${stName(s)} (${distText})`);
-                        const notifBody = platSummary || (lang === 'en'
-                            ? `${distText} away · Tap to view timetable & platforms`
-                            : (lang === 'zh'
-                                ? `距您 ${distText} · 点击查看时刻表与站台`
-                                : `ห่าง ${distText} · แตะเพื่อดูเวลาขบวนรถและชานชาลา`));
+                // 5. แจ้งเตือน Web / Native Notification (True Background Geofencing) เมื่อเปิดใช้งาน
+                if (this.isBgGeofenceNotifEnabled()) {
+                    const notifTitle = lang === 'en'
+                        ? `Nearest Station: ${s.StationKey} ${stName(s)} (${distText})`
+                        : (lang === 'zh'
+                            ? `离您最近的车站: ${s.StationKey} ${stName(s)} (${distText})`
+                            : `สถานีใกล้คุณ: ${s.StationKey} ${stName(s)} (${distText})`);
+                    const notifBody = platSummary || (lang === 'en'
+                        ? `${distText} away · Tap to view timetable & platforms`
+                        : (lang === 'zh'
+                            ? `距您 ${distText} · 点击查看时刻表与站台`
+                            : `ห่าง ${distText} · แตะเพื่อดูเวลาขบวนรถและชานชาลา`));
+
+                    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
                         try {
-                            new Notification(notifTitle, {
-                                body: notifBody,
-                                icon: 'icon.svg',
-                                badge: 'icon.svg',
-                                tag: 'nearest-station'
+                            navigator.serviceWorker.ready.then(reg => {
+                                if (reg && reg.showNotification) {
+                                    reg.showNotification(notifTitle, {
+                                        body: notifBody,
+                                        icon: 'icon.svg',
+                                        badge: 'icon.svg',
+                                        tag: 'nearest-station',
+                                        data: { stationKey: key }
+                                    });
+                                }
                             });
                         } catch(e){}
-                    } else if (Notification.permission === 'default') {
-                        try { Notification.requestPermission(); } catch(e){}
+                    } else if (typeof Notification !== 'undefined') {
+                        if (Notification.permission === 'granted') {
+                            try {
+                                new Notification(notifTitle, {
+                                    body: notifBody,
+                                    icon: 'icon.svg',
+                                    badge: 'icon.svg',
+                                    tag: 'nearest-station'
+                                });
+                            } catch(e){}
+                        } else if (Notification.permission === 'default') {
+                            try { Notification.requestPermission(); } catch(e){}
+                        }
                     }
-                }
 
-                // 6. แจ้งเตือน Native Android Notification พร้อม ข้อมูลสถานี / แพลตฟอร์ม / เวลา
-                if (window.AndroidBridge && window.AndroidBridge.showNotification) {
-                    try {
-                        const notifTitle = lang === 'en'
-                            ? `Nearest Station: ${s.StationKey} ${stName(s)} (${distText})`
-                            : (lang === 'zh'
-                                ? `离您最近的车站: ${s.StationKey} ${stName(s)} (${distText})`
-                                : `สถานีใกล้คุณ: ${s.StationKey} ${stName(s)} (${distText})`);
-                        const androidBody = platSummary || (lang === 'en'
-                            ? `${distText} away · View timetable & platforms`
-                            : (lang === 'zh'
-                                ? `距您 ${distText} · 查看时刻表与站台`
-                                : `ห่าง ${distText} · ดูเวลาเดินรถและชานชาลา`));
-                        window.AndroidBridge.showNotification(
-                            notifTitle,
-                            androidBody,
-                            key
-                        );
-                    } catch(e){}
+                    // 6. แจ้งเตือน Native Android Notification พร้อม ข้อมูลสถานี / แพลตฟอร์ม / เวลา
+                    if (window.AndroidBridge && window.AndroidBridge.showNotification) {
+                        try {
+                            window.AndroidBridge.showNotification(
+                                notifTitle,
+                                notifBody,
+                                key
+                            );
+                        } catch(e){}
+                    }
                 }
             },
 

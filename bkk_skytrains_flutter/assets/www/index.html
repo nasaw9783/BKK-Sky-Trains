@@ -6522,6 +6522,256 @@
             }
         }
 
+
+        /* ===== Settings & More View Styling ===== */
+        .settings-card {
+            padding-bottom: 14px;
+        }
+        .settings-card-body {
+            padding: 0 16px;
+        }
+        .settings-desc {
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.5;
+            margin: 4px 0 12px;
+        }
+        .settings-status-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 10px 12px;
+            background: var(--bg-subtle);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-md);
+            flex-wrap: wrap;
+        }
+        .settings-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--muted);
+        }
+        .settings-status-badge.active {
+            color: #10b981;
+        }
+        .status-pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--muted);
+            flex-shrink: 0;
+        }
+        .status-pulse-dot.active {
+            background: #10b981;
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            animation: statusPulse 1.8s infinite;
+        }
+        @keyframes statusPulse {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        /* Modern Switch Toggle */
+        .switch-toggle {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+            flex-shrink: 0;
+            cursor: pointer;
+            user-select: none !important;
+        }
+        .switch-toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+            position: absolute;
+        }
+        .switch-slider {
+            position: absolute;
+            inset: 0;
+            background-color: var(--line-active, #cbd5e1);
+            border-radius: 24px;
+            transition: background-color 0.25s ease, box-shadow 0.25s ease;
+        }
+        .switch-slider::before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: #ffffff;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .switch-toggle input:checked + .switch-slider {
+            background-color: #10b981;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.35);
+        }
+        .switch-toggle input:checked + .switch-slider::before {
+            transform: translateX(20px);
+        }
+
+        /* Segmented Buttons Grid */
+        .settings-segment-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+        .settings-segment-grid.two-cols {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        .settings-segment-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            padding: 10px 8px;
+            background: var(--bg-subtle);
+            border: 1.5px solid var(--line);
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            color: var(--ink);
+            transition: all 0.2s ease;
+            user-select: none !important;
+            text-align: center;
+        }
+        .settings-segment-btn:hover {
+            background: var(--card-hover, var(--line));
+            border-color: var(--accent);
+        }
+        .settings-segment-btn.active {
+            background: var(--accent-bg, rgba(56, 189, 248, 0.12));
+            border-color: var(--accent);
+            color: var(--accent);
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.18);
+            font-weight: 700;
+        }
+        .settings-segment-btn .segment-flag {
+            font-size: 20px;
+            line-height: 1;
+        }
+        .settings-segment-btn .segment-name {
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .settings-segment-btn .segment-code {
+            font-size: 10px;
+            color: var(--muted);
+            font-weight: 700;
+        }
+        .settings-segment-btn.active .segment-code {
+            color: var(--accent);
+        }
+        .settings-segment-btn .segment-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.05);
+            margin-bottom: 2px;
+        }
+
+        /* Version Hero & Details */
+        .version-hero-wrap {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px;
+            background: var(--bg-subtle);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-md);
+            margin-bottom: 12px;
+        }
+        .version-app-logo {
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            flex-shrink: 0;
+        }
+        .version-info-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .version-app-name {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--ink);
+            letter-spacing: 0.3px;
+        }
+        .version-number-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+        }
+        .version-number-tag .tag-label {
+            color: var(--muted);
+            font-weight: 500;
+        }
+        .version-number-tag .tag-value {
+            color: var(--accent);
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+        }
+        .version-details-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .version-detail-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 9px 12px;
+            background: var(--bg-subtle);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+        }
+        .version-detail-item .detail-label {
+            color: var(--muted);
+            font-weight: 500;
+        }
+        .version-detail-item .detail-value {
+            color: var(--ink);
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .live-dot-sm {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #10b981;
+            animation: pulse 1.5s infinite;
+        }
+        .badge-success {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3px 8px;
+            font-size: 11px;
+            font-weight: 700;
+            background: rgba(16, 185, 129, 0.12);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            border-radius: 20px;
+            line-height: 1;
+        }
+
         /* Desktop Auto-Detect Enhancements (Preserving original 560px mobile design) */
         html.device-desktop .bottom-nav .nav-tab:hover {
             background: var(--bg-subtle);
@@ -6631,8 +6881,6 @@
             </div>
         </div>
         <div class="header-controls">
-            <button class="header-pill-btn" id="themeBtn" onclick="App.setTheme()" aria-label="Toggle dark mode"><svg class="ui-ic" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" fill-opacity="0.15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg></button>
-            <button class="header-pill-btn" id="langBtn" onclick="App.setLang()">EN</button>
             <div class="clock">
                 <div class="t" id="clockT">--:--:--</div>
                 <div class="d" id="clockD"></div>
@@ -6842,6 +7090,162 @@
         <!-- ===== VIEW 6: TIMETABLES (เวลาเดินรถ & ความถี่ตามสาย) ===== -->
         <div id="viewTimetables" class="app-view">
             <div id="timetablesViewContent"></div>
+        </div>
+
+        <!-- ===== VIEW 7: MORE (การตั้งค่า & แจ้งเตือนเบื้องหลัง & ข้อมูลแอพ) ===== -->
+        <div id="viewMore" class="app-view">
+            <!-- 1. Background Geofencing Notification Widget -->
+            <section class="card settings-card">
+                <div class="card-head">
+                    <div class="card-title">
+                        <span class="card-icon-pill" style="background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.25);color:#10b981;">
+                            <svg class="ui-ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+                                <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+                            </svg>
+                        </span>
+                        <span id="moreNotifTitle">การแจ้งเตือนเบื้องหลังอัตโนมัติ (True Background Geofencing)</span>
+                    </div>
+                    <label class="switch-toggle" for="bgGeofenceSwitch">
+                        <input type="checkbox" id="bgGeofenceSwitch" onchange="App.toggleBgGeofence(this.checked)" aria-label="เปิด/ปิดการแจ้งเตือนเบื้องหลัง">
+                        <span class="switch-slider"></span>
+                    </label>
+                </div>
+                <div class="settings-card-body">
+                    <div class="settings-desc" id="moreNotifDesc">
+                        แจ้งเตือนสถานีใกล้คุณ ขบวนรถถัดไป และเวลานับถอยหลังสดอัตโนมัติเมื่อเข้าใกล้สถานี แม้ปิดแอปหรือล็อกหน้าจอ
+                    </div>
+                    <div class="settings-status-row">
+                        <span class="settings-status-badge" id="moreNotifStatusBadge">
+                            <span class="status-pulse-dot" id="moreNotifDot"></span>
+                            <span id="moreNotifStatusText">เปิดใช้งานอยู่ (ตรวจจับสถานีเบื้องหลัง)</span>
+                        </span>
+                        <button type="button" class="btn btn-sm btn-ghost" onclick="App.testBgGeofenceNotif()" id="moreNotifTestBtn" style="padding:4px 10px;font-size:11.5px;display:inline-flex;align-items:center;gap:4px;">
+                            <span>ทดสอบการแจ้งเตือน</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 2. Language Switcher Widget -->
+            <section class="card settings-card">
+                <div class="card-head">
+                    <div class="card-title">
+                        <span class="card-icon-pill" style="background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.25);color:#38bdf8;">
+                            <svg class="ui-ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <circle cx="12" cy="12" r="10"/>
+                                <line x1="2" y1="12" x2="22" y2="12"/>
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                            </svg>
+                        </span>
+                        <span id="moreLangTitle">ภาษา / Language</span>
+                    </div>
+                </div>
+                <div class="settings-card-body">
+                    <div class="settings-desc" id="moreLangDesc">เลือกภาษาที่ต้องการให้แสดงผลในระบบ</div>
+                    <div class="settings-segment-grid">
+                        <button type="button" class="settings-segment-btn" id="langOptTh" onclick="App.setLang('th')">
+                            <span class="segment-flag">🇹🇭</span>
+                            <span class="segment-name">ภาษาไทย</span>
+                            <span class="segment-code">TH</span>
+                        </button>
+                        <button type="button" class="settings-segment-btn" id="langOptEn" onclick="App.setLang('en')">
+                            <span class="segment-flag">🇬🇧</span>
+                            <span class="segment-name">English</span>
+                            <span class="segment-code">EN</span>
+                        </button>
+                        <button type="button" class="settings-segment-btn" id="langOptZh" onclick="App.setLang('zh')">
+                            <span class="segment-flag">🇨🇳</span>
+                            <span class="segment-name">中文</span>
+                            <span class="segment-code">ZH</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 3. Theme Switcher Widget -->
+            <section class="card settings-card">
+                <div class="card-head">
+                    <div class="card-title">
+                        <span class="card-icon-pill" style="background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.25);color:#f59e0b;">
+                            <svg class="ui-ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <circle cx="12" cy="12" r="5"/>
+                                <line x1="12" y1="1" x2="12" y2="3"/>
+                                <line x1="12" y1="21" x2="12" y2="23"/>
+                                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                                <line x1="1" y1="12" x2="3" y2="12"/>
+                                <line x1="21" y1="12" x2="23" y2="12"/>
+                                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                            </svg>
+                        </span>
+                        <span id="moreThemeTitle">ธีมการแสดงผล / Display Theme</span>
+                    </div>
+                </div>
+                <div class="settings-card-body">
+                    <div class="settings-desc" id="moreThemeDesc">ปรับแต่งธีมสว่างหรือมืดตามสภาพแสง</div>
+                    <div class="settings-segment-grid two-cols">
+                        <button type="button" class="settings-segment-btn" id="themeOptDark" onclick="App.setTheme('dark')">
+                            <span class="segment-icon">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" fill-opacity="0.15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+                            </span>
+                            <span class="segment-name" id="moreThemeDarkLbl">โหมดมืด (Dark)</span>
+                        </button>
+                        <button type="button" class="settings-segment-btn" id="themeOptLight" onclick="App.setTheme('light')">
+                            <span class="segment-icon">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                            </span>
+                            <span class="segment-name" id="moreThemeLightLbl">โหมดสว่าง (Light)</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 4. App Version & System Information Widget -->
+            <section class="card settings-card">
+                <div class="card-head">
+                    <div class="card-title">
+                        <span class="card-icon-pill" style="background:rgba(168,85,247,0.12);border:1px solid rgba(168,85,247,0.25);color:#a855f7;">
+                            <svg class="ui-ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <rect width="18" height="18" x="3" y="3" rx="2"/>
+                                <path d="m9 12 2 2 4-4"/>
+                            </svg>
+                        </span>
+                        <span id="moreVersionTitle">ข้อมูลแอปพลิเคชัน (App Information)</span>
+                    </div>
+                    <span class="badge badge-success" id="moreVersionUpToDate">เวอร์ชันล่าสุด</span>
+                </div>
+                <div class="settings-card-body">
+                    <div class="version-hero-wrap">
+                        <img src="icon.svg" alt="BKK SkyTrains Logo" width="46" height="46" class="version-app-logo">
+                        <div class="version-info-meta">
+                            <div class="version-app-name">BKK SKYTRAINs</div>
+                            <div class="version-number-tag">
+                                <span class="tag-label" id="moreVersionLabel">เวอร์ชัน</span>
+                                <span class="tag-value">v1.3.6 (Build 10)</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="version-details-list">
+                        <div class="version-detail-item">
+                            <span class="detail-label" id="moreNetworkLabel">โครงข่ายรถไฟฟ้า</span>
+                            <span class="detail-value">12 Transit Lines · BKK Metro</span>
+                        </div>
+                        <div class="version-detail-item">
+                            <span class="detail-label" id="moreGatewayLabel">สถานะสัญญาณสด</span>
+                            <span class="detail-value text-success" style="color:#10b981;font-weight:700;">
+                                <span class="live-dot-sm"></span>
+                                <span id="moreGatewayValue">เชื่อมต่อเรียลไทม์ 100%</span>
+                            </span>
+                        </div>
+                        <div class="version-detail-item">
+                            <span class="detail-label" id="morePlatformLabel">แพลตฟอร์ม</span>
+                            <span class="detail-value" id="morePlatformValue">PWA / Hybrid Native</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
         </div>
 
         <footer id="footerNote">
@@ -7216,6 +7620,16 @@
             </span>
             <span class="nav-lbl" id="navLblTimetables">เวลาเดินรถ</span>
         </button>
+        <button class="nav-tab" id="tab-more" onclick="App.switchView('more')" aria-label="เพิ่มเติม" title="เพิ่มเติม">
+            <span class="nav-icon">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="4" y1="6" x2="20" y2="6"/>
+                    <line x1="4" y1="12" x2="20" y2="12"/>
+                    <line x1="4" y1="18" x2="20" y2="18"/>
+                </svg>
+            </span>
+            <span class="nav-lbl" id="navLblMore">เพิ่มเติม</span>
+        </button>
     </nav>
 
     <!-- ===== Nearest Station Alert Popup Modal ===== -->
@@ -7292,7 +7706,7 @@
 
     <!-- Application Controller -->
     <script src="js/leaflet.js"></script>
-    <script src="js/app.js?v=20261027_02"></script>
+    <script src="js/app.js?v=20261027_03"></script>
 
     <!-- PWA: ลงทะเบียน service worker (เฉพาะเมื่อรันบน HTTP/HTTPS) -->
     <script>

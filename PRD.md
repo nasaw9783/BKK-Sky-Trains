@@ -257,7 +257,7 @@ flowchart TD
 | <img src="icons/legend/branch.svg" width="120" height="22" alt="Branch" style="vertical-align:middle;"> | **สายแยกเมืองทองธานี (Branch Line)** | จุดเชื่อมต่อและชานชาลาสายแยกอิมแพ็ค-ทะเลสาบเมืองทองธานี (PK10 ⇄ MT01, MT02) |
 
 ### 6.4 สัญลักษณ์แถบนำทางด้านล่าง (Floating Bottom Navigation Dock Icons)
-ไอคอนควบคุมมุมมองหลักทั้ง 5 หน้าจอในแถบนำทางด้านล่าง (`nav.bottom-nav`):
+ไอคอนควบคุมมุมมองหลักทั้ง 6 หน้าจอในแถบนำทางด้านล่าง (`nav.bottom-nav`):
 
 | ไอคอนเวกเตอร์ (Vector SVG) | ชื่อแท็บ (Tab Name) | รหัสแท็บ (Tab ID) | การทำงานในระบบ (Functionality) |
 | :---: | :--- | :---: | :--- |
@@ -266,6 +266,7 @@ flowchart TD
 | <img src="icons/nav/planner.svg" width="22" height="22" alt="Planner" style="vertical-align:middle;"> | **วางแผน (Planner)** | `tab-planner` | วางแผนการเดินทางอัจฉริยะ คำนวณเวลา ค่าโดยสาร และจุดเปลี่ยนสายข้ามทุกระบบ |
 | <img src="icons/nav/fares.svg" width="22" height="22" alt="Fares" style="vertical-align:middle;"> | **ค่าโดยสาร (Fares)** | `tab-fares` | ตารางอัตราค่าโดยสารแต่ละสาย นโยบายส่วนลด และการชำระเงิน EMV Contactless |
 | <img src="icons/nav/timetables.svg" width="22" height="22" alt="Timetables" style="vertical-align:middle;"> | **เวลาเดินรถ (Timetables)** | `tab-timetables` | ตารางเวลาเดินรถขบวนแรก-สุดท้าย และความถี่การปล่อยขบวนรถแยกวันทำงาน/วันหยุด |
+| <img src="icons/nav/more.svg" width="22" height="22" alt="More" style="vertical-align:middle;"> | **เพิ่มเติม (More)** | `tab-more` | เมนูแฮมเบอร์เกอร์สามขีด: วิดเจ็ตแจ้งเตือนเบื้องหลังอัตโนมัติ (True Background Geofencing), สวิตช์สลับภาษา (TH/EN/ZH), สวิตช์สลับธีม (Dark/Light), และข้อมูลเวอร์ชันแอปพลิเคชัน |
 
 ### 6.5 ระบบเวกเตอร์ไอคอนส่วนต่อประสาน (Modern Vector UI Icons System)
 ไอคอนทั้งหมดในระบบฝังตัวในออบเจกต์ `UI_ICONS` (`js/app.js`) ทั้ง 40 รายการ เรนเดอร์เป็น SVG Inline เพื่อความเร็ว 0ms และความคมชัด 100%:

@@ -1096,6 +1096,10 @@ gQIDAQAB
                 moreThemeDesc: 'ปรับแต่งธีมสว่างหรือมืดตามสภาพแสง',
                 themeDark: 'โหมดมืด',
                 themeLight: 'โหมดสว่าง',
+                moreClockTitle: 'รูปแบบเวลา (Clock Format)',
+                moreClockDesc: 'เลือกรูปแบบการแสดงเวลาของนาฬิกาที่แถบหัวเว็บ',
+                moreClock24Lbl: '24 ชั่วโมง (24H)',
+                moreClock12Lbl: '12 ชั่วโมง (12H AM/PM)',
                 moreVersionTitle: 'ข้อมูลแอปพลิเคชัน',
                 moreVersionUpToDate: 'เวอร์ชันล่าสุด',
                 moreVersionLabel: 'เวอร์ชัน',
@@ -1401,6 +1405,10 @@ gQIDAQAB
                 moreThemeDesc: 'Choose between dark mode and light mode',
                 themeDark: 'Dark Mode',
                 themeLight: 'Light Mode',
+                moreClockTitle: 'Clock Format',
+                moreClockDesc: 'Choose the time display format for the header clock',
+                moreClock24Lbl: '24 Hours (24H)',
+                moreClock12Lbl: '12 Hours (12H AM/PM)',
                 moreVersionTitle: 'App Information',
                 moreVersionUpToDate: 'Latest Release',
                 moreVersionLabel: 'Version',
@@ -1706,6 +1714,10 @@ gQIDAQAB
                 moreThemeDesc: '根据喜好选择深色模式或浅色模式',
                 themeDark: '深色模式',
                 themeLight: '浅色模式',
+                moreClockTitle: '时间格式',
+                moreClockDesc: '选择顶部时钟的时间显示格式',
+                moreClock24Lbl: '24 小时制 (24H)',
+                moreClock12Lbl: '12 小时制 (12H AM/PM)',
                 moreVersionTitle: '应用信息',
                 moreVersionUpToDate: '最新版本',
                 moreVersionLabel: '版本',
@@ -6673,7 +6685,14 @@ setOriginFromActionSheet() {
                 if (darkBtn) darkBtn.classList.toggle('active', isDark);
                 if (lightBtn) lightBtn.classList.toggle('active', !isDark);
 
-                // 4. Platform info
+                // 4. Clock Format Segmented Buttons
+                const curClockFmt = this.clockFormat || '24';
+                const clock24Btn = document.getElementById('clockOpt24');
+                const clock12Btn = document.getElementById('clockOpt12');
+                if (clock24Btn) clock24Btn.classList.toggle('active', curClockFmt === '24');
+                if (clock12Btn) clock12Btn.classList.toggle('active', curClockFmt === '12');
+
+                // 5. Platform info
                 const platEl = document.getElementById('morePlatformValue');
                 if (platEl) {
                     platEl.textContent = (typeof window !== 'undefined' && window.isFlutterApp) ? 'Flutter Hybrid Native' : 'PWA / Web Mobile';
@@ -6836,6 +6855,10 @@ setOriginFromActionSheet() {
                 set('moreThemeDesc', T('moreThemeDesc'));
                 set('moreThemeDarkLbl', T('themeDark'));
                 set('moreThemeLightLbl', T('themeLight'));
+                set('moreClockTitle', T('moreClockTitle'));
+                set('moreClockDesc', T('moreClockDesc'));
+                set('moreClock24Lbl', T('moreClock24Lbl'));
+                set('moreClock12Lbl', T('moreClock12Lbl'));
                 set('moreVersionTitle', T('moreVersionTitle'));
                 set('moreVersionUpToDate', T('moreVersionUpToDate'));
                 set('moreVersionLabel', T('moreVersionLabel'));
@@ -6859,6 +6882,11 @@ setOriginFromActionSheet() {
             },
 
             async init() {
+                let savedClockFmt = '24';
+                try {
+                    savedClockFmt = localStorage.getItem('bkk_skytrains_clock_format') || '24';
+                } catch (e) { }
+                this.clockFormat = savedClockFmt;
                 this.initResponsiveAutoDetect();
                 this.setupMobileZoomLock();
                 if (typeof window !== 'undefined' && window.isFlutterApp) {
@@ -7167,13 +7195,34 @@ setOriginFromActionSheet() {
             startClock() {
                 const f = () => {
                     const n = new Date(), loc = T('clockLocale');
-                    document.getElementById('clockT').textContent =
-                        n.toLocaleTimeString(loc, { hour12: false });
-                    document.getElementById('clockD').textContent =
-                        n.toLocaleDateString(loc, { weekday: 'short', day: 'numeric', month: 'short' });
+                    const is12 = (this.clockFormat === '12');
+                    const clockTElem = document.getElementById('clockT');
+                    const clockDElem = document.getElementById('clockD');
+                    if (clockTElem) {
+                        clockTElem.textContent = n.toLocaleTimeString(loc, { hour12: is12 });
+                    }
+                    if (clockDElem) {
+                        clockDElem.textContent = n.toLocaleDateString(loc, { weekday: 'short', day: 'numeric', month: 'short' });
+                    }
                 };
                 f();
-                setInterval(f, 1000);
+                if (this._clockInterval) clearInterval(this._clockInterval);
+                this._clockInterval = setInterval(f, 1000);
+            },
+
+            setClockFormat(fmt) {
+                if (fmt !== '12' && fmt !== '24') fmt = '24';
+                this.clockFormat = fmt;
+                try {
+                    localStorage.setItem('bkk_skytrains_clock_format', fmt);
+                } catch (e) { }
+                this.startClock();
+                this.renderMoreView();
+            },
+
+            toggleClockFormat() {
+                const nextFmt = this.clockFormat === '12' ? '24' : '12';
+                this.setClockFormat(nextFmt);
             },
 
             /* ---------- connections (สถานีต่างสายที่อยู่ใกล้กัน = จุดเชื่อมต่อ) ---------- */

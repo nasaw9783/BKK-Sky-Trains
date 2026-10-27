@@ -353,15 +353,32 @@
             bottom: 0;
             height: 3px;
             background: linear-gradient(90deg,
-                    #7AB420 0 15%,
-                    #00807D 15% 30%,
-                    #C9A038 30% 42%,
-                    #FFD100 42% 56%,
-                    #EC4899 56% 70%,
-                    #0284C7 70% 84%,
-                    #DC2626 84% 100%);
+                    #7AB420 0 4.167%,
+                    #00807D 4.167% 8.333%,
+                    #C9A038 8.333% 12.5%,
+                    #0284C7 12.5% 16.667%,
+                    #8A2C9B 16.667% 20.833%,
+                    #FFD100 20.833% 25%,
+                    #EC4899 25% 29.167%,
+                    #B91C1C 29.167% 33.333%,
+                    #F87171 33.333% 37.5%,
+                    #8A1538 37.5% 41.667%,
+                    #82C341 41.667% 45.833%,
+                    #F58220 45.833% 50%,
+                    #7AB420 50% 54.167%,
+                    #00807D 54.167% 58.333%,
+                    #C9A038 58.333% 62.5%,
+                    #0284C7 62.5% 66.667%,
+                    #8A2C9B 66.667% 70.833%,
+                    #FFD100 70.833% 75%,
+                    #EC4899 75% 79.167%,
+                    #B91C1C 79.167% 83.333%,
+                    #F87171 83.333% 87.5%,
+                    #8A1538 87.5% 91.667%,
+                    #82C341 91.667% 95.833%,
+                    #F58220 95.833% 100%);
             background-size: 200% 100%;
-            animation: headerShimmer 8s linear infinite;
+            animation: headerShimmer 10s linear infinite;
             opacity: 0.95;
         }
 
@@ -533,6 +550,18 @@
             font-variant-numeric: tabular-nums;
             margin-left: 2px;
             flex-shrink: 0;
+            cursor: pointer;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            transition: opacity 0.2s ease, transform 0.15s ease;
+        }
+
+        .clock:hover {
+            opacity: 0.85;
+        }
+
+        .clock:active {
+            transform: scale(0.96);
         }
 
         .clock .t {
@@ -540,6 +569,7 @@
             font-weight: 800;
             line-height: 1;
             letter-spacing: -0.3px;
+            white-space: nowrap;
         }
 
         .clock .d {
@@ -7338,7 +7368,7 @@
             </div>
         </div>
         <div class="header-controls">
-            <div class="clock">
+            <div class="clock" onclick="App.toggleClockFormat()" title="แตะเพื่อสลับรูปแบบเวลา 24H / 12H (Tap to switch 24H / 12H)">
                 <div class="t" id="clockT">--:--:--</div>
                 <div class="d" id="clockD"></div>
             </div>
@@ -7656,7 +7686,39 @@
                 </div>
             </section>
 
-            <!-- 4. App Version & System Information Widget -->
+            <!-- 4. Clock Format Switcher Widget -->
+            <section class="card settings-card">
+                <div class="card-head">
+                    <div class="card-title">
+                        <span class="card-icon-pill" style="background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.25);color:#38bdf8;">
+                            <svg class="ui-ic" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <circle cx="12" cy="12" r="10"/>
+                                <polyline points="12 6 12 12 16 14"/>
+                            </svg>
+                        </span>
+                        <span id="moreClockTitle">รูปแบบเวลา (Clock Format)</span>
+                    </div>
+                </div>
+                <div class="settings-card-body">
+                    <div class="settings-desc" id="moreClockDesc">เลือกรูปแบบการแสดงเวลาของนาฬิกาที่แถบหัวเว็บ</div>
+                    <div class="settings-segment-grid two-cols">
+                        <button type="button" class="settings-segment-btn" id="clockOpt24" onclick="App.setClockFormat('24')">
+                            <span class="segment-icon">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                            </span>
+                            <span class="segment-name" id="moreClock24Lbl">24 ชั่วโมง (24H)</span>
+                        </button>
+                        <button type="button" class="settings-segment-btn" id="clockOpt12" onclick="App.setClockFormat('12')">
+                            <span class="segment-icon">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 7v5l3 3"/></svg>
+                            </span>
+                            <span class="segment-name" id="moreClock12Lbl">12 ชั่วโมง (12H AM/PM)</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 5. App Version & System Information Widget -->
             <section class="card settings-card">
                 <div class="card-head">
                     <div class="card-title">

@@ -6074,7 +6074,10 @@ setOriginFromActionSheet() {
                                     <div style="flex-shrink:0;margin-top:2px;">${getLineIconSvg(activeLine.id, false, 28)}</div>
                                     <div style="min-width:0;flex:1;">
                                         <div style="font-size:16.5px;font-weight:800;color:var(--ink);line-height:1.3;word-break:break-word;">${esc(lineName)}</div>
-                                        <div style="font-size:12px;color:var(--muted);line-height:1.45;word-break:break-word;margin-top:3px;">${esc(operator)} · ${esc(terminus)}</div>
+                                        <div style="font-size:12px;color:var(--muted);line-height:1.45;word-break:break-word;margin-top:3px;">
+                                            <div>${esc(operator)}</div>
+                                            <div style="margin-top:2px;">${esc(terminus)}</div>
+                                        </div>
                                     </div>
                                 </div>
                                 <button type="button" class="btn btn-ghost" style="padding:5px 10px;font-size:11.5px;margin-left:auto;white-space:nowrap;flex-shrink:0;" onclick="App.setFaresLine(0)">
@@ -6424,7 +6427,10 @@ setOriginFromActionSheet() {
                                     <div style="flex-shrink:0;margin-top:2px;">${getLineIconSvg(activeLine.id, false, 28)}</div>
                                     <div style="min-width:0;flex:1;">
                                         <div style="font-size:16.5px;font-weight:800;color:var(--ink);line-height:1.3;word-break:break-word;">${esc(lineName)}</div>
-                                        <div style="font-size:12px;color:var(--muted);line-height:1.45;word-break:break-word;margin-top:3px;">${esc(operator)} · ${terminusHtml}</div>
+                                        <div style="font-size:12px;color:var(--muted);line-height:1.45;word-break:break-word;margin-top:3px;">
+                                            <div>${esc(operator)}</div>
+                                            <div style="margin-top:2px;">${terminusHtml}</div>
+                                        </div>
                                     </div>
                                 </div>
                                 <button type="button" class="btn btn-ghost" style="padding:5px 10px;font-size:11.5px;margin-left:auto;white-space:nowrap;flex-shrink:0;" onclick="App.setTimetablesLine(0)">

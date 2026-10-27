@@ -4915,11 +4915,13 @@
             color: var(--ink);
             line-height: 1.2;
             min-width: 0;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            flex: 1;
             user-select: none !important;
             caret-color: transparent !important;
+        }
+        .fare-card-title svg {
+            flex-shrink: 0;
+            align-self: center;
         }
         .fare-badge-group {
             display: flex;
@@ -5058,6 +5060,46 @@
             cursor: default !important;
         }
 
+        /* Overview Card Title Wrap & Royal Tag */
+        .fare-card-title-wrap,
+        .timetable-card-title-wrap {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 6px;
+            row-gap: 3px;
+            line-height: 1.25;
+            min-width: 0;
+            user-select: none !important;
+            caret-color: transparent !important;
+        }
+        .line-card-main-name {
+            font-size: 13.5px;
+            font-weight: 800;
+            color: var(--ink);
+            line-height: 1.25;
+            letter-spacing: 0;
+            user-select: none !important;
+            caret-color: transparent !important;
+        }
+        .line-card-royal-tag {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 10.5px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: var(--radius-sm);
+            line-height: 1;
+            letter-spacing: 0;
+            box-sizing: border-box;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            caret-color: transparent !important;
+            cursor: default !important;
+        }
+
         /* Timetable Overview Line Cards */
         .timetable-cards-list {
             display: flex;
@@ -5101,11 +5143,13 @@
             color: var(--ink);
             line-height: 1.2;
             min-width: 0;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            flex: 1;
             user-select: none !important;
             caret-color: transparent !important;
+        }
+        .timetable-card-title svg {
+            flex-shrink: 0;
+            align-self: center;
         }
         .timetable-card-action {
             display: inline-flex;

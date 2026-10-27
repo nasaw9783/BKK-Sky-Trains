@@ -3370,24 +3370,26 @@ gQIDAQAB
             { code: 'A1', th: 'สุวรรณภูมิ (สนามบิน)', en: 'Suvarnabhumi Airport', zh: '素万那普机场', price: '฿45' }
         ];
 
-        function formatLineTitleWithTag(fullName, lineColor) {
+        function formatLineTitleWithTag(fullName, lineColor, variant = 'hero') {
             if (!fullName) return '';
             const s = String(fullName).trim();
+            const mainClass = variant === 'card' ? 'line-card-main-name' : 'line-hero-main-name';
+            const tagClass = variant === 'card' ? 'line-card-royal-tag' : 'line-hero-royal-tag';
             // 1. Check for " | (Royal Name)" or " | Royal Name"
             const pipeMatch = s.match(/^(.*?)\s*\|\s*\(?(.*?)\)?$/);
             if (pipeMatch) {
                 const main = esc(pipeMatch[1].trim());
                 const tag = esc(pipeMatch[2].trim());
-                return `<span class="line-hero-main-name">${main}</span><span class="line-hero-royal-tag" style="color:${lineColor};border:1px solid ${lineColor}55;background:${lineColor}18;">${tag}</span>`;
+                return `<span class="${mainClass}">${main}</span><span class="${tagClass}" style="color:${lineColor};border:1px solid ${lineColor}55;background:${lineColor}18;">${tag}</span>`;
             }
             // 2. Check for " (Note)" like Orange Line
             const parenMatch = s.match(/^(.*?)\s*\((.*?)\)$/);
             if (parenMatch) {
                 const main = esc(parenMatch[1].trim());
                 const tag = esc(parenMatch[2].trim());
-                return `<span class="line-hero-main-name">${main}</span><span class="line-hero-royal-tag" style="color:${lineColor};border:1px solid ${lineColor}55;background:${lineColor}18;">${tag}</span>`;
+                return `<span class="${mainClass}">${main}</span><span class="${tagClass}" style="color:${lineColor};border:1px solid ${lineColor}55;background:${lineColor}18;">${tag}</span>`;
             }
-            return `<span class="line-hero-main-name">${esc(s)}</span>`;
+            return `<span class="${mainClass}">${esc(s)}</span>`;
         }
 
         function renderLineFilterBar(activeLineId, onClickHandlerName, barId = '') {
@@ -5706,7 +5708,7 @@ setOriginFromActionSheet() {
                             </div>
                 <div class="fare-cards-list">
                                 ${TRANSIT_LINES_CATALOG.filter(l => l.id !== 0).map(l => {
-                                    const lineName = esc(isZh ? (l.nameZH || l.nameEN) : (isEn ? l.nameEN : l.nameTH));
+                                    const lineName = isZh ? (l.nameZH || l.nameEN) : (isEn ? l.nameEN : l.nameTH);
                                     const pricingModel = esc(isZh ? (l.pricingModelZH || l.pricingModelEN) : (isEn ? l.pricingModelEN : l.pricingModelTH));
                                     const tickets = esc(isZh ? (l.ticketsZH || l.ticketsEN) : (isEn ? l.ticketsEN : l.ticketsTH));
                                     const actionText = isZh ? '查看详情' : (isEn ? 'Details' : 'ดูราคา');
@@ -5721,7 +5723,7 @@ setOriginFromActionSheet() {
                                             <div class="fare-card-head">
                                                 <div class="fare-card-title">
                                                     ${getLineIconSvg(l.id, false, 17)}
-                                                    <span>${lineName}</span>
+                                                    <div class="fare-card-title-wrap">${formatLineTitleWithTag(lineName, l.color, 'card')}</div>
                                                 </div>
                                                 <div class="fare-badge-group">
                                                     <span class="fare-rate-pill" style="color:${l.color};border:1px solid ${l.color}44;background:${l.color}18;">
@@ -6232,7 +6234,7 @@ setOriginFromActionSheet() {
                             </div>
                             <div class="timetable-cards-list">
                                 ${TRANSIT_LINES_CATALOG.filter(l => l.id !== 0).map(l => {
-                                    const lineName = esc(isZh ? (l.nameZH || l.nameEN) : (isEn ? l.nameEN : l.nameTH));
+                                    const lineName = isZh ? (l.nameZH || l.nameEN) : (isEn ? l.nameEN : l.nameTH);
                                     const firstTrainRaw = isZh ? (l.firstTrainZH || l.firstTrainEN) : (isEn ? l.firstTrainEN : l.firstTrainTH);
                                     const lastTrainRaw = isZh ? (l.lastTrainZH || l.lastTrainEN) : (isEn ? l.lastTrainEN : l.lastTrainTH);
                                     const peakFreqRaw = isZh ? (l.peakFreqZH || l.peakFreqEN) : (isEn ? l.peakFreqEN : l.peakFreqTH);
@@ -6245,7 +6247,7 @@ setOriginFromActionSheet() {
                                             <div class="timetable-card-head">
                                                 <div class="timetable-card-title">
                                                     ${getLineIconSvg(l.id, false, 17)}
-                                                    <span>${lineName}</span>
+                                                    <div class="timetable-card-title-wrap">${formatLineTitleWithTag(lineName, l.color, 'card')}</div>
                                                 </div>
                                                 <span class="timetable-card-action">
                                                     <span>${actionText}</span> ➔

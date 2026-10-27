@@ -171,14 +171,20 @@ jobs:
             - **iOS Application**: Production IPA package (`BKK_SkyTrains_V.${{ steps.app_version.outputs.version_base }}.ipa`)
             - **Android Application**: Production APK (`BKK_SkyTrains_V.${{ steps.app_version.outputs.version_base }}.apk`) and App Bundle (`BKK_SkyTrains_V.${{ steps.app_version.outputs.version_base }}.aab`)
             - **Key Features & Enhancements**:
-              - High-resolution Transit Network Blueprint Map with interactive vector SVG overlay across 10 Bangkok transit lines (Sukhumvit, Silom, Gold, Blue, Purple, BRT, Pink, Yellow, Dark Red, Light Red, ARL, Orange).
+              - Live Traffic Disruption & Incident Dialog system (`TrafficTrainDialogView`) ported from `th.btsc.theskytrains` architecture.
+              - Real-time Broadcast Disruption Banner displayed on the home screen when delays or service interruptions occur.
+              - Real-time Header Control Pill showing system operational status (`ปกติ` / `ขัดข้อง`) with warning indicator animation.
+              - Full Incident Detail Dialog showing alert timestamp (`AlertTime`), disruption plan/type (`PlanName`/`TypeName`), details (`Detail`), line train icons (`getLineIconSvg`), and operational status table for 5 core transit lines (BTS Sukhumvit, Silom, Gold, MRT Yellow, Pink).
+              - Reassurance Card (`icon_traffic_information.png`) displayed when all lines are operating normally.
+              - Built-in Disruption Simulation Toggle for end-to-end verification and testing under all operating conditions.
+              - High-resolution Transit Network Blueprint Map with interactive vector SVG overlay across Bangkok transit lines.
               - Theme-aware vector SVG map auto-switching with high-contrast typography (Light / Dark mode).
               - Interactive station hotspots for instant Origin/Destination selection and Exit Directory.
               - Transit network legend modal (Transit lines and connections - Airport, Pier/Boat, Intercity Train, Bus Terminal, Park & Ride).
               - Depot & maintenance train telemetry filtering (`YL00`, `PK00`).
               - Real-time transit operating hours validation (05:30/06:00 - 24:00).
               - Nearest alternate stations smooth horizontal scrolling on mobile displays.
-              - Offline Service Worker Cache `bts-v52` with map asset pre-caching.
+              - Offline Service Worker Cache `bts-v73` with high-performance pre-caching.
               - Unified element centering and train line icon standards.
             - **Security & Integrity**: Cryptographic SHA-256 checksums provided for all distribution packages.
           files: |

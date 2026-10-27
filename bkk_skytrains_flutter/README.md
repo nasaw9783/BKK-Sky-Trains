@@ -22,7 +22,8 @@
    - รองรับมาตรฐานการจัดกึ่งกลางของกรอบข้อความและสัญลักษณ์ (Station Codes, Line Badges, Control Buttons)
    - ผสานการทำงานร่วมกับไลบรารี `JSEncrypt` (`assets/www/js/jsencrypt.min.js`) สำหรับความปลอดภัยของข้อมูล
    - ระบบกรองขบวนรถศูนย์ซ่อมบำรุง/รถเปล่า (`YL00`, `PK00`) และตรวจสอบเวลาเปิดให้บริการ (Operating Hours Validation)
-   - หน้าต่างคำอธิบายสัญลักษณ์สายและจุดเชื่อมต่อ (Transit Legend) และแคช Service Worker `bts-v52`
+   - หน้าต่างคำอธิบายสัญลักษณ์สายและจุดเชื่อมต่อ (Transit Legend) และแคช Service Worker `bts-v73`
+   - ระบบแจ้งเตือนเหตุขัดข้องสด (`TrafficTrainDialogView`) พร้อมแถบประกาศ Broadcast Banner และการ์ดยืนยันสถานะปกติ (`icon_traffic_information.png`)
 4. **Clean Platform Footprint**:
    - รองรับเฉพาะ **Android** และ **iOS**
    - ตัดโฟลเดอร์ boilerplate ที่ไม่จำเป็น (Linux, macOS, Windows Desktop) ออกทั้งหมด เพื่อลดขนาดโปรเจกต์และประหยัดพื้นที่จัดเก็บ
@@ -43,7 +44,10 @@ bkk_skytrains_flutter/
 │       ├── js/
 │       │   ├── app.js
 │       │   └── jsencrypt.min.js
-│       ├── sw.js               # Service Worker (bts-v52)
+│       ├── sw.js               # Service Worker (bts-v73)
+│       ├── leaflet.css         # Leaflet CSS
+│       ├── icons/              # ไอคอนประจำสายและ UI
+│       ├── images/             # แอสเซทและไอคอนแจ้งเตือนเหตุขัดข้อง
 │       ├── bkk_transit_map.svg # เวกเตอร์แผนที่โหมดสว่าง
 │       ├── bkk_transit_map_dark.svg # เวกเตอร์แผนที่โหมดมืด
 │       ├── bkk_transit_map.jpg # รูปภาพสำรอง

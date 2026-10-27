@@ -842,6 +842,26 @@ gQIDAQAB
                 loadingRoute: 'กำลังโหลดตำแหน่งขบวน…',
                 trafficHead: `${getUiIcon('warn', 15, '#f59e0b')} ประกาศการเดินรถ`,
                 trafficBad: names => `การเดินรถ ${names} อาจไม่ปกติ`,
+                trafficDisruptionTitle: 'ประกาศแจ้งเหตุขัดข้อง',
+                trafficDialogSub: 'สถานะการเดินรถและประกาศด่วนเรียลไทม์',
+                trafficNormal: 'ปกติ',
+                trafficDisruption: 'ขัดข้อง',
+                trafficMinorDelay: 'การเดินรถล่าช้า',
+                trafficSevereDelay: 'เดินรถล่าช้ามาก/ปรับเส้นทาง',
+                trafficStationClosed: 'ปิดสถานีชั่วคราว',
+                trafficNewsTime: 'เวลาข่าวสาร',
+                trafficDismiss: 'รับทราบ',
+                trafficRefresh: 'รีเฟรชสด',
+                trafficRefreshed: 'อัปเดตสถานะการเดินรถเรียบร้อย',
+                trafficDetails: 'ดูประกาศ ➔',
+                trafficAllNormal: 'การเดินรถทุกสายเป็นปกติ',
+                trafficAllNormalDesc: 'ไม่พบรายงานขบวนรถขัดข้องหรือความล่าช้าในโครงข่ายระบบรถไฟฟ้า ณ ขณะนี้',
+                trafficLineStatus: 'สถานะเส้นทางหลัก',
+                moreTrafficTitle: 'สถานะการเดินรถ & ประกาศแจ้งเหตุขัดข้อง',
+                moreTrafficDesc: 'ตรวจสอบสถานะการเดินรถแบบเรียลไทม์ เหตุขัดข้องทางเทคนิค และประกาศเดินรถฉุกเฉินทุกสาย',
+                trafficSimulatedTag: 'โหมดทดสอบประกาศ',
+                trafficSimulateBtn: 'ทดสอบจำลองเหตุขัดข้อง',
+                trafficSimulateResetBtn: 'ยกเลิกการจำลองเหตุขัดข้อง',
                 geoUnsupported: 'เบราว์เซอร์ไม่รองรับการระบุตำแหน่ง',
                 geoDenied: 'ไม่ได้รับอนุญาตให้ใช้ตำแหน่ง — เปิดสิทธิ์ Location ให้เว็บนี้แล้วลองใหม่',
                 geoFail: 'หาตำแหน่งไม่สำเร็จ ลองใหม่อีกครั้ง',
@@ -1151,6 +1171,26 @@ gQIDAQAB
                 loadingRoute: 'Loading train positions…',
                 trafficHead: `${getUiIcon('warn', 15, '#f59e0b')} Service alerts`,
                 trafficBad: names => `${names} service may be disrupted`,
+                trafficDisruptionTitle: 'Service Disruption Alerts',
+                trafficDialogSub: 'Real-time train operations & urgent alerts',
+                trafficNormal: 'Normal',
+                trafficDisruption: 'Disrupted',
+                trafficMinorDelay: 'Minor Delay',
+                trafficSevereDelay: 'Severe Delay / Rerouted',
+                trafficStationClosed: 'Station Closed',
+                trafficNewsTime: 'Alert Time',
+                trafficDismiss: 'Dismiss',
+                trafficRefresh: 'Refresh Live',
+                trafficRefreshed: 'Transit status updated',
+                trafficDetails: 'View Alert ➔',
+                trafficAllNormal: 'All Lines Operating Normally',
+                trafficAllNormalDesc: 'No disruptions, delays, or service incidents currently reported across the network.',
+                trafficLineStatus: 'Primary Lines Status',
+                moreTrafficTitle: 'Train Status & Incident Alerts',
+                moreTrafficDesc: 'Check real-time network status, technical delays, and emergency transit announcements.',
+                trafficSimulatedTag: 'Test Simulation',
+                trafficSimulateBtn: 'Simulate Disruption Alert',
+                trafficSimulateResetBtn: 'Reset Simulation',
                 geoUnsupported: 'This browser does not support geolocation',
                 geoDenied: 'Location permission denied — allow Location for this site and retry',
                 geoFail: 'Could not get your location, please retry',
@@ -1460,6 +1500,26 @@ gQIDAQAB
                 loadingRoute: '正在加载列车位置…',
                 trafficHead: `${getUiIcon('warn', 15, '#f59e0b')} 运营公告`,
                 trafficBad: names => `${names} 运行可能出现延误或异常`,
+                trafficDisruptionTitle: '列车运行异常及故障公告',
+                trafficDialogSub: '实时列车运行状态与紧急通告',
+                trafficNormal: '正常',
+                trafficDisruption: '故障',
+                trafficMinorDelay: '运行轻微延误',
+                trafficSevereDelay: '严重延误/调整路线',
+                trafficStationClosed: '车站临时关闭',
+                trafficNewsTime: '公告时间',
+                trafficDismiss: '我知道了',
+                trafficRefresh: '实时刷新',
+                trafficRefreshed: '列车运行状态已更新',
+                trafficDetails: '查看详情 ➔',
+                trafficAllNormal: '全线列车运行正常',
+                trafficAllNormalDesc: '目前全线轨道交通网络均畅通无阻，暂无任何故障或延误报告。',
+                trafficLineStatus: '主要线路运行状态',
+                moreTrafficTitle: '运行状态与故障公告',
+                moreTrafficDesc: '查看全线实时运行状态、设备技术故障及突发事件应急公告。',
+                trafficSimulatedTag: '模拟测试公告',
+                trafficSimulateBtn: '模拟故障公告',
+                trafficSimulateResetBtn: '恢复正常状态',
                 geoUnsupported: '您的浏览器不支持地理位置定位',
                 geoDenied: '定位权限已被拒绝 — 请允许本站使用位置权限后重试',
                 geoFail: '无法获取您的位置，请重试',
@@ -3777,6 +3837,7 @@ gQIDAQAB
             connections: {},      // StationKey -> [{key, lineId, color}] สถานีเชื่อมต่อต่างสาย (ระยะ < 350 ม.)
             etaMem: {},           // "StationKey|platform|trainNo" -> {base, at} เวลาเลขล่าสุด (กันเวลาวูบเป็น --)
             traffic: null,        // สถานะการเดินรถจาก btsapp1 {at, updated, lines, alerts}
+            _simulatedDisruption: false, // จำลองเหตุขัดข้องเพื่อทดสอบประกาศ
             keyLines: {},         // StationKey -> [{lineId, color}] ทุกสายที่ผ่านสถานีนั้น
             journey: { open: false, from: null, to: null, loading: false, error: null, result: null, picking: null, pickerLine: 1, openRoute: 0 },
             locating: false,
@@ -6697,6 +6758,9 @@ setOriginFromActionSheet() {
                 if (platEl) {
                     platEl.textContent = (typeof window !== 'undefined' && window.isFlutterApp) ? 'Flutter Hybrid Native' : 'PWA / Web Mobile';
                 }
+
+                // 6. Traffic Disruption Card (แสดงเมื่อมีประกาศแจ้งเตือนรถไฟขัดข้อง เท่านั้น)
+                this.renderTraffic();
             },
 
             /* ---------- language ---------- */
@@ -6866,6 +6930,12 @@ setOriginFromActionSheet() {
                 set('moreGatewayLabel', T('moreGatewayLabel'));
                 set('moreGatewayValue', T('moreGatewayValue'));
                 set('morePlatformLabel', T('morePlatformLabel'));
+                set('moreTrafficTitle', T('moreTrafficTitle'));
+                set('moreTrafficDesc', T('moreTrafficDesc'));
+                set('trafficDialogTitle', T('trafficDisruptionTitle'));
+                set('trafficDialogSub', T('trafficDialogSub'));
+                set('trafficDialogDismissLbl', T('trafficDismiss'));
+                set('trafficDialogRefreshLbl', T('trafficRefresh'));
                 this.renderMoreView();
 
                 // Nearest Station Popup Modal
@@ -8803,21 +8873,314 @@ setOriginFromActionSheet() {
                 };
             },
 
-            /* ---------- สถานะการเดินรถ (btsapp1 TrafficInfoV2) ---------- */
-            async loadTraffic() {
+            /* ---------- สถานะการเดินรถ & ประกาศแจ้งเหตุขัดข้อง (TrafficTrainDialogView from th.btsc.theskytrains) ---------- */
+            async loadTraffic(manual = false) {
                 try {
                     const d = await fetchTraffic();
                     this.traffic = {
-                        at: Date.now(), updated: d.TrafficInfoTime,
-                        lines: d.MainLineStatus || [], alerts: d.TrafficAlerList || []
+                        at: Date.now(),
+                        updated: d.TrafficInfoTime || new Date().toISOString(),
+                        lines: Array.isArray(d.MainLineStatus) ? d.MainLineStatus : [],
+                        alerts: Array.isArray(d.TrafficAlerList) ? d.TrafficAlerList : []
                     };
-                } catch (e) { /* ฟีเจอร์เสริม — เงียบไว้ */ }
+                    if (manual && typeof this.showToast === 'function') {
+                        this.showToast(T('trafficRefreshed') || 'อัปเดตสถานะการเดินรถเรียบร้อย');
+                    }
+                } catch (e) {
+                    if (!this.traffic) {
+                        this.traffic = { at: Date.now(), updated: '', lines: [], alerts: [] };
+                    }
+                    if (manual && typeof this.showToast === 'function') {
+                        this.showToast(T('trafficRefreshed') || 'อัปเดตสถานะการเดินรถเรียบร้อย');
+                    }
+                }
                 this.renderTraffic();
                 this.renderTabs();
             },
 
+            getSimulatedAlert() {
+                const nowStr = new Date().toLocaleTimeString(lang === 'zh' ? 'zh-CN' : (lang === 'en' ? 'en-US' : 'th-TH'), { hour: '2-digit', minute: '2-digit' }) + (lang === 'th' ? ' น.' : '');
+                if (lang === 'en') {
+                    return {
+                        TrAlertID: 9999,
+                        LineID: 1,
+                        LineName: 'BTS Sukhumvit Line',
+                        LineColor: '#7AB420',
+                        PlanName: 'Temporary Service Delay',
+                        TypeName: 'Train Technical Incident / Rerouted',
+                        AlertTime: nowStr,
+                        Detail: 'Due to a rolling stock technical inspection between Siam and Asok stations, train frequency may be delayed by 5-10 minutes. Technicians are on-site resolving the issue.',
+                        isSimulated: true
+                    };
+                } else if (lang === 'zh') {
+                    return {
+                        TrAlertID: 9999,
+                        LineID: 1,
+                        LineName: 'BTS 素坤逸线',
+                        LineColor: '#7AB420',
+                        PlanName: '列车临时运行调整公告',
+                        TypeName: '列车设备检修 / 运营延误',
+                        AlertTime: nowStr,
+                        Detail: '由于在暹罗站至阿索克站之间进行列车设备临时检修，素坤逸线列车可能延误约 5-10 分钟。工程团队正在全力抢修中。',
+                        isSimulated: true
+                    };
+                } else {
+                    return {
+                        TrAlertID: 9999,
+                        LineID: 1,
+                        LineName: 'BTS สายสุขุมวิท',
+                        LineColor: '#7AB420',
+                        PlanName: 'แจ้งเหตุขัดข้องชั่วคราว',
+                        TypeName: 'ขบวนรถขัดข้อง / ปรับรูปแบบการเดินรถ',
+                        AlertTime: nowStr,
+                        Detail: 'เนื่องจากมีขบวนรถขัดข้องระหว่างสถานีสยามและอโศก กำลังเร่งแก้ไข มีผลให้ขบวนรถล่าช้าประมาณ 5-10 นาที ขออภัยในความไม่สะดวก',
+                        isSimulated: true
+                    };
+                }
+            },
+
+            toggleSimulatedDisruption() {
+                this._simulatedDisruption = !this._simulatedDisruption;
+                if (!this._simulatedDisruption) {
+                    this._disruptionPrompted = false;
+                    this._disruptionDismissedByUser = false;
+                }
+                this.renderTraffic();
+                if (typeof this.showToast === 'function') {
+                    this.showToast(this._simulatedDisruption ? (lang === 'en' ? 'Disruption simulation enabled' : (lang === 'zh' ? '已开启故障公告模拟' : 'เปิดการจำลองเหตุขัดข้องแล้ว')) : (lang === 'en' ? 'Simulation reset to normal' : (lang === 'zh' ? '已重置模拟状态' : 'ยกเลิกการจำลองเหตุขัดข้องแล้ว')));
+                }
+            },
+
+            async refreshTraffic(manual = true) {
+                await this.loadTraffic(manual);
+                const modal = document.getElementById('trafficDisruptionPopup');
+                if (modal && modal.style.display === 'flex') {
+                    this.renderTrafficDialog();
+                }
+            },
+
+            openTrafficDialog() {
+                const modal = document.getElementById('trafficDisruptionPopup');
+                if (!modal) return;
+                this.renderTrafficDialog();
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            },
+
+            closeTrafficDialog() {
+                const modal = document.getElementById('trafficDisruptionPopup');
+                if (modal) {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = '';
+                    this._disruptionDismissedByUser = true;
+                }
+            },
+
             renderTraffic() {
-                // Widget removed per user request
+                const alerts = (this.traffic?.alerts || []).slice();
+                if (this._simulatedDisruption) {
+                    alerts.unshift(this.getSimulatedAlert());
+                }
+
+                // ตรวจสอบสายที่มีสถานะล่าช้าหรือขัดข้อง (TrafficStatus > 1)
+                const delayedLines = (this.traffic?.lines || []).filter(l => {
+                    if (this._simulatedDisruption && l.LineId === 1) return true;
+                    return l.TrafficStatus && Number(l.TrafficStatus) > 1;
+                });
+
+                // มีประกาศแจ้งเตือนรถไฟขัดข้องหรือไม่
+                const hasDisruption = alerts.length > 0 || delayedLines.length > 0;
+
+                // 1. ปุ่มแจ้งเตือนบน Header (#trafficAlertHeaderBtn):
+                // แสดงเมื่อมีประกาศแจ้งเตือนรถไฟขัดข้อง เท่านั้น! (หากสถานะปกติจะซ่อนไว้ 100%)
+                const headerBtn = document.getElementById('trafficAlertHeaderBtn');
+                const badgeText = document.getElementById('trafficStatusBadgeText');
+                if (headerBtn) {
+                    if (hasDisruption) {
+                        headerBtn.style.display = 'inline-flex';
+                        headerBtn.classList.add('has-disruption');
+                        if (badgeText) badgeText.textContent = T('trafficDisruption') || 'ขัดข้อง';
+                    } else {
+                        headerBtn.style.display = 'none';
+                        headerBtn.classList.remove('has-disruption');
+                    }
+                }
+
+                // 2. แถบประกาศแจ้งเตือนด่วนบนหน้าหลัก (#disruptionBannerCard):
+                // แสดงเมื่อมีประกาศแจ้งเตือนรถไฟขัดข้อง เท่านั้น! (หากสถานะปกติจะซ่อนไว้ 100%)
+                const bannerCard = document.getElementById('disruptionBannerCard');
+                if (bannerCard) {
+                    if (hasDisruption) {
+                        bannerCard.style.display = 'block';
+                        const titleEl = document.getElementById('disruptionBannerTitleText');
+                        const subEl = document.getElementById('disruptionBannerSub');
+                        const btnEl = document.getElementById('disruptionBannerBtnText');
+
+                        if (alerts.length > 0) {
+                            const firstAlert = alerts[0];
+                            if (titleEl) titleEl.textContent = firstAlert.PlanName || firstAlert.TypeName || T('trafficDisruptionTitle');
+                            if (subEl) subEl.textContent = firstAlert.Detail || (firstAlert.LineName ? `${firstAlert.LineName}: ${firstAlert.TypeName || ''}` : '');
+                        } else {
+                            const lineNames = delayedLines.map(l => (lang === 'en' ? (l.LineName || l.LineNameTH) : (lang === 'zh' ? (l.LineNameTH || l.LineName) : (l.LineNameTH || l.LineName)))).join(', ');
+                            if (titleEl) titleEl.textContent = T('trafficDisruptionTitle');
+                            if (subEl) subEl.textContent = `${T('trafficMinorDelay')}: ${lineNames}`;
+                        }
+                        if (btnEl) btnEl.textContent = T('trafficDetails');
+                    } else {
+                        bannerCard.style.display = 'none';
+                    }
+                }
+
+                // 3. การ์ดสถานะในแท็บเพิ่มเติม (#moreTrafficCard):
+                // ให้แสดงเมื่อมีการแจ้งเตือนประกาศแจ้งรถไฟขัดข้อง เท่านั้น! (หากสถานะปกติจะซ่อนไว้ 100%)
+                const moreTrafficCard = document.getElementById('moreTrafficCard');
+                const moreBadge = document.getElementById('moreTrafficBadge');
+                if (moreTrafficCard) {
+                    if (hasDisruption) {
+                        moreTrafficCard.style.display = 'block';
+                        if (moreBadge) {
+                            moreBadge.classList.remove('normal');
+                            moreBadge.classList.add('disrupted');
+                            moreBadge.textContent = T('trafficDisruption') || 'ขัดข้อง';
+                        }
+                    } else {
+                        moreTrafficCard.style.display = 'none';
+                    }
+                }
+
+                // 4. หากมีเหตุขัดข้องใหม่ และยังไม่เคยแจ้งเตือนในเซสชันนี้ -> แสดงป๊อปอัปอัตโนมัติ 1 ครั้ง (ตามแบบ th.btsc.theskytrains)
+                if (hasDisruption && !this._disruptionPrompted && !this._disruptionDismissedByUser) {
+                    this._disruptionPrompted = true;
+                    this.openTrafficDialog();
+                } else if (!hasDisruption) {
+                    this._disruptionPrompted = false;
+                    this._disruptionDismissedByUser = false;
+                }
+
+                // 5. อัปเดตเนื้อหาโมดอลหากกำลังเปิดอยู่
+                const modal = document.getElementById('trafficDisruptionPopup');
+                if (modal && modal.style.display === 'flex') {
+                    this.renderTrafficDialog();
+                }
+            },
+
+            renderTrafficDialog() {
+                const body = document.getElementById('trafficDialogBody');
+                if (!body) return;
+
+                const esc = str => String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+                const alerts = (this.traffic?.alerts || []).slice();
+                if (this._simulatedDisruption) {
+                    alerts.unshift(this.getSimulatedAlert());
+                }
+
+                const primaryLinesConfig = [
+                    { id: 1, nameTH: 'BTS สายสุขุมวิท', nameEN: 'BTS Sukhumvit Line', nameZH: 'BTS 素坤逸线', routeTH: 'คูคต ↔ เคหะฯ', routeEN: 'Khu Khot ↔ Kheha', routeZH: '库括 ↔ 凯哈', color: '#7AB420' },
+                    { id: 2, nameTH: 'BTS สายสีลม', nameEN: 'BTS Silom Line', nameZH: 'BTS 是隆线', routeTH: 'สนามกีฬาแห่งชาติ ↔ บางหว้า', routeEN: 'National Stadium ↔ Bang Wa', routeZH: '国家体育场 ↔ 曼瓦', color: '#00807D' },
+                    { id: 3, nameTH: 'BTS สายสีทอง', nameEN: 'BTS Gold Line', nameZH: 'BTS 金线', routeTH: 'กรุงธนบุรี ↔ คลองสาน', routeEN: 'Krung Thon Buri ↔ Khlong San', routeZH: '吞武里城 ↔ 空讪', color: '#C9A038' },
+                    { id: 4, nameTH: 'MRT สายสีเหลือง', nameEN: 'MRT Yellow Line', nameZH: 'MRT 黄线', routeTH: 'ลาดพร้าว ↔ สำโรง', routeEN: 'Lat Phrao ↔ Samrong', routeZH: '拉抛 ↔ 三隆', color: '#FFD100' },
+                    { id: 5, nameTH: 'MRT สายสีชมพู', nameEN: 'MRT Pink Line', nameZH: 'MRT 粉线', routeTH: 'ศูนย์ราชการนนทบุรี ↔ มีนบุรี', routeEN: 'Nonthaburi Civic Center ↔ Min Buri', routeZH: '暖武里市民中心 ↔ 民武里', color: '#EC4899' }
+                ];
+
+                const linesStatus = primaryLinesConfig.map(cfg => {
+                    const st = (this.traffic?.lines || []).find(l => l.LineId === cfg.id);
+                    let trafficStatus = st ? (Number(st.TrafficStatus) || 1) : 1;
+                    if (this._simulatedDisruption && cfg.id === 1) {
+                        trafficStatus = 2; // Simulated delay
+                    }
+                    return { ...cfg, trafficStatus };
+                });
+
+                const hasDisruptions = alerts.length > 0 || linesStatus.some(l => l.trafficStatus > 1);
+
+                let html = '';
+
+                // Section 1: Active Announcements / Incident Alert Boxes
+                if (alerts.length > 0) {
+                    alerts.forEach(a => {
+                        const lineCfg = primaryLinesConfig.find(p => p.id === a.LineID) || { color: a.LineColor || '#f59e0b', nameTH: a.LineName || 'BTS' };
+                        const lineName = lang === 'en' ? (lineCfg.nameEN || a.LineName) : (lang === 'zh' ? (lineCfg.nameZH || a.LineName) : (lineCfg.nameTH || a.LineName));
+                        html += `
+                        <div class="traffic-incident-alert-box">
+                            <div class="traffic-incident-header">
+                                <div class="traffic-incident-badge" style="background:${lineCfg.color};">
+                                    ${getLineIconSvg(a.LineID || 1, '#ffffff', 14)}
+                                    <span>${esc(lineName)}</span>
+                                </div>
+                                ${a.AlertTime ? `
+                                <div class="traffic-incident-time">
+                                    <svg class="ui-ic" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:block;margin:auto;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                    <span>${T('trafficNewsTime')}: ${esc(a.AlertTime)}</span>
+                                </div>` : ''}
+                            </div>
+                            <div class="traffic-incident-plan">${esc(a.PlanName || a.TypeName || T('trafficDisruptionTitle'))}</div>
+                            <div class="traffic-incident-detail">${esc(a.Detail || '')}</div>
+                            ${a.isSimulated ? `<div style="margin-top:8px;font-size:11px;color:#f59e0b;font-weight:700;">⚡ ${T('trafficSimulatedTag')}</div>` : ''}
+                        </div>`;
+                    });
+                } else if (!hasDisruptions) {
+                    // Normal Reassurance Card
+                    html += `
+                    <div class="traffic-normal-card">
+                        <img src="images/icon_traffic_information.png" alt="Normal Operation" class="traffic-normal-icon" width="60" height="60" style="display:block;margin:auto;">
+                        <div class="traffic-normal-title">${T('trafficAllNormal')}</div>
+                        <div class="traffic-normal-desc">${T('trafficAllNormalDesc')}</div>
+                    </div>`;
+                }
+
+                // Section 2: Primary Lines Status Grid
+                html += `
+                <div style="margin-top:4px;">
+                    <div class="traffic-line-section-title">${T('trafficLineStatus')}</div>
+                    <div class="traffic-line-list">`;
+
+                linesStatus.forEach(line => {
+                    const lineName = lang === 'en' ? line.nameEN : (lang === 'zh' ? line.nameZH : line.nameTH);
+                    const routeStr = lang === 'en' ? line.routeEN : (lang === 'zh' ? line.routeZH : line.routeTH);
+                    let chipCls = 'normal';
+                    let chipText = T('trafficNormal');
+
+                    if (line.trafficStatus === 2) {
+                        chipCls = 'delay';
+                        chipText = T('trafficMinorDelay');
+                    } else if (line.trafficStatus === 3) {
+                        chipCls = 'disrupted';
+                        chipText = T('trafficSevereDelay');
+                    }
+
+                    html += `
+                        <div class="traffic-line-row">
+                            <div class="traffic-line-info">
+                                <div class="traffic-line-icon-badge" style="background:${line.color};">
+                                    ${getLineIconSvg(line.id, '#ffffff', 16)}
+                                </div>
+                                <div>
+                                    <div class="traffic-line-name">${esc(lineName)}</div>
+                                    <div style="font-size:11px;color:var(--muted);margin-top:2px;">${esc(routeStr)}</div>
+                                </div>
+                            </div>
+                            <span class="traffic-severity-chip ${chipCls}">${chipText}</span>
+                        </div>`;
+                });
+
+                html += `
+                    </div>
+                </div>`;
+
+                // Section 3: Simulation Toggle
+                html += `
+                <div class="traffic-sim-box">
+                    <button type="button" class="traffic-sim-toggle-btn" onclick="App.toggleSimulatedDisruption()">
+                        ${this._simulatedDisruption ? `
+                            <span style="color:#10b981;">●</span> ${T('trafficSimulateResetBtn')}
+                        ` : `
+                            <span style="color:#f59e0b;">⚡</span> ${T('trafficSimulateBtn')}
+                        `}
+                    </button>
+                </div>`;
+
+                body.innerHTML = html;
             },
 
             // โหลดข้อมูลสถานีข้างเคียง (prev/next ของทุกสายที่ผ่านสถานีนี้) เพื่อวาดตำแหน่งขบวน

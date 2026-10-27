@@ -25,7 +25,10 @@ C:\Users\Administrator\Documents\BKK Sky Trains\
 │   ├── api/
 │   │   └── bts-proxy.js            # Universal Serverless Reverse Proxy & CORS Bypass สำหรับ BTS Live Transit API
 │   ├── vercel.json                 # การตั้งค่า Deployment และ Universal CORS Routing บน Vercel
-│   ├── sw.js                       # Service Worker แคช PWA สำหรับ Offline Support (bts-v52)
+│   ├── sw.js                       # Service Worker แคช PWA สำหรับ Offline Support (bts-v73)
+│   ├── leaflet.css                 # Leaflet Map CSS
+│   ├── icons/                      # ไอคอนเวกเตอร์ประจำสายสีและระบบนำทาง
+│   ├── images/                     # แอสเซทและไอคอนแจ้งเหตุขัดข้อง (ic_traffic_alert, icon_traffic_information)
 │   ├── manifest.json               # Web App Manifest สำหรับติดตั้งบนหน้าจอมือถือ
 │   ├── Start-BKK-Transit.ps1       # สคริปต์เซิร์ฟเวอร์ทดสอบในเครื่อง + BTS Live Reverse Proxy (UTF-8 BOM)
 │   ├── Deploy-BKK-SkyTrains.ps1    # สคริปต์บิลด์ Android APK, ล้างข้อมูลเก่าบน GitHub และ Push อัตโนมัติ (UTF-8 BOM)
@@ -109,14 +112,15 @@ if (Test-Path "js\jsencrypt.min.js") { Copy-Item -Path "js\jsencrypt.min.js" -De
   - <img src="icons/legend/branch.svg" width="90" height="16" alt="Branch" style="vertical-align:middle;"> **สายแยกเมืองทองธานี (Branch Line)**: ชานชาลาสายแยกอิมแพ็ค (PK10 ⇄ MT01, MT02)
 
 ### 🧹 กฎข้อที่ 4: Zero-Waste Pruning (ลบไฟล์และแอพที่ไม่สำคัญทิ้งทันที)
-ถ้าไฟล์หรือแอพไหนไม่สำคัญต่อระบบแล้ว และไม่ทำลายระบบให้เสียหาย ให้ลบทิ้งได้ทันทีหลังแก้ไขหรือทดสอบไฟล์ทุกครั้ง:
-- ไฟล์ตัวติดตั้งหรือแอพเวอร์ชันเก่าที่ไม่ได้ใช้งานแล้ว (เช่น APK/IPA รุ่นเก่าที่ซ้ำซ้อนใน `releases/` ให้ลบทิ้งทันที เก็บเฉพาะรุ่นล่าสุด `*_latest.*` หรือรุ่นที่ใช้งานจริงเท่านั้น)
+- **จัดระเบียบไฟล์ `C:\Users\Administrator\Documents\BKK Sky Trains` จากเครื่องให้เป็นระเบียบ พร้อมจัดหมวดหมู่/Folder ถ้าไฟล์หรือแอพไหนไม่สำคัญต่อระบบแล้ว และไม่ทำลายระบบให้เสียหาย ให้ลบทิ้งได้ทันที หลังมีการแก้ไขไฟล์**
+- การจัดหมวดหมู่ 4 ส่วนหลัก: [1] Web App & PWA (Root), [2] Mobile Flutter App (`bkk_skytrains_flutter/`), [3] Releases & CI/CD (`releases/`, `.github/workflows/`), [4] Documentation & Specifications (`*.md`)
+- ไฟล์ตัวติดตั้งหรือแอพเวอร์ชันเก่าที่ไม่ได้ใช้งานแล้ว (เช่น APK/AAB/IPA รุ่นเก่าที่ซ้ำซ้อนใน `releases/` ให้ลบทิ้งทันที เก็บเฉพาะรุ่นล่าสุด `*_latest.*` หรือรุ่นที่ใช้งานจริงเท่านั้น)
 - โฟลเดอร์แคชบิลด์: `bkk_skytrains_flutter\build\`, `bkk_skytrains_flutter\.dart_tool\` (รัน `flutter clean` เสมอเมื่อทดสอบเสร็จ)
 - โฟลเดอร์แคช Android & Compiler: `bkk_skytrains_flutter\android\.gradle\`, `bkk_skytrains_flutter\android\.kotlin\`
 - โฟลเดอร์แคช IDE & OS: `.idea\`, `*.iml`, `Thumbs.db`, `Desktop.ini`, `.DS_Store`
 - ไฟล์ขยะชั่วคราว: `.tmp`, `.bak`, `.old`, `.log`, `.swp`, `*~`
 - ไฟล์ assets ซ้ำซ้อนหรือไม่จำเป็น ที่ไม่ได้ถูกอ้างอิงในระบบ
-- ไฟล์ตัวติดตั้งที่เสร็จสมบูรณ์ให้จัดเก็บไว้ใน `releases/` เท่านั้น
+- ไฟล์ตัวติดตั้งที่เสร็จสมบูรณ์ให้จัดเก็บไว้ใน `releases/` (แบ่งแยกเป็น `Android/APK`, `Android/AAB` และ `Apple/IPA`) เท่านั้น
 
 ### ⛔ กฎข้อที่ 5: Strict Isolation Rule (การแยกโปรเจกต์โดยเด็ดขาด)
 - ห้ามกระทำการใดๆ ข้าม Workspace หรือแตะต้อง `D:\Exclusions\Programs` และ `C:\Users\Administrator\Downloads\Programs` โดยเด็ดขาด
@@ -130,6 +134,13 @@ if (Test-Path "js\jsencrypt.min.js") { Copy-Item -Path "js\jsencrypt.min.js" -De
 - ต่อจากนี้ไปห้ามแก้ไขในสิ่งที่ไม่ได้ร้องขอโดยเด็ดขาด เพื่อป้องกันการแก้ไขไม่ตรงจุดประสงค์
 - ปฏิบัติตามขอบเขตงานที่ผู้ใช้ระบุอย่างเคร่งครัด แก้ไขเฉพาะจุด ฟังก์ชัน หรือไฟล์ที่เกี่ยวข้องโดยตรงกับคำร้องขอเท่านั้น
 - ห้ามแก้ไข ดัดแปลง ลบ หรือ Refactor โค้ด สไตล์ ข้อความ หรือฟังก์ชันส่วนอื่นๆ ที่ผู้ใช้ไม่ได้ร้องขอให้แก้ไขโดยเด็ดขาด
+
+### 🚫 กฎข้อที่ 8: Project Non-Input Text Frame Standard (มาตรฐานการแสดงผลข้อความในกรอบและป้องกันเคอร์เซอร์กระพริบ)
+- ข้อความ รหัสสถานี และตัวเลขที่อยู่ในกรอบทั้งหมด (เช่น รหัสสถานี `YL20`, กล่องเวลานับถอยหลังรถเข้า ขบวนแรก ขบวนที่สอง ขบวนที่สาม, การ์ดสถานี, ป้ายชานชาลา) จะต้องไม่มีเคอร์เซอร์เม้าส์กระพริบ (Blinking Text Caret) หรือเปลี่ยนเป็นเคอร์เซอร์พิมพ์ข้อความ (I-beam cursor) เมื่อคลิกหรือแตะ เว้นแต่จะเป็นช่องที่สามารถพิมพ์เพื่อกรอกข้อมูลได้จริงเท่านั้น (`<input>`, `<textarea>`, `[contenteditable="true"]`)
+- ทุกองค์ประกอบที่ไม่ใช่ช่องกรอกข้อมูลจะต้องมี `caret-color: transparent !important;`, `user-select: none !important;`, และ `cursor: default !important;` (หรือ `cursor: pointer` หากเป็นปุ่มกดหรือลิงก์)
+
+### 🛡️ กฎข้อที่ 9: Strict Live Transit Gateway Protection (ข้อห้ามเด็ดขาด: ห้ามแตะต้องเกตเวย์รับส่งสัญญาณสด BTS/EBM)
+- ต่อจากนี้ไปเมื่อมีการแก้ไขเรื่องเวลา เวลานับถอยหลังรถเข้า ขบวนแรก ขบวนที่สอง ขบวนที่สาม จะไม่ไปกระทำการใดๆ กับส่วนที่ใช้ เกตเวย์รับส่งสัญญาณสดของ BTS/EBM (https://bkkskytrain.online/api/bts-proxy) โดยตรง โดยเด็ดขาด
 
 ---
 

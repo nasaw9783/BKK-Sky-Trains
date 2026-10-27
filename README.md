@@ -27,7 +27,7 @@
      - โหมดมืด (Dark Theme): `bkk_transit_map_dark.svg`
    - จุดฮอตสปอตสถานีแบบโต้ตอบ (Interactive Station Hotspots): แตะที่สถานีใดๆ บนแผนที่เพื่อเลือกเป็น **สถานีต้นทาง**, **สถานีปลายทาง** หรือเปิดดู **ข้อมูลประตูทางออก** ได้ทันที
    - หน้าต่างคำอธิบายสัญลักษณ์โครงข่าย (Transit Network Legend): แสดงสัญลักษณ์สายสีและจุดเชื่อมต่อสำคัญ เช่น ท่าอากาศยาน (Airport), ท่าเรือ (Pier/Boat), รถไฟทางไกล (SRT), สถานีขนส่งผู้โดยสาร (Bus Terminal), อาคารจอดแล้วจร (Park & Ride), จุดเชื่อมต่อข้ามสาย (Interchange) และสายแยกเมืองทองธานี
-   - แคชออฟไลน์ระดับสูงด้วย Service Worker `bts-v52` พร้อมใช้งาน 100% แม้ไม่มีอินเทอร์เน็ต
+   - แคชออฟไลน์ระดับสูงด้วย Service Worker `bts-v73` พร้อมใช้งาน 100% แม้ไม่มีอินเทอร์เน็ต
 6. <img src="icons/ui/compass.svg" width="18" height="18" alt="Planner" style="vertical-align:middle;"> **วางแผนการเดินทางอัจฉริยะ (Smart Journey Planner)**
    - ค้นหาเส้นทางที่ดีที่สุดระหว่างสถานีต้นทางและสถานีปลายทาง
    - คำนวณเวลาเดินทางรวม, จำนวนสถานีที่ผ่าน, จุดเปลี่ยนสาย (Interchanges), และประมาณการค่าโดยสาร
@@ -40,8 +40,14 @@
 9. <img src="icons/ui/clock.svg" width="18" height="18" alt="Timetables" style="vertical-align:middle;"> **ตารางเวลาเดินรถ & ความถี่ (Timetables & Train Frequency)**
    - ตารางเวลาเดินรถเที่ยวแรก (First Train) และเที่ยวสุดท้าย (Last Train) ของแต่ละสาย
    - ความถี่ในการปล่อยขบวนรถ (<img src="icons/ui/timer.svg" width="14" height="14" alt="timer" style="vertical-align:middle;"> Headway) ทั้งในช่วงเวลาเร่งด่วน (Peak) และช่วงเวลาปกติ (Off-Peak) แยกวันทำงาน (<img src="icons/ui/briefcase.svg" width="14" height="14" alt="briefcase" style="vertical-align:middle;">) และวันหยุด (<img src="icons/ui/beach.svg" width="14" height="14" alt="beach" style="vertical-align:middle;">)
-10. <img src="icons/ui/warn.svg" width="18" height="18" alt="Alert" style="vertical-align:middle;"> **สถานะการเดินรถสด & ประกาศเหตุขัดข้อง (Live Traffic & Incident Ticker)**
-    - ตรวจสอบสถานะการให้บริการและความล่าช้าของทุกสายรถไฟฟ้าจากศูนย์ควบคุมแบบสด
+10. <img src="images/ic_traffic_alert.png" width="18" height="18" alt="Alert" style="vertical-align:middle;"> **สถานะการเดินรถสด & ประกาศเหตุขัดข้อง (Traffic Disruption & Incident Dialog)**
+    - นำเข้าโมดูลประกาศเหตุขัดข้องและสถาปัตยกรรม UI (`TrafficTrainDialogView`) จาก `th.btsc.theskytrains`
+    - แถบประกาศแจ้งเตือนด่วน (Broadcast Disruption Banner) บนหน้าหลักเมื่อพบความล่าช้าหรือเหตุขัดข้อง
+    - ปุ่มสถานะแบบเรียลไทม์บนแถบหัว (Header Pill Status) แสดงสถานะ "ปกติ" / "ขัดข้อง" พร้อมเอฟเฟกต์ไฟกระพริบเตือน
+    - ป๊อปอัปแจ้งเหตุขัดข้องฉบับเต็ม แสดงเวลาข่าวสาร (`AlertTime`), หัวข้อเหตุขัดข้อง (`PlanName` / `TypeName`), รายละเอียด (`Detail`), ไอคอนรถไฟประจำสาย (`getLineIconSvg`), และตารางแสดงสถานะ 5 เส้นทางหลัก (BTS สุขุมวิท, สีลม, สีทอง, MRT สีเหลือง, สีชมพู)
+    - การ์ดยืนยันการเดินรถปกติ (Reassurance Card) พร้อมไอคอน `icon_traffic_information.png` เมื่อโครงข่ายเดินรถปกติ
+    - โหมดทดสอบจำลองเหตุขัดข้อง (Disruption Simulation Toggle) สำหรับทดสอบการแสดงผลประกาศได้ทุกเวลา
+    - <img src="images/bkk_skytrains_disruption_preview.jpg" alt="Traffic Disruption Dialog Preview" width="100%" style="max-width:720px;border-radius:12px;margin:10px 0;box-shadow:0 4px 16px rgba(0,0,0,0.15);display:block;">
 11. <img src="icons/ui/star.svg" width="18" height="18" alt="Security" style="vertical-align:middle;"> **ความปลอดภัยการสื่อสารระดับสูง (JSEncrypt API Security)**
     - ผสานการทำงานร่วมกับไลบรารี `JSEncrypt` เพื่อเข้ารหัสข้อมูล (RSA Encryption) ในการส่งคำขอข้อมูลไปยัง API ป้องกันการดักจับข้อมูลและเพิ่มเสถียรภาพในการสื่อสาร
 12. <img src="icons/ui/moon.svg" width="18" height="18" alt="Theme" style="vertical-align:middle;"> **รองรับ 2 ภาษา & โหมดถนอมสายตา (Bilingual & Dark/Light Theme)**
@@ -174,13 +180,16 @@ c:\Users\Administrator\Documents\BKK Sky Trains/
 │   ├── api/
 │   │   └── bts-proxy.js            # Universal Serverless Reverse Proxy & CORS Bypass สำหรับ BTS Live Transit API
 │   ├── vercel.json                 # การตั้งค่า Deployment และ Universal CORS Routing บน Vercel
-│   ├── sw.js                       # Service Worker สำหรับแคช PWA & Offline Support (bts-v52)
+│   ├── sw.js                       # Service Worker สำหรับแคช PWA & Offline Support (bts-v73)
 │   ├── manifest.json               # PWA Web App Manifest สำหรับติดตั้งบนอุปกรณ์
 │   ├── Start-BKK-Transit.ps1       # สคริปต์เปิด Local Server + BTS Live API Reverse Proxy (UTF-8 BOM)
 │   ├── Deploy-BKK-SkyTrains.ps1    # สคริปต์บิลด์ Android APK, ล้างข้อมูลเก่าบน GitHub และ Push อัตโนมัติ (UTF-8 BOM)
 │   ├── bkk_transit_map.svg         # เวกเตอร์แผนผังรถไฟฟ้าโหมดสว่าง (Light Vector Blueprint)
 │   ├── bkk_transit_map_dark.svg    # เวกเตอร์แผนผังรถไฟฟ้าโหมดมืด (Dark Vector Blueprint)
 │   ├── bkk_transit_map.jpg         # รูปภาพสำรองแผนผังรถไฟฟ้า
+│   ├── leaflet.css                 # สไตล์ชีตแผนที่ Leaflet
+│   ├── icons/                      # ไอคอนประจำสายสี (lines/), สัญลักษณ์ (legend/), นำทาง (nav/), หน้าจอ (ui/)
+│   ├── images/                     # แอสเซท Leaflet, ไอคอนแจ้งเหตุขัดข้อง (ic_traffic_alert, icon_traffic_information) และพรีวิว
 │   ├── robots.txt, sitemap.xml     # การตั้งค่า SEO
 │   └── *.png, *.svg, *.ico         # โลโก้และไอคอนแอปพลิเคชัน
 │

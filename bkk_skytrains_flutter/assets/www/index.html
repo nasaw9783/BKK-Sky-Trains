@@ -6797,6 +6797,447 @@
             transform: translateX(-50%) translateY(0);
         }
 
+        /* ===== Traffic Status Pill Button in Header ===== */
+        .traffic-alert-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 5px;
+            height: 30px;
+            padding: 0 9px;
+            border-radius: var(--radius-full);
+            background: rgba(255, 255, 255, 0.12);
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            color: #fff;
+            font-size: 11.5px;
+            font-weight: 700;
+            line-height: 1;
+            letter-spacing: 0;
+            box-sizing: border-box;
+            cursor: pointer !important;
+            user-select: none !important;
+            caret-color: transparent !important;
+            transition: all var(--transition-fast);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(8px);
+        }
+        .traffic-alert-pill:hover {
+            background: rgba(255, 255, 255, 0.22);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+        .traffic-alert-pill:active {
+            transform: scale(0.94);
+        }
+        .traffic-alert-pill.has-disruption {
+            background: rgba(239, 68, 68, 0.28) !important;
+            border-color: rgba(239, 68, 68, 0.65) !important;
+            color: #fee2e2 !important;
+            animation: trafficAlertGlow 1.8s infinite ease-in-out;
+        }
+        @keyframes trafficAlertGlow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2); }
+            50% { box-shadow: 0 0 12px 3px rgba(239, 68, 68, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.3); }
+        }
+        .traffic-alert-pill img {
+            display: block;
+            margin: auto;
+            flex-shrink: 0;
+        }
+
+        /* ===== Disruption Alert Broadcast Banner ===== */
+        .disruption-alert-banner {
+            margin: 0 0 12px 0;
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.16) 0%, rgba(245, 158, 11, 0.14) 100%);
+            border: 1px solid rgba(239, 68, 68, 0.45);
+            border-radius: var(--radius-lg);
+            padding: 12px 14px;
+            cursor: pointer !important;
+            user-select: none !important;
+            caret-color: transparent !important;
+            transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.15);
+            animation: slideDownModal 0.28s ease;
+        }
+        .disruption-alert-banner:hover {
+            transform: translateY(-1px);
+            border-color: rgba(239, 68, 68, 0.7);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.25);
+        }
+        .disruption-banner-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .disruption-banner-icon-wrap {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            line-height: 1;
+            flex-shrink: 0;
+            box-sizing: border-box;
+            letter-spacing: 0;
+        }
+        .disruption-banner-icon-wrap img {
+            display: block;
+            margin: auto;
+            flex-shrink: 0;
+        }
+        .disruption-banner-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .disruption-banner-title {
+            font-size: 13.5px;
+            font-weight: 800;
+            color: #ef4444;
+            line-height: 1.25;
+            margin-bottom: 2px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .disruption-banner-sub {
+            font-size: 11.5px;
+            color: var(--muted);
+            line-height: 1.35;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .disruption-banner-arrow {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.12);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: var(--radius-full);
+            padding: 5px 9px;
+            line-height: 1;
+            flex-shrink: 0;
+            letter-spacing: 0;
+            box-sizing: border-box;
+        }
+
+        /* ===== Traffic Disruption Dialog Modal (TrafficTrainDialogView) ===== */
+        .traffic-dialog-card {
+            max-width: min(520px, 94vw);
+            max-height: 85vh;
+            border: 1px solid rgba(239, 68, 68, 0.35);
+            box-shadow: 0 24px 56px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.08);
+        }
+        .traffic-dialog-icon-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 9px;
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            line-height: 1;
+            box-sizing: border-box;
+            letter-spacing: 0;
+            flex-shrink: 0;
+        }
+        .traffic-dialog-icon-pill img {
+            display: block;
+            margin: auto;
+            flex-shrink: 0;
+        }
+        .traffic-dialog-body {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            padding: 4px 0;
+            overflow-y: auto;
+        }
+        .traffic-incident-alert-box {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.12) 0%, rgba(245, 158, 11, 0.08) 100%);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            border-radius: var(--radius-md);
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .traffic-incident-alert-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .traffic-line-tag {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 4px 9px;
+            border-radius: var(--radius-full);
+            color: #fff;
+            font-size: 11.5px;
+            font-weight: 800;
+            line-height: 1;
+            letter-spacing: 0;
+            box-sizing: border-box;
+            user-select: none !important;
+            caret-color: transparent !important;
+            cursor: default !important;
+        }
+        .traffic-line-tag svg {
+            display: block;
+            margin: auto;
+            flex-shrink: 0;
+        }
+        .traffic-severity-chip {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 8px;
+            border-radius: var(--radius-full);
+            font-size: 11px;
+            font-weight: 700;
+            line-height: 1;
+            letter-spacing: 0;
+            box-sizing: border-box;
+            user-select: none !important;
+            caret-color: transparent !important;
+            cursor: default !important;
+        }
+        .traffic-severity-chip.severe {
+            background: rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            color: #ef4444;
+        }
+        .traffic-severity-chip.minor {
+            background: rgba(245, 158, 11, 0.2);
+            border: 1px solid rgba(245, 158, 11, 0.5);
+            color: #f59e0b;
+        }
+        .traffic-severity-chip.normal {
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.5);
+            color: #10b981;
+        }
+        .traffic-incident-time {
+            font-size: 11px;
+            color: var(--muted);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            line-height: 1;
+        }
+        .traffic-incident-time svg {
+            display: block;
+            margin: auto;
+            flex-shrink: 0;
+        }
+        .traffic-incident-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--ink);
+            line-height: 1.35;
+        }
+        .traffic-incident-detail {
+            font-size: 12.5px;
+            color: var(--ink-secondary);
+            line-height: 1.5;
+            background: var(--bg-subtle);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 10px 12px;
+        }
+        .traffic-normal-card {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(6, 182, 212, 0.06) 100%);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            border-radius: var(--radius-md);
+            padding: 18px 14px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        .traffic-normal-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(16, 185, 129, 0.18);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            line-height: 1;
+            box-sizing: border-box;
+            letter-spacing: 0;
+        }
+        .traffic-normal-icon img {
+            display: block;
+            margin: auto;
+            flex-shrink: 0;
+        }
+        .traffic-normal-title {
+            font-size: 14px;
+            font-weight: 800;
+            color: #10b981;
+        }
+        .traffic-normal-desc {
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.45;
+            max-width: 380px;
+        }
+        .traffic-lines-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .traffic-lines-heading {
+            font-size: 12px;
+            font-weight: 800;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin: 4px 0 2px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .traffic-line-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 12px;
+            background: var(--bg-subtle);
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            transition: background 0.15s ease;
+        }
+        .traffic-line-row-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .traffic-line-badge-icon {
+            width: 26px;
+            height: 26px;
+            border-radius: 7px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            line-height: 1;
+            letter-spacing: 0;
+            box-sizing: border-box;
+            flex-shrink: 0;
+        }
+        .traffic-line-badge-icon svg {
+            display: block;
+            margin: auto;
+            flex-shrink: 0;
+        }
+        .traffic-line-name-wrap {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.25;
+        }
+        .traffic-line-name-th {
+            font-size: 12.5px;
+            font-weight: 800;
+            color: var(--ink);
+        }
+        .traffic-line-name-en {
+            font-size: 10.5px;
+            color: var(--muted);
+        }
+        .traffic-dialog-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 4px;
+        }
+        .traffic-dialog-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 6px;
+            height: 38px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 800;
+            line-height: 1;
+            letter-spacing: 0;
+            box-sizing: border-box;
+            cursor: pointer !important;
+            user-select: none !important;
+            caret-color: transparent !important;
+            transition: all var(--transition-fast);
+        }
+        .traffic-dialog-btn svg {
+            display: block;
+            margin: auto;
+            flex-shrink: 0;
+        }
+        .traffic-dialog-btn.primary {
+            flex: 1;
+            background: var(--brand);
+            color: #fff;
+            border: none;
+        }
+        .traffic-dialog-btn.primary:hover {
+            filter: brightness(1.1);
+        }
+        .traffic-dialog-btn.primary:active {
+            transform: scale(0.97);
+        }
+        .traffic-dialog-btn.secondary {
+            background: var(--bg-subtle);
+            border: 1px solid var(--line);
+            color: var(--ink);
+            padding: 0 14px;
+        }
+        .traffic-dialog-btn.secondary:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .traffic-sim-toggle-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 11px;
+            color: var(--muted);
+            background: none;
+            border: 1px dashed var(--line);
+            border-radius: 6px;
+            padding: 5px 10px;
+            cursor: pointer !important;
+            user-select: none !important;
+            caret-color: transparent !important;
+            margin-top: 4px;
+            transition: color 0.15s ease, border-color 0.15s ease;
+        }
+        .traffic-sim-toggle-btn svg {
+            display: block;
+            margin: auto;
+            flex-shrink: 0;
+        }
+        .traffic-sim-toggle-btn:hover {
+            color: var(--ink);
+            border-color: var(--muted);
+        }
+
         /* Quick Trip Planner Banner & Mobile Responsive Optimization */
         .quick-planner-banner {
             padding: 13px 16px;
@@ -7368,6 +7809,10 @@
             </div>
         </div>
         <div class="header-controls">
+            <button type="button" class="header-pill-btn traffic-alert-pill" id="trafficAlertHeaderBtn" style="display:none;" onclick="App.openTrafficDialog()" title="ประกาศแจ้งการเดินรถ & เหตุขัดข้อง">
+                <img src="images/ic_traffic_alert.png" alt="Traffic Alert" width="16" height="16" style="display:block;margin:auto;flex-shrink:0;">
+                <span class="traffic-alert-status-text" id="trafficStatusBadgeText">ปกติ</span>
+            </button>
             <div class="clock" onclick="App.toggleClockFormat()" title="แตะเพื่อสลับรูปแบบเวลา 12 หรือ 24 ชั่วโมง">
                 <div class="t" id="clockT">--:--:--</div>
                 <div class="d" id="clockD"></div>
@@ -7378,6 +7823,24 @@
     <div class="wrap">
         <!-- ===== VIEW 1: HOME (กระดานสด & สถานีใกล้คุณ) ===== -->
         <div id="viewHome" class="app-view active">
+            <!-- Disruption Alert Broadcast Banner (TrafficTrainDialogView trigger) -->
+            <div id="disruptionBannerCard" class="card disruption-alert-banner" style="display:none;" onclick="App.openTrafficDialog()">
+                <div class="disruption-banner-content">
+                    <div class="disruption-banner-icon-wrap">
+                        <img src="images/ic_traffic_alert.png" alt="Traffic Alert" width="24" height="24" style="display:block;margin:auto;flex-shrink:0;">
+                    </div>
+                    <div class="disruption-banner-info">
+                        <div class="disruption-banner-title" id="disruptionBannerTitle">
+                            <span id="disruptionBannerTitleText">ประกาศแจ้งเหตุขัดข้อง</span>
+                        </div>
+                        <div class="disruption-banner-sub" id="disruptionBannerSub">ตรวจพบความล่าช้า แตะเพื่อดูรายละเอียดประกาศฉบับเต็ม</div>
+                    </div>
+                    <div class="disruption-banner-arrow">
+                        <span id="disruptionBannerBtnText">ดูประกาศ ➔</span>
+                    </div>
+                </div>
+            </div>
+
             <!-- Nearest station -->
             <section class="card" id="nearestCard">
                 <div class="card-head">
@@ -7607,6 +8070,24 @@
                             <span class="status-pulse-dot" id="moreNotifDot"></span>
                             <span id="moreNotifStatusText">เปิดใช้งานอยู่ (ตรวจจับสถานีเบื้องหลัง)</span>
                         </span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Traffic Status & Disruption Announcement Card in More Tab (Shown ONLY when disruption alert is active) -->
+            <section class="card settings-card" id="moreTrafficCard" onclick="App.openTrafficDialog()" style="display:none;cursor:pointer;margin-bottom:12px;">
+                <div class="card-head">
+                    <div class="card-title">
+                        <span class="card-icon-pill" style="background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.25);">
+                            <img src="images/ic_traffic_alert.png" alt="Traffic Alert" width="16" height="16" style="display:block;margin:auto;">
+                        </span>
+                        <span id="moreTrafficTitle">สถานะการเดินรถ & ประกาศแจ้งเหตุขัดข้อง</span>
+                    </div>
+                    <span class="traffic-severity-chip disrupted" id="moreTrafficBadge">ขัดข้อง</span>
+                </div>
+                <div class="settings-card-body">
+                    <div class="settings-desc" id="moreTrafficDesc">
+                        ตรวจสอบสถานะการเดินรถแบบเรียลไทม์ เหตุขัดข้องทางเทคนิค และประกาศเดินรถฉุกเฉินทุกสาย
                     </div>
                 </div>
             </section>
@@ -8214,6 +8695,36 @@
         </div>
     </div>
 
+    <!-- ===== Traffic Disruption Alert Modal (TrafficTrainDialogView from th.btsc.theskytrains) ===== -->
+    <div id="trafficDisruptionPopup" class="nearest-popup-overlay traffic-dialog-overlay" style="display:none;" onclick="if(event.target===this) App.closeTrafficDialog();">
+        <div class="nearest-popup-card traffic-dialog-card" role="dialog" aria-modal="true" aria-labelledby="trafficDialogTitle">
+            <div class="nearest-popup-header traffic-dialog-header">
+                <div class="nearest-popup-badge-wrap">
+                    <span class="card-icon-pill traffic-dialog-icon-pill">
+                        <img src="images/ic_traffic_alert.png" alt="Alert" width="20" height="20" style="display:block;margin:auto;flex-shrink:0;">
+                    </span>
+                    <div>
+                        <div class="nearest-popup-title" id="trafficDialogTitle" style="caret-color:transparent!important;user-select:none!important;cursor:default!important;">ประกาศแจ้งเหตุขัดข้อง</div>
+                        <div style="font-size:11px;color:var(--muted);font-weight:normal;caret-color:transparent!important;user-select:none!important;cursor:default!important;" id="trafficDialogSub">สถานะการเดินรถและประกาศด่วนเรียลไทม์</div>
+                    </div>
+                </div>
+                <button type="button" class="nearest-popup-close" onclick="App.closeTrafficDialog();" aria-label="ปิด">✕</button>
+            </div>
+            
+            <div class="nearest-popup-body traffic-dialog-body" id="trafficDialogBody"></div>
+
+            <div class="nearest-popup-actions traffic-dialog-actions">
+                <button type="button" class="traffic-dialog-btn secondary" onclick="App.refreshTraffic(true);" id="trafficDialogRefreshBtn">
+                    <svg class="ui-ic" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="display:block;margin:auto;"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                    <span id="trafficDialogRefreshLbl">รีเฟรชสด</span>
+                </button>
+                <button type="button" class="nearest-popup-dismiss-btn traffic-dialog-btn primary" onclick="App.closeTrafficDialog();" id="trafficDialogDismissBtn">
+                    <span id="trafficDialogDismissLbl">รับทราบ</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- ===== Station picker (bottom sheet) ===== -->
     <div id="pickerOverlay" class="picker-overlay" hidden></div>
 
@@ -8222,7 +8733,7 @@
 
     <!-- Application Controller -->
     <script src="js/leaflet.js"></script>
-    <script src="js/app.js?v=20261027_03"></script>
+    <script src="js/app.js?v=20261027_04"></script>
 
     <!-- PWA: ลงทะเบียน service worker (เฉพาะเมื่อรันบน HTTP/HTTPS) -->
     <script>

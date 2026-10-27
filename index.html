@@ -6539,21 +6539,30 @@
         .settings-status-row {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            justify-content: center;
+            text-align: center;
             gap: 10px;
             padding: 10px 12px;
             background: var(--bg-subtle);
             border: 1px solid var(--line);
             border-radius: var(--radius-md);
-            flex-wrap: wrap;
+            box-sizing: border-box;
+            user-select: none;
+            cursor: default;
+            caret-color: transparent;
         }
         .settings-status-badge {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
+            text-align: center;
+            line-height: 1;
+            letter-spacing: 0;
             gap: 7px;
             font-size: 12px;
             font-weight: 700;
             color: var(--muted);
+            margin: 0 auto;
         }
         .settings-status-badge.active {
             color: #10b981;

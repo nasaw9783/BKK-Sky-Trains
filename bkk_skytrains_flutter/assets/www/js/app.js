@@ -6169,6 +6169,19 @@ setOriginFromActionSheet() {
 
                 if (activeId === 0) {
                     // ทั้งหมด (All Lines Timetables Overview)
+                    const formatTimetableStat = (rawStr) => {
+                        if (!rawStr) return '<span class="stat-main-val">-</span>';
+                        const s = String(rawStr).trim();
+                        const match = s.match(/^(.*?)\s*(\([^)]*\))\s*$/);
+                        if (match) {
+                            return `<span class="stat-main-val">${esc(match[1])}</span><span class="stat-sub-val">${esc(match[2])}</span>`;
+                        }
+                        if (!/\d/.test(s) && s.length >= 6) {
+                            return `<span class="stat-long-val">${esc(s)}</span>`;
+                        }
+                        return `<span class="stat-main-val">${esc(s)}</span>`;
+                    };
+
                     bodyHtml = `
                         <!-- All Lines Timetable Overview Table -->
                         <div class="info-card">
@@ -6182,9 +6195,9 @@ setOriginFromActionSheet() {
                             <div class="timetable-cards-list">
                                 ${TRANSIT_LINES_CATALOG.filter(l => l.id !== 0).map(l => {
                                     const lineName = esc(isZh ? (l.nameZH || l.nameEN) : (isEn ? l.nameEN : l.nameTH));
-                                    const firstTrain = esc(isZh ? (l.firstTrainZH || l.firstTrainEN) : (isEn ? l.firstTrainEN : l.firstTrainTH));
-                                    const lastTrain = esc(isZh ? (l.lastTrainZH || l.lastTrainEN) : (isEn ? l.lastTrainEN : l.lastTrainTH));
-                                    const peakFreq = esc(isZh ? (l.peakFreqZH || l.peakFreqEN) : (isEn ? l.peakFreqEN : l.peakFreqTH));
+                                    const firstTrainRaw = isZh ? (l.firstTrainZH || l.firstTrainEN) : (isEn ? l.firstTrainEN : l.firstTrainTH);
+                                    const lastTrainRaw = isZh ? (l.lastTrainZH || l.lastTrainEN) : (isEn ? l.lastTrainEN : l.lastTrainTH);
+                                    const peakFreqRaw = isZh ? (l.peakFreqZH || l.peakFreqEN) : (isEn ? l.peakFreqEN : l.peakFreqTH);
                                     const actionText = isZh ? '查看时刻' : (isEn ? 'Timetable' : 'ดูตาราง');
                                     const firstLbl = isZh ? '首班车' : (isEn ? 'First Train' : 'ขบวนแรก');
                                     const lastLbl = isZh ? '末班车' : (isEn ? 'Last Train' : 'ขบวนสุดท้าย');
@@ -6203,15 +6216,15 @@ setOriginFromActionSheet() {
                                             <div class="timetable-card-grid">
                                                 <div class="timetable-stat-box">
                                                     <span class="timetable-stat-lbl">${firstLbl}</span>
-                                                    <span class="timetable-stat-val">${firstTrain}</span>
+                                                    <div class="timetable-stat-val">${formatTimetableStat(firstTrainRaw)}</div>
                                                 </div>
                                                 <div class="timetable-stat-box">
                                                     <span class="timetable-stat-lbl">${lastLbl}</span>
-                                                    <span class="timetable-stat-val">${lastTrain}</span>
+                                                    <div class="timetable-stat-val">${formatTimetableStat(lastTrainRaw)}</div>
                                                 </div>
                                                 <div class="timetable-stat-box">
                                                     <span class="timetable-stat-lbl">${peakLbl}</span>
-                                                    <span class="timetable-stat-val" style="color:${l.color};">${peakFreq}</span>
+                                                    <div class="timetable-stat-val" style="color:${l.color};">${formatTimetableStat(peakFreqRaw)}</div>
                                                 </div>
                                             </div>
                                         </div>

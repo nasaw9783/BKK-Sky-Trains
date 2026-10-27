@@ -4038,7 +4038,7 @@ gQIDAQAB
                     const color = line.LineColor || '#7AB420';
                     const groupLabel = getLineOptLabel(line);
                     const isBright = isBrightColor(color);
-                    const codeTextColor = isBright ? '#0f172a' : '#ffffff';
+                    const codeTextColor = '#ffffff';
 
                     const isBrt = line.LineId === 201;
                     const stationChips = stations.map(s => {
@@ -6347,7 +6347,7 @@ setOriginFromActionSheet() {
                     if (lineStations && lineStations.length > 0) {
                         const color = activeLine.color || '#7AB420';
                         const isBright = isBrightColor(color);
-                        const codeTextColor = isBright ? '#0f172a' : '#ffffff';
+                        const codeTextColor = '#ffffff';
 
                         const stationChips = lineStations.map(s => {
                             const sKey = s.StationKey;
@@ -7382,7 +7382,7 @@ setOriginFromActionSheet() {
                     const isYellow = st && (st.StationLineId === 4 || (st.StationLineColor && String(st.StationLineColor).toUpperCase() === '#FFD100'));
                     const isBrt = st && (st.StationLineId === 201 || (st.StationKey && String(st.StationKey).startsWith('B') && !String(st.StationKey).startsWith('BL')));
                     const keyStyle = st
-                        ? (isBrt ? '' : `background:${st.StationLineColor};color:${isYellow ? '#0f172a' : '#ffffff'};`)
+                        ? (isBrt ? '' : `background:${st.StationLineColor};color:#ffffff;text-shadow:0 1px 2px rgba(0,0,0,0.35);`)
                         : '';
                     const nameStr = st ? stName(st) : T('jSelect');
                     const nameLen = nameStr.length;
@@ -7488,10 +7488,10 @@ setOriginFromActionSheet() {
                     3: { bg: 'rgba(201,160,56,0.12)', border: 'rgba(201,160,56,0.3)', pillBg: '#C9A038', pillText: '#ffffff' },
                     101: { bg: 'rgba(2,132,199,0.12)', border: 'rgba(2,132,199,0.3)', pillBg: '#0284C7', pillText: '#ffffff' },
                     102: { bg: 'rgba(138,44,155,0.12)', border: 'rgba(138,44,155,0.3)', pillBg: '#8A2C9B', pillText: '#ffffff' },
-                    4: { bg: 'rgba(255,209,0,0.15)', border: 'rgba(255,209,0,0.35)', pillBg: '#FFD100', pillText: '#0f172a' },
+                    4: { bg: 'rgba(255,209,0,0.15)', border: 'rgba(255,209,0,0.35)', pillBg: '#FFD100', pillText: '#ffffff' },
                     5: { bg: 'rgba(236,72,153,0.12)', border: 'rgba(236,72,153,0.3)', pillBg: '#EC4899', pillText: '#ffffff' },
                     103: { bg: 'rgba(185,28,28,0.12)', border: 'rgba(185,28,28,0.3)', pillBg: '#B91C1C', pillText: '#ffffff' },
-                    105: { bg: 'rgba(248,113,113,0.15)', border: 'rgba(248,113,113,0.35)', pillBg: '#F87171', pillText: '#0f172a' },
+                    105: { bg: 'rgba(248,113,113,0.15)', border: 'rgba(248,113,113,0.35)', pillBg: '#F87171', pillText: '#ffffff' },
                     104: { bg: 'rgba(138,21,56,0.12)', border: 'rgba(138,21,56,0.3)', pillBg: '#8A1538', pillText: '#ffffff' }
                 };
                 el.innerHTML = hubs.map(h => {
@@ -7570,7 +7570,7 @@ setOriginFromActionSheet() {
                         const st = this.traffic?.lines?.find(x => x.LineId === l.LineId);
                         const warn = st && st.TrafficStatus !== 1 ? ` ${getUiIcon('alert', 12, '#ef4444')}` : '';
                         const isBrt = l.LineId === 201;
-                        const textColor = on ? (isBrt ? '#ffffff' : (isBrightColor(l.LineColor) ? '#0f172a' : '#fff')) : '';
+                        const textColor = on ? '#ffffff' : '';
                         btn.className = `tab ${isBrt ? 'tab-brt' : ''} ${on ? 'on' : ''}`;
                         btn.setAttribute('data-line', l.LineId);
                         btn.style.cssText = on ? (isBrt ? '' : `background:${l.LineColor};color:${textColor};`) : '';
@@ -7590,7 +7590,7 @@ setOriginFromActionSheet() {
                         const st = this.traffic?.lines?.find(x => x.LineId === l.LineId);
                         const warn = st && st.TrafficStatus !== 1 ? ` ${getUiIcon('alert', 12, '#ef4444')}` : '';
                         const isBrt = l.LineId === 201;
-                        const textColor = on ? (isBrt ? '#ffffff' : (isBrightColor(l.LineColor) ? '#0f172a' : '#fff')) : '';
+                        const textColor = on ? '#ffffff' : '';
                         const bgStyle = on ? (isBrt ? '' : `background:${l.LineColor};color:${textColor};`) : '';
                         return `<button class="tab ${isBrt ? 'tab-brt' : ''} ${on ? 'on' : ''}" data-line="${l.LineId}" style="${bgStyle}"
                             aria-pressed="${on ? 'true' : 'false'}" onclick="App.setPickerLine(${l.LineId})">
@@ -7670,7 +7670,7 @@ setOriginFromActionSheet() {
                     const color = line.LineColor || '#7AB420';
                     const groupLabel = getLineOptLabel(line);
                     const isBright = isBrightColor(color);
-                    const codeTextColor = isBright ? '#0f172a' : '#ffffff';
+                    const codeTextColor = '#ffffff';
 
                     const isSingle = stations.length === 1;
                     const stationChips = stations.map(s => {
@@ -8388,7 +8388,8 @@ setOriginFromActionSheet() {
                 const isBright = color === '#FFD100' || color === '#F5C242';
                 if (badge) {
                     badge.style.background = color;
-                    badge.style.color = isBright ? '#0f172a' : '#ffffff';
+                    badge.style.color = '#ffffff';
+                    badge.style.textShadow = '0 1px 2px rgba(0,0,0,0.45)';
                     badge.textContent = station.StationKey || '';
                 }
                 if (nameTH) nameTH.textContent = stName(station);
@@ -10722,7 +10723,7 @@ setOriginFromActionSheet() {
                     ? (lang === 'en' ? `Platform ${esc(p.platform)} · Terminus` : (lang === 'zh' ? `${esc(p.platform)} 号站台 · 终点站` : `ชานชาลา ${esc(p.platform)} · สิ้นสุดสาย`))
                     : T('platformTo', esc(p.platform));
             const isBrightLine = p.LineColor === '#FFD100' || p.LineColor === '#F5C242' || p.LineId === 4;
-            const platTextColor = isBrightLine ? '#0f172a' : '#ffffff';
+            const platTextColor = '#ffffff';
             const trainTextColor = isBrightLine ? '#ca8a04' : p.LineColor;
             const isEvenPlat = false;
 
@@ -10772,7 +10773,7 @@ setOriginFromActionSheet() {
             return `
                 <div class="plat ${isEvenPlat ? 'mirror' : ''}" style="--line-color:${p.LineColor};">
                     <div class="plat-head">
-                        <span class="plat-no" style="background:${p.LineColor};color:${platTextColor}">${esc(p.platform)}</span>
+                        <span class="plat-no" style="background:${p.LineColor};color:#ffffff;text-shadow:0 1px 2px rgba(0,0,0,0.45);">${esc(p.platform)}</span>
                         <div class="plat-dest"><div class="l">${destLabel}</div>
                             <div class="v">${esc(dest)}</div></div>
                     </div>
@@ -11043,7 +11044,7 @@ setOriginFromActionSheet() {
             const topPlatHdr = topLabel ? `
                 <div class="rt-plat-hdr top" style="justify-self: end; width: fit-content;">
                     <span class="p-tag">
-                        <span class="p-badge" style="background:${color}">${pTop?.platform != null ? pTop.platform : ''}</span>
+                        <span class="p-badge" style="background:${color};color:#ffffff;text-shadow:0 1px 2px rgba(0,0,0,0.45);">${pTop?.platform != null ? pTop.platform : ''}</span>
                         <span>${esc(topLabel)}</span>
                     </span>
                 </div>` : '';
@@ -11051,7 +11052,7 @@ setOriginFromActionSheet() {
             const btmPlatHdr = btmLabel ? `
                 <div class="rt-plat-hdr btm" style="justify-self: start; width: fit-content;">
                     <span class="p-tag">
-                        <span class="p-badge" style="background:${color}">${pBtm?.platform != null ? pBtm.platform : ''}</span>
+                        <span class="p-badge" style="background:${color};color:#ffffff;text-shadow:0 1px 2px rgba(0,0,0,0.45);">${pBtm?.platform != null ? pBtm.platform : ''}</span>
                         <span>${esc(btmLabel)}</span>
                     </span>
                 </div>` : '';

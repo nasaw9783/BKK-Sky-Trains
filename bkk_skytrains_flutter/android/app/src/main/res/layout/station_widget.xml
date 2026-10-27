@@ -59,7 +59,7 @@
             android:paddingTop="2dp"
             android:paddingBottom="2dp"
             android:text="YL20"
-            android:textColor="#0f172a"
+            android:textColor="#ffffff"
             android:textSize="12sp"
             android:textStyle="bold" />
 

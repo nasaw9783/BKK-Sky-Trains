@@ -6310,7 +6310,7 @@ setOriginFromActionSheet() {
                                 <span>${isZh ? '全曼谷 12 条轨道交通线列车时刻表速查' : (isEn ? 'All Lines Timetable Overview' : 'ตารางสรุปเวลาเดินรถทั้งระบบ (12 สาย)')}</span>
                             </h3>
                             <div style="font-size:12px;color:var(--muted);margin-bottom:8px">
-                                ${isZh ? '点击下方任一线路或上方导航标签，即可查看该线路详细发车时刻表与频次' : (isEn ? 'Tap any line below or use the pills above to view official frequency schedule table' : 'แตะที่สายรถไฟฟ้าหรือแถบด้านบนเพื่อดูตารางความถี่การเดินรถแบบละเอียด')}
+                                ${isZh ? '点击下方各线路的“查看时刻”按钮或上方导航标签，即可查看该线路详细发车时刻表与频次' : (isEn ? 'Tap "Timetable" button below or use the pills above to view official frequency schedule table' : 'แตะที่ปุ่ม "ดูตาราง" ของแต่ละสายหรือแถบด้านบนเพื่อดูตารางความถี่การเดินรถแบบละเอียด')}
                             </div>
                             <div class="timetable-cards-list">
                                 ${TRANSIT_LINES_CATALOG.filter(l => l.id !== 0).map(l => {
@@ -6323,15 +6323,15 @@ setOriginFromActionSheet() {
                                     const lastLbl = isZh ? '末班车' : (isEn ? 'Last Train' : 'ขบวนสุดท้าย');
                                     const peakLbl = isZh ? '高峰间隔' : (isEn ? 'Peak Frequency' : 'ความถี่เร่งด่วน');
                                     return `
-                                        <div class="timetable-line-card" onclick="App.setTimetablesLine(${l.id})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();App.setTimetablesLine(${l.id});}" role="button" tabindex="0">
+                                        <div class="timetable-line-card">
                                             <div class="timetable-card-head">
                                                 <div class="timetable-card-title">
                                                     ${getLineIconSvg(l.id, false, 17)}
                                                     <div class="timetable-card-title-wrap">${formatLineTitleWithTag(lineName, l.color, 'card')}</div>
                                                 </div>
-                                                <span class="timetable-card-action">
+                                                <button type="button" class="timetable-card-action" onclick="App.setTimetablesLine(${l.id})" aria-label="${actionText} ${esc(lineName)}">
                                                     <span>${actionText}</span> ➔
-                                                </span>
+                                                </button>
                                             </div>
                                             <div class="timetable-card-grid">
                                                 <div class="timetable-stat-box">

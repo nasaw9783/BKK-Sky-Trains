@@ -5252,26 +5252,35 @@
         .timetable-card-grid {
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 6px;
-            text-align: center;
-            user-select: none !important;
-            caret-color: transparent !important;
-        }
-        .timetable-stat-box {
+            gap: 0;
             background: var(--card);
             border: 1px solid var(--line);
             border-radius: var(--radius-sm);
-            padding: 7px 4px;
+            padding: 8px 0;
+            box-sizing: border-box;
+            text-align: center;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            caret-color: transparent !important;
+        }
+        .timetable-stat-box {
+            background: transparent;
+            border: none;
+            border-radius: 0;
+            padding: 2px 6px;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
-            min-height: 54px;
+            min-height: 48px;
             user-select: none !important;
             -webkit-user-select: none !important;
             caret-color: transparent !important;
+        }
+        .timetable-stat-box:not(:last-child) {
+            border-right: 1px solid var(--line);
         }
         .timetable-stat-lbl {
             font-size: 10.5px;

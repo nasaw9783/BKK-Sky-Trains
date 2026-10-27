@@ -8267,7 +8267,7 @@ setOriginFromActionSheet() {
                     const prefix = isOutOfService ? '' : (lang === 'en' ? 'To ' : (lang === 'zh' ? '开往 ' : 'ไป'));
                     return `${lang === 'en' ? 'Platform' : (lang === 'zh' ? '站台' : 'ชานชาลา')} ${p.platform}: ${prefix}${dest} ${timeStr ? `(${timeStr})` : ''}`.trim();
                 });
-                return lines.join(' | ');
+                return lines.join('\n');
             },
 
             triggerNearestStationAlert(nearestItem, forcePopup = false) {

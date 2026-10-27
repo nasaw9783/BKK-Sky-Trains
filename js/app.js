@@ -987,7 +987,7 @@ gQIDAQAB
                 timetableSchedule: 'ดูตารางความถี่การเดินรถทางการ',
                 mrtFreqTitle: 'ความถี่ขบวนรถ',
                 mrtFreqNow: f => `ขบวนมาทุก ~${String(f || '').replace(/^~/, '')} นาที`,
-                mrtFreqNote: 'ข้อมูลจากตารางเวลาปกติ (ไม่ใช่ real-time)',
+                mrtFreqNote: 'ข้อมูลจากตารางเวลาปกติ (ไม่ใช่เวลาสดจริง)',
                 mrtWeekday: 'วันจันทร์–ศุกร์',
                 mrtWeekend: 'วันเสาร์–อาทิตย์ / วันหยุด',
                 mrtOutOfService: 'นอกเวลาให้บริการ',
@@ -1045,7 +1045,7 @@ gQIDAQAB
                 mapZoomOut: `${getUiIcon('zoomOut', 13, 'currentColor')} ย่อ`,
                 mapReset: `${getUiIcon('resetZoom', 13, 'currentColor')} กลาง`,
                 mapLegendBtn: 'สัญลักษณ์',
-                legTitle: 'สัญลักษณ์สายรถไฟฟ้า (Transit Lines)',
+                legTitle: 'สัญลักษณ์สายรถไฟฟ้า',
                 legSukhumvit: 'สายสุขุมวิท',
                 legSilom: 'สายสีลม',
                 legGold: 'สายสีทอง',
@@ -1058,21 +1058,21 @@ gQIDAQAB
                 legLightRed: 'สายสีแดงอ่อน | (นครวิถี)',
                 legArl: 'แอร์พอร์ต ลิงก์',
                 legOrange: 'สายสีส้ม (ยังไม่เปิดให้บริการ)',
-                legInter: 'จุดเชื่อมต่อข้ามสาย (Interchange)',
+                legInter: 'จุดเชื่อมต่อข้ามสาย',
                 legAirport: 'เชื่อมต่อท่าอากาศยาน (สนามบิน)',
                 legBoat: 'ท่าเรือเชื่อมต่อ (เรือด่วน/คลอง)',
-                legTrain: 'เชื่อมต่อรถไฟทางไกล (SRT)',
-                legBus: 'สถานีขนส่งผู้โดยสาร (Bus)',
-                legPark: 'อาคารจอดแล้วจร (Park & Ride)',
+                legTrain: 'เชื่อมต่อรถไฟทางไกล',
+                legBus: 'สถานีขนส่งผู้โดยสาร',
+                legPark: 'อาคารจอดแล้วจร',
                 legTap: 'แตะที่สถานีเพื่อเลือกเป็นจุดเริ่มต้น/ปลายทาง',
                 mapHint: `<span class="map-hint-icon">${getUiIcon('bulb', 15, '#f59e0b')}</span><div class="map-hint-body"><span class="map-hint-phrase"><b>วิธีใช้งาน:</b> แตะที่จุดสถานีใดๆ บนแผนผัง</span> <span class="map-hint-phrase">เพื่อเลือกเป็น <b>สถานีต้นทาง</b>,</span> <span class="map-hint-phrase"><b>สถานีปลายทาง</b></span> <span class="map-hint-phrase">หรือดู <b>ข้อมูลทางออก</b> ได้ทันที</span></div>`,
-                sheetOrigin: 'ตั้งเป็นสถานีต้นทาง (Set Origin)',
+                sheetOrigin: 'ตั้งเป็นสถานีต้นทาง',
                 sheetOriginSub: 'คำนวณเส้นทางจากสถานีนี้',
-                sheetDest: 'ตั้งเป็นสถานีปลายทาง (Set Destination)',
+                sheetDest: 'ตั้งเป็นสถานีปลายทาง',
                 sheetDestSub: 'ค้นหาเส้นทางไปยังสถานีนี้ทันที',
-                sheetExits: 'ดูข้อมูลทางออกและสิ่งอำนวยความสะดวก (Exit Info)',
-                sheetExitsSub: 'ทางออก 1, 2, 3, Skywalk, ลิฟต์คนพิการ',
-                sheetLive: 'ดูเวลารถไฟฟ้าขบวนถัดไปสด (Live Arrival)',
+                sheetExits: 'ดูข้อมูลทางออกและสิ่งอำนวยความสะดวก',
+                sheetExitsSub: 'ทางออก 1, 2, 3, สกายวอล์ก, ลิฟต์คนพิการ',
+                sheetLive: 'ดูเวลารถไฟฟ้าขบวนถัดไปสด',
                 sheetLiveSub: 'เวลานับถอยหลังจริงจากชานชาลา',
                 plannerHubTitle: `${getUiIcon('star', 15, '#f59e0b')} <span>สถานียอดนิยม (แตะเพื่อเลือกด่วน)</span> <span class="hub-toggle-chev" id="plannerHubChev">▲</span>`,
                 exitCardTitle: `${getUiIcon('door', 15, 'currentColor')} ข้อมูลทางออกสถานี & สิ่งอำนวยความสะดวก`,
@@ -1096,10 +1096,10 @@ gQIDAQAB
                 moreThemeDesc: 'ปรับแต่งธีมสว่างหรือมืดตามสภาพแสง',
                 themeDark: 'โหมดมืด',
                 themeLight: 'โหมดสว่าง',
-                moreClockTitle: 'รูปแบบเวลา (Clock Format)',
+                moreClockTitle: 'รูปแบบเวลา',
                 moreClockDesc: 'เลือกรูปแบบการแสดงเวลาของนาฬิกาที่แถบหัวเว็บ',
-                moreClock24Lbl: '24 ชั่วโมง (24H)',
-                moreClock12Lbl: '12 ชั่วโมง (12H AM/PM)',
+                moreClock24Lbl: '24 ชั่วโมง',
+                moreClock12Lbl: '12 ชั่วโมง',
                 moreVersionTitle: 'ข้อมูลแอปพลิเคชัน',
                 moreVersionUpToDate: 'เวอร์ชันล่าสุด',
                 moreVersionLabel: 'เวอร์ชัน',
@@ -1684,13 +1684,13 @@ gQIDAQAB
                 legPark: '停车换乘 (Park & Ride)',
                 legTap: '轻触车站设为起点或终点',
                 mapHint: `<span class="map-hint-icon">${getUiIcon('bulb', 15, '#f59e0b')}</span><div class="map-hint-body"><span class="map-hint-phrase"><b>使用提示:</b> 点击线路图上的任意车站，</span> <span class="map-hint-phrase">即可设为 <b>起点站</b>、</span> <span class="map-hint-phrase"><b>终点站</b></span> <span class="map-hint-phrase">或直接查看 <b>出入口设施</b>。</span></div>`,
-                sheetOrigin: '设为起点站 (Set Origin)',
+                sheetOrigin: '设为起点站',
                 sheetOriginSub: '以此站为出发点规划路线',
-                sheetDest: '设为终点站 (Set Destination)',
+                sheetDest: '设为终点站',
                 sheetDestSub: '规划前往此站的换乘方案',
-                sheetExits: '查看出入口与无障碍设施 (Exit Info)',
+                sheetExits: '查看出入口与无障碍设施',
                 sheetExitsSub: '1, 2, 3 号出口、空中连廊、轮椅无障碍电梯',
-                sheetLive: '查看实时列车到站 (Live Arrival)',
+                sheetLive: '查看实时列车到站',
                 sheetLiveSub: '来自站台的实时到站倒计时',
                 plannerHubTitle: `${getUiIcon('star', 15, '#f59e0b')} <span>热门车站（快捷选择）</span> <span class="hub-toggle-chev" id="plannerHubChev">▲</span>`,
                 exitCardTitle: `${getUiIcon('door', 15, 'currentColor')} 车站出入口与无障碍便利设施`,
@@ -1716,8 +1716,8 @@ gQIDAQAB
                 themeLight: '浅色模式',
                 moreClockTitle: '时间格式',
                 moreClockDesc: '选择顶部时钟的时间显示格式',
-                moreClock24Lbl: '24 小时制 (24H)',
-                moreClock12Lbl: '12 小时制 (12H AM/PM)',
+                moreClock24Lbl: '24 小时制',
+                moreClock12Lbl: '12 小时制',
                 moreVersionTitle: '应用信息',
                 moreVersionUpToDate: '最新版本',
                 moreVersionLabel: '版本',
@@ -4214,7 +4214,7 @@ gQIDAQAB
                 const lm = lang === 'zh' ? (nearestExit.landmarks_zh || nearestExit.landmarks_en || nearestExit.landmarks_th) : (lang === 'th' ? nearestExit.landmarks_th : (nearestExit.landmarks_en || nearestExit.landmarks_th));
 
                 const facilityBadges = (nearestExit.facilities || []).map(f => {
-                    if (f === 'skywalk') return `<span class="facility-chip skywalk">${getUiIcon('walk', 13, 'currentColor')} ${lang === 'zh' ? '人行天桥 Skywalk' : (lang === 'th' ? 'Skywalk ทางเชื่อม' : 'Skywalk Link')}</span>`;
+                    if (f === 'skywalk') return `<span class="facility-chip skywalk">${getUiIcon('walk', 13, 'currentColor')} ${lang === 'zh' ? '空中连廊' : (lang === 'th' ? 'ทางเชื่อมสกายวอล์ก' : 'Skywalk Link')}</span>`;
                     if (f === 'elevator') return `<span class="facility-chip elevator">${getUiIcon('elevator', 13, 'currentColor')} ${lang === 'zh' ? '无障碍/长者专用电梯' : (lang === 'th' ? 'ลิฟต์คนพิการ/ผู้สูงอายุ' : 'Priority Elevator')}</span>`;
                     if (f === 'escalator') return `<span class="facility-chip">${getUiIcon('escalator', 13, 'currentColor')} ${lang === 'zh' ? '自动扶梯' : (lang === 'th' ? 'บันไดเลื่อน' : 'Escalator')}</span>`;
                     return '';
@@ -4422,7 +4422,7 @@ gQIDAQAB
                 listEl.innerHTML = exits.map(ex => {
                     const isNearest = nearestExitInfo && nearestExitInfo.exit === ex.exit;
                     const badges = (ex.facilities || []).map(f => {
-                        if (f === 'skywalk') return `<span class="facility-chip skywalk">${getUiIcon('walk', 13, '#0284c7')} ${lang === 'zh' ? '人行天桥 Skywalk' : (lang === 'th' ? 'Skywalk ทางเชื่อม' : 'Skywalk Link')}</span>`;
+                        if (f === 'skywalk') return `<span class="facility-chip skywalk">${getUiIcon('walk', 13, '#0284c7')} ${lang === 'zh' ? '空中连廊' : (lang === 'th' ? 'ทางเชื่อมสกายวอล์ก' : 'Skywalk Link')}</span>`;
                         if (f === 'elevator') return `<span class="facility-chip elevator">${getUiIcon('elevator', 13, '#10b981')} ${lang === 'zh' ? '无障碍/长者专用电梯' : (lang === 'th' ? 'ลิฟต์คนพิการ/ผู้สูงอายุ' : 'Priority Elevator')}</span>`;
                         if (f === 'escalator') return `<span class="facility-chip">${getUiIcon('escalator', 13, '#64748b')} ${lang === 'zh' ? '自动扶梯' : (lang === 'th' ? 'บันไดเลื่อน' : 'Escalator')}</span>`;
                         return '';

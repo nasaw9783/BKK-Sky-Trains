@@ -867,32 +867,32 @@ gQIDAQAB
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(101)" title="MRT สายสีน้ำเงิน (ท่าพระ ↔ หลักสอง)" aria-label="MRT สายสีน้ำเงิน">
             <div class="footer-card-icon" style="background:rgba(2,132,199,0.12);border-color:rgba(2,132,199,0.3)">${getLineIconSvg(101, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีน้ำเงิน | (เฉลิมรัชมงคล)</span><span class="footer-card-dot">·</span><span class="footer-card-route">ท่าพระ ↔ หลักสอง</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีน้ำเงิน</span><span class="footer-card-royal-tag" style="color:#0284C7;border:1px solid #0284C755;background:#0284C718;">เฉลิมรัชมงคล</span><span class="footer-card-dot">·</span><span class="footer-card-route">ท่าพระ ↔ หลักสอง</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(102)" title="MRT สายสีม่วง (คลองบางไผ่ ↔ เตาปูน)" aria-label="MRT สายสีม่วง">
             <div class="footer-card-icon" style="background:rgba(138,44,155,0.12);border-color:rgba(138,44,155,0.3)">${getLineIconSvg(102, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีม่วง | (ฉลองรัชธรรม)</span><span class="footer-card-dot">·</span><span class="footer-card-route">คลองบางไผ่ ↔ เตาปูน</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีม่วง</span><span class="footer-card-royal-tag" style="color:#8A2C9B;border:1px solid #8A2C9B55;background:#8A2C9B18;">ฉลองรัชธรรม</span><span class="footer-card-dot">·</span><span class="footer-card-route">คลองบางไผ่ ↔ เตาปูน</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(4)" title="MRT สายสีเหลือง (ลาดพร้าว ↔ สำโรง)" aria-label="MRT สายสีเหลือง">
             <div class="footer-card-icon" style="background:rgba(255,209,0,0.15);border-color:rgba(255,209,0,0.35)">${getLineIconSvg(4, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีเหลือง | (นัคราพิพัฒน์)</span><span class="footer-card-dot">·</span><span class="footer-card-route">ลาดพร้าว ↔ สำโรง</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีเหลือง</span><span class="footer-card-royal-tag" style="color:#FFD100;border:1px solid #FFD10055;background:#FFD10018;">นัคราพิพัฒน์</span><span class="footer-card-dot">·</span><span class="footer-card-route">ลาดพร้าว ↔ สำโรง</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(5)" title="MRT สายสีชมพู (ศูนย์ราชการฯ ↔ มีนบุรี)" aria-label="MRT สายสีชมพู">
             <div class="footer-card-icon" style="background:rgba(236,72,153,0.12);border-color:rgba(236,72,153,0.3)">${getLineIconSvg(5, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีชมพู | (วิวัฒน์นคร)</span><span class="footer-card-dot">·</span><span class="footer-card-route">ศูนย์ราชการฯ ↔ มีนบุรี</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีชมพู</span><span class="footer-card-royal-tag" style="color:#EC4899;border:1px solid #EC489955;background:#EC489918;">วิวัฒน์นคร</span><span class="footer-card-dot">·</span><span class="footer-card-route">ศูนย์ราชการฯ ↔ มีนบุรี</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(103)" title="SRT สายสีแดงเข้ม (กรุงเทพอภิวัฒน์ ↔ รังสิต)" aria-label="SRT สายสีแดงเข้ม">
             <div class="footer-card-icon" style="background:rgba(185,28,28,0.12);border-color:rgba(185,28,28,0.3)">${getLineIconSvg(103, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">SRT สายสีแดงเข้ม | (ธานีรัถยา)</span><span class="footer-card-dot">·</span><span class="footer-card-route">กรุงเทพอภิวัฒน์ ↔ รังสิต</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">SRT สายสีแดงเข้ม</span><span class="footer-card-royal-tag" style="color:#B91C1C;border:1px solid #B91C1C55;background:#B91C1C18;">ธานีรัถยา</span><span class="footer-card-dot">·</span><span class="footer-card-route">กรุงเทพอภิวัฒน์ ↔ รังสิต</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(105)" title="SRT สายสีแดงอ่อน (กรุงเทพอภิวัฒน์ ↔ ตลิ่งชัน)" aria-label="SRT สายสีแดงอ่อน">
             <div class="footer-card-icon" style="background:rgba(248,113,113,0.15);border-color:rgba(248,113,113,0.35)">${getLineIconSvg(105, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">SRT สายสีแดงอ่อน | (นครวิถี)</span><span class="footer-card-dot">·</span><span class="footer-card-route">กรุงเทพอภิวัฒน์ ↔ ตลิ่งชัน</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">SRT สายสีแดงอ่อน</span><span class="footer-card-royal-tag" style="color:#F87171;border:1px solid #F8717155;background:#F8717118;">นครวิถี</span><span class="footer-card-dot">·</span><span class="footer-card-route">กรุงเทพอภิวัฒน์ ↔ ตลิ่งชัน</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(104)" title="ARL แอร์พอร์ต ลิงก์ (พญาไท ↔ สุวรรณภูมิ)" aria-label="ARL แอร์พอร์ต ลิงก์">
@@ -907,7 +907,7 @@ gQIDAQAB
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(106)" title="MRT สายสีส้ม (บางขุนนนท์ ↔ แยกร่มเกล้า) (ยังไม่เปิดให้บริการ)" aria-label="MRT สายสีส้ม (ยังไม่เปิดให้บริการ)">
             <div class="footer-card-icon" style="background:rgba(245,130,32,0.12);border-color:rgba(245,130,32,0.3)">${getLineIconSvg(106, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีส้ม <small style="font-size:10px;color:#f58220;font-weight:700;">(ยังไม่เปิดให้บริการ)</small></span><span class="footer-card-dot">·</span><span class="footer-card-route">บางขุนนนท์ ↔ แยกร่มเกล้า</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีส้ม</span><span class="footer-card-royal-tag" style="color:#F58220;border:1px solid #F5822055;background:#F5822018;">ยังไม่เปิดให้บริการ</span><span class="footer-card-dot">·</span><span class="footer-card-route">บางขุนนนท์ ↔ แยกร่มเกล้า</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
 
@@ -929,32 +929,32 @@ gQIDAQAB
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(101)" title="MRT สายสีน้ำเงิน (ท่าพระ ↔ หลักสอง)" aria-label="MRT สายสีน้ำเงิน" aria-hidden="true" tabindex="-1">
             <div class="footer-card-icon" style="background:rgba(2,132,199,0.12);border-color:rgba(2,132,199,0.3)">${getLineIconSvg(101, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีน้ำเงิน | (เฉลิมรัชมงคล)</span><span class="footer-card-dot">·</span><span class="footer-card-route">ท่าพระ ↔ หลักสอง</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีน้ำเงิน</span><span class="footer-card-royal-tag" style="color:#0284C7;border:1px solid #0284C755;background:#0284C718;">เฉลิมรัชมงคล</span><span class="footer-card-dot">·</span><span class="footer-card-route">ท่าพระ ↔ หลักสอง</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(102)" title="MRT สายสีม่วง (คลองบางไผ่ ↔ เตาปูน)" aria-label="MRT สายสีม่วง" aria-hidden="true" tabindex="-1">
             <div class="footer-card-icon" style="background:rgba(138,44,155,0.12);border-color:rgba(138,44,155,0.3)">${getLineIconSvg(102, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีม่วง | (ฉลองรัชธรรม)</span><span class="footer-card-dot">·</span><span class="footer-card-route">คลองบางไผ่ ↔ เตาปูน</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีม่วง</span><span class="footer-card-royal-tag" style="color:#8A2C9B;border:1px solid #8A2C9B55;background:#8A2C9B18;">ฉลองรัชธรรม</span><span class="footer-card-dot">·</span><span class="footer-card-route">คลองบางไผ่ ↔ เตาปูน</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(4)" title="MRT สายสีเหลือง (ลาดพร้าว ↔ สำโรง)" aria-label="MRT สายสีเหลือง" aria-hidden="true" tabindex="-1">
             <div class="footer-card-icon" style="background:rgba(255,209,0,0.15);border-color:rgba(255,209,0,0.35)">${getLineIconSvg(4, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีเหลือง | (นัคราพิพัฒน์)</span><span class="footer-card-dot">·</span><span class="footer-card-route">ลาดพร้าว ↔ สำโรง</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีเหลือง</span><span class="footer-card-royal-tag" style="color:#FFD100;border:1px solid #FFD10055;background:#FFD10018;">นัคราพิพัฒน์</span><span class="footer-card-dot">·</span><span class="footer-card-route">ลาดพร้าว ↔ สำโรง</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(5)" title="MRT สายสีชมพู (ศูนย์ราชการฯ ↔ มีนบุรี)" aria-label="MRT สายสีชมพู" aria-hidden="true" tabindex="-1">
             <div class="footer-card-icon" style="background:rgba(236,72,153,0.12);border-color:rgba(236,72,153,0.3)">${getLineIconSvg(5, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีชมพู | (วิวัฒน์นคร)</span><span class="footer-card-dot">·</span><span class="footer-card-route">ศูนย์ราชการฯ ↔ มีนบุรี</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีชมพู</span><span class="footer-card-royal-tag" style="color:#EC4899;border:1px solid #EC489955;background:#EC489918;">วิวัฒน์นคร</span><span class="footer-card-dot">·</span><span class="footer-card-route">ศูนย์ราชการฯ ↔ มีนบุรี</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(103)" title="SRT สายสีแดงเข้ม (กรุงเทพอภิวัฒน์ ↔ รังสิต)" aria-label="SRT สายสีแดงเข้ม" aria-hidden="true" tabindex="-1">
             <div class="footer-card-icon" style="background:rgba(185,28,28,0.12);border-color:rgba(185,28,28,0.3)">${getLineIconSvg(103, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">SRT สายสีแดงเข้ม | (ธานีรัถยา)</span><span class="footer-card-dot">·</span><span class="footer-card-route">กรุงเทพอภิวัฒน์ ↔ รังสิต</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">SRT สายสีแดงเข้ม</span><span class="footer-card-royal-tag" style="color:#B91C1C;border:1px solid #B91C1C55;background:#B91C1C18;">ธานีรัถยา</span><span class="footer-card-dot">·</span><span class="footer-card-route">กรุงเทพอภิวัฒน์ ↔ รังสิต</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(105)" title="SRT สายสีแดงอ่อน (กรุงเทพอภิวัฒน์ ↔ ตลิ่งชัน)" aria-label="SRT สายสีแดงอ่อน" aria-hidden="true" tabindex="-1">
             <div class="footer-card-icon" style="background:rgba(248,113,113,0.15);border-color:rgba(248,113,113,0.35)">${getLineIconSvg(105, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">SRT สายสีแดงอ่อน | (นครวิถี)</span><span class="footer-card-dot">·</span><span class="footer-card-route">กรุงเทพอภิวัฒน์ ↔ ตลิ่งชัน</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">SRT สายสีแดงอ่อน</span><span class="footer-card-royal-tag" style="color:#F87171;border:1px solid #F8717155;background:#F8717118;">นครวิถี</span><span class="footer-card-dot">·</span><span class="footer-card-route">กรุงเทพอภิวัฒน์ ↔ ตลิ่งชัน</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(104)" title="ARL แอร์พอร์ต ลิงก์ (พญาไท ↔ สุวรรณภูมิ)" aria-label="ARL แอร์พอร์ต ลิงก์" aria-hidden="true" tabindex="-1">
@@ -969,7 +969,7 @@ gQIDAQAB
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(106)" title="MRT สายสีส้ม (บางขุนนนท์ ↔ แยกร่มเกล้า) (ยังไม่เปิดให้บริการ)" aria-label="MRT สายสีส้ม (ยังไม่เปิดให้บริการ)" aria-hidden="true" tabindex="-1">
             <div class="footer-card-icon" style="background:rgba(245,130,32,0.12);border-color:rgba(245,130,32,0.3)">${getLineIconSvg(106, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีส้ม <small style="font-size:10px;color:#f58220;font-weight:700;">(ยังไม่เปิดให้บริการ)</small></span><span class="footer-card-dot">·</span><span class="footer-card-route">บางขุนนนท์ ↔ แยกร่มเกล้า</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT สายสีส้ม</span><span class="footer-card-royal-tag" style="color:#F58220;border:1px solid #F5822055;background:#F5822018;">ยังไม่เปิดให้บริการ</span><span class="footer-card-dot">·</span><span class="footer-card-route">บางขุนนนท์ ↔ แยกร่มเกล้า</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
     </div>
@@ -1212,7 +1212,7 @@ gQIDAQAB
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(106)" title="MRT Orange Line (Bang Khun Non ↔ Yaek Rom Klao) (Not in Service)" aria-label="MRT Orange Line (Not in Service)">
             <div class="footer-card-icon" style="background:rgba(245,130,32,0.12);border-color:rgba(245,130,32,0.3)">${getLineIconSvg(106, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">MRT Orange Line <small style="font-size:10px;color:#f58220;font-weight:700;">(Not in Service)</small></span><span class="footer-card-dot">·</span><span class="footer-card-route">Bang Khun Non ↔ Yaek Rom Klao</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT Orange Line</span><span class="footer-card-royal-tag" style="color:#F58220;border:1px solid #F5822055;background:#F5822018;">Not in Service</span><span class="footer-card-dot">·</span><span class="footer-card-route">Bang Khun Non ↔ Yaek Rom Klao</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
 
@@ -1274,7 +1274,7 @@ gQIDAQAB
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(106)" title="MRT Orange Line (Bang Khun Non ↔ Yaek Rom Klao) (Not in Service)" aria-label="MRT Orange Line (Not in Service)" aria-hidden="true" tabindex="-1">
             <div class="footer-card-icon" style="background:rgba(245,130,32,0.12);border-color:rgba(245,130,32,0.3)">${getLineIconSvg(106, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">MRT Orange Line <small style="font-size:10px;color:#f58220;font-weight:700;">(Not in Service)</small></span><span class="footer-card-dot">·</span><span class="footer-card-route">Bang Khun Non ↔ Yaek Rom Klao</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT Orange Line</span><span class="footer-card-royal-tag" style="color:#F58220;border:1px solid #F5822055;background:#F5822018;">Not in Service</span><span class="footer-card-dot">·</span><span class="footer-card-route">Bang Khun Non ↔ Yaek Rom Klao</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
     </div>
@@ -1477,32 +1477,32 @@ gQIDAQAB
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(101)" title="MRT 蓝线 (塔帕 ↔ 拉颂)" aria-label="MRT 蓝线">
             <div class="footer-card-icon" style="background:rgba(2,132,199,0.12);border-color:rgba(2,132,199,0.3)">${getLineIconSvg(101, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">MRT 蓝线 (差隆拉差蒙坤)</span><span class="footer-card-dot">·</span><span class="footer-card-route">塔帕 ↔ 拉颂</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT 蓝线</span><span class="footer-card-royal-tag" style="color:#0284C7;border:1px solid #0284C755;background:#0284C718;">差隆拉差蒙坤</span><span class="footer-card-dot">·</span><span class="footer-card-route">塔帕 ↔ 拉颂</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(102)" title="MRT 紫线 (空邦派 ↔ 岛本)" aria-label="MRT 紫线">
             <div class="footer-card-icon" style="background:rgba(138,44,155,0.12);border-color:rgba(138,44,155,0.3)">${getLineIconSvg(102, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">MRT 紫线 (差隆拉差探)</span><span class="footer-card-dot">·</span><span class="footer-card-route">空邦派 ↔ 岛本</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT 紫线</span><span class="footer-card-royal-tag" style="color:#8A2C9B;border:1px solid #8A2C9B55;background:#8A2C9B18;">差隆拉差探</span><span class="footer-card-dot">·</span><span class="footer-card-route">空邦派 ↔ 岛本</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(4)" title="MRT 黄线 (拉抛 ↔ 三隆)" aria-label="MRT 黄线">
             <div class="footer-card-icon" style="background:rgba(255,209,0,0.15);border-color:rgba(255,209,0,0.35)">${getLineIconSvg(4, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">MRT 黄线 (纳卡拉披帕)</span><span class="footer-card-dot">·</span><span class="footer-card-route">拉抛 ↔ 三隆</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT 黄线</span><span class="footer-card-royal-tag" style="color:#FFD100;border:1px solid #FFD10055;background:#FFD10018;">纳卡拉披帕</span><span class="footer-card-dot">·</span><span class="footer-card-route">拉抛 ↔ 三隆</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(5)" title="MRT 粉红线 (暖武里政务中心 ↔ 民武里)" aria-label="MRT 粉红线">
             <div class="footer-card-icon" style="background:rgba(236,72,153,0.12);border-color:rgba(236,72,153,0.3)">${getLineIconSvg(5, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">MRT 粉红线 (威瓦那空)</span><span class="footer-card-dot">·</span><span class="footer-card-route">暖武里政务 ↔ 民武里</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT 粉红线</span><span class="footer-card-royal-tag" style="color:#EC4899;border:1px solid #EC489955;background:#EC489918;">威瓦那空</span><span class="footer-card-dot">·</span><span class="footer-card-route">暖武里政务 ↔ 民武里</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(103)" title="SRT 暗红线 (阿披瓦中央站 ↔ 兰实)" aria-label="SRT 暗红线">
             <div class="footer-card-icon" style="background:rgba(185,28,28,0.12);border-color:rgba(185,28,28,0.3)">${getLineIconSvg(103, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">SRT 暗红线 (塔尼拉塔雅)</span><span class="footer-card-dot">·</span><span class="footer-card-route">阿披瓦中央站 ↔ 兰实</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">SRT 暗红线</span><span class="footer-card-royal-tag" style="color:#B91C1C;border:1px solid #B91C1C55;background:#B91C1C18;">塔尼拉塔雅</span><span class="footer-card-dot">·</span><span class="footer-card-route">阿披瓦中央站 ↔ 兰实</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(105)" title="SRT 浅红线 (阿披瓦中央站 ↔ 大林江)" aria-label="SRT 浅红线">
             <div class="footer-card-icon" style="background:rgba(248,113,113,0.15);border-color:rgba(248,113,113,0.35)">${getLineIconSvg(105, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">SRT 浅红线 (那空威提)</span><span class="footer-card-dot">·</span><span class="footer-card-route">阿披瓦 ↔ 大林江</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">SRT 浅红线</span><span class="footer-card-royal-tag" style="color:#F87171;border:1px solid #F8717155;background:#F8717118;">那空威提</span><span class="footer-card-dot">·</span><span class="footer-card-route">阿披瓦 ↔ 大林江</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(104)" title="ARL 机场快线 (帕亚泰 ↔ 素万那普)" aria-label="ARL 机场快线">
@@ -1517,7 +1517,7 @@ gQIDAQAB
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(106)" title="MRT 橙线 (邦坤暖 ↔ 隆高岔路) (尚未开通)" aria-label="MRT 橙线 (尚未开通)">
             <div class="footer-card-icon" style="background:rgba(245,130,32,0.12);border-color:rgba(245,130,32,0.3)">${getLineIconSvg(106, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">MRT 橙线 <small style="font-size:10px;color:#f58220;font-weight:700;">(尚未开通)</small></span><span class="footer-card-dot">·</span><span class="footer-card-route">邦坤暖 ↔ 隆高岔路</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT 橙线</span><span class="footer-card-royal-tag" style="color:#F58220;border:1px solid #F5822055;background:#F5822018;">尚未开通</span><span class="footer-card-dot">·</span><span class="footer-card-route">邦坤暖 ↔ 隆高岔路</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
 
@@ -1539,32 +1539,32 @@ gQIDAQAB
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(101)" title="MRT 蓝线 (塔帕 ↔ 拉颂)" aria-label="MRT 蓝线" aria-hidden="true" tabindex="-1">
             <div class="footer-card-icon" style="background:rgba(2,132,199,0.12);border-color:rgba(2,132,199,0.3)">${getLineIconSvg(101, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">MRT 蓝线 (差隆拉差蒙坤)</span><span class="footer-card-dot">·</span><span class="footer-card-route">塔帕 ↔ 拉颂</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT 蓝线</span><span class="footer-card-royal-tag" style="color:#0284C7;border:1px solid #0284C755;background:#0284C718;">差隆拉差蒙坤</span><span class="footer-card-dot">·</span><span class="footer-card-route">塔帕 ↔ 拉颂</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(102)" title="MRT 紫线 (空邦派 ↔ 岛本)" aria-label="MRT 紫线" aria-hidden="true" tabindex="-1">
             <div class="footer-card-icon" style="background:rgba(138,44,155,0.12);border-color:rgba(138,44,155,0.3)">${getLineIconSvg(102, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">MRT 紫线 (差隆拉差探)</span><span class="footer-card-dot">·</span><span class="footer-card-route">空邦派 ↔ 岛本</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT 紫线</span><span class="footer-card-royal-tag" style="color:#8A2C9B;border:1px solid #8A2C9B55;background:#8A2C9B18;">差隆拉差探</span><span class="footer-card-dot">·</span><span class="footer-card-route">空邦派 ↔ 岛本</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(4)" title="MRT 黄线 (拉抛 ↔ 三隆)" aria-label="MRT 黄线" aria-hidden="true" tabindex="-1">
             <div class="footer-card-icon" style="background:rgba(255,209,0,0.15);border-color:rgba(255,209,0,0.35)">${getLineIconSvg(4, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">MRT 黄线 (纳卡拉披帕)</span><span class="footer-card-dot">·</span><span class="footer-card-route">拉抛 ↔ 三隆</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT 黄线</span><span class="footer-card-royal-tag" style="color:#FFD100;border:1px solid #FFD10055;background:#FFD10018;">纳卡拉披帕</span><span class="footer-card-dot">·</span><span class="footer-card-route">拉抛 ↔ 三隆</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(5)" title="MRT 粉红线 (暖武里政务中心 ↔ 民武里)" aria-label="MRT 粉红线" aria-hidden="true" tabindex="-1">
             <div class="footer-card-icon" style="background:rgba(236,72,153,0.12);border-color:rgba(236,72,153,0.3)">${getLineIconSvg(5, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">MRT 粉红线 (威瓦那空)</span><span class="footer-card-dot">·</span><span class="footer-card-route">暖武里政务 ↔ 民武里</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT 粉红线</span><span class="footer-card-royal-tag" style="color:#EC4899;border:1px solid #EC489955;background:#EC489918;">威瓦那空</span><span class="footer-card-dot">·</span><span class="footer-card-route">暖武里政务 ↔ 民武里</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(103)" title="SRT 暗红线 (阿披瓦中央站 ↔ 兰实)" aria-label="SRT 暗红线" aria-hidden="true" tabindex="-1">
             <div class="footer-card-icon" style="background:rgba(185,28,28,0.12);border-color:rgba(185,28,28,0.3)">${getLineIconSvg(103, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">SRT 暗红线 (塔尼拉塔雅)</span><span class="footer-card-dot">·</span><span class="footer-card-route">阿披瓦中央站 ↔ 兰实</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">SRT 暗红线</span><span class="footer-card-royal-tag" style="color:#B91C1C;border:1px solid #B91C1C55;background:#B91C1C18;">塔尼拉塔雅</span><span class="footer-card-dot">·</span><span class="footer-card-route">阿披瓦中央站 ↔ 兰实</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(105)" title="SRT 浅红线 (阿披瓦中央站 ↔ 大林江)" aria-label="SRT 浅红线" aria-hidden="true" tabindex="-1">
             <div class="footer-card-icon" style="background:rgba(248,113,113,0.15);border-color:rgba(248,113,113,0.35)">${getLineIconSvg(105, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">SRT 浅红线 (那空威提)</span><span class="footer-card-dot">·</span><span class="footer-card-route">阿披瓦 ↔ 大林江</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">SRT 浅红线</span><span class="footer-card-royal-tag" style="color:#F87171;border:1px solid #F8717155;background:#F8717118;">那空威提</span><span class="footer-card-dot">·</span><span class="footer-card-route">阿披瓦 ↔ 大林江</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(104)" title="ARL 机场快线 (帕亚泰 ↔ 素万那普)" aria-label="ARL 机场快线" aria-hidden="true" tabindex="-1">
@@ -1579,7 +1579,7 @@ gQIDAQAB
         </button>
         <button type="button" class="footer-line-card" onclick="App.jumpToLine(106)" title="MRT 橙线 (邦坤暖 ↔ 隆高岔路) (尚未开通)" aria-label="MRT 橙线 (尚未开通)" aria-hidden="true" tabindex="-1">
             <div class="footer-card-icon" style="background:rgba(245,130,32,0.12);border-color:rgba(245,130,32,0.3)">${getLineIconSvg(106, false, 20)}</div>
-            <div class="footer-card-info"><span class="footer-card-name">MRT 橙线 <small style="font-size:10px;color:#f58220;font-weight:700;">(尚未开通)</small></span><span class="footer-card-dot">·</span><span class="footer-card-route">邦坤暖 ↔ 隆高岔路</span></div>
+            <div class="footer-card-info"><span class="footer-card-name">MRT 橙线</span><span class="footer-card-royal-tag" style="color:#F58220;border:1px solid #F5822055;background:#F5822018;">尚未开通</span><span class="footer-card-dot">·</span><span class="footer-card-route">邦坤暖 ↔ 隆高岔路</span></div>
             <div class="footer-card-arrow">›</div>
         </button>
     </div>

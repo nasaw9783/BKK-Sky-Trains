@@ -3373,8 +3373,15 @@ gQIDAQAB
         function formatLineTitleWithTag(fullName, lineColor, variant = 'hero') {
             if (!fullName) return '';
             const s = String(fullName).trim();
-            const mainClass = variant === 'card' ? 'line-card-main-name' : 'line-hero-main-name';
-            const tagClass = variant === 'card' ? 'line-card-royal-tag' : 'line-hero-royal-tag';
+            let mainClass = 'line-hero-main-name';
+            let tagClass = 'line-hero-royal-tag';
+            if (variant === 'card') {
+                mainClass = 'line-card-main-name';
+                tagClass = 'line-card-royal-tag';
+            } else if (variant === 'frame') {
+                mainClass = 'line-frame-main-name';
+                tagClass = 'line-frame-royal-tag';
+            }
             // 1. Check for " | (Royal Name)" or " | Royal Name"
             const pipeMatch = s.match(/^(.*?)\s*\|\s*\(?(.*?)\)?$/);
             if (pipeMatch) {
@@ -4081,7 +4088,7 @@ gQIDAQAB
                             <div class="line-frame-head">
                                 <div class="line-frame-title">
                                     ${getLineIconSvg(line.LineId, false, 18)}
-                                    <span>${esc(groupLabel)}</span>
+                                    ${formatLineTitleWithTag(groupLabel, color, 'frame')}
                                 </div>
                                 <span class="line-frame-count" style="background:${color}22; color:${isBright ? '#ca8a04' : color}; border:1px solid ${color}44;">
                                     ${stations.length} ${lang === 'zh' ? '座车站' : (lang === 'th' ? 'สถานี' : 'stations')}
@@ -7753,7 +7760,7 @@ setOriginFromActionSheet() {
                             <div class="line-frame-head">
                                 <div class="line-frame-title">
                                     ${getLineIconSvg(line.LineId, false, 18)}
-                                    <span>${esc(groupLabel)}</span>
+                                    ${formatLineTitleWithTag(groupLabel, color, 'frame')}
                                 </div>
                                 <span class="line-frame-count" style="background:${color}22; color:${isBright ? '#ca8a04' : color}; border:1px solid ${color}44;">
                                     ${stations.length} ${lang === 'th' ? 'สถานี' : 'stations'}

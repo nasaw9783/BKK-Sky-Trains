@@ -5784,7 +5784,7 @@ setOriginFromActionSheet() {
                                 <span>${isZh ? '全曼谷 12 条轨道交通线票价速查' : (isEn ? 'All Lines Fare Rate Comparison' : 'ตารางเปรียบเทียบอัตราค่าโดยสารทั้งระบบ (12 สาย)')}</span>
                             </h3>
                             <div style="font-size:12px;color:var(--muted);margin-bottom:8px">
-                                ${isZh ? '点击下方任一线路线条或上方导航标签，即可查看该线路详细阶梯票价' : (isEn ? 'Tap any line below or use the pills above to view detailed fare structure' : 'แตะที่สายรถไฟฟ้าหรือแถบด้านบนเพื่อดูตารางราคาแบบละเอียด')}
+                                ${isZh ? '点击下方各线路的“查看详情”按钮或上方导航标签，即可查看该线路详细阶梯票价' : (isEn ? 'Tap "Details" button below or use the pills above to view detailed fare structure' : 'แตะที่ปุ่ม "ดูราคา" ของแต่ละสายหรือแถบด้านบนเพื่อดูตารางราคาแบบละเอียด')}
                             </div>
                 <div class="fare-cards-list">
                                 ${TRANSIT_LINES_CATALOG.filter(l => l.id !== 0).map(l => {
@@ -5799,7 +5799,7 @@ setOriginFromActionSheet() {
                                         : `฿${l.minFare} - ฿${l.maxFare}`;
 
                                     return `
-                                        <div class="fare-line-card" onclick="App.setFaresLine(${l.id})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();App.setFaresLine(${l.id});}" role="button" tabindex="0">
+                                        <div class="fare-line-card">
                                             <div class="fare-card-head">
                                                 <div class="fare-card-title">
                                                     ${getLineIconSvg(l.id, false, 17)}
@@ -5809,9 +5809,9 @@ setOriginFromActionSheet() {
                                                     <span class="fare-rate-pill" style="color:${l.color};border:1px solid ${l.color}44;background:${l.color}18;">
                                                         ${fareRateStr}
                                                     </span>
-                                                    <span class="fare-card-action">
+                                                    <button type="button" class="fare-card-action" onclick="App.setFaresLine(${l.id})" aria-label="${actionText} ${esc(lineName)}">
                                                         <span>${actionText}</span> ➔
-                                                    </span>
+                                                    </button>
                                                 </div>
                                             </div>
                                             <div class="fare-details-grid">

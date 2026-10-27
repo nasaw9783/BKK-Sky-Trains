@@ -4948,16 +4948,11 @@
             border: 1px solid var(--line);
             border-radius: var(--radius-md);
             padding: 12px;
-            cursor: pointer;
-            transition: all var(--transition-fast);
+            cursor: default !important;
             box-sizing: border-box;
             user-select: none !important;
             -webkit-user-select: none !important;
             caret-color: transparent !important;
-        }
-        .fare-line-card:hover {
-            border-color: rgba(100, 116, 139, 0.45);
-            transform: translateY(-1px);
         }
         .fare-card-head {
             display: flex;
@@ -5017,6 +5012,7 @@
             justify-content: center;
             text-align: center;
             gap: 4px;
+            font-family: inherit;
             font-size: 11px;
             font-weight: 700;
             padding: 4px 10px;
@@ -5034,11 +5030,20 @@
             -webkit-user-select: none !important;
             caret-color: transparent !important;
             cursor: pointer;
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
         }
-        .fare-line-card:hover .fare-card-action {
+        .fare-card-action:hover {
             background: var(--sky);
             color: #ffffff;
             border-color: var(--sky);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35);
+        }
+        .fare-card-action:active {
+            transform: translateY(0);
+            box-shadow: none;
         }
         .fare-details-grid {
             display: flex;

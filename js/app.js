@@ -3370,6 +3370,26 @@ gQIDAQAB
             { code: 'A1', th: 'สุวรรณภูมิ (สนามบิน)', en: 'Suvarnabhumi Airport', zh: '素万那普机场', price: '฿45' }
         ];
 
+        function formatLineTitleWithTag(fullName, lineColor) {
+            if (!fullName) return '';
+            const s = String(fullName).trim();
+            // 1. Check for " | (Royal Name)" or " | Royal Name"
+            const pipeMatch = s.match(/^(.*?)\s*\|\s*\(?(.*?)\)?$/);
+            if (pipeMatch) {
+                const main = esc(pipeMatch[1].trim());
+                const tag = esc(pipeMatch[2].trim());
+                return `<span class="line-hero-main-name">${main}</span><span class="line-hero-royal-tag" style="color:${lineColor};border:1px solid ${lineColor}55;background:${lineColor}18;">${tag}</span>`;
+            }
+            // 2. Check for " (Note)" like Orange Line
+            const parenMatch = s.match(/^(.*?)\s*\((.*?)\)$/);
+            if (parenMatch) {
+                const main = esc(parenMatch[1].trim());
+                const tag = esc(parenMatch[2].trim());
+                return `<span class="line-hero-main-name">${main}</span><span class="line-hero-royal-tag" style="color:${lineColor};border:1px solid ${lineColor}55;background:${lineColor}18;">${tag}</span>`;
+            }
+            return `<span class="line-hero-main-name">${esc(s)}</span>`;
+        }
+
         function renderLineFilterBar(activeLineId, onClickHandlerName, barId = '') {
             const idAttr = barId ? `id="${barId}"` : '';
             return `<div ${idAttr} class="line-filter-bar" data-lang="${lang}">
@@ -6073,7 +6093,7 @@ setOriginFromActionSheet() {
                                 <div style="display:flex;align-items:flex-start;gap:10px;min-width:0;flex:1;">
                                     <div style="flex-shrink:0;margin-top:2px;">${getLineIconSvg(activeLine.id, false, 28)}</div>
                                     <div style="min-width:0;flex:1;">
-                                        <div style="font-size:16.5px;font-weight:800;color:var(--ink);line-height:1.3;word-break:break-word;">${esc(lineName)}</div>
+                                        <div class="line-hero-title-wrap">${formatLineTitleWithTag(lineName, activeLine.color)}</div>
                                         <div style="font-size:12px;color:var(--muted);line-height:1.45;word-break:break-word;margin-top:3px;">
                                             <div>${esc(operator)}</div>
                                             <div style="margin-top:2px;">${esc(terminus)}</div>
@@ -6426,7 +6446,7 @@ setOriginFromActionSheet() {
                                 <div style="display:flex;align-items:flex-start;gap:10px;min-width:0;flex:1;">
                                     <div style="flex-shrink:0;margin-top:2px;">${getLineIconSvg(activeLine.id, false, 28)}</div>
                                     <div style="min-width:0;flex:1;">
-                                        <div style="font-size:16.5px;font-weight:800;color:var(--ink);line-height:1.3;word-break:break-word;">${esc(lineName)}</div>
+                                        <div class="line-hero-title-wrap">${formatLineTitleWithTag(lineName, activeLine.color)}</div>
                                         <div style="font-size:12px;color:var(--muted);line-height:1.45;word-break:break-word;margin-top:3px;">
                                             <div>${esc(operator)}</div>
                                             <div style="margin-top:2px;">${terminusHtml}</div>

@@ -6179,38 +6179,44 @@ setOriginFromActionSheet() {
                             <div style="font-size:12px;color:var(--muted);margin-bottom:8px">
                                 ${isZh ? '点击下方任一线路或上方导航标签，即可查看该线路详细发车时刻表与频次' : (isEn ? 'Tap any line below or use the pills above to view official frequency schedule table' : 'แตะที่สายรถไฟฟ้าหรือแถบด้านบนเพื่อดูตารางความถี่การเดินรถแบบละเอียด')}
                             </div>
-                            <div class="fare-table-wrap">
-                                <table class="fare-grid-table">
-                                    <thead>
-                                        <tr>
-                                            <th>${isZh ? '线路' : (isEn ? 'Line' : 'สายรถไฟฟ้า')}</th>
-                                            <th>${isZh ? '首班车' : (isEn ? 'First Train' : 'ขบวนแรก')}</th>
-                                            <th>${isZh ? '末班车' : (isEn ? 'Last Train' : 'ขบวนสุดท้าย')}</th>
-                                            <th>${isZh ? '高峰发车间隔' : (isEn ? 'Peak Frequency' : 'ความถี่ช่วงเร่งด่วน')}</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        ${TRANSIT_LINES_CATALOG.filter(l => l.id !== 0).map(l => `
-                                            <tr style="cursor:pointer;" onclick="App.setTimetablesLine(${l.id})">
-                                                <td style="white-space:nowrap;">
-                                                    <span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap;">
-                                                        ${getLineIconSvg(l.id, false, 16)}
-                                                        <b>${esc(isZh ? (l.nameZH || l.nameEN) : (isEn ? l.nameEN : l.nameTH))}</b>
-                                                    </span>
-                                                </td>
-                                                <td style="white-space:nowrap;"><b>${esc(isZh ? (l.firstTrainZH || l.firstTrainEN) : (isEn ? l.firstTrainEN : l.firstTrainTH))}</b></td>
-                                                <td style="white-space:nowrap;"><b>${esc(isZh ? (l.lastTrainZH || l.lastTrainEN) : (isEn ? l.lastTrainEN : l.lastTrainTH))}</b></td>
-                                                <td style="white-space:nowrap;color:${l.color}"><b>${esc(isZh ? (l.peakFreqZH || l.peakFreqEN) : (isEn ? l.peakFreqEN : l.peakFreqTH))}</b></td>
-                                                <td style="white-space:nowrap;">
-                                                    <button type="button" class="btn btn-ghost" style="padding:4px 8px;font-size:11px;white-space:nowrap;" onclick="event.stopPropagation();App.setTimetablesLine(${l.id})">
-                                                        ${isZh ? '查看时刻' : (isEn ? 'Timetable' : 'ดูตาราง')} ➔
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        `).join('')}
-                                    </tbody>
-                                </table>
+                            <div class="timetable-cards-list">
+                                ${TRANSIT_LINES_CATALOG.filter(l => l.id !== 0).map(l => {
+                                    const lineName = esc(isZh ? (l.nameZH || l.nameEN) : (isEn ? l.nameEN : l.nameTH));
+                                    const firstTrain = esc(isZh ? (l.firstTrainZH || l.firstTrainEN) : (isEn ? l.firstTrainEN : l.firstTrainTH));
+                                    const lastTrain = esc(isZh ? (l.lastTrainZH || l.lastTrainEN) : (isEn ? l.lastTrainEN : l.lastTrainTH));
+                                    const peakFreq = esc(isZh ? (l.peakFreqZH || l.peakFreqEN) : (isEn ? l.peakFreqEN : l.peakFreqTH));
+                                    const actionText = isZh ? '查看时刻' : (isEn ? 'Timetable' : 'ดูตาราง');
+                                    const firstLbl = isZh ? '首班车' : (isEn ? 'First Train' : 'ขบวนแรก');
+                                    const lastLbl = isZh ? '末班车' : (isEn ? 'Last Train' : 'ขบวนสุดท้าย');
+                                    const peakLbl = isZh ? '高峰间隔' : (isEn ? 'Peak Frequency' : 'ความถี่เร่งด่วน');
+                                    return `
+                                        <div class="timetable-line-card" onclick="App.setTimetablesLine(${l.id})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();App.setTimetablesLine(${l.id});}" role="button" tabindex="0">
+                                            <div class="timetable-card-head">
+                                                <div class="timetable-card-title">
+                                                    ${getLineIconSvg(l.id, false, 17)}
+                                                    <span>${lineName}</span>
+                                                </div>
+                                                <span class="timetable-card-action">
+                                                    <span>${actionText}</span> ➔
+                                                </span>
+                                            </div>
+                                            <div class="timetable-card-grid">
+                                                <div class="timetable-stat-box">
+                                                    <span class="timetable-stat-lbl">${firstLbl}</span>
+                                                    <span class="timetable-stat-val">${firstTrain}</span>
+                                                </div>
+                                                <div class="timetable-stat-box">
+                                                    <span class="timetable-stat-lbl">${lastLbl}</span>
+                                                    <span class="timetable-stat-val">${lastTrain}</span>
+                                                </div>
+                                                <div class="timetable-stat-box">
+                                                    <span class="timetable-stat-lbl">${peakLbl}</span>
+                                                    <span class="timetable-stat-val" style="color:${l.color};">${peakFreq}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('')}
                             </div>
                         </div>
 

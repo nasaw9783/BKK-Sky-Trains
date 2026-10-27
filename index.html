@@ -4872,6 +4872,136 @@
             background: var(--bg-subtle);
         }
 
+        /* Timetable Overview Line Cards */
+        .timetable-cards-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .timetable-line-card {
+            background: var(--bg-subtle);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-md);
+            padding: 12px;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            box-sizing: border-box;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            caret-color: transparent !important;
+        }
+        .timetable-line-card:hover {
+            border-color: rgba(100, 116, 139, 0.45);
+            transform: translateY(-1px);
+        }
+        .timetable-card-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding-bottom: 8px;
+            margin-bottom: 8px;
+            border-bottom: 1px solid var(--line);
+            user-select: none !important;
+            caret-color: transparent !important;
+        }
+        .timetable-card-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13.5px;
+            font-weight: 800;
+            color: var(--ink);
+            line-height: 1.2;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            user-select: none !important;
+            caret-color: transparent !important;
+        }
+        .timetable-card-action {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: var(--radius-full);
+            background: var(--sky-bg);
+            border: 1px solid rgba(2, 132, 199, 0.25);
+            color: var(--sky);
+            white-space: nowrap;
+            flex-shrink: 0;
+            line-height: 1;
+            letter-spacing: 0;
+            box-sizing: border-box;
+            transition: all 0.15s ease;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            caret-color: transparent !important;
+            cursor: pointer;
+        }
+        .timetable-line-card:hover .timetable-card-action {
+            background: var(--sky);
+            color: #ffffff;
+            border-color: var(--sky);
+        }
+        .timetable-card-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 6px;
+            text-align: center;
+            user-select: none !important;
+            caret-color: transparent !important;
+        }
+        .timetable-stat-box {
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-sm);
+            padding: 7px 4px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            caret-color: transparent !important;
+        }
+        .timetable-stat-lbl {
+            font-size: 10.5px;
+            color: var(--muted);
+            line-height: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+            text-align: center;
+            letter-spacing: 0;
+            user-select: none !important;
+            caret-color: transparent !important;
+        }
+        .timetable-stat-val {
+            font-size: 11.5px;
+            font-weight: 800;
+            color: var(--ink);
+            margin-top: 4px;
+            line-height: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+            text-align: center;
+            letter-spacing: 0;
+            user-select: none !important;
+            caret-color: transparent !important;
+        }
+
         .stn-code-badge {
             display: inline-flex;
             align-items: center;

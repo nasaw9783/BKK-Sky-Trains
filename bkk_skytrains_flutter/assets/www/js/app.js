@@ -5684,38 +5684,53 @@ setOriginFromActionSheet() {
                             <div style="font-size:12px;color:var(--muted);margin-bottom:8px">
                                 ${isZh ? '点击下方任一线路线条或上方导航标签，即可查看该线路详细阶梯票价' : (isEn ? 'Tap any line below or use the pills above to view detailed fare structure' : 'แตะที่สายรถไฟฟ้าหรือแถบด้านบนเพื่อดูตารางราคาแบบละเอียด')}
                             </div>
-                            <div class="fare-table-wrap">
-                                <table class="fare-grid-table">
-                                    <thead>
-                                        <tr>
-                                            <th>${isZh ? '线路' : (isEn ? 'Line' : 'สายรถไฟฟ้า')}</th>
-                                            <th>${isZh ? '起步 - 最高' : (isEn ? 'Min - Max' : 'อัตราเริ่มต้น - สูงสุด')}</th>
-                                            <th>${isZh ? '计费方式' : (isEn ? 'Pricing Model' : 'รูปแบบราคา')}</th>
-                                            <th>${isZh ? '车票 / 乘车卡' : (isEn ? 'Cards / Tickets' : 'บัตรโดยสาร')}</th>
-                                            <th></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        ${TRANSIT_LINES_CATALOG.filter(l => l.id !== 0).map(l => `
-                                            <tr style="cursor:pointer;" onclick="App.setFaresLine(${l.id})">
-                                                <td style="white-space:nowrap;">
-                                                    <span style="display:inline-flex;align-items:center;gap:6px;white-space:nowrap;">
-                                                        ${getLineIconSvg(l.id, false, 16)}
-                                                        <b>${esc(isZh ? (l.nameZH || l.nameEN) : (isEn ? l.nameEN : l.nameTH))}</b>
+                <div class="fare-cards-list">
+                                ${TRANSIT_LINES_CATALOG.filter(l => l.id !== 0).map(l => {
+                                    const lineName = esc(isZh ? (l.nameZH || l.nameEN) : (isEn ? l.nameEN : l.nameTH));
+                                    const pricingModel = esc(isZh ? (l.pricingModelZH || l.pricingModelEN) : (isEn ? l.pricingModelEN : l.pricingModelTH));
+                                    const tickets = esc(isZh ? (l.ticketsZH || l.ticketsEN) : (isEn ? l.ticketsEN : l.ticketsTH));
+                                    const actionText = isZh ? '查看详情' : (isEn ? 'Details' : 'ดูราคา');
+                                    const pricingLbl = isZh ? '计费方式' : (isEn ? 'Pricing Model' : 'รูปแบบราคา');
+                                    const ticketsLbl = isZh ? '车票 / 乘车卡' : (isEn ? 'Cards / Tickets' : 'บัตรโดยสาร');
+                                    const fareRateStr = (l.minFare === '-' || l.maxFare === '-')
+                                        ? '-'
+                                        : `฿${l.minFare} - ฿${l.maxFare}`;
+
+                                    return `
+                                        <div class="fare-line-card" onclick="App.setFaresLine(${l.id})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();App.setFaresLine(${l.id});}" role="button" tabindex="0">
+                                            <div class="fare-card-head">
+                                                <div class="fare-card-title">
+                                                    ${getLineIconSvg(l.id, false, 17)}
+                                                    <span>${lineName}</span>
+                                                </div>
+                                                <div class="fare-badge-group">
+                                                    <span class="fare-rate-pill" style="color:${l.color};border:1px solid ${l.color}44;background:${l.color}18;">
+                                                        ${fareRateStr}
                                                     </span>
-                                                </td>
-                                                <td style="white-space:nowrap;"><b style="color:${l.color}">฿${l.minFare} - ฿${l.maxFare}</b></td>
-                                                <td style="white-space:nowrap;">${esc(isZh ? (l.pricingModelZH || l.pricingModelEN) : (isEn ? l.pricingModelEN : l.pricingModelTH))}</td>
-                                                <td style="white-space:nowrap;font-size:11.5px;color:var(--muted)">${esc(isZh ? (l.ticketsZH || l.ticketsEN) : (isEn ? l.ticketsEN : l.ticketsTH))}</td>
-                                                <td style="white-space:nowrap;">
-                                                    <button type="button" class="btn btn-ghost" style="padding:4px 8px;font-size:11px;white-space:nowrap;" onclick="event.stopPropagation();App.setFaresLine(${l.id})">
-                                                        ${isZh ? '查看详情' : (isEn ? 'Details' : 'ดูราคา')} ➔
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        `).join('')}
-                                    </tbody>
-                                </table>
+                                                    <span class="fare-card-action">
+                                                        <span>${actionText}</span> ➔
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="fare-details-grid">
+                                                <div class="fare-info-row">
+                                                    <span class="fare-info-icon">${getUiIcon('coins', 14, '#f59e0b')}</span>
+                                                    <div class="fare-info-text">
+                                                        <span class="fare-info-label">${pricingLbl}:</span>
+                                                        <span>${pricingModel}</span>
+                                                    </div>
+                                                </div>
+                                                <div class="fare-info-row">
+                                                    <span class="fare-info-icon">${getUiIcon('card', 14, '#10b981')}</span>
+                                                    <div class="fare-info-text">
+                                                        <span class="fare-info-label">${ticketsLbl}:</span>
+                                                        <span style="color:var(--muted);">${tickets}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('')}
                             </div>
                         </div>
 

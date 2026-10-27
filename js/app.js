@@ -1087,10 +1087,11 @@ gQIDAQAB
                 popupDismiss: 'รับทราบ',
                 navMore: 'เพิ่มเติม',
                 moreNotifTitle: 'การแจ้งเตือนเบื้องหลังอัตโนมัติ (True Background Geofencing)',
-                moreNotifDesc: 'แจ้งเตือนสถานีใกล้คุณ ขบวนรถถัดไป และเวลานับถอยหลังสดอัตโนมัติเมื่อเข้าใกล้สถานี แม้ปิดแอปหรือล็อกหน้าจอ',
+                moreNotifDesc: 'แจ้งเตือนสถานีใกล้คุณ ขบวนรถถัดไป และเวลานับถอยหลังสดอัตโนมัติเมื่อเข้าใกล้สถานี (ขณะเปิดแอปหรือย่อหน้าจอเบื้องหลัง)',
                 moreNotifActive: 'เปิดใช้งานอยู่ (ตรวจจับสถานีเบื้องหลัง)',
                 moreNotifInactive: 'ปิดการทำงาน (ประหยัดพลังงาน)',
                 moreNotifTestBtn: 'ทดสอบการแจ้งเตือน',
+                moreNotifSuccess: 'ส่งการแจ้งเตือนทดสอบแล้ว!',
                 moreNotifTestTitle: '🔔 ทดสอบการแจ้งเตือน BKK SkyTrains',
                 moreNotifTestBody: 'ระบบแจ้งเตือนเบื้องหลังทำงานปกติ พร้อมส่งข้อมูลรถไฟฟ้าสดถึงคุณ',
                 moreNotifPermissionDenied: 'กรุณาอนุญาตการแจ้งเตือน (Notifications) ในการตั้งค่าเบราว์เซอร์หรืออุปกรณ์ของคุณ',
@@ -1396,10 +1397,11 @@ gQIDAQAB
                 popupDismiss: 'Got it',
                 navMore: 'More',
                 moreNotifTitle: 'True Background Geofencing Notifications',
-                moreNotifDesc: 'Automatic alerts for nearest station, next train, and live countdown when near a station, even when the app is closed or screen is locked.',
+                moreNotifDesc: 'Automatic alerts for nearest station, next train, and live countdown when near a station (while app is open or minimized).',
                 moreNotifActive: 'Active (Background Geofencing On)',
                 moreNotifInactive: 'Disabled (Battery Saver)',
                 moreNotifTestBtn: 'Test Notification',
+                moreNotifSuccess: 'Test notification sent!',
                 moreNotifTestTitle: '🔔 BKK SkyTrains Notification Test',
                 moreNotifTestBody: 'Background notification service is working properly with live transit data.',
                 moreNotifPermissionDenied: 'Please grant notification permissions in your browser or device settings.',
@@ -1705,10 +1707,11 @@ gQIDAQAB
                 popupDismiss: '知道了',
                 navMore: '更多',
                 moreNotifTitle: '后台地理围栏自动通知 (True Background Geofencing)',
-                moreNotifDesc: '接近车站时自动接收最近车站、下一班列车及实时倒计时提醒，即使关闭应用或锁屏状态下也能运行。',
+                moreNotifDesc: '接近车站时自动接收最近车站、下一班列车及实时倒计时提醒（在应用打开或后台最小化时）。',
                 moreNotifActive: '已开启（后台地理围栏检测中）',
                 moreNotifInactive: '已关闭（省电模式）',
                 moreNotifTestBtn: '测试通知',
+                moreNotifSuccess: '测试通知已发送！',
                 moreNotifTestTitle: '🔔 BKK SkyTrains 通知测试',
                 moreNotifTestBody: '后台通知服务正常运行，随时为您提供实时列车信息。',
                 moreNotifPermissionDenied: '请在浏览器或设备设置中允许通知权限。',
@@ -6577,33 +6580,56 @@ setOriginFromActionSheet() {
             },
 
             async testBgGeofenceNotif() {
+                const btn = document.getElementById('moreNotifTestBtn');
                 const title = T('moreNotifTestTitle');
                 const body = T('moreNotifTestBody');
 
-                if (typeof Notification !== 'undefined') {
-                    if (Notification.permission === 'default') {
-                        try {
-                            const res = await Notification.requestPermission();
-                            if (res !== 'granted') {
-                                alert(T('moreNotifPermissionDenied'));
-                                return;
+                // 1. ตรวจสอบสิทธิ์การแจ้งเตือน (Notifications Permission)
+                let perm = typeof Notification !== 'undefined' ? Notification.permission : 'granted';
+                if (typeof Notification !== 'undefined' && perm === 'default') {
+                    try {
+                        perm = await new Promise(resolve => {
+                            const p = Notification.requestPermission(resolve);
+                            if (p && typeof p.then === 'function') {
+                                p.then(resolve).catch(() => resolve(Notification.permission));
                             }
-                        } catch (e) {
-                            alert(T('moreNotifPermissionDenied'));
-                            return;
-                        }
-                    } else if (Notification.permission === 'denied') {
-                        alert(T('moreNotifPermissionDenied'));
-                        return;
+                        });
+                    } catch (e) {
+                        perm = Notification.permission;
                     }
                 }
 
-                // Web Notification via ServiceWorker or window.Notification
+                if (typeof Notification !== 'undefined' && perm === 'denied') {
+                    const deniedMsg = T('moreNotifPermissionDenied');
+                    this.showToast(`${getUiIcon('warn', 16, '#f43f5e')} ${deniedMsg}`);
+                    alert(deniedMsg);
+                    return;
+                }
+
+                // 2. ให้ Feedback บนปุ่มทันทีเพื่อแจ้งให้ผู้ใช้ทราบว่าคำสั่งถูกเรียกทำงานแล้ว
+                if (btn) {
+                    btn.disabled = true;
+                    btn.innerHTML = `<span style="color:#10b981;font-weight:700;">✓ ${lang === 'en' ? 'Sent!' : (lang === 'zh' ? '已发送！' : 'ส่งแล้ว!')}</span>`;
+                    setTimeout(() => {
+                        if (btn) {
+                            btn.disabled = false;
+                            btn.innerHTML = `<span>${T('moreNotifTestBtn')}</span>`;
+                        }
+                    }, 2500);
+                }
+
+                // 3. แสดง In-App Toast ให้เห็นผลลัพธ์บนหน้าจอทันที (ไม่พลาดแม้ OS ปิดเสียงแจ้งเตือน)
+                this.showToast(`${getUiIcon('check', 16, '#10b981')} ${T('moreNotifSuccess') || 'ส่งการแจ้งเตือนทดสอบแล้ว!'}`);
+
+                // 4. ส่ง Web Notification ผ่าน Service Worker (หากมี worker active และไม่ค้าง)
                 let sent = false;
-                if ('serviceWorker' in navigator) {
+                if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
                     try {
-                        const reg = await navigator.serviceWorker.ready;
-                        if (reg && reg.showNotification) {
+                        const reg = await Promise.race([
+                            navigator.serviceWorker.getRegistration(),
+                            new Promise(res => setTimeout(() => res(null), 500))
+                        ]);
+                        if (reg && typeof reg.showNotification === 'function') {
                             await reg.showNotification(title, {
                                 body: body,
                                 icon: 'icon.svg',
@@ -6617,7 +6643,8 @@ setOriginFromActionSheet() {
                     } catch (e) {}
                 }
 
-                if (!sent && typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+                // 5. ส่งผ่าน new Notification หาก SW ยังไม่ได้ส่ง
+                if (!sent && typeof Notification !== 'undefined' && perm === 'granted') {
                     try {
                         new Notification(title, {
                             body: body,
@@ -6629,16 +6656,12 @@ setOriginFromActionSheet() {
                     } catch (e) {}
                 }
 
-                // Native Android Bridge support
+                // 6. ส่งผ่าน Native Android Bridge (สำหรับแอปมือถือ)
                 if (window.AndroidBridge && window.AndroidBridge.showNotification) {
                     try {
                         window.AndroidBridge.showNotification(title, body, 'TEST');
                         sent = true;
                     } catch (e) {}
-                }
-
-                if (!sent && typeof Notification === 'undefined' && !window.AndroidBridge) {
-                    alert(title + '\n' + body);
                 }
             },
 

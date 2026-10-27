@@ -7238,7 +7238,7 @@
                         <div class="th" id="nearestPopupNameTH" style="font-size:17px;font-weight:800;color:var(--ink)">อโศก</div>
                         <div class="en" id="nearestPopupNameEN" style="font-size:12px;color:var(--muted)">Asok</div>
                     </div>
-                    <div class="dist-chip" id="nearestPopupDistanceChip" style="margin-left:auto;flex-shrink:0;">
+                    <div class="dist-chip" id="nearestPopupDistanceChip" onclick="App.locate(true)" style="margin-left:auto;flex-shrink:0;cursor:pointer;" title="ค้นหาตำแหน่งใหม่">
                         <div class="v" id="nearestPopupDistance">--</div>
                         <div class="l" id="nearestPopupDistLbl">จากตำแหน่งคุณ</div>
                     </div>
@@ -7292,7 +7292,7 @@
 
     <!-- Application Controller -->
     <script src="js/leaflet.js"></script>
-    <script src="js/app.js?v=20261027_01"></script>
+    <script src="js/app.js?v=20261027_02"></script>
 
     <!-- PWA: ลงทะเบียน service worker (เฉพาะเมื่อรันบน HTTP/HTTPS) -->
     <script>

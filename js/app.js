@@ -7919,6 +7919,7 @@ setOriginFromActionSheet() {
                         ? `<span class="spin dark sm"></span> ${T('locating')}`
                         : `${getUiIcon('compass', 14, 'currentColor')} ${T('relocate')}`;
                 }
+                this.updatePopupDistance();
             },
 
             computeNearest() {
@@ -7949,8 +7950,8 @@ setOriginFromActionSheet() {
                 }
                 this.nearest = ranked[0];
                 this.nearestList = ranked.slice(0, 3);
-                if (!this.pinnedKey || !this.nearestList.some(r => r.station.StationKey === this.pinnedKey))
-                    this.pinnedKey = this.nearest.station.StationKey;
+                // ซิงค์สถานีใกล้คุณที่สุด ให้ตรงกันเสมอ 100% ระหว่างการ์ดหน้าแรกและป๊อปอัป
+                this.pinnedKey = this.nearest.station.StationKey;
                 if (!this.userHasPickedExitStation && this.nearest) {
                     this.selectedExitKey = this.nearest.station.StationKey;
                 }
@@ -7965,7 +7966,7 @@ setOriginFromActionSheet() {
 
                 // แจ้งเตือน Popup และ Notification ทันทีเมื่อพบสถานีใกล้ฉัน
                 if (this.nearest && this.nearest.km != null) {
-                    this.triggerNearestStationAlert(this.nearest);
+                    this.triggerNearestStationAlert(this.nearest, !!this._lastLocateInteractive);
                 }
             },
 
@@ -8038,20 +8039,28 @@ setOriginFromActionSheet() {
                 return lines.join(' | ');
             },
 
-            triggerNearestStationAlert(nearestItem) {
+            triggerNearestStationAlert(nearestItem, forcePopup = false) {
                 if (!nearestItem || !nearestItem.station) return;
                 const s = nearestItem.station;
                 const key = s.StationKey;
                 const km = nearestItem.km;
 
-                // เกิน 3.0 กม. ไม่ถือว่าใกล้สถานี
-                if (km > 3.0) return;
+                // ตรวจสอบระยะทางที่อยู่ในรัศมีบริการ (ถ้ากดค้นหาเอง forcePopup ให้แสดงเสมอ)
+                if (km > 5.0 && !forcePopup) return;
 
                 const isStationChanged = (this.lastAlertStationKey !== key);
                 const isFirstOpenAlert = !this.hasShownPopupOnOpen;
+                const isInteractive = this._lastLocateInteractive || forcePopup;
+                const modal = document.getElementById('nearestStationPopup');
+                const isPopupOpen = modal && modal.style.display !== 'none';
 
-                // ถ้าไม่ใช่เปิดครั้งแรก และไม่ใช่สถานีเปลี่ยน และแอปไม่ได้กำลังพับอยู่
-                if (!isStationChanged && !isFirstOpenAlert && !this.isAppFolded) {
+                // หาก Popup กำลังเปิดอยู่ ให้อัปเดตสถานีและข้อมูลให้ตรงกันเสมอทันที
+                if (isPopupOpen) {
+                    this.showNearestPopupFor(s, true);
+                }
+
+                // ถ้าไม่ใช่เปิดครั้งแรก และไม่ใช่สถานีเปลี่ยน และไม่ใช่ interactive และแอปไม่ได้กำลังพับอยู่ และป๊อปอัปยังไม่ได้เปิด
+                if (!isInteractive && !isStationChanged && !isFirstOpenAlert && !this.isAppFolded && !isPopupOpen) {
                     this.updatePopupDistance(s);
                     return;
                 }
@@ -8075,13 +8084,12 @@ setOriginFromActionSheet() {
                 }
                 const platSummary = this.getPlatformsSummaryText(s, this.arrivals[key]);
 
-                // 4. จัดการ Popup:
-                // เมื่อปิดหรือพับแอพไว้ เก็บสถานะไว้เพื่อให้แสดง Popup ทันทีที่เปิดกลับมา
+                // 4. จัดการ Popup: แสดงหรืออัปเดตพร้อมกันกับการ์ดสถานีใกล้ฉันที่สุดทันที
                 if (this.isAppFolded) {
                     this.pendingFoldedAlert = { station: s };
                 } else {
                     // หากเปิดอยู่ แสดง Popup แจ้งเตือนสถานี/แพลตฟอร์ม/เวลา ทันที
-                    this.showNearestPopupFor(s);
+                    this.showNearestPopupFor(s, true);
                 }
 
                 // 5. แจ้งเตือน Web Notification พร้อม ข้อมูลสถานี / แพลตฟอร์ม / เวลา
@@ -8132,7 +8140,7 @@ setOriginFromActionSheet() {
                 }
             },
 
-            showNearestPopupFor(station) {
+            showNearestPopupFor(station, openModal = true) {
                 const modal = document.getElementById('nearestStationPopup');
                 if (!modal || !station) return;
                 this.popupStation = station;
@@ -8185,7 +8193,9 @@ setOriginFromActionSheet() {
                     }
                 }
 
-                modal.style.display = 'flex';
+                if (openModal) {
+                    modal.style.display = 'flex';
+                }
             },
 
             toggleNearestPopupRoute() {
@@ -8216,6 +8226,12 @@ setOriginFromActionSheet() {
                 const distEl = document.getElementById('nearestPopupDistance');
                 const distLbl = document.getElementById('nearestPopupDistLbl');
                 if (!distEl && !distLbl) return;
+
+                if (this.locating) {
+                    if (distEl) distEl.innerHTML = `<span class="spin dark sm"></span>`;
+                    if (distLbl) distLbl.textContent = T('locating');
+                    return;
+                }
 
                 const pin = this.nearestList.find(r => r.station.StationKey === targetStation.StationKey)
                     || (this.nearest?.station?.StationKey === targetStation.StationKey ? this.nearest : null);
@@ -8279,6 +8295,10 @@ setOriginFromActionSheet() {
                 if (pinned) {
                     this.syncLineToStation(pinned, true);
                     this.updatePopupDistance(pinned);
+                    const modal = document.getElementById('nearestStationPopup');
+                    if (modal && modal.style.display !== 'none') {
+                        this.showNearestPopupFor(pinned, true);
+                    }
                 }
                 this.renderStrip();
                 if (pinned) this.loadArrivals(pinned);
@@ -8669,9 +8689,11 @@ setOriginFromActionSheet() {
                         <div class="v" style="color:var(--muted)">-- km</div>
                         <div class="l">${T('fromYou')}</div>
                        </div>`
-                    : (isAtStation
-                        ? `<div class="dist-chip at-station" style="background:rgba(16,185,129,0.12);border:1px solid #10b981"><div class="v" style="color:#10b981;font-weight:700">${getUiIcon('pin', 13, '#10b981')} ${T('atStation')}</div><div class="l" style="color:var(--text-sub,#64748b)">${T('currentLocation')}</div></div>`
-                        : `<div class="dist-chip"><div class="v">${fmtDist(pin.km)}</div><div class="l">${T('fromYou')}</div></div>`);
+                    : (this.locating
+                        ? `<div class="dist-chip"><div class="v" style="display:flex;align-items:center;justify-content:center;gap:4px;"><span class="spin dark sm"></span></div><div class="l">${T('locating')}</div></div>`
+                        : (isAtStation
+                            ? `<div class="dist-chip at-station" style="background:rgba(16,185,129,0.12);border:1px solid #10b981"><div class="v" style="color:#10b981;font-weight:700">${getUiIcon('pin', 13, '#10b981')} ${T('atStation')}</div><div class="l" style="color:var(--text-sub,#64748b)">${T('currentLocation')}</div></div>`
+                            : `<div class="dist-chip"><div class="v">${fmtDist(pin.km)}</div><div class="l">${T('fromYou')}</div></div>`));
 
                 el.innerHTML = `
                     ${this.locError ? `<div class="err-box" style="margin:0 0 10px">${this.locError}</div>` : ''}
@@ -8691,6 +8713,10 @@ setOriginFromActionSheet() {
                     ${renderRouteSection(s)}`;
 
                 this.updatePopupDistance(s);
+                const modal = document.getElementById('nearestStationPopup');
+                if (modal && modal.style.display !== 'none' && this.popupStation?.StationKey !== s.StationKey) {
+                    this.showNearestPopupFor(s, true);
+                }
             },
 
             /* ---------- render: line tabs ---------- */

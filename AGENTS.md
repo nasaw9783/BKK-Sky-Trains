@@ -12,7 +12,7 @@ Directives and mandatory standards for AI Agents working within `C:\Users\Admini
    - `js/jsencrypt.min.js`: RSA cryptographic client library for secure transit API communications.
    - `api/bts-proxy.js`: Universal serverless reverse proxy & CORS bypass handler for BTS live transit APIs.
    - `vercel.json`: Deployment configuration for Vercel serverless functions and universal CORS routing.
-   - `sw.js`: Service worker for offline caching and PWA support (bts-v74).
+   - `sw.js`: Service worker for offline caching and PWA support (bts-v76).
    - `leaflet.css`: Leaflet map CSS stylesheets.
    - `icons/`: Train line icons (`lines/`), transit legend symbols (`legend/`), bottom navigation icons (`nav/`), and UI icons (`ui/`).
    - `images/`: Leaflet map markers/tiles, traffic disruption alert icons (`ic_traffic_alert.png`, `icon_traffic_information.png`), and disruption dialog preview.

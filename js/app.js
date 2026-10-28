@@ -8008,6 +8008,83 @@ setOriginFromActionSheet() {
                 this.renderJourney();
             },
 
+            getJourneySummaryText(i) {
+                const j = this.journey;
+                if (!j || !j.result || !j.result.RoutesMap || !j.result.RoutesMap[i]) return '';
+                const rm = j.result.RoutesMap[i];
+                const fromSt = this.findStation(j.from);
+                const toSt = this.findStation(j.to);
+                const fromName = fromSt ? stName(fromSt) : j.from;
+                const toName = toSt ? stName(toSt) : j.to;
+                const time = rm.Duration || rm.TotalTime || rm.DurationMinute || rm.TotalDurationMinute || Math.max(1, (rm.RoutesJorney || []).length * 2);
+                const countStn = rm.Count_Station ?? (rm.RoutesJorney || []).length;
+                const fare = rm.TotalFare ?? rm.Fare ?? 0;
+                const transfers = rm.Count_InterChange || 0;
+
+                if (lang === 'zh') {
+                    const transferText = transfers > 0 ? `，换乘 ${transfers} 次` : '，无需换乘';
+                    return `🚆 BKK SkyTrains 行程规划\n起点: ${fromName} (${j.from}) ➔ 终点: ${toName} (${j.to})\n⏱️ 乘车时间: 约 ${time} 分钟 (${countStn} 个车站${transferText})\n💰 预估票价: ฿${fare}\n\n查看路线详情: https://bkkskytrain.online`;
+                } else if (lang === 'en') {
+                    const transferText = transfers > 0 ? `, ${transfers} transfer(s)` : ', direct';
+                    return `🚆 BKK SkyTrains Route Summary\nFrom: ${fromName} (${j.from}) ➔ To: ${toName} (${j.to})\n⏱️ Travel Time: Approx. ${time} mins (${countStn} stations${transferText})\n💰 Total Fare: ฿${fare}\n\nPlan your journey: https://bkkskytrain.online`;
+                } else {
+                    const transferText = transfers > 0 ? ` (เปลี่ยนสาย ${transfers} ครั้ง)` : ' (ไม่ต้องเปลี่ยนสาย)';
+                    return `🚆 สรุปการเดินทาง BKK SkyTrains\nต้นทาง: ${fromName} (${j.from}) ➔ ปลายทาง: ${toName} (${j.to})\n⏱️ เวลาเดินทาง: ประมาณ ${time} นาที (${countStn} สถานี${transferText})\n💰 ค่าโดยสาร: ฿${fare}\n\nวางแผนเส้นทางได้ที่: https://bkkskytrain.online`;
+                }
+            },
+
+            shareJourneyRoute(i) {
+                const text = this.getJourneySummaryText(i);
+                if (!text) return;
+                const title = lang === 'zh' ? 'BKK SkyTrains 行程规划' : (lang === 'en' ? 'BKK SkyTrains Route Summary' : 'สรุปการเดินทาง BKK SkyTrains');
+                if (navigator.share) {
+                    navigator.share({
+                        title: title,
+                        text: text,
+                        url: 'https://bkkskytrain.online'
+                    }).catch(err => {
+                        if (err.name !== 'AbortError') {
+                            this.copyJourneySummary(i);
+                        }
+                    });
+                } else {
+                    this.copyJourneySummary(i);
+                }
+            },
+
+            copyJourneySummary(i) {
+                const text = this.getJourneySummaryText(i);
+                if (!text) return;
+                const successMsg = lang === 'zh' ? '📋 已复制行程规划摘要到剪贴板' : (lang === 'en' ? '📋 Journey summary copied to clipboard' : '📋 คัดลอกรายละเอียดการเดินทางเรียบร้อยแล้ว');
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(text).then(() => {
+                        this.showToast(successMsg);
+                    }).catch(() => {
+                        this.fallbackCopyText(text, successMsg);
+                    });
+                } else {
+                    this.fallbackCopyText(text, successMsg);
+                }
+            },
+
+            fallbackCopyText(text, successMsg) {
+                try {
+                    const ta = document.createElement('textarea');
+                    ta.value = text;
+                    ta.style.position = 'fixed';
+                    ta.style.opacity = '0';
+                    document.body.appendChild(ta);
+                    ta.focus();
+                    ta.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(ta);
+                    this.showToast(successMsg);
+                } catch (e) {
+                    this.showToast('⚠️ ไม่สามารถคัดลอกได้');
+                }
+            },
+
+
             renderJourney() {
                 const el = document.getElementById('journeyCard');
                 if (!el || !this.lines.length) return;
@@ -8155,6 +8232,14 @@ setOriginFromActionSheet() {
                 }).join('');
             },
 
+            setPickerSearchAndFilter(text) {
+                const input = document.getElementById('pickerSearch');
+                if (input) {
+                    input.value = text;
+                    this.onPickerSearchInput();
+                }
+            },
+
             renderPicker() {
                 const el = document.getElementById('pickerOverlay');
                 if (!el) return;
@@ -8162,6 +8247,47 @@ setOriginFromActionSheet() {
                 const curKey = j.picking === 'from' ? j.from : j.to;
                 const curSt = curKey ? this.findStation(curKey) : null;
                 const whichLabel = j.picking === 'from' ? (lang === 'zh' ? '起点站' : (lang === 'th' ? 'สถานีต้นทาง' : 'origin')) : (lang === 'zh' ? '终点站' : (lang === 'th' ? 'สถานีปลายทาง' : 'destination'));
+
+                // FEATURE 3: Quick Favorites in Journey Picker
+                let favHtml = '';
+                if (this.favStations && this.favStations.length > 0) {
+                    const favButtons = this.favStations.map(k => {
+                        const st = this.findStation(k);
+                        if (!st) return '';
+                        const color = st.StationLineColor || (typeof LINE_BRAND_COLORS !== 'undefined' && LINE_BRAND_COLORS[st.StationLineId || st.LineId]) || '#7AB420';
+                        return `<button type="button" class="picker-fav-btn" onclick="App.pickJourneyStation('${esc(k)}')">
+                            <span class="fav-chip-code" style="background:${color};">${esc(k)}</span>
+                            <span>${esc(stName(st))}</span>
+                        </button>`;
+                    }).filter(Boolean).join('');
+                    if (favButtons) {
+                        favHtml = `
+                            <div class="picker-fav-row">
+                                <span class="picker-fav-title">⭐ ${lang === 'zh' ? '常用车站:' : (lang === 'en' ? 'Favorites:' : 'สถานีโปรด:')}</span>
+                                ${favButtons}
+                            </div>`;
+                    }
+                }
+
+                // FEATURE 2: Quick POI Chips in Journey Picker
+                const quickPois = [
+                    { nameTH: 'ไอคอนสยาม', nameEN: 'ICONSIAM', nameZH: '暹罗天地' },
+                    { nameTH: 'สยามพารากอน', nameEN: 'Siam Paragon', nameZH: '暹罗百丽宫' },
+                    { nameTH: 'ตลาดนัดจตุจักร', nameEN: 'Chatuchak', nameZH: '乍都乍周末市集' },
+                    { nameTH: 'สนามบินดอนเมือง', nameEN: 'Don Mueang Airport', nameZH: '廊曼机场' },
+                    { nameTH: 'สนามบินสุวรรณภูมิ', nameEN: 'Suvarnabhumi Airport', nameZH: '素万那普机场' }
+                ];
+                const poiChipsHtml = `
+                    <div class="picker-poi-row">
+                        <span class="picker-poi-title">📍 ${lang === 'zh' ? '热门地标:' : (lang === 'en' ? 'Landmarks:' : 'สถานที่ยอดนิยม:')}</span>
+                        ${quickPois.map(p => {
+                            const pName = lang === 'zh' ? p.nameZH : (lang === 'en' ? p.nameEN : p.nameTH);
+                            return `<button type="button" class="picker-poi-chip" onclick="App.setPickerSearchAndFilter('${esc(pName)}')">${esc(pName)}</button>`;
+                        }).join('')}
+                    </div>`;
+
+                const quickBarHtml = `<div class="picker-quick-bar">${favHtml}${poiChipsHtml}</div>`;
+
                 el.innerHTML = `
                     <div class="picker-bg" onclick="App.closePicker()"></div>
                     <div class="picker">
@@ -8171,6 +8297,7 @@ setOriginFromActionSheet() {
                                 <button class="btn btn-ghost" onclick="App.closePicker()" aria-label="Close">✕</button>
                             </div>
                         </div>
+                        ${quickBarHtml}
                         <div class="tabs picker-tabs" id="pickerTabs"></div>
                         ${this.nearest ? `<div class="picker-nearest-wrap" style="padding:4px 14px 8px; display:flex; justify-content:center; align-items:center; width:100%; box-sizing:border-box;"><button class="alt-chip" style="margin:0 auto; display:inline-flex; align-items:center; justify-content:center; text-align:center; letter-spacing:0;"
                             onclick="App.pickJourneyStation('${esc(this.nearest.station.StationKey)}')">
@@ -8181,6 +8308,7 @@ setOriginFromActionSheet() {
                 document.getElementById('pickerSearch').addEventListener('input', () => this.onPickerSearchInput());
                 this.renderPickerList();
             },
+
 
             renderPickerTabs() {
                 const el = document.getElementById('pickerTabs');
@@ -8313,11 +8441,16 @@ setOriginFromActionSheet() {
                         const name = stName(s);
                         const nameLen = name.length;
                         const sizeClass = nameLen > 20 ? 'chip-name-xxlong' : (nameLen > 15 ? 'chip-name-xlong' : (nameLen > 11 ? 'chip-name-long' : ''));
+                        const lmMatch = qRaw ? getLandmarkMatch(s.StationKey, qRaw) : null;
+                        const lmBadge = lmMatch ? `<span class="chip-landmark-tag" title="${esc(lmMatch.name)}">📍 ${esc(lmMatch.name)}</span>` : '';
                         return `
                             <button type="button" class="station-picker-chip ${isSelected ? 'selected' : ''}${isSingle ? ' chip-centered' : ''}"
                                 onclick="App.pickJourneyStation('${esc(s.StationKey)}')">
                                 <span class="chip-code" style="background:${color};color:${codeTextColor}">${esc(s.StationKey)}</span>
-                                <span class="chip-name ${sizeClass}" title="${esc(name)}">${esc(name)}</span>
+                                <div style="display:flex;flex-direction:column;min-width:0;text-align:left;line-height:1.2;">
+                                    <span class="chip-name ${sizeClass}" title="${esc(name)}">${esc(name)}</span>
+                                    ${lmBadge}
+                                </div>
                             </button>`;
                     }).join('');
 
@@ -11714,6 +11847,94 @@ setOriginFromActionSheet() {
         }
 
         // แสดงชานชาลาทั้งหมดของสถานี — จัดกลุ่มตามสาย (สยามมี 2 สาย × 2 ชานชาลา = 4)
+        function getBangkokTime() {
+            const now = new Date();
+            const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+            return new Date(utc + (3600000 * 7));
+        }
+
+        function renderLastTrainAlertBanner(station) {
+            if (!station) return '';
+            const bkkNow = getBangkokTime();
+            const hour = bkkNow.getHours();
+            const min = bkkNow.getMinutes();
+            // Late night alert triggers between 22:30 and 01:00
+            const isLateNight = (hour === 22 && min >= 30) || hour === 23 || hour === 0;
+            if (!isLateNight) return '';
+
+            const lineId = station.StationLineId || station.LineId;
+            const lineInfo = (typeof BKK_TRANSIT_LINES_INFO !== 'undefined') ? BKK_TRANSIT_LINES_INFO.find(l => l.id === lineId) : null;
+            if (!lineInfo) return '';
+
+            const dir1 = lineInfo.dir1;
+            const dir2 = lineInfo.dir2;
+            const currentTotalMins = (hour === 0 ? 24 * 60 : hour * 60) + min;
+
+            const makeDirRow = (dir, platNum) => {
+                if (!dir) return '';
+                const destName = lang === 'zh' ? (dir.toZH || dir.toEN) : (lang === 'en' ? dir.toEN : dir.toTH);
+                const lastStr = dir.last || '24:00';
+                const [lH, lM] = lastStr.split(':').map(Number);
+                const targetHour = (lH === 0 || lH === 24) ? 24 : (lH < 4 ? 24 + lH : lH);
+                const lastTotalMins = targetHour * 60 + (lM || 0);
+                const minsLeft = lastTotalMins - currentTotalMins;
+
+                const countdownHtml = minsLeft > 0
+                    ? `<span class="last-train-countdown-pill">${lang === 'zh' ? `剩 ${minsLeft} 分钟` : (lang === 'en' ? `in ${minsLeft} min` : `อีก ${minsLeft} นาที`)}</span>`
+                    : `<span class="last-train-countdown-pill" style="background:rgba(100,116,139,0.2);color:var(--muted);">${lang === 'zh' ? '已发出' : (lang === 'en' ? 'Departed' : 'ออกไปแล้ว')}</span>`;
+
+                const timeLabel = lang === 'zh' ? `末班车 ${lastStr} 时` : (lang === 'en' ? `Last: ${lastStr}` : `เวลา ${lastStr} น.`);
+
+                return `
+                    <div class="last-train-card">
+                        <div class="last-train-dest-info">
+                            <span style="color:${lineInfo.color || '#fbbf24'};font-weight:800;">${lang === 'zh' ? '站台' : (lang === 'en' ? 'Plat.' : 'ชานชาลา')} ${platNum}</span>
+                            <span>${lang === 'zh' ? '开往' : (lang === 'en' ? 'To' : 'มุ่งหน้า')} ${esc(destName)}</span>
+                        </div>
+                        <div class="last-train-time-wrap">
+                            ${countdownHtml}
+                            <span class="last-train-time-label">${timeLabel}</span>
+                        </div>
+                    </div>`;
+            };
+
+            const clockStr = `${String(hour).padStart(2, '0')}:${String(min).padStart(2, '0')} ${lang === 'th' ? 'น.' : ''}`;
+            const headerTitle = lang === 'zh' ? '末班车提醒 (今日即将收车)' : (lang === 'en' ? 'Last Train Warning Tonight' : 'รถไฟฟ้าขบวนสุดท้ายของวัน');
+            const subNote = lang === 'zh' ? '* 请预留至少 5 分钟进站乘车' : (lang === 'en' ? '* Please allow at least 5 mins before departure' : '* ผู้โดยสารโปรดเผื่อเวลาผ่านประตูสแกนตั๋วอย่างน้อย 5 นาที');
+
+            return `
+                <div class="last-train-alert-banner">
+                    <div class="last-train-alert-head">
+                        <span class="last-train-alert-tag">⚠️ <span>${headerTitle}</span></span>
+                        <span class="last-train-clock-tag">🕒 ${clockStr}</span>
+                    </div>
+                    <div class="last-train-grid">
+                        ${makeDirRow(dir1, 1)}
+                        ${makeDirRow(dir2, 2)}
+                    </div>
+                    <div style="font-size:10.5px;color:var(--muted);text-align:center;line-height:1.2;margin-top:2px;">
+                        ${subNote}
+                    </div>
+                </div>`;
+        }
+
+        function renderStationOperatingHoursFooter(station) {
+            if (!station) return '';
+            const lineId = station.StationLineId || station.LineId;
+            const lineInfo = (typeof BKK_TRANSIT_LINES_INFO !== 'undefined') ? BKK_TRANSIT_LINES_INFO.find(l => l.id === lineId) : null;
+            if (!lineInfo) return '';
+            const firstStr = lang === 'zh' ? (lineInfo.firstTrainZH || lineInfo.firstTrainEN) : (lang === 'en' ? lineInfo.firstTrainEN : lineInfo.firstTrainTH);
+            const lastStr = lang === 'zh' ? (lineInfo.lastTrainZH || lineInfo.lastTrainEN) : (lang === 'en' ? lineInfo.lastTrainEN : lineInfo.lastTrainTH);
+            const firstLbl = lang === 'zh' ? '首班车' : (lang === 'en' ? 'First Train' : 'ขบวนแรก');
+            const lastLbl = lang === 'zh' ? '末班车' : (lang === 'en' ? 'Last Train' : 'ขบวนสุดท้าย');
+            return `
+                <div class="station-hours-footer">
+                    <span>${firstLbl}: <b>${esc(firstStr)}</b></span>
+                    <span>${lastLbl}: <b>${esc(lastStr)}</b></span>
+                </div>`;
+        }
+
+
         function renderPlatformSection(station, arr) {
             if (station && (station.StationLineId === 106 || station.StationKey?.startsWith('OR'))) {
                 const orangeTitle = lang === 'en' ? 'Orange Line (Not in Service)' : (lang === 'zh' ? '橙线 (尚未开通)' : 'สายสีส้ม (ยังไม่เปิดให้บริการ)');
@@ -11807,7 +12028,9 @@ setOriginFromActionSheet() {
                 </div>`;
             }
 
-            return branchCard + platHtml;
+            const lastTrainAlertHtml = renderLastTrainAlertBanner(station);
+            const operatingHoursFooter = renderStationOperatingHoursFooter(station);
+            return lastTrainAlertHtml + branchCard + platHtml + operatingHoursFooter;
         }
 
         function renderPlatform(p, fetchedAt, stationKey) {
@@ -12023,7 +12246,26 @@ setOriginFromActionSheet() {
                     ${rows.join('')}
                 </div>
                 ${fares ? `<div class="j-fares"><div class="ft">${T('jFareTypes')}</div>${fares}</div>` : ''}
-                ${rm.StaticMapSrc ? `<div class="j-map-wrap"><a class="j-map-link" href="${esc(rm.StaticMapSrc)}" target="_blank" rel="noopener">${getUiIcon('map', 14, 'currentColor')} <span>${T('jMap')}</span></a></div>` : ''}` : ''}
+                ${rm.StaticMapSrc ? `<div class="j-map-wrap"><a class="j-map-link" href="${esc(rm.StaticMapSrc)}" target="_blank" rel="noopener">${getUiIcon('map', 14, 'currentColor')} <span>${T('jMap')}</span></a></div>` : ''}
+                <div class="j-action-bar">
+                    <button type="button" class="btn-j-share" onclick="App.shareJourneyRoute(${i})">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="18" cy="5" r="3"></circle>
+                            <circle cx="6" cy="12" r="3"></circle>
+                            <circle cx="18" cy="19" r="3"></circle>
+                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+                        </svg>
+                        <span>${lang === 'zh' ? '分享路线' : (lang === 'en' ? 'Share Route' : 'แชร์เส้นทาง')}</span>
+                    </button>
+                    <button type="button" class="btn-j-copy" onclick="App.copyJourneySummary(${i})">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                        <span>${lang === 'zh' ? '复制行程' : (lang === 'en' ? 'Copy Summary' : 'คัดลอกสรุป')}</span>
+                    </button>
+                </div>` : ''}
             </div>`;
         }
 

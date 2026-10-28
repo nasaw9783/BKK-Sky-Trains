@@ -8604,6 +8604,283 @@
             flex: 1;
             min-width: 0;
         }
+
+        /* ===== FEATURE 1: Last Train Warning & Countdown ===== */
+        .last-train-alert-banner {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.16) 0%, rgba(245, 158, 11, 0.08) 100%);
+            border: 1px solid rgba(251, 191, 36, 0.45);
+            border-radius: 13px;
+            padding: 10px 12px;
+            margin-bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            box-shadow: 0 4px 14px rgba(251, 191, 36, 0.12);
+            box-sizing: border-box;
+            user-select: none !important;
+            caret-color: transparent !important;
+            cursor: default !important;
+            animation: pulseAmberAlert 2.5s infinite ease-in-out;
+        }
+        @keyframes pulseAmberAlert {
+            0%, 100% { border-color: rgba(251, 191, 36, 0.4); }
+            50% { border-color: rgba(251, 191, 36, 0.85); box-shadow: 0 0 14px rgba(251, 191, 36, 0.22); }
+        }
+        .last-train-alert-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+        }
+        .last-train-alert-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11.5px;
+            font-weight: 800;
+            color: #fbbf24;
+            line-height: 1;
+        }
+        .last-train-clock-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10.5px;
+            font-weight: 700;
+            padding: 2.5px 6px;
+            border-radius: 5px;
+            background: rgba(0, 0, 0, 0.25);
+            color: #fbbf24;
+            line-height: 1;
+        }
+        .last-train-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .last-train-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 7px 9px;
+            background: rgba(0, 0, 0, 0.18);
+            border-radius: 8px;
+            border-left: 3px solid #fbbf24;
+        }
+        html:not(.dark) .last-train-card {
+            background: rgba(255, 255, 255, 0.65);
+        }
+        .last-train-dest-info {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--ink);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .last-train-time-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 1px;
+        }
+        .last-train-countdown-pill {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 800;
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.15);
+            padding: 2px 6px;
+            border-radius: 4px;
+            line-height: 1;
+        }
+        .last-train-time-label {
+            font-size: 10px;
+            color: var(--muted);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .station-hours-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: var(--muted);
+            padding: 6px 4px 2px;
+            margin-top: 4px;
+            border-top: 1px dashed var(--line);
+            user-select: none !important;
+            caret-color: transparent !important;
+        }
+
+        /* ===== FEATURE 2 & 3: Journey Picker Landmarks & Favorites ===== */
+        .picker-quick-bar {
+            padding: 6px 14px 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--line);
+            box-sizing: border-box;
+        }
+        .picker-fav-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            padding-bottom: 2px;
+            -webkit-overflow-scrolling: touch;
+        }
+        .picker-fav-row::-webkit-scrollbar {
+            display: none;
+        }
+        .picker-fav-title {
+            font-size: 11px;
+            font-weight: 800;
+            color: #fbbf24;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            white-space: nowrap;
+            flex-shrink: 0;
+            line-height: 1;
+        }
+        .picker-fav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: var(--bg-subtle);
+            border: 1px solid var(--line);
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 11.5px;
+            font-weight: 700;
+            color: var(--ink);
+            cursor: pointer;
+            white-space: nowrap;
+            flex-shrink: 0;
+            line-height: 1;
+            transition: all var(--transition-fast);
+            user-select: none !important;
+            caret-color: transparent !important;
+        }
+        .picker-fav-btn:hover, .picker-fav-btn:active {
+            border-color: #fbbf24;
+            background: rgba(251, 191, 36, 0.12);
+            color: #fbbf24;
+        }
+        .picker-poi-row {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            overflow-x: auto;
+            scrollbar-width: none;
+            padding-bottom: 2px;
+            -webkit-overflow-scrolling: touch;
+        }
+        .picker-poi-row::-webkit-scrollbar {
+            display: none;
+        }
+        .picker-poi-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--muted);
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            white-space: nowrap;
+            flex-shrink: 0;
+            line-height: 1;
+        }
+        .picker-poi-chip {
+            background: rgba(56, 189, 248, 0.08);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            color: var(--accent-cyan, #0284c7);
+            font-family: inherit;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            white-space: nowrap;
+            flex-shrink: 0;
+            line-height: 1;
+            transition: all var(--transition-fast);
+            user-select: none !important;
+            caret-color: transparent !important;
+        }
+        .picker-poi-chip:hover, .picker-poi-chip:active {
+            background: var(--accent-cyan, #0284c7);
+            color: #ffffff;
+            border-color: var(--accent-cyan, #0284c7);
+        }
+        .chip-landmark-tag {
+            display: block;
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--accent-cyan, #0284c7);
+            line-height: 1.2;
+            margin-top: 1px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 140px;
+        }
+
+        /* ===== FEATURE 4: Share & Copy Journey Summary ===== */
+        .j-action-bar {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px dashed var(--line);
+        }
+        .btn-j-share, .btn-j-copy {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            user-select: none !important;
+            caret-color: transparent !important;
+            box-sizing: border-box;
+        }
+        .btn-j-share {
+            background: rgba(56, 189, 248, 0.12);
+            color: #0284c7;
+            border: 1px solid rgba(56, 189, 248, 0.35);
+        }
+        html.dark .btn-j-share {
+            color: #38bdf8;
+            border-color: rgba(56, 189, 248, 0.4);
+        }
+        .btn-j-share:hover, .btn-j-share:active {
+            background: var(--accent-cyan, #0284c7);
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+        .btn-j-copy {
+            background: rgba(16, 185, 129, 0.12);
+            color: #059669;
+            border: 1px solid rgba(16, 185, 129, 0.35);
+        }
+        html.dark .btn-j-copy {
+            color: #34d399;
+            border-color: rgba(16, 185, 129, 0.4);
+        }
+        .btn-j-copy:hover, .btn-j-copy:active {
+            background: #10b981;
+            color: #ffffff;
+            transform: translateY(-1px);
+        }
+
     </style>
     <script>
         /* ========================================================
@@ -8726,7 +9003,7 @@
                 <span class="offline-pulse-dot"></span>
                 <span id="offlineBannerText">ขณะนี้ใช้งานโหมดออฟไลน์ — แสดงตารางเวลาและผังสถานีจากแคชเครื่อง</span>
             </div>
-            <span class="offline-version-badge">bts-v75</span>
+            <span class="offline-version-badge">bts-v76</span>
         </div>
 
         <!-- ===== Service Worker Update Notification Banner (ข้อ 2) ===== -->
@@ -9756,7 +10033,7 @@
 
     <!-- Application Controller -->
     <script src="js/leaflet.js"></script>
-    <script src="js/app.js?v=20261028_16"></script>
+    <script src="js/app.js?v=20261028_17"></script>
 
     <!-- PWA: ลงทะเบียน service worker (เฉพาะเมื่อรันบน HTTP/HTTPS) -->
     <script>

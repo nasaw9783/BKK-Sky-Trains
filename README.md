@@ -27,7 +27,7 @@
      - โหมดมืด (Dark Theme): `bkk_transit_map_dark.svg`
    - จุดฮอตสปอตสถานีแบบโต้ตอบ (Interactive Station Hotspots): แตะที่สถานีใดๆ บนแผนที่เพื่อเลือกเป็น **สถานีต้นทาง**, **สถานีปลายทาง** หรือเปิดดู **ข้อมูลประตูทางออก** ได้ทันที
    - หน้าต่างคำอธิบายสัญลักษณ์โครงข่าย (Transit Network Legend): แสดงสัญลักษณ์สายสีและจุดเชื่อมต่อสำคัญ เช่น ท่าอากาศยาน (Airport), ท่าเรือ (Pier/Boat), รถไฟทางไกล (SRT), สถานีขนส่งผู้โดยสาร (Bus Terminal), อาคารจอดแล้วจร (Park & Ride), จุดเชื่อมต่อข้ามสาย (Interchange) และสายแยกเมืองทองธานี
-   - แคชออฟไลน์ระดับสูงด้วย Service Worker `bts-v74` พร้อมใช้งาน 100% แม้ไม่มีอินเทอร์เน็ต
+   - แคชออฟไลน์ระดับสูงด้วย Service Worker `bts-v76` พร้อมใช้งาน 100% แม้ไม่มีอินเทอร์เน็ต
 6. <img src="icons/ui/compass.svg" width="18" height="18" alt="Planner" style="vertical-align:middle;"> **วางแผนการเดินทางอัจฉริยะ (Smart Journey Planner)**
    - ค้นหาเส้นทางที่ดีที่สุดระหว่างสถานีต้นทางและสถานีปลายทาง
    - คำนวณเวลาเดินทางรวม, จำนวนสถานีที่ผ่าน, จุดเปลี่ยนสาย (Interchanges), และประมาณการค่าโดยสาร
@@ -180,7 +180,7 @@ c:\Users\Administrator\Documents\BKK Sky Trains/
 │   ├── api/
 │   │   └── bts-proxy.js            # Universal Serverless Reverse Proxy & CORS Bypass สำหรับ BTS Live Transit API
 │   ├── vercel.json                 # การตั้งค่า Deployment และ Universal CORS Routing บน Vercel
-│   ├── sw.js                       # Service Worker สำหรับแคช PWA & Offline Support (bts-v74)
+│   ├── sw.js                       # Service Worker สำหรับแคช PWA & Offline Support (bts-v76)
 │   ├── manifest.json               # PWA Web App Manifest สำหรับติดตั้งบนอุปกรณ์
 │   ├── Start-BKK-Transit.ps1       # สคริปต์เปิด Local Server + BTS Live API Reverse Proxy (UTF-8 BOM)
 │   ├── Deploy-BKK-SkyTrains.ps1    # สคริปต์บิลด์ Android APK, ล้างข้อมูลเก่าบน GitHub และ Push อัตโนมัติ (UTF-8 BOM)

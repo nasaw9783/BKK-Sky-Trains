@@ -7157,7 +7157,6 @@ setOriginFromActionSheet() {
                         this.closeMapActionSheet();
                         this.closeStationPicker();
                         this.closeExitDropdown();
-                        this.closeNearestPopup();
                         return;
                     }
 

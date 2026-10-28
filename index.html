@@ -8849,7 +8849,7 @@
     </nav>
 
     <!-- ===== Nearest Station Alert Popup Modal ===== -->
-    <div id="nearestStationPopup" class="nearest-popup-overlay" style="display:none;" onclick="if(event.target===this) App.closeNearestPopup();">
+    <div id="nearestStationPopup" class="nearest-popup-overlay" style="display:none;">
         <div class="nearest-popup-card">
             <div class="nearest-popup-header">
                 <div class="nearest-popup-badge-wrap">
@@ -8859,7 +8859,6 @@
                         <div style="font-size:11px;color:var(--muted);font-weight:normal" id="nearestPopupSub">เวลาขบวนรถและชานชาลาแบบเรียลไทม์</div>
                     </div>
                 </div>
-                <button type="button" class="nearest-popup-close" onclick="App.closeNearestPopup();" aria-label="ปิด">✕</button>
             </div>
             <div class="nearest-popup-body">
                 <div class="nearest-popup-station-row">
@@ -8952,7 +8951,7 @@
 
     <!-- Application Controller -->
     <script src="js/leaflet.js"></script>
-    <script src="js/app.js?v=20261028_06"></script>
+    <script src="js/app.js?v=20261028_07"></script>
 
     <!-- PWA: ลงทะเบียน service worker (เฉพาะเมื่อรันบน HTTP/HTTPS) -->
     <script>

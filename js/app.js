@@ -6789,7 +6789,7 @@ setOriginFromActionSheet() {
                     const sched = getLineScheduleTables(activeLine.id);
                     const schedTablesHtml = renderFrequencyTablesHtml(sched, activeLine, this.freqTab);
 
-                    // รายชื่อสถานีประจำสายพร้อมป้ายรหัสสถานีขนาดกะทัดรัด (ตัวเลือกที่ 4: Compact Bento Grid)
+                    // รายชื่อสถานีประจำสายพร้อมป้ายรหัสสถานีขนาดกะทัดรัด (ตัวเลือกที่ 4: Compact Bento Grid - Static / Non-clickable, Single Language Only)
                     const lineStations = getLineStationsList(activeLine.id);
                     let stnDirectoryHtml = '';
                     if (lineStations && lineStations.length > 0) {
@@ -6798,29 +6798,14 @@ setOriginFromActionSheet() {
 
                         const stationChips = lineStations.map(s => {
                             const sKey = s.StationKey;
-                            let primName = '';
-                            let secName = '';
-                            if (isZh) {
-                                primName = stName(s);
-                                secName = s.StationName_EN || s.StationNameEN || s.StationName_TH || '';
-                            } else if (isEn) {
-                                primName = s.StationName_EN || s.StationNameEN || stName(s);
-                                secName = s.StationName_TH || s.StationNameTH || '';
-                            } else {
-                                primName = s.StationName_TH || stName(s);
-                                secName = s.StationName_EN || s.StationNameEN || '';
-                            }
+                            // แสดงเฉพาะชื่อภาษาที่เลือกใช้งานเท่านั้น ห้ามมีภาษาอื่นมาประปน
+                            const name = stName(s);
 
                             return `
-                                <button type="button" class="line-stn-bento-chip"
-                                    onclick="App.showStationDetail('${esc(sKey)}')"
-                                    title="${esc(primName)}${secName ? ' (' + esc(secName) + ')' : ''}">
+                                <div class="line-stn-bento-card" title="${esc(name)}">
                                     <span class="bento-chip-code" style="background:${color};color:${codeTextColor}">${esc(sKey)}</span>
-                                    <div class="bento-text-cluster">
-                                        <span class="bento-name-primary">${esc(primName)}</span>
-                                        ${secName ? `<span class="bento-name-secondary">${esc(secName)}</span>` : ''}
-                                    </div>
-                                </button>
+                                    <span class="bento-name-primary">${esc(name)}</span>
+                                </div>
                             `;
                         }).join('');
 

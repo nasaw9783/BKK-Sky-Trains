@@ -6360,15 +6360,24 @@ setOriginFromActionSheet() {
                                             </div>
                                             <div class="timetable-card-grid">
                                                 <div class="timetable-stat-box">
-                                                    <span class="timetable-stat-lbl">${firstLbl}</span>
+                                                    <span class="timetable-stat-lbl" style="color:#f59e0b;">
+                                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v4M4.93 10.93l2.83 2.83M19.07 10.93l-2.83 2.83M2 18h20M17 18a5 5 0 0 0-10 0"/></svg>
+                                                        <span>${firstLbl}</span>
+                                                    </span>
                                                     <div class="timetable-stat-val">${formatTimetableStat(firstTrainRaw)}</div>
                                                 </div>
                                                 <div class="timetable-stat-box">
-                                                    <span class="timetable-stat-lbl">${lastLbl}</span>
+                                                    <span class="timetable-stat-lbl" style="color:#818cf8;">
+                                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+                                                        <span>${lastLbl}</span>
+                                                    </span>
                                                     <div class="timetable-stat-val">${formatTimetableStat(lastTrainRaw)}</div>
                                                 </div>
                                                 <div class="timetable-stat-box">
-                                                    <span class="timetable-stat-lbl">${peakLbl}</span>
+                                                    <span class="timetable-stat-lbl" style="color:${l.color};">
+                                                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="${l.color}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                                                        <span>${peakLbl}</span>
+                                                    </span>
                                                     <div class="timetable-stat-val" style="color:${l.color};">${formatTimetableStat(peakFreqRaw)}</div>
                                                 </div>
                                             </div>

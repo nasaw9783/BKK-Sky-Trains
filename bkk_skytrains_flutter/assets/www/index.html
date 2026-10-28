@@ -5186,6 +5186,55 @@
             cursor: default !important;
         }
 
+        /* Mobile App: Place Royal Tag Underneath Line Name */
+        @media (max-width: 640px) {
+            .fare-card-title,
+            .timetable-card-title {
+                align-items: flex-start;
+            }
+            .fare-card-title svg,
+            .timetable-card-title svg {
+                margin-top: 1.5px;
+                flex-shrink: 0;
+            }
+            .fare-card-title-wrap,
+            .timetable-card-title-wrap {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 2px;
+            }
+            .line-card-royal-tag {
+                font-size: 10px;
+                padding: 1.5px 6px;
+            }
+        }
+        html.is-mobile .fare-card-title,
+        html.is-mobile .timetable-card-title,
+        html.device-mobile .fare-card-title,
+        html.device-mobile .timetable-card-title {
+            align-items: flex-start;
+        }
+        html.is-mobile .fare-card-title svg,
+        html.is-mobile .timetable-card-title svg,
+        html.device-mobile .fare-card-title svg,
+        html.device-mobile .timetable-card-title svg {
+            margin-top: 1.5px;
+            flex-shrink: 0;
+        }
+        html.is-mobile .fare-card-title-wrap,
+        html.is-mobile .timetable-card-title-wrap,
+        html.device-mobile .fare-card-title-wrap,
+        html.device-mobile .timetable-card-title-wrap {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 2px;
+        }
+        html.is-mobile .line-card-royal-tag,
+        html.device-mobile .line-card-royal-tag {
+            font-size: 10px;
+            padding: 1.5px 6px;
+        }
+
         /* Timetable Overview Line Cards */
         .timetable-cards-list {
             display: flex;

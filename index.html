@@ -7835,20 +7835,36 @@
             margin: auto 0;
         }
         .version-detail-item .detail-value {
-            font-size: clamp(10.5px, 2.8vw, 11.5px);
+            font-size: clamp(10px, 2.7vw, 11px);
             font-weight: 800;
             color: var(--ink);
             line-height: 1.25;
-            display: inline-flex;
+            display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             text-align: center;
-            gap: 4px;
+            gap: 2px;
             width: 100%;
             letter-spacing: 0;
             user-select: none !important;
             caret-color: transparent !important;
             word-break: break-word;
+        }
+        .live-status-line {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            text-align: center;
+            line-height: 1.15;
+            white-space: nowrap;
+        }
+        .live-status-sub {
+            display: block;
+            text-align: center;
+            line-height: 1.15;
+            white-space: nowrap;
         }
         .live-dot-sm {
             width: 6px;
@@ -8431,9 +8447,9 @@
                                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:block;margin:auto 0;flex-shrink:0;"><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2" fill="#10b981"/><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/><path d="M19.1 4.9C23 8.8 23 15.2 19.1 19.1"/></svg>
                                 <span id="moreGatewayLabel">สถานะสัญญาณสด</span>
                             </span>
-                            <span class="detail-value text-success" style="color:#10b981;font-weight:700;">
-                                <span class="live-dot-sm"></span>
-                                <span id="moreGatewayValue">เชื่อมต่อเรียลไทม์ 100%</span>
+                            <span class="detail-value text-success" id="moreGatewayValue" style="color:#10b981;font-weight:700;">
+                                <span class="live-status-line"><span class="live-dot-sm"></span> เชื่อมต่อ 100%</span>
+                                <span class="live-status-sub">เรียลไทม์</span>
                             </span>
                         </div>
                         <div class="version-detail-item">
@@ -8936,7 +8952,7 @@
 
     <!-- Application Controller -->
     <script src="js/leaflet.js"></script>
-    <script src="js/app.js?v=20261028_05"></script>
+    <script src="js/app.js?v=20261028_06"></script>
 
     <!-- PWA: ลงทะเบียน service worker (เฉพาะเมื่อรันบน HTTP/HTTPS) -->
     <script>

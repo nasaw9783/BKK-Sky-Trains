@@ -1125,7 +1125,7 @@ gQIDAQAB
                 moreVersionLabel: 'เวอร์ชัน',
                 moreNetworkLabel: 'โครงข่ายรถไฟฟ้า',
                 moreGatewayLabel: 'สถานะสัญญาณสด',
-                moreGatewayValue: 'เชื่อมต่อเรียลไทม์ 100%',
+                moreGatewayValue: '<span class="live-status-line"><span class="live-dot-sm"></span> เชื่อมต่อ 100%</span><span class="live-status-sub">เรียลไทม์</span>',
                 morePlatformLabel: 'แพลตฟอร์ม',
             },
             en: {
@@ -1454,7 +1454,7 @@ gQIDAQAB
                 moreVersionLabel: 'Version',
                 moreNetworkLabel: 'Transit Network',
                 moreGatewayLabel: 'Live Signal',
-                moreGatewayValue: 'Connected 100% Real-time',
+                moreGatewayValue: '<span class="live-status-line"><span class="live-dot-sm"></span> Connected 100%</span><span class="live-status-sub">Real-Time</span>',
                 morePlatformLabel: 'Platform',
             },
             zh: {
@@ -1783,7 +1783,7 @@ gQIDAQAB
                 moreVersionLabel: '版本',
                 moreNetworkLabel: '轨道交通网络',
                 moreGatewayLabel: '实时信号状态',
-                moreGatewayValue: '100% 实时连接',
+                moreGatewayValue: '<span class="live-status-line"><span class="live-dot-sm"></span> 100% 实时</span><span class="live-status-sub">已连接</span>',
                 morePlatformLabel: '运行平台',
             }
         };

@@ -2981,10 +2981,10 @@ gQIDAQAB
                 ticketsTH: 'EMV Contactless, Rabbit, Token, Smart Pass',
                 ticketsEN: 'EMV Contactless, Rabbit, Token, Smart Pass',
                 ticketsZH: 'EMV Contactless, 兔子卡 (Rabbit), 单程票/代币, Smart Pass',
-                firstTrainTH: '05:00 - 06:00 น.',
+                firstTrainTH: '05:00 - 06:00 นาที',
                 firstTrainEN: '05:00 - 06:00',
                 firstTrainZH: '05:00 - 06:00',
-                lastTrainTH: '23:30 - 00:30 น.',
+                lastTrainTH: '23:30 - 00:30 นาที',
                 lastTrainEN: '23:30 - 00:30',
                 lastTrainZH: '23:30 - 00:30',
                 peakFreqTH: '2.30 - 5.00 นาที',
@@ -3013,10 +3013,10 @@ gQIDAQAB
                 ticketsTH: 'บัตร Rabbit, บัตรเที่ยวเดียว, One-Day Pass (฿150)',
                 ticketsEN: 'Rabbit Card, Single Journey Ticket, One-Day Pass (฿150)',
                 ticketsZH: '兔子卡 (Rabbit Card), 单程票, 一日通票 (฿150)',
-                firstTrainTH: '05:15 - 05:30 น.',
+                firstTrainTH: '05:15 - 05:30 นาที',
                 firstTrainEN: '05:15 - 05:30',
                 firstTrainZH: '05:15 - 05:30',
-                lastTrainTH: '24:00 - 00:30 น.',
+                lastTrainTH: '24:00 - 00:30 นาที',
                 lastTrainEN: '24:00 - 00:30',
                 lastTrainZH: '24:00 - 00:30',
                 peakFreqTH: '2.30 - 3.50 นาที',
@@ -3047,10 +3047,10 @@ gQIDAQAB
                 ticketsTH: 'บัตร Rabbit, บัตรเที่ยวเดียว, One-Day Pass (฿150)',
                 ticketsEN: 'Rabbit Card, Single Journey Ticket, One-Day Pass (฿150)',
                 ticketsZH: '兔子卡 (Rabbit Card), 单程票, 一日通票 (฿150)',
-                firstTrainTH: '05:30 น.',
+                firstTrainTH: '05:30 นาที',
                 firstTrainEN: '05:30',
                 firstTrainZH: '05:30',
-                lastTrainTH: '24:00 น.',
+                lastTrainTH: '24:00 นาที',
                 lastTrainEN: '24:00',
                 lastTrainZH: '24:00',
                 peakFreqTH: '3.45 นาที',
@@ -3081,10 +3081,10 @@ gQIDAQAB
                 ticketsTH: 'บัตร Rabbit, บัตรโดยสารเที่ยวเดียว',
                 ticketsEN: 'Rabbit Card, Single Journey Ticket',
                 ticketsZH: '兔子卡 (Rabbit Card), 单程票',
-                firstTrainTH: '06:00 น.',
+                firstTrainTH: '06:00 นาที',
                 firstTrainEN: '06:00',
                 firstTrainZH: '06:00',
-                lastTrainTH: '24:00 น.',
+                lastTrainTH: '24:00 นาที',
                 lastTrainEN: '24:00',
                 lastTrainZH: '24:00',
                 peakFreqTH: '8.00 นาที',
@@ -3115,10 +3115,10 @@ gQIDAQAB
                 ticketsTH: 'บัตร Rabbit, บัตร EMV Contactless, บัตรเที่ยวเดียว (ผู้สูงอายุลด 50%)',
                 ticketsEN: 'Rabbit Card, EMV Contactless, Single Journey (Senior 50% off)',
                 ticketsZH: '兔子卡, EMV Contactless, 单程票 (长者5折)',
-                firstTrainTH: '06:00 น.',
+                firstTrainTH: '06:00 นาที',
                 firstTrainEN: '06:00',
                 firstTrainZH: '06:00',
-                lastTrainTH: '24:00 น.',
+                lastTrainTH: '24:00 นาที',
                 lastTrainEN: '24:00',
                 lastTrainZH: '24:00',
                 peakFreqTH: '5.00 นาที',
@@ -3149,10 +3149,10 @@ gQIDAQAB
                 ticketsTH: 'บัตร Rabbit, บัตร EMV Contactless, บัตรเที่ยวเดียว (ผู้สูงอายุลด 50%)',
                 ticketsEN: 'Rabbit Card, EMV Contactless, Single Journey (Senior 50% off)',
                 ticketsZH: '兔子卡, EMV Contactless, 单程票 (长者5折)',
-                firstTrainTH: '06:00 น.',
+                firstTrainTH: '06:00 นาที',
                 firstTrainEN: '06:00',
                 firstTrainZH: '06:00',
-                lastTrainTH: '24:00 น.',
+                lastTrainTH: '24:00 นาที',
                 lastTrainEN: '24:00',
                 lastTrainZH: '24:00',
                 peakFreqTH: '5.00 นาที',
@@ -3183,10 +3183,10 @@ gQIDAQAB
                 ticketsTH: 'เหรียญโดยสาร (Token), บัตร MRT, บัตร EMV Contactless',
                 ticketsEN: 'Single Journey Token, MRT Card, EMV Contactless',
                 ticketsZH: '单程代币 (Token), MRT卡, EMV Contactless',
-                firstTrainTH: '06:00 น. (วันหยุด 06:00 น.)',
+                firstTrainTH: '06:00 นาที (วันหยุด 06:00 นาที)',
                 firstTrainEN: '06:00 (Holidays 06:00)',
                 firstTrainZH: '06:00 (节假日 06:00)',
-                lastTrainTH: '23:30 - 24:00 น.',
+                lastTrainTH: '23:30 - 24:00 นาที',
                 lastTrainEN: '23:30 - 24:00',
                 lastTrainZH: '23:30 - 24:00',
                 peakFreqTH: '3.30 - 4.00 นาที',
@@ -3217,10 +3217,10 @@ gQIDAQAB
                 ticketsTH: 'เหรียญโดยสาร (Token), บัตร MRT Plus, บัตร EMV Contactless',
                 ticketsEN: 'Single Journey Token, MRT Plus Card, EMV Contactless',
                 ticketsZH: '单程代币 (Token), MRT Plus卡, EMV Contactless',
-                firstTrainTH: '05:30 น. (วันหยุด 06:00 น.)',
+                firstTrainTH: '05:30 นาที (วันหยุด 06:00 นาที)',
                 firstTrainEN: '05:30 (Holidays 06:00)',
                 firstTrainZH: '05:30 (节假日 06:00)',
-                lastTrainTH: '23:30 - 24:00 น.',
+                lastTrainTH: '23:30 - 24:00 นาที',
                 lastTrainEN: '23:30 - 24:00',
                 lastTrainZH: '23:30 - 24:00',
                 peakFreqTH: '4.30 - 6.00 นาที',
@@ -3251,10 +3251,10 @@ gQIDAQAB
                 ticketsTH: 'เหรียญโดยสาร (Token), บัตร SRTET, บัตร EMV Contactless',
                 ticketsEN: 'Single Journey Token, SRTET Card, EMV Contactless',
                 ticketsZH: '单程代币 (Token), SRTET卡, EMV Contactless',
-                firstTrainTH: '05:00 น.',
+                firstTrainTH: '05:00 นาที',
                 firstTrainEN: '05:00',
                 firstTrainZH: '05:00',
-                lastTrainTH: '24:00 น.',
+                lastTrainTH: '24:00 นาที',
                 lastTrainEN: '24:00',
                 lastTrainZH: '24:00',
                 peakFreqTH: '10.00 นาที',
@@ -3285,10 +3285,10 @@ gQIDAQAB
                 ticketsTH: 'เหรียญโดยสาร (Token), บัตร SRTET, บัตร EMV Contactless',
                 ticketsEN: 'Single Journey Token, SRTET Card, EMV Contactless',
                 ticketsZH: '单程代币 (Token), SRTET卡, EMV Contactless',
-                firstTrainTH: '05:00 น.',
+                firstTrainTH: '05:00 นาที',
                 firstTrainEN: '05:00',
                 firstTrainZH: '05:00',
-                lastTrainTH: '24:00 น.',
+                lastTrainTH: '24:00 นาที',
                 lastTrainEN: '24:00',
                 lastTrainZH: '24:00',
                 peakFreqTH: '20.00 นาที',
@@ -3319,10 +3319,10 @@ gQIDAQAB
                 ticketsTH: 'เหรียญโดยสาร (Smart Token), บัตร Smart Pass ARL',
                 ticketsEN: 'Smart Token, ARL Smart Pass Card',
                 ticketsZH: '智能代币 (Smart Token), ARL Smart Pass 乘车卡',
-                firstTrainTH: '05:30 น.',
+                firstTrainTH: '05:30 นาที',
                 firstTrainEN: '05:30',
                 firstTrainZH: '05:30',
-                lastTrainTH: '24:00 น.',
+                lastTrainTH: '24:00 นาที',
                 lastTrainEN: '24:00',
                 lastTrainZH: '24:00',
                 peakFreqTH: '9.00 นาที',
@@ -3353,10 +3353,10 @@ gQIDAQAB
                 ticketsTH: 'บัตร Rabbit, บัตรโดยสารเที่ยวเดียว',
                 ticketsEN: 'Rabbit Card, Single Journey Ticket',
                 ticketsZH: '兔子卡 (Rabbit Card), 单程票',
-                firstTrainTH: '06:00 น.',
+                firstTrainTH: '06:00 นาที',
                 firstTrainEN: '06:00',
                 firstTrainZH: '06:00',
-                lastTrainTH: '24:00 น.',
+                lastTrainTH: '24:00 นาที',
                 lastTrainEN: '24:00',
                 lastTrainZH: '24:00',
                 peakFreqTH: '5.00 - 7.00 นาที',
@@ -6362,21 +6362,21 @@ setOriginFromActionSheet() {
                                         <b>${isZh ? '早间始发运营时间:' : (isEn ? 'Morning Services:' : 'เวลาเปิดให้บริการตอนเช้า:')}</b>
                                         ${isZh
                                             ? 'SRT 红线最早自 05:00 开始运营，BTS 轻轨约为 05:15–05:30，ARL 机场快线为 05:30，各条 MRT 地铁线约为 05:30–06:00。'
-                                            : (isEn ? 'SRT Red Line starts earliest at 05:00, BTS at 05:15-05:30, ARL at 05:30, and MRT lines at 05:30-06:00.' : 'SRT สายสีแดงเปิดให้บริการเร็วที่สุดตั้งแต่ 05:00 น., BTS เริ่ม 05:15–05:30 น., ARL เริ่ม 05:30 น. และ MRT สายต่างๆ เริ่ม 05:30–06:00 น.')
+                                            : (isEn ? 'SRT Red Line starts earliest at 05:00, BTS at 05:15-05:30, ARL at 05:30, and MRT lines at 05:30-06:00.' : 'SRT สายสีแดงเปิดให้บริการเร็วที่สุดตั้งแต่ 05:00 นาที, BTS เริ่ม 05:15–05:30 นาที, ARL เริ่ม 05:30 นาที และ MRT สายต่างๆ เริ่ม 05:30–06:00 นาที')
                                         }
                                     </li>
                                     <li style="margin-bottom:6px">
                                         <b>${isZh ? '夜间末班收车时间:' : (isEn ? 'Night Closing:' : 'เวลาปิดให้บริการตอนกลางคืน:')}</b>
                                         ${isZh
                                             ? '全路网所有线路通常于 24:00 (午夜) 至 00:30 之间结束运营。'
-                                            : (isEn ? 'All transit lines close between 24:00 (Midnight) and 00:30.' : 'ทุกสายสิ้นสุดการให้บริการประมาณ 24:00 น. (เที่ยงคืน) ถึง 00:30 น.')
+                                            : (isEn ? 'All transit lines close between 24:00 (Midnight) and 00:30.' : 'ทุกสายสิ้นสุดการให้บริการประมาณ 24:00 นาที (เที่ยงคืน) ถึง 00:30 นาที')
                                         }
                                     </li>
                                     <li>
                                         <b>${isZh ? '换乘跨线乘客注意事项:' : (isEn ? 'Connecting Trains:' : 'คำแนะนำสำหรับผู้โดยสารที่ต้องเปลี่ยนสาย:')}</b>
                                         ${isZh
                                             ? '深夜乘车如需跨线换乘，建议在 23:30 前到达换乘枢纽车站，以免错过换乘线路的末班车。'
-                                            : (isEn ? 'For late night journeys requiring interchanges, plan to reach transfer stations before 23:30 to avoid missing the final train.' : 'ในเที่ยวเดินทางรอบดึกที่ต้องเปลี่ยนสาย ควรเดินทางถึงสถานีเปลี่ยนสายก่อน 23:30 น. เพื่อให้ทันขบวนสุดท้ายของอีกสาย')
+                                            : (isEn ? 'For late night journeys requiring interchanges, plan to reach transfer stations before 23:30 to avoid missing the final train.' : 'ในเที่ยวเดินทางรอบดึกที่ต้องเปลี่ยนสาย ควรเดินทางถึงสถานีเปลี่ยนสายก่อน 23:30 นาที เพื่อให้ทันขบวนสุดท้ายของอีกสาย')
                                         }
                                     </li>
                                 </ul>
@@ -6398,7 +6398,7 @@ setOriginFromActionSheet() {
                     const d2Code = activeLine.dir2?.code || '';
                     const d2Name = isZh ? (activeLine.dir2?.toZH || activeLine.dir2?.toEN || '') : (isEn ? (activeLine.dir2?.toEN || '') : (activeLine.dir2?.toTH || ''));
 
-                    const timeUnit = isZh ? '' : (isEn ? '' : ' น.');
+                    const timeUnit = isZh ? '' : (isEn ? '' : ' นาที');
                     const d1First = activeLine.dir1?.first ? `${activeLine.dir1.first}${activeLine.dir1.first !== '-' ? timeUnit : ''}` : '-';
                     const d1Last = activeLine.dir1?.last ? `${activeLine.dir1.last}${activeLine.dir1.last !== '-' ? timeUnit : ''}` : '-';
                     const d2First = activeLine.dir2?.first ? `${activeLine.dir2.first}${activeLine.dir2.first !== '-' ? timeUnit : ''}` : '-';

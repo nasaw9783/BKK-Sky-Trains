@@ -6373,7 +6373,7 @@ setOriginFromActionSheet() {
                                                     </span>
                                                     <div class="timetable-stat-val">${formatTimetableStat(lastTrainRaw)}</div>
                                                 </div>
-                                                <div class="timetable-stat-box">
+                                                <div class="timetable-stat-box" style="background:${l.color}14;border-color:${l.color}38;">
                                                     <span class="timetable-stat-lbl" style="color:${l.color};">
                                                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="${l.color}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg>
                                                         <span>${peakLbl}</span>

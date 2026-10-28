@@ -318,8 +318,7 @@
             position: sticky;
             top: 0;
             z-index: 105;
-            background:
-                linear-gradient(110deg, #0f172a, #0f2137 50%, #1e1b2e);
+            background: linear-gradient(110deg, #0a101d, #0d1726 50%, #151c2e);
             color: #fff;
             padding: 10px 16px;
             padding-left: max(16px, env(safe-area-inset-left));
@@ -328,9 +327,16 @@
             align-items: center;
             justify-content: space-between;
             gap: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.22);
+            border-bottom: 1px solid rgba(56, 189, 248, 0.22);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.35);
             isolation: isolate;
+        }
+
+        html:not(.dark) header.app {
+            background: linear-gradient(110deg, #ffffff, #f0f7ff 50%, #f1f5f9);
+            border-bottom-color: rgba(2, 132, 199, 0.2);
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.08);
+            color: #0f172a;
         }
 
         header.app::before {
@@ -340,9 +346,13 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: linear-gradient(110deg, #0f172a, #0f2137 50%, #1e1b2e);
+            background: linear-gradient(110deg, #0a101d, #0d1726 50%, #151c2e);
             pointer-events: none;
             z-index: -1;
+        }
+
+        html:not(.dark) header.app::before {
+            background: linear-gradient(110deg, #ffffff, #f0f7ff 50%, #f1f5f9);
         }
 
         header.app::after {
@@ -390,15 +400,17 @@
         header.app .brand {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 11px;
             min-width: 0;
             flex: 1;
         }
 
-        .brand-copy {
-            min-width: 0;
-            flex: 1;
-            overflow: hidden;
+        .logo-wrap {
+            position: relative;
+            flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
         }
 
         header.app .logo {
@@ -406,18 +418,39 @@
             height: 38px;
             object-fit: contain;
             display: block;
-            flex-shrink: 0;
             border: none;
             border-radius: 0;
             box-shadow: none;
             background: transparent;
-            filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35));
+            filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.4));
             transition: transform 0.25s ease, filter 0.25s ease;
         }
 
-        header.app .logo:hover {
+        .logo-wrap:hover .logo {
             transform: scale(1.05);
-            filter: drop-shadow(0 3px 10px rgba(16, 185, 129, 0.5));
+            filter: drop-shadow(0 3px 12px rgba(56, 189, 248, 0.5));
+        }
+
+        .logo-status-dot {
+            position: absolute;
+            bottom: -1px;
+            right: -1px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #10b981;
+            border: 2px solid #0a101d;
+            box-shadow: 0 0 6px #10b981;
+        }
+
+        html:not(.dark) .logo-status-dot {
+            border-color: #ffffff;
+        }
+
+        .brand-copy {
+            min-width: 0;
+            flex: 1;
+            overflow: hidden;
         }
 
         .brand-title-wrap {
@@ -429,35 +462,53 @@
 
         header.app h1 {
             font-size: 15px;
-            font-weight: 800;
+            font-weight: 900;
             margin: 0;
             line-height: 1.15;
             letter-spacing: -0.2px;
             white-space: nowrap;
+            background: linear-gradient(100deg, #38bdf8 0%, #34d399 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 2px 10px rgba(56, 189, 248, 0.2);
+            user-select: none !important;
+            caret-color: transparent !important;
+        }
+
+        html:not(.dark) header.app h1 {
+            background: linear-gradient(100deg, #0284c7 0%, #059669 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: none;
         }
 
         .live-pill {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 4px;
-            background: rgba(16, 185, 129, 0.22);
-            border: 1px solid rgba(52, 211, 153, 0.45);
-            color: #6ee7b7;
+            background: #10b981;
+            color: #042f2e;
             font-size: 8.5px;
-            font-weight: 800;
+            font-weight: 900;
             letter-spacing: 0.6px;
-            padding: 1.5px 6px;
-            border-radius: var(--radius-full);
+            padding: 1.5px 6.5px;
+            border-radius: 6px;
             vertical-align: middle;
             flex-shrink: 0;
+            text-transform: uppercase;
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.45);
+            user-select: none !important;
+            caret-color: transparent !important;
         }
 
         .beacon-pulse {
-            width: 6px;
-            height: 6px;
+            width: 5px;
+            height: 5px;
             border-radius: 50%;
-            background: #34d399;
-            box-shadow: 0 0 8px #34d399;
+            background: #042f2e;
             animation: beaconGlow 1.8s infinite ease-in-out;
         }
 
@@ -469,22 +520,37 @@
         header.app .sub {
             font-size: 10px;
             color: #cbd5e1;
+            font-weight: 500;
+            margin-top: 1.5px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            user-select: none !important;
+            caret-color: transparent !important;
+        }
+
+        html:not(.dark) header.app .sub {
+            color: #475569;
+        }
+
+        header.app .disclaimer {
+            font-size: 8px;
+            color: rgba(148, 163, 184, 0.85);
+            font-style: normal;
             font-weight: 400;
             margin-top: 1px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            user-select: none !important;
+            caret-color: transparent !important;
         }
 
-        header.app .disclaimer {
-            font-size: 8px;
-            color: rgba(203, 213, 225, 0.7);
-            font-style: italic;
-            font-weight: 300;
-            margin-top: 1px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+        html:not(.dark) header.app .disclaimer {
+            color: rgba(100, 116, 139, 0.85);
         }
 
         .header-controls {
@@ -515,6 +581,8 @@
             backdrop-filter: blur(8px);
             line-height: 1;
             box-sizing: border-box;
+            user-select: none !important;
+            caret-color: transparent !important;
         }
 
         .header-pill-btn svg {
@@ -551,13 +619,34 @@
             margin-left: 2px;
             flex-shrink: 0;
             cursor: pointer;
-            user-select: none;
+            user-select: none !important;
+            caret-color: transparent !important;
             -webkit-tap-highlight-color: transparent;
-            transition: opacity 0.2s ease, transform 0.15s ease;
+            transition: all 0.2s ease;
+            padding: 5px 12px;
+            border-radius: 14px;
+            background: rgba(12, 74, 110, 0.25);
+            border: 1px solid rgba(56, 189, 248, 0.35);
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1), 0 4px 12px rgba(0, 0, 0, 0.25);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+
+        html:not(.dark) .clock {
+            background: rgba(2, 132, 199, 0.08);
+            border-color: rgba(2, 132, 199, 0.25);
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
         }
 
         .clock:hover {
-            opacity: 0.85;
+            border-color: rgba(56, 189, 248, 0.6);
+            background: rgba(12, 74, 110, 0.35);
+            transform: translateY(-1px);
+        }
+
+        html:not(.dark) .clock:hover {
+            border-color: rgba(2, 132, 199, 0.45);
+            background: rgba(2, 132, 199, 0.12);
         }
 
         .clock:active {
@@ -567,16 +656,34 @@
         .clock .t {
             font-size: 14px;
             font-weight: 800;
-            line-height: 1;
-            letter-spacing: -0.3px;
+            line-height: 1.1;
+            letter-spacing: -0.2px;
             white-space: nowrap;
+            color: #38bdf8;
+            font-family: 'JetBrains Mono', 'Prompt', monospace, sans-serif;
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.35);
+            user-select: none !important;
+            caret-color: transparent !important;
+        }
+
+        html:not(.dark) .clock .t {
+            color: #0284c7;
+            text-shadow: none;
         }
 
         .clock .d {
-            font-size: 9.5px;
-            color: #94a3b8;
+            font-size: 10px;
+            font-weight: 700;
+            color: #fbbf24;
             margin-top: 2px;
             white-space: nowrap;
+            letter-spacing: -0.2px;
+            user-select: none !important;
+            caret-color: transparent !important;
+        }
+
+        html:not(.dark) .clock .d {
+            color: #d97706;
         }
 
         @media (max-width: 480px) {
@@ -587,11 +694,21 @@
                 gap: 8px;
             }
             header.app h1 {
-                font-size: 13px;
+                font-size: 13.5px;
             }
             header.app .logo {
                 width: 34px;
                 height: 34px;
+            }
+            .logo-status-dot {
+                width: 8px;
+                height: 8px;
+            }
+            header.app .sub {
+                font-size: 9.5px;
+            }
+            header.app .disclaimer {
+                font-size: 7.5px;
             }
             .header-controls {
                 gap: 4px;
@@ -612,11 +729,15 @@
                 height: 28px;
                 padding: 0 6px;
             }
+            .clock {
+                padding: 4px 8px;
+                border-radius: 11px;
+            }
             .clock .t {
-                font-size: 12px;
+                font-size: 12.5px;
             }
             .clock .d {
-                font-size: 8px;
+                font-size: 8.5px;
             }
             .j-fields {
                 gap: 5px;
@@ -8159,10 +8280,13 @@
             <span class="pull-refresh-text">เลื่อนลงเพื่อรีโหลด</span>
         </div>
     </div>
-    <!-- ===== Modern App Header ===== -->
+    <!-- ===== Modern App Header (Command Center Status Bar) ===== -->
     <header class="app">
         <div class="brand">
-            <img class="logo" src="icon.svg" alt="BKK SKYTRAINs" width="38" height="38" aria-hidden="true">
+            <div class="logo-wrap">
+                <img class="logo" src="icon.svg" alt="BKK SKYTRAINs" width="38" height="38" aria-hidden="true">
+                <span class="logo-status-dot"></span>
+            </div>
             <div class="brand-copy">
                 <div class="brand-title-wrap">
                     <h1 id="appTitle">BKK SKYTRAINs</h1>
@@ -9186,7 +9310,7 @@
 
     <!-- Application Controller -->
     <script src="js/leaflet.js"></script>
-    <script src="js/app.js?v=20261028_09"></script>
+    <script src="js/app.js?v=20261028_10"></script>
 
     <!-- PWA: ลงทะเบียน service worker (เฉพาะเมื่อรันบน HTTP/HTTPS) -->
     <script>

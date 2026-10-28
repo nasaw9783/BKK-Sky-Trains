@@ -8453,10 +8453,7 @@ setOriginFromActionSheet() {
                 const code = station.StationKey || station.StationId || station.StationCode || '';
                 const name = stName(station);
                 const lineColor = station.StationLineColor || (typeof LINE_BRAND_COLORS !== 'undefined' && LINE_BRAND_COLORS[station.StationLineId || station.LineId]) || '#7AB420';
-                const isYellow = (station.StationLineId === 4 || station.LineId === 4 || /ffd100|fad53d/i.test(String(lineColor)));
-                const textColor = isYellow ? '#000000' : '#ffffff';
-
-                const header = isApprox
+                                const header = isApprox
                     ? (lang === 'en' ? 'Approximate Nearest Station' : (lang === 'zh' ? '大约最近车站' : 'พบสถานีโดยประมาณ'))
                     : (lang === 'en' ? 'Nearest Station Detected' : (lang === 'zh' ? '检测到附近车站' : 'ตรวจพบสถานีใกล้คุณ'));
 
@@ -8469,7 +8466,7 @@ setOriginFromActionSheet() {
                 }
 
                 const html = `
-                    <div class="toast-station-code" style="background:${lineColor};color:${textColor};">${esc(code)}</div>
+                    <div class="toast-station-code" style="background:${lineColor};color:#ffffff;">${esc(code)}</div>
                     <div class="toast-content-col">
                         <div class="toast-header-text">${esc(header)}</div>
                         <div class="toast-name-row">

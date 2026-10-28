@@ -7775,31 +7775,80 @@
             font-variant-numeric: tabular-nums;
         }
         .version-details-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 6px;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            caret-color: transparent !important;
         }
         .version-detail-item {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: space-between;
-            gap: 8px;
-            padding: 9px 12px;
+            justify-content: center;
+            text-align: center;
+            gap: 4px;
+            padding: 9px 4px;
             background: var(--bg-subtle);
             border: 1px solid var(--line);
-            border-radius: var(--radius-sm);
+            border-radius: 12px;
             font-size: 12px;
+            min-height: 56px;
+            box-sizing: border-box;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            caret-color: transparent !important;
+            cursor: default !important;
+            transition: all 0.2s ease;
+        }
+        html.dark .version-detail-item {
+            background: rgba(11, 19, 41, 0.7);
+            border-color: rgba(255, 255, 255, 0.08);
+        }
+        .version-detail-item.version-tile-live {
+            background: rgba(16, 185, 129, 0.06);
+            border-color: rgba(16, 185, 129, 0.25);
+        }
+        html.dark .version-detail-item.version-tile-live {
+            background: rgba(16, 185, 129, 0.08);
+            border-color: rgba(16, 185, 129, 0.3);
         }
         .version-detail-item .detail-label {
-            color: var(--muted);
-            font-weight: 500;
-        }
-        .version-detail-item .detail-value {
-            color: var(--ink);
-            font-weight: 700;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            justify-content: center;
+            gap: 4px;
+            font-size: clamp(9.5px, 2.5vw, 10.5px);
+            font-weight: 700;
+            color: var(--muted);
+            line-height: 1.15;
+            text-align: center;
+            width: 100%;
+            letter-spacing: 0;
+            user-select: none !important;
+            caret-color: transparent !important;
+        }
+        .version-detail-item .detail-label svg {
+            flex-shrink: 0;
+            display: block;
+            margin: auto 0;
+        }
+        .version-detail-item .detail-value {
+            font-size: clamp(10.5px, 2.8vw, 11.5px);
+            font-weight: 800;
+            color: var(--ink);
+            line-height: 1.25;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 4px;
+            width: 100%;
+            letter-spacing: 0;
+            user-select: none !important;
+            caret-color: transparent !important;
+            word-break: break-word;
         }
         .live-dot-sm {
             width: 6px;
@@ -8371,19 +8420,28 @@
                     </div>
                     <div class="version-details-list">
                         <div class="version-detail-item">
-                            <span class="detail-label" id="moreNetworkLabel">โครงข่ายรถไฟฟ้า</span>
+                            <span class="detail-label">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:block;margin:auto 0;flex-shrink:0;"><rect width="16" height="15" x="4" y="3" rx="3"/><path d="M4 11h16M12 3v8M8 18l-2 3M16 18l2 3"/><circle cx="8" cy="15" r="1.2" fill="#38bdf8"/><circle cx="16" cy="15" r="1.2" fill="#38bdf8"/></svg>
+                                <span id="moreNetworkLabel">โครงข่ายรถไฟฟ้า</span>
+                            </span>
                             <span class="detail-value">12 Transit Lines</span>
                         </div>
-                        <div class="version-detail-item">
-                            <span class="detail-label" id="moreGatewayLabel">สถานะสัญญาณสด</span>
+                        <div class="version-detail-item version-tile-live">
+                            <span class="detail-label" style="color:#10b981;">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:block;margin:auto 0;flex-shrink:0;"><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2" fill="#10b981"/><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/><path d="M19.1 4.9C23 8.8 23 15.2 19.1 19.1"/></svg>
+                                <span id="moreGatewayLabel">สถานะสัญญาณสด</span>
+                            </span>
                             <span class="detail-value text-success" style="color:#10b981;font-weight:700;">
                                 <span class="live-dot-sm"></span>
                                 <span id="moreGatewayValue">เชื่อมต่อเรียลไทม์ 100%</span>
                             </span>
                         </div>
                         <div class="version-detail-item">
-                            <span class="detail-label" id="morePlatformLabel">แพลตฟอร์ม</span>
-                            <span class="detail-value" id="morePlatformValue">PWA / Hybrid Native</span>
+                            <span class="detail-label">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:block;margin:auto 0;flex-shrink:0;"><rect width="14" height="19" x="5" y="2.5" rx="2.5"/><path d="M12 18h.01"/></svg>
+                                <span id="morePlatformLabel">แพลตฟอร์ม</span>
+                            </span>
+                            <span class="detail-value" id="morePlatformValue">PWA / Web Mobile</span>
                         </div>
                     </div>
                 </div>
@@ -8878,7 +8936,7 @@
 
     <!-- Application Controller -->
     <script src="js/leaflet.js"></script>
-    <script src="js/app.js?v=20261028_04"></script>
+    <script src="js/app.js?v=20261028_05"></script>
 
     <!-- PWA: ลงทะเบียน service worker (เฉพาะเมื่อรันบน HTTP/HTTPS) -->
     <script>

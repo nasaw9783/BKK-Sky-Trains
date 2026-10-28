@@ -361,38 +361,45 @@
             left: 0;
             right: 0;
             bottom: 0;
-            height: 3px;
+            height: 3.5px;
             background: linear-gradient(90deg,
-                    #7AB420 0 4.167%,
-                    #00807D 4.167% 8.333%,
-                    #C9A038 8.333% 12.5%,
-                    #0284C7 12.5% 16.667%,
-                    #8A2C9B 16.667% 20.833%,
-                    #FFD100 20.833% 25%,
-                    #EC4899 25% 29.167%,
-                    #B91C1C 29.167% 33.333%,
-                    #F87171 33.333% 37.5%,
-                    #8A1538 37.5% 41.667%,
-                    #82C341 41.667% 45.833%,
-                    #F58220 45.833% 50%,
-                    #7AB420 50% 54.167%,
-                    #00807D 54.167% 58.333%,
-                    #C9A038 58.333% 62.5%,
-                    #0284C7 62.5% 66.667%,
-                    #8A2C9B 66.667% 70.833%,
-                    #FFD100 70.833% 75%,
-                    #EC4899 75% 79.167%,
-                    #B91C1C 79.167% 83.333%,
-                    #F87171 83.333% 87.5%,
-                    #8A1538 87.5% 91.667%,
-                    #82C341 91.667% 95.833%,
-                    #F58220 95.833% 100%);
+                    #7AB420,
+                    #00807D,
+                    #C9A038,
+                    #0284C7,
+                    #8A2C9B,
+                    #FFD100,
+                    #EC4899,
+                    #B91C1C,
+                    #F87171,
+                    #8A1538,
+                    #82C341,
+                    #F58220,
+                    #7AB420,
+                    #00807D,
+                    #C9A038,
+                    #0284C7,
+                    #8A2C9B,
+                    #FFD100,
+                    #EC4899,
+                    #B91C1C,
+                    #F87171,
+                    #8A1538,
+                    #82C341,
+                    #F58220);
             background-size: 200% 100%;
-            animation: headerShimmer 10s linear infinite;
-            opacity: 0.95;
+            animation: auroraFlow 12s linear infinite;
+            filter: drop-shadow(0 2px 8px rgba(56, 189, 248, 0.35));
+            box-shadow: 0 1px 6px rgba(16, 185, 129, 0.25);
+            z-index: 10;
         }
 
-        @keyframes headerShimmer {
+        html:not(.dark) header.app::after {
+            filter: drop-shadow(0 2px 6px rgba(2, 132, 199, 0.2));
+            box-shadow: 0 1px 4px rgba(15, 23, 42, 0.08);
+        }
+
+        @keyframes auroraFlow {
             0% { background-position: 0% 0; }
             100% { background-position: 200% 0; }
         }
@@ -9312,7 +9319,7 @@
 
     <!-- Application Controller -->
     <script src="js/leaflet.js"></script>
-    <script src="js/app.js?v=20261028_11"></script>
+    <script src="js/app.js?v=20261028_12"></script>
 
     <!-- PWA: ลงทะเบียน service worker (เฉพาะเมื่อรันบน HTTP/HTTPS) -->
     <script>

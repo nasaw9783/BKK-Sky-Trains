@@ -5840,26 +5840,47 @@ setOriginFromActionSheet() {
                         <div class="info-card">
                             <h3>${getUiIcon('ticket', 17, '#f59e0b')} ${isZh ? '车票类型与支付方式指南' : (isEn ? 'Tickets & Payment Methods Guide' : 'คู่มือประเภทบัตรและวิธีการชำระค่าโดยสาร')}</h3>
                             <div style="font-size:12.5px;color:var(--ink);line-height:1.6">
-                                <div style="margin-bottom:10px">
-                                    <b style="color:var(--sky)">${getUiIcon('card', 14, 'var(--sky)')} ${isZh ? 'EMV Contactless 非接触式卡 (Visa / Mastercard)' : (isEn ? 'EMV Contactless (Visa / Mastercard)' : 'บัตร EMV Contactless (Visa / Mastercard)')}</b>:
-                                    ${isZh
-                                        ? '可在 MRT 蓝线、紫线、黄线、粉红线以及 SRT 红线直接刷卡进出闸机。30 分钟内在接驳线路之间换乘可自动免除第二次进站起步费。'
-                                        : (isEn ? 'Tap to pay at MRT Blue, Purple, Yellow, Pink lines, and SRT Red Line. Enjoy transfer fee waivers between connecting lines within 30 minutes.' : 'แตะจ่ายได้ทันทีผ่านประตูอัตโนมัติของ MRT สายสีน้ำเงิน, สายสีม่วง, สายสีเหลือง, สายสีชมพู และ SRT สายสีแดง พร้อมสิทธิ์ยกเว้นค่าแรกเข้าเมื่อแตะเปลี่ยนสายภายใน 30 นาที')
-                                    }
+                                <div style="margin-bottom:12px">
+                                    <div style="font-weight:700;color:var(--sky);display:flex;align-items:center;gap:6px;margin-bottom:4px">${getUiIcon('card', 15, 'var(--sky)')} <span>${isZh ? 'EMV Contactless 非接触式卡 (Visa / Mastercard)' : (isEn ? 'EMV Contactless (Visa / Mastercard)' : 'บัตร EMV Contactless (Visa / Mastercard)')}</span></div>
+                                    <div style="color:var(--ink);opacity:0.92;line-height:1.6;padding-left:21px">
+                                        ${isZh
+                                            ? '可在 MRT 蓝线、紫线、黄线、粉红线以及 SRT 红线直接刷卡进出闸机。30 分钟内在接驳线路之间换乘可自动免除第二次进站起步费。'
+                                            : (isEn ? 'Tap to pay at MRT Blue, Purple, Yellow, Pink lines, and SRT Red Line. Enjoy transfer fee waivers between connecting lines within 30 minutes.' : 'แตะจ่ายได้ทันทีผ่านประตูอัตโนมัติของ MRT สายสีน้ำเงิน, สายสีม่วง, สายสีเหลือง, สายสีชมพู และ SRT สายสีแดง พร้อมสิทธิ์ยกเว้นค่าแรกเข้าเมื่อแตะเปลี่ยนสายภายใน 30 นาที')
+                                        }
+                                    </div>
                                 </div>
-                                <div style="margin-bottom:10px">
-                                    <b style="color:#f59e0b">${getUiIcon('card', 14, '#f59e0b')} ${isZh ? '兔卡 (Rabbit Card)' : (isEn ? 'Rabbit Card' : 'บัตรแรบบิท (Rabbit Card)')}</b>:
-                                    ${isZh
-                                        ? '曼谷通用的储值交通卡，适用于 BTS 素坤逸线、是隆线、金线以及 MRT 黄线、粉红线。支持储值扣费及 30 天计次月票套餐。<br>• <b>长者卡 (紫色):</b> 泰国籍 60 岁以上长者享受 50% 半价优惠。<br>• <b>学生卡 (绿色):</b> 23 岁以下学生可通过 Rabbit Rewards 购买计次优惠包 (黄线/粉红线平均每次仅约 20 泰铢)。'
-                                        : (isEn
-                                            ? 'Accepted on BTS Sukhumvit, Silom, Gold lines, and MRT Yellow, Pink lines. Stored-value and 30-day passes available.<br>• <b>Senior Card (Purple):</b> 50% discount for Thai seniors 60+.<br>• <b>Student Card (Green):</b> Eligible for discount trip pass packages (averaging ฿20/trip on Yellow/Pink lines) via Rabbit Rewards.'
-                                            : 'บัตรแตะเดินทางยอดนิยม ใช้ได้กับ BTS สายสุขุมวิท, สายสีลม, สายสีทอง, MRT สายสีเหลือง และสายสีชมพู รองรับทั้งการเติมเงินและแพ็กเกจเที่ยวเดินทาง 30 วัน<br>• <b>บัตรผู้สูงอายุ (สีม่วง):</b> ลด 50% สำหรับผู้สูงอายุ 60 ปีขึ้นไป<br>• <b>บัตรนักเรียน/นักศึกษา (สีเขียว):</b> อายุไม่เกิน 23 ปี รับสิทธิ์ซื้อแพ็กเกจเที่ยวเดินทางเหมาเที่ยวสุดคุ้ม (สายสีเหลือง/ชมพู เฉลี่ยเริ่มต้น ฿20/เที่ยว) ผ่าน Rabbit Rewards'
-                                        )
-                                    }
+                                <div style="margin-bottom:12px">
+                                    <div style="font-weight:700;color:#f59e0b;display:flex;align-items:center;gap:6px;margin-bottom:4px">${getUiIcon('card', 15, '#f59e0b')} <span>${isZh ? '兔卡 (Rabbit Card)' : (isEn ? 'Rabbit Card' : 'บัตรแรบบิท (Rabbit Card)')}</span></div>
+                                    <div style="color:var(--ink);opacity:0.92;line-height:1.6;padding-left:21px">
+                                        ${isZh
+                                            ? '曼谷通用的储值交通卡，适用于 BTS 素坤逸线、是隆线、金线以及 MRT 黄线、粉红线。支持储值扣费及 30 天计次月票套餐。'
+                                            : (isEn
+                                                ? 'Accepted on BTS Sukhumvit, Silom, Gold lines, and MRT Yellow, Pink lines. Stored-value and 30-day passes available.'
+                                                : 'บัตรแตะเดินทางยอดนิยม ใช้ได้กับ BTS สายสุขุมวิท, สายสีลม, สายสีทอง, MRT สายสีเหลือง และสายสีชมพู รองรับทั้งการเติมเงินและแพ็กเกจเที่ยวเดินทาง 30 วัน'
+                                            )
+                                        }
+                                    </div>
+                                    <div style="margin-top:8px;padding-left:21px;display:flex;flex-direction:column;gap:8px">
+                                        <div>
+                                            <div style="font-weight:700;color:var(--ink);margin-bottom:2px">• ${isZh ? '长者卡 (紫色)' : (isEn ? 'Senior Card (Purple)' : 'บัตรผู้สูงอายุ (สีม่วง)')}</div>
+                                            <div style="color:var(--muted);line-height:1.5;padding-left:12px">${isZh ? '泰国籍 60 岁以上长者享受 50% 半价优惠。' : (isEn ? '50% discount for Thai seniors 60+.' : 'ลด 50% สำหรับผู้สูงอายุ 60 ปีขึ้นไป')}</div>
+                                        </div>
+                                        <div>
+                                            <div style="font-weight:700;color:var(--ink);margin-bottom:2px">• ${isZh ? '学生卡 (绿色)' : (isEn ? 'Student Card (Green)' : 'บัตรนักเรียน/นักศึกษา (สีเขียว)')}</div>
+                                            <div style="color:var(--muted);line-height:1.5;padding-left:12px">
+                                                ${isZh
+                                                    ? '23 岁以下学生可通过 Rabbit Rewards 购买计次优惠包 (黄线/粉红线平均每次仅约 20 泰铢)。'
+                                                    : (isEn ? 'Eligible for discount trip pass packages (averaging ฿20/trip on Yellow/Pink lines) via Rabbit Rewards.' : 'อายุไม่เกิน 23 ปี รับสิทธิ์ซื้อแพ็กเกจเที่ยวเดินทางเหมาเที่ยวสุดคุ้ม (สายสีเหลือง/ชมพู เฉลี่ยเริ่มต้น ฿20/เที่ยว) ผ่าน Rabbit Rewards')
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div>
-                                    <b style="color:var(--muted)">${getUiIcon('coins', 14, 'var(--muted)')} ${isZh ? '单程票 / 代币 (Single Journey Token & Card)' : (isEn ? 'Single Journey Token & Card' : 'เหรียญ / ตั๋วเที่ยวเดียว (Single Journey Token & Card)')}</b>:
-                                    ${isZh ? '可在各线全线车站的自动售票机投币/扫码购买，或至人工票务窗口购买。' : (isEn ? 'Available at automatic ticket vending machines and ticket offices at every station across all networks.' : 'หยอดเหรียญหรือสแกน QR Code ซื้อได้ที่ตู้จำหน่ายตั๋วอัตโนมัติและเคาน์เตอร์ทุกสถานี')}
+                                    <div style="font-weight:700;color:var(--muted);display:flex;align-items:center;gap:6px;margin-bottom:4px">${getUiIcon('coins', 15, 'var(--muted)')} <span>${isZh ? '单程票 / 代币 (Single Journey Token & Card)' : (isEn ? 'Single Journey Token & Card' : 'เหรียญ / ตั๋วเที่ยวเดียว (Single Journey Token & Card)')}</span></div>
+                                    <div style="color:var(--ink);opacity:0.92;line-height:1.6;padding-left:21px">
+                                        ${isZh ? '可在各线全线车站的自动售票机投币/扫码购买，或至人工票务窗口购买。' : (isEn ? 'Available at automatic ticket vending machines and ticket offices at every station across all networks.' : 'หยอดเหรียญหรือสแกน QR Code ซื้อได้ที่ตู้จำหน่ายตั๋วอัตโนมัติและเคาน์เตอร์ทุกสถานี')}
+                                    </div>
                                 </div>
                             </div>
                         </div>

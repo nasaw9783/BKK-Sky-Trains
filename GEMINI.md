@@ -18,7 +18,7 @@ C:\Users\Administrator\Documents\BKK Sky Trains\
 │   ├── api/
 │   │   └── bts-proxy.js            # Universal serverless reverse proxy & CORS bypass handler for BTS live transit APIs
 │   ├── vercel.json                 # Deployment configuration for Vercel serverless functions and universal CORS routing
-│   ├── sw.js                       # Offline service worker (bts-v73)
+│   ├── sw.js                       # Offline service worker (bts-v74)
 │   ├── leaflet.css                 # Leaflet map CSS stylesheets
 │   ├── icons/                      # Train line icons (lines/), legend (legend/), nav (nav/), UI icons (ui/)
 │   ├── images/                     # Leaflet map markers, traffic alert icons (ic_traffic_alert, icon_traffic_information) & preview

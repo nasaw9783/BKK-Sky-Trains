@@ -8853,13 +8853,15 @@
 
     <!-- Application Controller -->
     <script src="js/leaflet.js"></script>
-    <script src="js/app.js?v=20261027_04"></script>
+    <script src="js/app.js?v=20261028_01"></script>
 
     <!-- PWA: ลงทะเบียน service worker (เฉพาะเมื่อรันบน HTTP/HTTPS) -->
     <script>
         if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js').catch(() => { /* ไม่รองรับ/บล็อก ก็ข้ามไป แอปยังทำงานปกติ */ });
+                navigator.serviceWorker.register('sw.js').then(reg => {
+                    reg.update();
+                }).catch(() => { /* ไม่รองรับ/บล็อก ก็ข้ามไป แอปยังทำงานปกติ */ });
             });
         }
     </script>

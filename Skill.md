@@ -25,7 +25,7 @@ C:\Users\Administrator\Documents\BKK Sky Trains\
 │   ├── api/
 │   │   └── bts-proxy.js            # Universal Serverless Reverse Proxy & CORS Bypass สำหรับ BTS Live Transit API
 │   ├── vercel.json                 # การตั้งค่า Deployment และ Universal CORS Routing บน Vercel
-│   ├── sw.js                       # Service Worker แคช PWA สำหรับ Offline Support (bts-v73)
+│   ├── sw.js                       # Service Worker แคช PWA สำหรับ Offline Support (bts-v74)
 │   ├── leaflet.css                 # Leaflet Map CSS
 │   ├── icons/                      # ไอคอนเวกเตอร์ประจำสายสีและระบบนำทาง
 │   ├── images/                     # แอสเซทและไอคอนแจ้งเหตุขัดข้อง (ic_traffic_alert, icon_traffic_information)

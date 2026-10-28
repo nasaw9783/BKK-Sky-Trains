@@ -1,10 +1,11 @@
 /* BTS Live Map — service worker
  * - App shell (bts-map.html + icon + manifest) ใช้ได้แม้เน็ตหลุด
  * - หน้าเว็บ: network-first (เห็นเวอร์ชันใหม่ก่อน) แล้ว fallback cache ตอนออฟไลน์
- * - ไฟล์ static (ฟอนต์/สคริปต์ CDN): stale-while-revalidate ให้โหลดซ้ำเร็วขึ้น
+ * - สคริปต์หลักและสไตล์: network-first เพื่อให้เห็นการอัปเดตทันทีเมื่อออนไลน์
+ * - ไฟล์ static อื่นๆ (CDN): stale-while-revalidate ให้โหลดซ้ำเร็วขึ้น
  * - คำขอ API ขบวนรถ (POST ข้ามโดเมน) ปล่อยผ่าน ไม่แตะ — ข้อมูลสดต้องมาจากเน็ตเสมอ
  */
-const VERSION = 'bts-v73';
+const VERSION = 'bts-v74';
 const SHELL_CACHE = 'bts-shell-' + VERSION;
 const RUNTIME_CACHE = 'bts-runtime-' + VERSION;
 
@@ -58,6 +59,22 @@ self.addEventListener('fetch', event => {
     if (req.mode === 'navigate') {
         event.respondWith(
             fetch(req).catch(() => caches.match('./index.html'))
+        );
+        return;
+    }
+
+    const url = new URL(req.url);
+
+    // สคริปต์หลักและสไตล์ชีตของแอป (same-origin app.js, leaflet.css) → network-first เพื่อรับเวอร์ชันล่าสุดเมื่อออนไลน์
+    if (url.origin === self.location.origin && (url.pathname.endsWith('app.js') || url.pathname.endsWith('.css'))) {
+        event.respondWith(
+            fetch(req).then(res => {
+                if (res && res.ok) {
+                    const copy = res.clone();
+                    caches.open(RUNTIME_CACHE).then(c => c.put(req, copy)).catch(() => { });
+                }
+                return res;
+            }).catch(() => caches.match(req).then(cached => cached || caches.match('./js/app.js')))
         );
         return;
     }

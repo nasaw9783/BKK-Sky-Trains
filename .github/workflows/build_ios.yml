@@ -184,7 +184,7 @@ jobs:
               - Depot & maintenance train telemetry filtering (`YL00`, `PK00`).
               - Real-time transit operating hours validation (05:30/06:00 - 24:00).
               - Nearest alternate stations smooth horizontal scrolling on mobile displays.
-              - Offline Service Worker Cache `bts-v73` with high-performance pre-caching.
+              - Offline Service Worker Cache `bts-v74` with high-performance pre-caching.
               - Unified element centering and train line icon standards.
             - **Security & Integrity**: Cryptographic SHA-256 checksums provided for all distribution packages.
           files: |

@@ -10145,21 +10145,23 @@ setOriginFromActionSheet() {
                             <div class="node ${isSiam ? 'inter' : ''} ${isNear ? 'near' : ''}${isBrt ? ' node-brt' : ''}" style="${isBrt ? '' : 'border-color:' + color}"></div>
                         </div>
                         <div class="st-main">
-                            <button class="st-btn" onclick="App.toggleStation('${esc(s.StationKey)}')">
-                                <span class="st-key${isBrt ? ' st-key-brt' : ''}" style="${isBrt ? '' : 'background:' + color}">${esc(s.StationKey)}</span>
-                                <div class="names">
-                                    <div class="th">${esc(stName(s))}
-                                        ${crowded ? `<span class="badge crowd-b">${T('crowded')}</span>` : ''}
-                                        ${isNear ? `<span class="badge near-b">${T('nearYou')}</span>` : ''}
-                                        ${isSiam ? `<span class="badge inter-b">${T('fourPlat')}</span>` : ''}
-                                        ${isTerminus ? `<span class="badge" style="background:var(--bg-subtle);color:var(--muted);border:1px solid var(--line);font-size:9.5px;font-weight:600;padding:2px 6px;border-radius:var(--radius-full);display:inline-flex;align-items:center;justify-content:center;line-height:1;box-sizing:border-box;letter-spacing:0;vertical-align:middle;">${lang === 'en' ? 'Terminus' : (lang === 'zh' ? '终点站' : 'ปลายทาง')}</span>` : ''}
-                                        ${lmMatch ? `<span class="landmark-badge">📍 ใกล้ ${esc(lmMatch)}</span>` : ''}
-                                        ${connBadges(s.StationKey, s.StationLineId)}
+                            <div class="st-row-head">
+                                <button class="st-btn" onclick="App.toggleStation('${esc(s.StationKey)}')">
+                                    <span class="st-key${isBrt ? ' st-key-brt' : ''}" style="${isBrt ? '' : 'background:' + color}">${esc(s.StationKey)}</span>
+                                    <div class="names">
+                                        <div class="th">${esc(stName(s))}
+                                            ${crowded ? `<span class="badge crowd-b">${T('crowded')}</span>` : ''}
+                                            ${isNear ? `<span class="badge near-b">${T('nearYou')}</span>` : ''}
+                                            ${isSiam ? `<span class="badge inter-b">${T('fourPlat')}</span>` : ''}
+                                            ${isTerminus ? `<span class="badge" style="background:var(--bg-subtle);color:var(--muted);border:1px solid var(--line);font-size:9.5px;font-weight:600;padding:2px 6px;border-radius:var(--radius-full);display:inline-flex;align-items:center;justify-content:center;line-height:1;box-sizing:border-box;letter-spacing:0;vertical-align:middle;">${lang === 'en' ? 'Terminus' : (lang === 'zh' ? '终点站' : 'ปลายทาง')}</span>` : ''}
+                                            ${lmMatch ? `<span class="landmark-badge">📍 ใกล้ ${esc(lmMatch)}</span>` : ''}
+                                            ${connBadges(s.StationKey, s.StationLineId)}
+                                        </div>
                                     </div>
-                                </div>
-                                ${km != null ? `<span class="st-dist">${fmtDist(km)}</span>` : ''}
+                                    ${km != null ? `<span class="st-dist">${fmtDist(km)}</span>` : ''}
+                                </button>
                                 <button type="button" class="st-star-btn ${isFav ? 'active' : ''}" onclick="App.toggleFavoriteStation('${esc(s.StationKey)}', event)" title="${isFav ? 'ลบออกจากสถานีโปรด' : 'บันทึกเป็นสถานีโปรด'}">${isFav ? '★' : '☆'}</button>
-                            </button>
+                            </div>
                             ${open ? `<div class="st-expand">
                                     <div class="x-head">
                                         <span class="updated">${arr?.time ? T('updated', esc(arr.time.split(' ')[1] || arr.time)) : ''}</span>

@@ -2131,6 +2131,14 @@
             padding-right: 8px;
         }
 
+        .st-row-head {
+            display: flex;
+            align-items: center;
+            width: 100%;
+            min-width: 0;
+            gap: 6px;
+        }
+
         .st-btn {
             display: flex;
             align-items: center;
@@ -2143,7 +2151,7 @@
             cursor: pointer;
             text-align: left;
             outline: none;
-            width: 100%;
+            flex: 1;
             min-width: 0;
             box-sizing: border-box;
         }
@@ -8445,7 +8453,6 @@
             transition: all var(--transition-fast);
             user-select: none !important;
             caret-color: transparent !important;
-            margin-left: auto;
             flex-shrink: 0;
             -webkit-tap-highlight-color: transparent;
         }
@@ -9749,7 +9756,7 @@
 
     <!-- Application Controller -->
     <script src="js/leaflet.js"></script>
-    <script src="js/app.js?v=20261028_15"></script>
+    <script src="js/app.js?v=20261028_16"></script>
 
     <!-- PWA: ลงทะเบียน service worker (เฉพาะเมื่อรันบน HTTP/HTTPS) -->
     <script>

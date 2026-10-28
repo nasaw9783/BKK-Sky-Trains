@@ -8529,6 +8529,99 @@
             color: #facc15;
             border-color: rgba(234, 179, 8, 0.4);
         }
+
+        /* Option 4: Compact Bento Grid Station List in Timetables View */
+        .line-stations-bento-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        @media (max-width: 380px) {
+            .line-stations-bento-grid {
+                grid-template-columns: 1fr;
+                gap: 6px;
+            }
+        }
+        .line-stn-bento-chip {
+            background: var(--bg-card, var(--card, #1e293b));
+            border: 1px solid var(--line, rgba(148, 163, 184, 0.2));
+            border-radius: 12px;
+            padding: 8px 10px;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            cursor: pointer;
+            transition: all var(--transition-fast, 0.2s cubic-bezier(0.16, 1, 0.3, 1));
+            position: relative;
+            outline: none;
+            text-align: left;
+            width: 100%;
+            box-sizing: border-box;
+            caret-color: transparent !important;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+        }
+        .line-stn-bento-chip:hover {
+            border-color: var(--accent-cyan, #38bdf8);
+            transform: translateY(-1.5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
+        }
+        .line-stn-bento-chip:active {
+            transform: scale(0.98);
+        }
+        .bento-chip-code {
+            font-size: 10.5px;
+            font-weight: 800;
+            font-family: 'JetBrains Mono', 'Prompt', monospace, sans-serif;
+            color: #ffffff;
+            padding: 3.5px 6.5px;
+            border-radius: 7px;
+            min-width: 34px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            line-height: 1;
+            letter-spacing: 0;
+            flex-shrink: 0;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+            caret-color: transparent !important;
+            user-select: none !important;
+        }
+        .bento-text-cluster {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5px;
+            min-width: 0;
+            flex: 1;
+            overflow: hidden;
+            caret-color: transparent !important;
+            user-select: none !important;
+        }
+        .bento-name-primary {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--ink, #f8fafc);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.25;
+            caret-color: transparent !important;
+            user-select: none !important;
+        }
+        .bento-name-secondary {
+            font-size: 9.5px;
+            font-weight: 500;
+            color: var(--muted, #94a3b8);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.2;
+            caret-color: transparent !important;
+            user-select: none !important;
+        }
     </style>
     <script>
         /* ========================================================
@@ -9681,7 +9774,7 @@
 
     <!-- Application Controller -->
     <script src="js/leaflet.js"></script>
-    <script src="js/app.js?v=20261028_13"></script>
+    <script src="js/app.js?v=20261028_14"></script>
 
     <!-- PWA: ลงทะเบียน service worker (เฉพาะเมื่อรันบน HTTP/HTTPS) -->
     <script>

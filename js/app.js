@@ -4158,6 +4158,24 @@ gQIDAQAB
                 this.renderTimetablesView();
             },
 
+            showStationDetail(key) {
+                if (!key) return;
+                this.switchView('home');
+                this.expandedKey = key;
+                const station = this.findStation(key);
+                if (station && station.StationLineId) {
+                    this.activeLine = station.StationLineId;
+                    this.renderTabs();
+                    this.scrollActiveTabIntoView();
+                }
+                this.renderStrip();
+                this.syncUrl();
+                if (station) this.loadArrivals(station);
+                requestAnimationFrame(() => {
+                    document.querySelector(`[id^="row-${CSS.escape(key)}-"]`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                });
+            },
+
             toggleTimetableStations() {
                 const el = document.getElementById('stnListBody');
                 const chev = document.getElementById('stnListChev');
@@ -6771,25 +6789,37 @@ setOriginFromActionSheet() {
                     const sched = getLineScheduleTables(activeLine.id);
                     const schedTablesHtml = renderFrequencyTablesHtml(sched, activeLine, this.freqTab);
 
-                    // รายชื่อสถานีประจำสายพร้อมป้ายรหัสสถานีขนาดกะทัดรัด
+                    // รายชื่อสถานีประจำสายพร้อมป้ายรหัสสถานีขนาดกะทัดรัด (ตัวเลือกที่ 4: Compact Bento Grid)
                     const lineStations = getLineStationsList(activeLine.id);
                     let stnDirectoryHtml = '';
                     if (lineStations && lineStations.length > 0) {
                         const color = activeLine.color || '#7AB420';
-                        const isBright = isBrightColor(color);
                         const codeTextColor = '#ffffff';
 
                         const stationChips = lineStations.map(s => {
                             const sKey = s.StationKey;
-                            const name = stName(s);
-                            const nameLen = name.length;
-                            const sizeClass = nameLen > 20 ? 'chip-name-xxlong' : (nameLen > 15 ? 'chip-name-xlong' : (nameLen > 11 ? 'chip-name-long' : ''));
+                            let primName = '';
+                            let secName = '';
+                            if (isZh) {
+                                primName = stName(s);
+                                secName = s.StationName_EN || s.StationNameEN || s.StationName_TH || '';
+                            } else if (isEn) {
+                                primName = s.StationName_EN || s.StationNameEN || stName(s);
+                                secName = s.StationName_TH || s.StationNameTH || '';
+                            } else {
+                                primName = s.StationName_TH || stName(s);
+                                secName = s.StationName_EN || s.StationNameEN || '';
+                            }
+
                             return `
-                                <button type="button" class="line-stn-chip"
+                                <button type="button" class="line-stn-bento-chip"
                                     onclick="App.showStationDetail('${esc(sKey)}')"
-                                    title="${esc(name)}">
-                                    <span class="chip-code" style="background:${color};color:${codeTextColor}">${esc(sKey)}</span>
-                                    <span class="chip-name ${sizeClass}" title="${esc(name)}">${esc(name)}</span>
+                                    title="${esc(primName)}${secName ? ' (' + esc(secName) + ')' : ''}">
+                                    <span class="bento-chip-code" style="background:${color};color:${codeTextColor}">${esc(sKey)}</span>
+                                    <div class="bento-text-cluster">
+                                        <span class="bento-name-primary">${esc(primName)}</span>
+                                        ${secName ? `<span class="bento-name-secondary">${esc(secName)}</span>` : ''}
+                                    </div>
                                 </button>
                             `;
                         }).join('');
@@ -6804,7 +6834,7 @@ setOriginFromActionSheet() {
                                     <span id="stnListChev" style="position:absolute;right:0;font-size:12px;color:var(--muted);transition:transform .2s ease;display:inline-flex;align-items:center;justify-content:center;">▼</span>
                                 </div>
                                 <div id="stnListBody" style="display:none;margin-top:10px;">
-                                    <div class="line-stations-grid">
+                                    <div class="line-stations-bento-grid">
                                         ${stationChips}
                                     </div>
                                 </div>

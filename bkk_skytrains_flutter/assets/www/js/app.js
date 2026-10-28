@@ -1120,6 +1120,16 @@ gQIDAQAB
                 moreClockDesc: 'เลือกรูปแบบการแสดงเวลาของนาฬิกาที่แถบหัวเว็บ',
                 moreClock24Lbl: '24 ชั่วโมง',
                 moreClock12Lbl: '12 ชั่วโมง',
+                moreDateTitle: 'รูปแบบวัน/เดือน/ปี',
+                moreDateDesc: 'เลือกรูปแบบการแสดงวันที่และระบบศักราชของนาฬิกาที่แถบหัวเว็บ',
+                moreDateStyleLabel: '1. รูปแบบการจัดวาง:',
+                dateStyleFullDayLbl: 'วันสัปดาห์+ว/ด/ป',
+                dateStyleSlashLbl: 'วัน/เดือน/ปี',
+                dateStyleTextLbl: 'วัน เดือน ปี',
+                dateStyleWeekdayLbl: 'วันในสัปดาห์',
+                moreDateEraLabel: '2. ระบบศักราช:',
+                dateEraBeLbl: 'พุทธศักราช (พ.ศ.)',
+                dateEraCeLbl: 'คริสต์ศักราช (ค.ศ.)',
                 moreVersionTitle: 'ข้อมูลแอปพลิเคชัน',
                 moreVersionUpToDate: 'เวอร์ชันล่าสุด',
                 moreVersionLabel: 'เวอร์ชัน',
@@ -1449,6 +1459,16 @@ gQIDAQAB
                 moreClockDesc: 'Choose the time display format for the header clock',
                 moreClock24Lbl: '24 Hours (24H)',
                 moreClock12Lbl: '12 Hours (12H AM/PM)',
+                moreDateTitle: 'Date Format',
+                moreDateDesc: 'Choose the date display format and era system for the header clock',
+                moreDateStyleLabel: '1. Date Layout Style:',
+                dateStyleFullDayLbl: 'Weekday + D/M/Y',
+                dateStyleSlashLbl: 'Day/Month/Year',
+                dateStyleTextLbl: 'Day Month Year',
+                dateStyleWeekdayLbl: 'Weekday Only',
+                moreDateEraLabel: '2. Era System:',
+                dateEraBeLbl: 'Buddhist Era (B.E.)',
+                dateEraCeLbl: 'Common Era (C.E.)',
                 moreVersionTitle: 'App Information',
                 moreVersionUpToDate: 'Latest Release',
                 moreVersionLabel: 'Version',
@@ -1778,6 +1798,16 @@ gQIDAQAB
                 moreClockDesc: '选择顶部时钟的时间显示格式',
                 moreClock24Lbl: '24 小时制',
                 moreClock12Lbl: '12 小时制',
+                moreDateTitle: '日期格式',
+                moreDateDesc: '选择顶部时钟的日期显示格式与纪年系统',
+                moreDateStyleLabel: '1. 排版格式:',
+                dateStyleFullDayLbl: '星期+日/月/年',
+                dateStyleSlashLbl: '日/月/年',
+                dateStyleTextLbl: '日 月 年',
+                dateStyleWeekdayLbl: '仅星期',
+                moreDateEraLabel: '2. 纪年系统:',
+                dateEraBeLbl: '佛历 (B.E.)',
+                dateEraCeLbl: '公历 (C.E.)',
                 moreVersionTitle: '应用信息',
                 moreVersionUpToDate: '最新版本',
                 moreVersionLabel: '版本',
@@ -6801,7 +6831,65 @@ setOriginFromActionSheet() {
                 if (clock24Btn) clock24Btn.classList.toggle('active', curClockFmt === '24');
                 if (clock12Btn) clock12Btn.classList.toggle('active', curClockFmt === '12');
 
-                // 5. Platform info
+                // 5. Date Format & Era Segmented Buttons
+                const curStyle = this.dateStyle || 'full_day';
+                const styleIds = {
+                    'full_day': 'dateStyleFullDay',
+                    'slash': 'dateStyleSlash',
+                    'text': 'dateStyleText',
+                    'weekday': 'dateStyleWeekday'
+                };
+                Object.keys(styleIds).forEach(s => {
+                    const btn = document.getElementById(styleIds[s]);
+                    if (btn) btn.classList.toggle('active', curStyle === s);
+                });
+
+                const curEra = this.dateEra || (lang === 'en' || lang === 'zh' ? 'ce' : 'be');
+                const eraBeBtn = document.getElementById('dateEraBe');
+                const eraCeBtn = document.getElementById('dateEraCe');
+                if (eraBeBtn) eraBeBtn.classList.toggle('active', curEra === 'be');
+                if (eraCeBtn) eraCeBtn.classList.toggle('active', curEra === 'ce');
+
+                // Update live samples on date style buttons according to selected era
+                const sampleFull = document.getElementById('dateStyleFullDaySub');
+                const sampleSlash = document.getElementById('dateStyleSlashSub');
+                const sampleText = document.getElementById('dateStyleTextSub');
+                const sampleWeekday = document.getElementById('dateStyleWeekdaySub');
+                const sampleEraBe = document.getElementById('dateEraBeSub');
+                const sampleEraCe = document.getElementById('dateEraCeSub');
+
+                const nowSample = new Date();
+                const yCE = nowSample.getFullYear();
+                const yBE = yCE + 543;
+                const d = nowSample.getDate();
+                const m = nowSample.getMonth() + 1;
+                const ds = String(d).padStart(2, '0');
+                const ms = String(m).padStart(2, '0');
+                const yr = (curEra === 'be') ? yBE : yCE;
+
+                const TH_W = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'];
+                const TH_M = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+
+                const wText = (lang === 'th') ? TH_W[nowSample.getDay()] : nowSample.toLocaleDateString(T('clockLocale'), { weekday: 'short' });
+                const mText = (lang === 'th') ? TH_M[nowSample.getMonth()] : (lang === 'zh' ? `${m}月` : nowSample.toLocaleDateString('en-US', { month: 'short' }));
+
+                if (sampleFull) {
+                    if (lang === 'zh') sampleFull.textContent = `${wText} ${yr}年${mText}${d}日`;
+                    else if (lang === 'th') sampleFull.textContent = `${wText} ${d} ${mText} ${yr}`;
+                    else sampleFull.textContent = `${wText}, ${d} ${mText} ${yr}`;
+                }
+                if (sampleSlash) sampleSlash.textContent = `${ds}/${ms}/${yr}`;
+                if (sampleText) {
+                    if (lang === 'zh') sampleText.textContent = `${yr}年${mText}${d}日`;
+                    else sampleText.textContent = `${d} ${mText} ${yr}`;
+                }
+                if (sampleWeekday) {
+                    sampleWeekday.textContent = nowSample.toLocaleDateString(T('clockLocale'), { weekday: 'short', day: 'numeric', month: 'short' });
+                }
+                if (sampleEraBe) sampleEraBe.textContent = `ปี ${yBE}`;
+                if (sampleEraCe) sampleEraCe.textContent = `ปี ${yCE}`;
+
+                // 6. Platform info
                 const platEl = document.getElementById('morePlatformValue');
                 if (platEl) {
                     platEl.textContent = (typeof window !== 'undefined' && window.isFlutterApp) ? 'Flutter Hybrid Native' : 'PWA / Web Mobile';
@@ -6971,6 +7059,16 @@ setOriginFromActionSheet() {
                 set('moreClockDesc', T('moreClockDesc'));
                 set('moreClock24Lbl', T('moreClock24Lbl'));
                 set('moreClock12Lbl', T('moreClock12Lbl'));
+                set('moreDateTitle', T('moreDateTitle'));
+                set('moreDateDesc', T('moreDateDesc'));
+                set('moreDateStyleLabel', T('moreDateStyleLabel'));
+                set('dateStyleFullDayLbl', T('dateStyleFullDayLbl'));
+                set('dateStyleSlashLbl', T('dateStyleSlashLbl'));
+                set('dateStyleTextLbl', T('dateStyleTextLbl'));
+                set('dateStyleWeekdayLbl', T('dateStyleWeekdayLbl'));
+                set('moreDateEraLabel', T('moreDateEraLabel'));
+                set('dateEraBeLbl', T('dateEraBeLbl'));
+                set('dateEraCeLbl', T('dateEraCeLbl'));
                 set('moreVersionTitle', T('moreVersionTitle'));
                 set('moreVersionUpToDate', T('moreVersionUpToDate'));
                 set('moreVersionLabel', T('moreVersionLabel'));
@@ -7001,10 +7099,16 @@ setOriginFromActionSheet() {
 
             async init() {
                 let savedClockFmt = '24';
+                let savedDateStyle = 'full_day';
+                let savedDateEra = (lang === 'en' || lang === 'zh') ? 'ce' : 'be';
                 try {
                     savedClockFmt = localStorage.getItem('bkk_skytrains_clock_format') || '24';
+                    savedDateStyle = localStorage.getItem('bkk_skytrains_date_style') || 'full_day';
+                    savedDateEra = localStorage.getItem('bkk_skytrains_date_era') || ((lang === 'en' || lang === 'zh') ? 'ce' : 'be');
                 } catch (e) { }
                 this.clockFormat = savedClockFmt;
+                this.dateStyle = savedDateStyle;
+                this.dateEra = savedDateEra;
                 this.initResponsiveAutoDetect();
                 this.setupMobileZoomLock();
                 if (typeof window !== 'undefined' && window.isFlutterApp) {
@@ -7308,7 +7412,7 @@ setOriginFromActionSheet() {
                 }, { passive: true });
             },
 
-            /* ---------- clock ---------- */
+            /* ---------- clock & date ---------- */
             startClock() {
                 const f = () => {
                     const n = new Date(), loc = T('clockLocale');
@@ -7319,7 +7423,7 @@ setOriginFromActionSheet() {
                         clockTElem.textContent = n.toLocaleTimeString(loc, { hour12: is12 });
                     }
                     if (clockDElem) {
-                        clockDElem.textContent = n.toLocaleDateString(loc, { weekday: 'short', day: 'numeric', month: 'short' });
+                        clockDElem.textContent = this.formatHeaderDate(n, loc);
                     }
                 };
                 f();
@@ -7340,6 +7444,62 @@ setOriginFromActionSheet() {
             toggleClockFormat() {
                 const nextFmt = this.clockFormat === '12' ? '24' : '12';
                 this.setClockFormat(nextFmt);
+            },
+
+            setDateStyle(style) {
+                if (!['full_day', 'slash', 'text', 'weekday'].includes(style)) style = 'full_day';
+                this.dateStyle = style;
+                try {
+                    localStorage.setItem('bkk_skytrains_date_style', style);
+                } catch (e) { }
+                this.startClock();
+                this.renderMoreView();
+            },
+
+            setDateEra(era) {
+                if (era !== 'be' && era !== 'ce') era = 'be';
+                this.dateEra = era;
+                try {
+                    localStorage.setItem('bkk_skytrains_date_era', era);
+                } catch (e) { }
+                this.startClock();
+                this.renderMoreView();
+            },
+
+            formatHeaderDate(n, loc) {
+                if (!n) n = new Date();
+                const curStyle = this.dateStyle || 'full_day';
+                const curEra = this.dateEra || (lang === 'en' || lang === 'zh' ? 'ce' : 'be');
+                const yCE = n.getFullYear();
+                const yBE = yCE + 543;
+                const year = (curEra === 'be') ? yBE : yCE;
+                const day = n.getDate();
+                const dayStr = String(day).padStart(2, '0');
+                const monthNum = n.getMonth() + 1;
+                const monthStr = String(monthNum).padStart(2, '0');
+
+                if (curStyle === 'weekday') {
+                    return n.toLocaleDateString(loc, { weekday: 'short', day: 'numeric', month: 'short' });
+                }
+
+                if (curStyle === 'slash') {
+                    return `${dayStr}/${monthStr}/${year}`;
+                }
+
+                const TH_W = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'];
+                const TH_M = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+                const wText = (lang === 'th') ? TH_W[n.getDay()] : n.toLocaleDateString(loc, { weekday: 'short' });
+                const mText = (lang === 'th') ? TH_M[n.getMonth()] : (lang === 'zh' ? `${monthNum}月` : n.toLocaleDateString('en-US', { month: 'short' }));
+
+                if (curStyle === 'text') {
+                    if (lang === 'zh') return `${year}年${mText}${day}日`;
+                    return `${day} ${mText} ${year}`;
+                }
+
+                // full_day: วันสัปดาห์+ว/ด/ป
+                if (lang === 'zh') return `${wText} ${year}年${mText}${day}日`;
+                if (lang === 'th') return `${wText} ${day} ${mText} ${year}`;
+                return `${wText}, ${day} ${mText} ${year}`;
             },
 
             /* ---------- connections (สถานีต่างสายที่อยู่ใกล้กัน = จุดเชื่อมต่อ) ---------- */

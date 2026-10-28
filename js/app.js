@@ -2274,6 +2274,18 @@ gQIDAQAB
             return km < 1 ? Math.round(km * 1000) + T('mUnit') : km.toFixed(1) + T('kmUnit');
         }
 
+        function showToast(msg, isCustomHtml = false) {
+            if (typeof App !== 'undefined' && typeof App.showToast === 'function') {
+                App.showToast(msg, isCustomHtml);
+            }
+        }
+
+        function showNearestStationToast(station, km, isApprox = false) {
+            if (typeof App !== 'undefined' && typeof App.showNearestStationToast === 'function') {
+                App.showNearestStationToast(station, km, isApprox);
+            }
+        }
+
         async function fetchIpLocation(timeoutMs = 3500) {
             if (typeof fetch !== 'function') throw new Error('fetch not available');
             const fetchWithTimeout = async (url, ms) => {
@@ -5270,9 +5282,7 @@ gQIDAQAB
                         }
                     }
                     if (nearest && minKm <= 4.0) {
-                        const distStr = minKm < 1 ? `${Math.round(minKm * 1000)} เมตร` : `${minKm.toFixed(2)} กม.`;
-                        const stnTh = stName(nearest);
-                        showToast(`📍 ใกล้สถานี ${stnTh} (${nearest.StationKey}) ~ ${distStr}`);
+                        this.showNearestStationToast(nearest, minKm, false);
                     }
                 });
 
@@ -5528,7 +5538,7 @@ gQIDAQAB
 
             locateUserOnGeoMap(jumpToUser = true) {
                 if (!navigator.geolocation) {
-                    if (jumpToUser) showToast('อุปกรณ์ไม่รองรับระบบตรวจจับพิกัด GPS');
+                    if (jumpToUser) this.showToast('อุปกรณ์ไม่รองรับระบบตรวจจับพิกัด GPS');
                     return;
                 }
 
@@ -5539,7 +5549,7 @@ gQIDAQAB
                     this.geoMap.setView([this.userPos.lat, this.userPos.lon], targetZoom, { animate: false });
                     this.updateGeoUserLocation(this.userPos.lat, this.userPos.lon, this.userPos.accuracy || 25);
                 } else if (jumpToUser) {
-                    showToast('กำลังค้นหาพิกัดตำแหน่งปัจจุบันของคุณ (GPS)...');
+                    this.showToast('กำลังค้นหาพิกัดตำแหน่งปัจจุบันของคุณ (GPS)...');
                 }
 
                 navigator.geolocation.getCurrentPosition(
@@ -5571,15 +5581,13 @@ gQIDAQAB
                         }
 
                         if (nearest && jumpToUser) {
-                            const distStr = minKm < 1 ? `${Math.round(minKm * 1000)} เมตร` : `${minKm.toFixed(2)} กม.`;
-                            const stnTh = stName(nearest);
-                            showToast(`📍 พิกัดตำแหน่งของคุณ: ใกล้สถานี ${stnTh} (${nearest.StationKey}) ~ ${distStr}`);
+                            this.showNearestStationToast(nearest, minKm, false);
                         }
                     },
                     err => {
                         console.warn('Geolocation error on geo map:', err.message);
                         if (jumpToUser && (!this.userPos || !this.userPos.lat)) {
-                            showToast('ไม่สามารถระบุพิกัด GPS ได้ โปรดอนุญาตการเข้าถึงตำแหน่ง');
+                            this.showToast('ไม่สามารถระบุพิกัด GPS ได้ โปรดอนุญาตการเข้าถึงตำแหน่ง');
                         }
                     },
                     { enableHighAccuracy: true, timeout: 10000, maximumAge: 10000 }
@@ -8012,7 +8020,7 @@ setOriginFromActionSheet() {
                 this.updateRelocateBtn();
                 this.renderExitsView(this.selectedExitKey);
                 if (this._lastLocateInteractive && this.nearest?.station) {
-                    this.showToast(`${getUiIcon('pin', 16, '#38bdf8')} พบสถานี ${stName(this.nearest.station)} (${fmtDist(this.nearest.km)})`);
+                    this.showNearestStationToast(this.nearest.station, this.nearest.km, false);
                 }
             },
 
@@ -8039,7 +8047,7 @@ setOriginFromActionSheet() {
                                 this.renderNearestExit();
                                 this.renderStrip();
                                 if (this._lastLocateInteractive && this.nearest?.station) {
-                                    this.showToast(`${getUiIcon('pin', 16, '#38bdf8')} พบสถานีโดยประมาณ: ${stName(this.nearest.station)} (${fmtDist(this.nearest.km)})`);
+                                    this.showNearestStationToast(this.nearest.station, this.nearest.km, true);
                                 }
                             })
                             .catch(() => {
@@ -8171,7 +8179,7 @@ setOriginFromActionSheet() {
                             this.renderNearestExit();
                             this.renderStrip();
                             if (interactive && this.nearest?.station) {
-                                this.showToast(`${getUiIcon('pin', 16, '#38bdf8')} พบสถานีใกล้คุณ: ${stName(this.nearest.station)} (${fmtDist(this.nearest.km)})`);
+                                this.showNearestStationToast(this.nearest.station, this.nearest.km, true);
                             }
                         })
                         .catch(() => {
@@ -8222,7 +8230,7 @@ setOriginFromActionSheet() {
                     this.renderStrip();
 
                     if (interactive && this.nearest?.station) {
-                        this.showToast(`${getUiIcon('pin', 16, '#38bdf8')} พบสถานี ${stName(this.nearest.station)} (${fmtDist(this.nearest.km)})`);
+                        this.showNearestStationToast(this.nearest.station, this.nearest.km, false);
                     }
                 };
 
@@ -8260,17 +8268,58 @@ setOriginFromActionSheet() {
             },
 
             // แจ้งเตือนข้อความแบบ Toast
-            showToast(msg) {
+            showToast(msg, isCustomHtml = false) {
                 const el = document.getElementById('appToast');
                 if (!el) return;
                 el.innerHTML = msg;
+                el.classList.toggle('toast-custom', Boolean(isCustomHtml));
                 el.style.display = 'inline-flex';
                 requestAnimationFrame(() => el.classList.add('visible'));
                 clearTimeout(this._toastTimer);
                 this._toastTimer = setTimeout(() => {
                     el.classList.remove('visible');
-                    setTimeout(() => { if (!el.classList.contains('visible')) el.style.display = 'none'; }, 260);
-                }, 2600);
+                    setTimeout(() => {
+                        if (!el.classList.contains('visible')) {
+                            el.style.display = 'none';
+                            el.classList.remove('toast-custom');
+                        }
+                    }, 260);
+                }, 2800);
+            },
+
+            // แจ้งเตือนสถานีที่ตรวจพบแบบ Custom Hybrid (สไตล์ Dynamic Island พร้อมรหัสสถานี และ Live Status Chip)
+            showNearestStationToast(station, km, isApprox = false) {
+                if (!station) return;
+                const code = station.StationKey || station.StationId || station.StationCode || '';
+                const name = stName(station);
+                const lineColor = station.StationLineColor || (typeof LINE_BRAND_COLORS !== 'undefined' && LINE_BRAND_COLORS[station.StationLineId || station.LineId]) || '#7AB420';
+                const isYellow = (station.StationLineId === 4 || station.LineId === 4 || /ffd100|fad53d/i.test(String(lineColor)));
+                const textColor = isYellow ? '#000000' : '#ffffff';
+
+                const header = isApprox
+                    ? (lang === 'en' ? 'Approximate Nearest Station' : (lang === 'zh' ? '大约最近车站' : 'พบสถานีโดยประมาณ'))
+                    : (lang === 'en' ? 'Nearest Station Detected' : (lang === 'zh' ? '检测到附近车站' : 'ตรวจพบสถานีใกล้คุณ'));
+
+                const isAtStation = (km != null && km <= 0.12) || (this.userPos && this.userPos.calibrated && (!km || km <= 0.3));
+                let chipHtml = '';
+                if (isAtStation) {
+                    chipHtml = `<span class="toast-status-chip"><span class="live-dot"></span><span>${esc(T('atStation'))}</span></span>`;
+                } else if (km != null) {
+                    chipHtml = `<span class="toast-dist-chip"><span>${esc(fmtDist(km))}</span></span>`;
+                }
+
+                const html = `
+                    <div class="toast-station-code" style="background:${lineColor};color:${textColor};">${esc(code)}</div>
+                    <div class="toast-content-col">
+                        <div class="toast-header-text">${esc(header)}</div>
+                        <div class="toast-name-row">
+                            <span class="toast-name-text">${esc(name)}</span>
+                            ${chipHtml}
+                        </div>
+                    </div>
+                `.trim();
+
+                this.showToast(html, true);
             },
 
             // แสดงสถานีเริ่มต้นเมื่อยังระบุตำแหน่งไม่ได้ (ไม่ทับสถานีจริงที่เคยหาเจอ)

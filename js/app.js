@@ -5816,17 +5816,21 @@ setOriginFromActionSheet() {
                                             </div>
                                             <div class="fare-details-grid">
                                                 <div class="fare-info-row">
-                                                    <span class="fare-info-icon">${getUiIcon('coins', 14, '#f59e0b')}</span>
-                                                    <div class="fare-info-text">
-                                                        <span class="fare-info-label">${pricingLbl}:</span>
-                                                        <span>${pricingModel}</span>
+                                                    <div class="fare-info-head">
+                                                        <span class="fare-info-icon">${getUiIcon('coins', 14, '#f59e0b')}</span>
+                                                        <span>${pricingLbl}</span>
+                                                    </div>
+                                                    <div class="fare-info-desc">
+                                                        ${pricingModel}
                                                     </div>
                                                 </div>
                                                 <div class="fare-info-row">
-                                                    <span class="fare-info-icon">${getUiIcon('card', 14, '#10b981')}</span>
-                                                    <div class="fare-info-text">
-                                                        <span class="fare-info-label">${ticketsLbl}:</span>
-                                                        <span style="color:var(--muted);">${tickets}</span>
+                                                    <div class="fare-info-head">
+                                                        <span class="fare-info-icon">${getUiIcon('card', 14, '#10b981')}</span>
+                                                        <span>${ticketsLbl}</span>
+                                                    </div>
+                                                    <div class="fare-info-desc">
+                                                        ${tickets}
                                                     </div>
                                                 </div>
                                             </div>

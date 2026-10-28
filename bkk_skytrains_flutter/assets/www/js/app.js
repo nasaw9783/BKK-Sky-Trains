@@ -6378,27 +6378,33 @@ setOriginFromActionSheet() {
                         <div class="info-card">
                             <h3>${getUiIcon('bulb', 16, '#0284c7')} ${isZh ? '曼谷轨道交通运营与出行时间建议' : (isEn ? 'Bangkok Transit Operating Guidelines' : 'ข้อแนะนำเวลาการให้บริการและการเดินทาง')}</h3>
                             <div style="font-size:12.5px;color:var(--ink);line-height:1.6">
-                                <ul style="margin:0;padding-left:16px;">
-                                    <li style="margin-bottom:6px">
-                                        <b>${isZh ? '早间始发运营时间:' : (isEn ? 'Morning Services:' : 'เวลาเปิดให้บริการตอนเช้า:')}</b>
-                                        ${isZh
-                                            ? 'SRT 红线最早自 05:00 开始运营，BTS 轻轨约为 05:15–05:30，ARL 机场快线为 05:30，各条 MRT 地铁线约为 05:30–06:00。'
-                                            : (isEn ? 'SRT Red Line starts earliest at 05:00, BTS at 05:15-05:30, ARL at 05:30, and MRT lines at 05:30-06:00.' : 'SRT สายสีแดงเปิดให้บริการเร็วที่สุดตั้งแต่ 05:00 นาที, BTS เริ่ม 05:15–05:30 นาที, ARL เริ่ม 05:30 นาที และ MRT สายต่างๆ เริ่ม 05:30–06:00 นาที')
-                                        }
-                                    </li>
-                                    <li style="margin-bottom:6px">
-                                        <b>${isZh ? '夜间末班收车时间:' : (isEn ? 'Night Closing:' : 'เวลาปิดให้บริการตอนกลางคืน:')}</b>
-                                        ${isZh
-                                            ? '全路网所有线路通常于 24:00 (午夜) 至 00:30 之间结束运营。'
-                                            : (isEn ? 'All transit lines close between 24:00 (Midnight) and 00:30.' : 'ทุกสายสิ้นสุดการให้บริการประมาณ 24:00 นาที (เที่ยงคืน) ถึง 00:30 นาที')
-                                        }
+                                <ul style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:12px;">
+                                    <li>
+                                        <div style="font-weight:700;color:var(--ink);margin-bottom:3px">${isZh ? '早间始发运营时间' : (isEn ? 'Morning Services' : 'เวลาเปิดให้บริการตอนเช้า')}</div>
+                                        <div style="color:var(--ink);opacity:0.92;line-height:1.6">
+                                            ${isZh
+                                                ? 'SRT 红线最早自 05:00 开始运营，BTS 轻轨约为 05:15–05:30，ARL 机场快线为 05:30，各条 MRT 地铁线约为 05:30–06:00。'
+                                                : (isEn ? 'SRT Red Line starts earliest at 05:00, BTS at 05:15-05:30, ARL at 05:30, and MRT lines at 05:30-06:00.' : 'SRT สายสีแดงเปิดให้บริการเร็วที่สุดตั้งแต่ 05:00 นาที, BTS เริ่ม 05:15–05:30 นาที, ARL เริ่ม 05:30 นาที และ MRT สายต่างๆ เริ่ม 05:30–06:00 นาที')
+                                            }
+                                        </div>
                                     </li>
                                     <li>
-                                        <b>${isZh ? '换乘跨线乘客注意事项:' : (isEn ? 'Connecting Trains:' : 'คำแนะนำสำหรับผู้โดยสารที่ต้องเปลี่ยนสาย:')}</b>
-                                        ${isZh
-                                            ? '深夜乘车如需跨线换乘，建议在 23:30 前到达换乘枢纽车站，以免错过换乘线路的末班车。'
-                                            : (isEn ? 'For late night journeys requiring interchanges, plan to reach transfer stations before 23:30 to avoid missing the final train.' : 'ในเที่ยวเดินทางรอบดึกที่ต้องเปลี่ยนสาย ควรเดินทางถึงสถานีเปลี่ยนสายก่อน 23:30 นาที เพื่อให้ทันขบวนสุดท้ายของอีกสาย')
-                                        }
+                                        <div style="font-weight:700;color:var(--ink);margin-bottom:3px">${isZh ? '夜间末班收车时间' : (isEn ? 'Night Closing' : 'เวลาปิดให้บริการตอนกลางคืน')}</div>
+                                        <div style="color:var(--ink);opacity:0.92;line-height:1.6">
+                                            ${isZh
+                                                ? '全路网所有线路通常于 24:00 (午夜) 至 00:30 之间结束运营。'
+                                                : (isEn ? 'All transit lines close between 24:00 (Midnight) and 00:30.' : 'ทุกสายสิ้นสุดการให้บริการประมาณ 24:00 นาที (เที่ยงคืน) ถึง 00:30 นาที')
+                                            }
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div style="font-weight:700;color:var(--ink);margin-bottom:3px">${isZh ? '换乘跨线乘客注意事项' : (isEn ? 'Connecting Trains' : 'คำแนะนำสำหรับผู้โดยสารที่ต้องเปลี่ยนสาย')}</div>
+                                        <div style="color:var(--ink);opacity:0.92;line-height:1.6">
+                                            ${isZh
+                                                ? '深夜乘车如需跨线换乘，建议在 23:30 前到达换乘枢纽车站，以免错过换乘线路的末班车。'
+                                                : (isEn ? 'For late night journeys requiring interchanges, plan to reach transfer stations before 23:30 to avoid missing the final train.' : 'ในเที่ยวเดินทางรอบดึกที่ต้องเปลี่ยนสาย ควรเดินทางถึงสถานีเปลี่ยนสายก่อน 23:30 นาที เพื่อให้ทันขบวนสุดท้ายของอีกสาย')
+                                            }
+                                        </div>
                                     </li>
                                 </ul>
                             </div>

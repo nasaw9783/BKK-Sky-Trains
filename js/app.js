@@ -6380,12 +6380,12 @@ setOriginFromActionSheet() {
                             <div style="font-size:12.5px;color:var(--ink);line-height:1.6">
                                 <ul style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:12px;">
                                     <li>
-                                        <div style="font-weight:700;color:var(--ink);margin-bottom:3px">${isZh ? '早间始发运营时间' : (isEn ? 'Morning Services' : 'เวลาเปิดให้บริการตอนเช้า')}</div>
-                                        <div style="color:var(--ink);opacity:0.92;line-height:1.6">
-                                            ${isZh
-                                                ? 'SRT 红线最早自 05:00 开始运营，BTS 轻轨约为 05:15–05:30，ARL 机场快线为 05:30，各条 MRT 地铁线约为 05:30–06:00。'
-                                                : (isEn ? 'SRT Red Line starts earliest at 05:00, BTS at 05:15-05:30, ARL at 05:30, and MRT lines at 05:30-06:00.' : 'SRT สายสีแดงเปิดให้บริการเร็วที่สุดตั้งแต่ 05:00 นาที, BTS เริ่ม 05:15–05:30 นาที, ARL เริ่ม 05:30 นาที และ MRT สายต่างๆ เริ่ม 05:30–06:00 นาที')
-                                            }
+                                        <div style="font-weight:700;color:var(--ink);margin-bottom:5px">${isZh ? '早间始发运营时间' : (isEn ? 'Morning Services' : 'เวลาเปิดให้บริการตอนเช้า')}</div>
+                                        <div style="display:flex;flex-direction:column;gap:4px;color:var(--ink);opacity:0.92;line-height:1.6">
+                                            <div><b>SRT</b> ${isZh ? '红线最早自 05:00 开始运营' : (isEn ? 'Red Line starts earliest at 05:00' : 'สายสีแดงเปิดให้บริการเร็วที่สุดตั้งแต่ 05:00 นาที')}</div>
+                                            <div><b>BTS</b> ${isZh ? '轻轨约为 05:15–05:30' : (isEn ? 'starts at 05:15–05:30' : 'เริ่ม 05:15–05:30 นาที')}</div>
+                                            <div><b>ARL</b> ${isZh ? '机场快线为 05:30' : (isEn ? 'starts at 05:30' : 'เริ่ม 05:30 นาที')}</div>
+                                            <div><b>MRT</b> ${isZh ? '各条地铁线约为 05:30–06:00' : (isEn ? 'lines start at 05:30–06:00' : 'สายต่างๆ เริ่ม 05:30–06:00 นาที')}</div>
                                         </div>
                                     </li>
                                     <li>

@@ -3002,6 +3002,181 @@ gQIDAQAB
             ];
         }
 
+        /* ================= TRANSIT LANDMARKS / POI DIRECTORY (FEATURE 3) ================= */
+        const TRANSIT_LANDMARKS = [
+            {
+                nameTH: 'ไอคอนสยาม', nameEN: 'ICONSIAM', nameZH: '暹罗天地 (ICONSIAM)',
+                stationKeys: ['G2', 'S6'],
+                keywords: ['iconsiam', 'ไอคอนสยาม', 'เจริญนคร', 'charoen nakhon', 'แม่น้ำเจ้าพระยา', 'chao phraya']
+            },
+            {
+                nameTH: 'สยามพารากอน', nameEN: 'Siam Paragon', nameZH: '暹罗百丽宫 (Siam Paragon)',
+                stationKeys: ['CEN'],
+                keywords: ['paragon', 'พารากอน', 'siam paragon', 'สยามเซ็นเตอร์', 'siam center', 'siam discovery', 'สยามสแควร์']
+            },
+            {
+                nameTH: 'เซ็นทรัลเวิลด์', nameEN: 'CentralWorld', nameZH: '尚泰领使商场 (CentralWorld)',
+                stationKeys: ['CEN', 'E1'],
+                keywords: ['centralworld', 'central world', 'เซ็นทรัลเวิลด์', 'เซ็นทรัลเวิล', 'ctw', 'ราชประสงค์', 'ratchaprasong']
+            },
+            {
+                nameTH: 'เซ็นทรัล ลาดพร้าว', nameEN: 'Central Ladprao', nameZH: '拉抛尚泰百货 (Central Ladprao)',
+                stationKeys: ['N9', 'BL14'],
+                keywords: ['central ladprao', 'เซ็นทรัลลาดพร้าว', 'ห้าแยกลาดพร้าว', 'ยูเนี่ยนมอลล์', 'union mall']
+            },
+            {
+                nameTH: 'เซ็นทรัล พระราม 9', nameEN: 'Central Rama 9', nameZH: '拉玛九尚泰商场 (Central Rama 9)',
+                stationKeys: ['BL20'],
+                keywords: ['central rama 9', 'เซ็นทรัลพระราม 9', 'พระราม 9', 'ฟอร์จูนทาวน์', 'fortune town']
+            },
+            {
+                nameTH: 'เทอร์มินอล 21 อโศก', nameEN: 'Terminal 21 Asok', nameZH: '航站楼21 (Terminal 21 Asok)',
+                stationKeys: ['E4', 'BL22'],
+                keywords: ['terminal 21', 'terminal21', 'เทอร์มินอล 21', 'เทอร์มินอล', 'asok', 'อโศก']
+            },
+            {
+                nameTH: 'เอ็มควอเทียร์ / เอ็มสเฟียร์ / เอ็มโพเรียม', nameEN: 'EM District (Emsphere/EmQuartier/Emporium)', nameZH: 'EM 商圈 (Emsphere/EmQuartier)',
+                stationKeys: ['E5'],
+                keywords: ['emquartier', 'emsphere', 'emporium', 'เอ็มควอเทียร์', 'เอ็มสเฟียร์', 'เอ็มโพเรียม', 'พร้อมพงษ์']
+            },
+            {
+                nameTH: 'เอ็มบีเค เซ็นเตอร์ (มาบุญครอง)', nameEN: 'MBK Center', nameZH: 'MBK 购物中心 (玛芬宫)',
+                stationKeys: ['W1', 'CEN'],
+                keywords: ['mbk', 'mbk center', 'มาบุญครอง', 'สนามกีฬาแห่งชาติ', 'bacc', 'หอศิลป์']
+            },
+            {
+                nameTH: 'อิมแพ็ค เมืองทองธานี', nameEN: 'IMPACT Muang Thong Thani', nameZH: 'IMPACT 会展中心 (通他尼)',
+                stationKeys: ['MT01', 'MT02', 'PK10'],
+                keywords: ['impact', 'impact arena', 'อิมแพ็ค', 'อิมแพค', 'ชาเลนเจอร์', 'challenger', 'เมืองทอง', 'muang thong']
+            },
+            {
+                nameTH: 'ท่าอากาศยานสุวรรณภูมิ', nameEN: 'Suvarnabhumi Airport', nameZH: '素万那普国际机场 (BKK)',
+                stationKeys: ['A1'],
+                keywords: ['suvarnabhumi', 'airport', 'สุวรรณภูมิ', 'สนามบินสุวรรณภูมิ', 'bkk airport']
+            },
+            {
+                nameTH: 'ท่าอากาศยานดอนเมือง', nameEN: 'Don Mueang Airport', nameZH: '廊曼国际机场 (DMK)',
+                stationKeys: ['RN08', 'N8'],
+                keywords: ['don mueang', 'don muang', 'ดอนเมือง', 'สนามบินดอนเมือง', 'dmk airport']
+            },
+            {
+                nameTH: 'ตลาดนัดจตุจักร', nameEN: 'Chatuchak Weekend Market', nameZH: '恰图恰周末市集 (Chatuchak)',
+                stationKeys: ['N8', 'BL13', 'BL12'],
+                keywords: ['chatuchak', 'jj market', 'จตุจักร', 'ตลาดนัดจตุจักร', 'สวนจตุจักร', 'หมอชิต']
+            },
+            {
+                nameTH: 'โรงพยาบาลศิริราช', nameEN: 'Siriraj Hospital', nameZH: '诗里拉吉医院 (Siriraj Hospital)',
+                stationKeys: ['BL04', 'BL05', 'RW02'],
+                keywords: ['siriraj', 'ศิริราช', 'โรงพยาบาลศิริราช', 'วังหลัง', 'บางขุนนนท์']
+            },
+            {
+                nameTH: 'โรงพยาบาลจุฬาลงกรณ์ / จุฬาฯ', nameEN: 'King Chulalongkorn Memorial Hospital / Chula', nameZH: '朱拉隆功医院 / 朱拉隆功大学',
+                stationKeys: ['S2', 'BL26', 'BL27'],
+                keywords: ['chula', 'จุฬา', 'จุฬาลงกรณ์', 'โรงพยาบาลจุฬา', 'สามย่าน', 'ศาลาแดง']
+            },
+            {
+                nameTH: 'ศูนย์ฯ สิริกิติ์ (QSNCC)', nameEN: 'QSNCC Convention Center', nameZH: '诗丽吉王后国家会议中心 (QSNCC)',
+                stationKeys: ['BL23'],
+                keywords: ['qsncc', 'ศูนย์สิริกิติ์', 'ศูนย์การประชุมแห่งชาติสิริกิติ์', 'queen sirikit']
+            },
+            {
+                nameTH: 'ไบเทค บางนา (BITEC)', nameEN: 'BITEC Bangna', nameZH: '曼谷国际贸易展览中心 (BITEC)',
+                stationKeys: ['E13'],
+                keywords: ['bitec', 'ไบเทค', 'ไบเทคบางนา', 'bitec bangna', 'บางนา']
+            },
+            {
+                nameTH: 'เมกาบางนา (Mega Bangna)', nameEN: 'Mega Bangna', nameZH: 'Mega Bangna 购物中心',
+                stationKeys: ['E12'],
+                keywords: ['mega bangna', 'megabangna', 'เมกาบางนา', 'อิเกีย', 'ikea bangna', 'อุดมสุข']
+            },
+            {
+                nameTH: 'สามย่านมิตรทาวน์', nameEN: 'Samyan Mitrtown', nameZH: '三养米特镇 (Samyan Mitrtown)',
+                stationKeys: ['BL27'],
+                keywords: ['samyan', 'mitrtown', 'สามย่าน', 'สามย่านมิตรทาวน์', 'samyan mitrtown']
+            },
+            {
+                nameTH: 'เยาวราช / สำเพ็ง (Chinatown)', nameEN: 'Chinatown Yaowarat / Sampheng', nameZH: '曼谷唐人街 (耀华力路)',
+                stationKeys: ['BL29'],
+                keywords: ['yaowarat', 'เยาวราช', 'chinatown', 'สำเพ็ง', 'วัดมังกร']
+            },
+            {
+                nameTH: 'วัดพระแก้ว / พระบรมมหาราชวัง', nameEN: 'Grand Palace & Wat Phra Kaew', nameZH: '大皇宫与玉佛寺 (Grand Palace)',
+                stationKeys: ['BL31'],
+                keywords: ['grand palace', 'วัดพระแก้ว', 'พระบรมมหาราชวัง', 'สนามไชย', 'ท่าช้าง', 'ท่าเตียน']
+            },
+            {
+                nameTH: 'วัดอรุณราชวราราม', nameEN: 'Wat Arun (Temple of Dawn)', nameZH: '郑王庙 / 黎明寺 (Wat Arun)',
+                stationKeys: ['BL31', 'BL32'],
+                keywords: ['wat arun', 'วัดอรุณ', 'วัดอรุณราชวราราม', 'อิสรภาพ']
+            },
+            {
+                nameTH: 'เอเชียทีค เดอะ ริเวอร์ฟรอนท์', nameEN: 'Asiatique The Riverfront', nameZH: '摩天轮夜市 (Asiatique)',
+                stationKeys: ['S6'],
+                keywords: ['asiatique', 'เอเชียทีค', 'สะพานตากสิน', 'แม่น้ำเจ้าพระยา']
+            },
+            {
+                nameTH: 'ซีคอนสแควร์ ศรีนครินทร์', nameEN: 'Seacon Square Srinakarin', nameZH: '西康广场 (Seacon Square)',
+                stationKeys: ['YL15'],
+                keywords: ['seacon', 'seacon square', 'ซีคอน', 'ซีคอนสแควร์', 'พาราไดซ์', 'paradise park', 'สวนหลวง ร.9']
+            },
+            {
+                nameTH: 'เดอะมอลล์ ไลฟ์สโตร์ บางกะปิ', nameEN: 'The Mall Lifestore Bangkapi', nameZH: '邦卡皮商场 (The Mall Bangkapi)',
+                stationKeys: ['YL08'],
+                keywords: ['the mall bangkapi', 'เดอะมอลล์บางกะปิ', 'บางกะปิ', 'ตะวันนา']
+            },
+            {
+                nameTH: 'แฟชั่นไอส์แลนด์', nameEN: 'Fashion Island', nameZH: '时尚岛商场 (Fashion Island)',
+                stationKeys: ['PK25'],
+                keywords: ['fashion island', 'แฟชั่นไอส์แลนด์', 'เดอะพรอมานาด', 'promenade', 'รามอินทรา']
+            },
+            {
+                nameTH: 'สถานีกลางกรุงเทพอภิวัฒน์', nameEN: 'Krung Thep Aphiwat Central Terminal', nameZH: '曼谷阿披瓦中央车站',
+                stationKeys: ['BL11', 'RN01'],
+                keywords: ['krung thep aphiwat', 'กรุงเทพอภิวัฒน์', 'สถานีกลางบางซื่อ', 'บางซื่อ', 'bang sue']
+            }
+        ];
+
+        /* Park & Ride Station Keys (FEATURE 5) */
+        const STATION_PARKING_KEYS = new Set([
+            'N8', 'N24', 'E14', 'E23', 'S12', 'BL15', 'BL18', 'BL19', 'BL27', 'BL30',
+            'PP01', 'PP04', 'PP10', 'YL11', 'YL15', 'YL23', 'PK30', 'RN01', 'RN10', 'RW06', 'A1', 'A6'
+        ]);
+
+        function getLandmarkMatch(stationKey, qRaw) {
+            if (!qRaw || !stationKey || typeof TRANSIT_LANDMARKS === 'undefined') return null;
+            const q = qRaw.toLowerCase().trim();
+            const qNoSpace = q.replace(/\s+/g, '');
+            for (const lm of TRANSIT_LANDMARKS) {
+                if (!lm.stationKeys.includes(stationKey)) continue;
+                const th = (lm.nameTH || '').toLowerCase();
+                const en = (lm.nameEN || '').toLowerCase();
+                const zh = (lm.nameZH || '').toLowerCase();
+                const keywords = (lm.keywords || []).map(k => k.toLowerCase());
+                if (th.includes(q) || en.includes(q) || zh.includes(q)
+                    || (qNoSpace && (th.replace(/\s+/g, '').includes(qNoSpace) || en.replace(/\s+/g, '').includes(qNoSpace)))
+                    || keywords.some(k => k.includes(q) || (qNoSpace && k.replace(/\s+/g, '').includes(qNoSpace)))) {
+                    return lang === 'zh' ? (lm.nameZH || lm.nameTH) : (lang === 'en' ? (lm.nameEN || lm.nameTH) : lm.nameTH);
+                }
+            }
+            return null;
+        }
+
+        function getStationToiletInfo(station) {
+            if (!station) return 'มีให้บริการ';
+            const lineId = station.StationLineId || 0;
+            // MRT สายสีน้ำเงิน, ม่วง, เหลือง, ชมพู, ส้ม และ SRT แดง, ARL มีห้องน้ำในสถานี
+            if (lineId >= 4 && lineId <= 106) {
+                return lang === 'zh' ? '站内付费区/站厅设有公厕' : (lang === 'en' ? 'Concourse Level (In-station)' : 'ชั้น Concourse (ในสถานี)');
+            }
+            // BTS สถานีหลัก หรือสถานีส่วนต่อขยาย
+            const k = station.StationKey;
+            const btsHasRestroom = ['CEN', 'E4', 'N8', 'E1', 'E5', 'S2', 'N2', 'W1', 'S7', 'S6', 'N9', 'N24', 'E14', 'E23', 'S12'].includes(k);
+            if (btsHasRestroom) {
+                return lang === 'zh' ? '站厅层 / 连通商场卫生间' : (lang === 'en' ? 'Concourse / Mall Linked' : 'ชั้น Concourse / ห้างเชื่อมต่อ');
+            }
+            return lang === 'zh' ? '可联系车站工作人员使用' : (lang === 'en' ? 'Staff Assistance Available' : 'ติดต่อเจ้าหน้าที่ประจำสถานี');
+        }
+
         /* ================= TRANSIT LINES CATALOG & DETAILED TABLES ================= */
         const TRANSIT_LINES_CATALOG = [
             {
@@ -3927,6 +4102,7 @@ gQIDAQAB
                 // Trigger view specific rendering
                 if (viewName === 'home') {
                     this.scrollActiveTabIntoView();
+                    this.renderFavoritesBar();
                 } else if (viewName === 'map') {
                     if (this.mapMode === 'hybrid') {
                         this.initGoogleHybridMap();
@@ -4521,8 +4697,45 @@ gQIDAQAB
                         ${exitHint}
                     </div>`;
 
-                // 8. Render Exit Directory List
-                listEl.innerHTML = exits.map(ex => {
+                // 8. Render Station Facility Summary Grid & Exit Directory List (FEATURE 5)
+                const elevatorExits = exits.filter(e => (e.facilities || []).includes('elevator')).map(e => e.exit);
+                const skywalkExits = exits.filter(e => (e.facilities || []).includes('skywalk')).map(e => e.exit);
+                const hasParking = STATION_PARKING_KEYS.has(s.StationKey);
+                const toiletInfo = getStationToiletInfo(s);
+
+                const facGridHtml = `
+                    <div class="facility-summary-grid">
+                        <div class="fac-badge-card">
+                            <span class="fac-badge-icon">🛗</span>
+                            <div class="fac-badge-info">
+                                <span class="fac-badge-name">${lang === 'zh' ? '无障碍电梯' : (lang === 'en' ? 'Priority Elevator' : 'ลิฟต์โดยสาร')}</span>
+                                <span class="fac-badge-count">${elevatorExits.length ? (lang === 'zh' ? `出入口 ${elevatorExits.join(', ')}` : (lang === 'en' ? `Exit ${elevatorExits.join(', ')}` : `ทางออก ${elevatorExits.join(', ')}`)) : (lang === 'zh' ? '有无障碍服务' : (lang === 'en' ? 'Available' : 'มีให้บริการ'))}</span>
+                            </div>
+                        </div>
+                        <div class="fac-badge-card">
+                            <span class="fac-badge-icon">🚻</span>
+                            <div class="fac-badge-info">
+                                <span class="fac-badge-name">${lang === 'zh' ? '卫生间' : (lang === 'en' ? 'Restroom' : 'ห้องน้ำสาธารณะ')}</span>
+                                <span class="fac-badge-count">${toiletInfo}</span>
+                            </div>
+                        </div>
+                        <div class="fac-badge-card">
+                            <span class="fac-badge-icon">🚶</span>
+                            <div class="fac-badge-info">
+                                <span class="fac-badge-name">${lang === 'zh' ? '连廊天桥' : (lang === 'en' ? 'Skywalk' : 'สกายวอล์ก')}</span>
+                                <span class="fac-badge-count">${skywalkExits.length ? (lang === 'zh' ? `出入口 ${skywalkExits.join(', ')}` : (lang === 'en' ? `Exit ${skywalkExits.join(', ')}` : `ทางออก ${skywalkExits.join(', ')}`)) : (lang === 'zh' ? 'เชื่อมต่อทางเท้า' : (lang === 'en' ? 'Footpath' : 'ทางเดินเท้า'))}</span>
+                            </div>
+                        </div>
+                        <div class="fac-badge-card">
+                            <span class="fac-badge-icon">${hasParking ? '🅿️' : '♿'}</span>
+                            <div class="fac-badge-info">
+                                <span class="fac-badge-name">${hasParking ? (lang === 'zh' ? '换乘停车场' : (lang === 'en' ? 'Park & Ride' : 'อาคารจอดแล้วจร')) : (lang === 'zh' ? '无障碍坡道' : (lang === 'en' ? 'Wheelchair Ramp' : 'ทางลาดวีลแชร์'))}</span>
+                                <span class="fac-badge-count">${hasParking ? (lang === 'zh' ? 'มีอาคารจอดรถ' : (lang === 'en' ? 'Available' : 'มีอาคารจอดรถ')) : (lang === 'zh' ? '无障碍通行' : (lang === 'en' ? 'Available' : 'มีให้บริการ'))}</span>
+                            </div>
+                        </div>
+                    </div>`;
+
+                listEl.innerHTML = facGridHtml + exits.map(ex => {
                     const isNearest = nearestExitInfo && nearestExitInfo.exit === ex.exit;
                     const badges = (ex.facilities || []).map(f => {
                         if (f === 'skywalk') return `<span class="facility-chip skywalk">${getUiIcon('walk', 13, '#0284c7')} ${lang === 'zh' ? '空中连廊' : (lang === 'th' ? 'ทางเชื่อมสกายวอล์ก' : 'Skywalk Link')}</span>`;
@@ -7128,6 +7341,18 @@ setOriginFromActionSheet() {
                     });
                 }
                 document.getElementById('searchInput').addEventListener('input', () => this.renderStrip());
+                // ตรวจจับสถานะการเชื่อมต่ออินเทอร์เน็ต ออนไลน์ / ออฟไลน์ (FEATURE 2)
+                window.addEventListener('online', () => {
+                    this.updateOnlineStatus();
+                    this.showToast('🟢 ' + (lang === 'zh' ? '网络已恢复连接' : (lang === 'en' ? 'Back Online' : 'เชื่อมต่ออินเทอร์เน็ตแล้ว')));
+                });
+                window.addEventListener('offline', () => {
+                    this.updateOnlineStatus();
+                    this.showToast('⚠️ ' + (lang === 'zh' ? '网络连接已断开 (离线模式)' : (lang === 'en' ? 'Offline Mode Active' : 'สัญญาณขาดหาย เข้าสู่โหมดออฟไลน์')));
+                });
+                this.updateOnlineStatus();
+                this.renderFavoritesBar();
+
                 document.addEventListener('visibilitychange', () => {
                     if (!document.hidden) this.refreshAll();
                 });
@@ -9607,6 +9832,15 @@ setOriginFromActionSheet() {
                 const pin = this.nearestList.find(r => r.station.StationKey === this.pinnedKey) || this.nearest;
                 const s = pin.station;
                 const color = s.StationLineColor || '#7AB420';
+
+                // ซิงค์ปุ่มสถานีโปรดบนหัวการ์ดสถานีใกล้ฉัน (FEATURE 4)
+                const starBtn = document.getElementById('nearestStarBtn');
+                if (starBtn && s) {
+                    const isFav = this.isFavorite(s.StationKey);
+                    starBtn.classList.toggle('active', isFav);
+                    starBtn.innerHTML = isFav ? '★' : '☆';
+                    starBtn.title = isFav ? 'ลบออกจากสถานีโปรด' : 'บันทึกเป็นสถานีโปรด';
+                }
                 const arr = this.arrivals[s.StationKey];
                 const staticTime = usesStaticTimetable(s);
 
@@ -9881,6 +10115,8 @@ setOriginFromActionSheet() {
                     const isSiam = s.StationKey === SIAM_KEY;
                     const isBranch = s.StationKey === 'MT01' || s.StationKey === 'MT02';
                     const isTerminus = s.StationKey === 'MT02';
+                    const isFav = this.isFavorite(s.StationKey);
+                    const lmMatch = q ? getLandmarkMatch(s.StationKey, qRaw) : null;
                     const open = this.expandedKey === s.StationKey;
                     const km = (this.userPos && s.Latitude && s.Longitude)
                         ? haversineKm(this.userPos.lat, this.userPos.lon, s.Latitude, s.Longitude) : null;
@@ -9902,10 +10138,12 @@ setOriginFromActionSheet() {
                                         ${isNear ? `<span class="badge near-b">${T('nearYou')}</span>` : ''}
                                         ${isSiam ? `<span class="badge inter-b">${T('fourPlat')}</span>` : ''}
                                         ${isTerminus ? `<span class="badge" style="background:var(--bg-subtle);color:var(--muted);border:1px solid var(--line);font-size:9.5px;font-weight:600;padding:2px 6px;border-radius:var(--radius-full);display:inline-flex;align-items:center;justify-content:center;line-height:1;box-sizing:border-box;letter-spacing:0;vertical-align:middle;">${lang === 'en' ? 'Terminus' : (lang === 'zh' ? '终点站' : 'ปลายทาง')}</span>` : ''}
+                                        ${lmMatch ? `<span class="landmark-badge">📍 ใกล้ ${esc(lmMatch)}</span>` : ''}
                                         ${connBadges(s.StationKey, s.StationLineId)}
                                     </div>
                                 </div>
                                 ${km != null ? `<span class="st-dist">${fmtDist(km)}</span>` : ''}
+                                <button type="button" class="st-star-btn ${isFav ? 'active' : ''}" onclick="App.toggleFavoriteStation('${esc(s.StationKey)}', event)" title="${isFav ? 'ลบออกจากสถานีโปรด' : 'บันทึกเป็นสถานีโปรด'}">${isFav ? '★' : '☆'}</button>
                             </button>
                             ${open ? `<div class="st-expand">
                                     <div class="x-head">
@@ -9944,6 +10182,138 @@ setOriginFromActionSheet() {
                     document.querySelector(`[id^="row-${CSS.escape(key)}-"]`)
                         ?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
                 });
+            },
+
+            /* ---------- FEATURE 2: Online / Offline & Service Worker Update Handlers ---------- */
+            updateOnlineStatus() {
+                const banner = document.getElementById('offlineStatusBanner');
+                if (!banner) return;
+                const isOnline = navigator.onLine;
+                if (!isOnline) {
+                    banner.style.display = 'flex';
+                    const txt = document.getElementById('offlineBannerText');
+                    if (txt) {
+                        txt.textContent = lang === 'zh'
+                            ? '当前处于离线模式 — 显示本地缓存的时刻表和车站设施信息'
+                            : (lang === 'en'
+                                ? 'Currently Offline — Displaying cached timetables & station info'
+                                : 'ขณะนี้ใช้งานโหมดออฟไลน์ — แสดงตารางเวลาและผังสถานีจากแคชเครื่อง');
+                    }
+                } else {
+                    banner.style.display = 'none';
+                }
+            },
+
+            showUpdateBanner() {
+                const banner = document.getElementById('swUpdateBanner');
+                if (banner) banner.style.display = 'flex';
+            },
+
+            reloadAppUpdate() {
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.getRegistrations().then(regs => {
+                        for (const r of regs) {
+                            if (r.waiting) r.waiting.postMessage({ type: 'SKIP_WAITING' });
+                        }
+                    });
+                }
+                window.location.reload();
+            },
+
+            /* ---------- FEATURE 3: Landmark / POI Search Helper ---------- */
+            searchLandmark(query) {
+                if (this.currentView !== 'home') {
+                    this.switchView('home');
+                }
+                const input = document.getElementById('searchInput');
+                if (input) {
+                    input.value = query;
+                    input.focus();
+                }
+                this.renderStrip();
+            },
+
+            /* ---------- FEATURE 4: Favorite Stations ⭐ ---------- */
+            getFavorites() {
+                try {
+                    const raw = localStorage.getItem('bkk_fav_stations');
+                    if (raw) {
+                        const parsed = JSON.parse(raw);
+                        if (Array.isArray(parsed)) return parsed;
+                    }
+                } catch (e) {}
+                return [];
+            },
+
+            isFavorite(key) {
+                if (!key) return false;
+                return this.getFavorites().includes(key);
+            },
+
+            toggleFavoriteStation(key, ev) {
+                if (ev && ev.stopPropagation) ev.stopPropagation();
+                if (!key) return;
+                const favs = this.getFavorites();
+                const idx = favs.indexOf(key);
+                let added = false;
+                if (idx >= 0) {
+                    favs.splice(idx, 1);
+                    added = false;
+                } else {
+                    favs.push(key);
+                    added = true;
+                }
+                try {
+                    localStorage.setItem('bkk_fav_stations', JSON.stringify(favs));
+                } catch (e) {}
+                this.renderFavoritesBar();
+                this.renderStrip();
+                this.renderNearest();
+                const s = this.findStation(key);
+                const name = s ? stName(s) : key;
+                this.showToast(added
+                    ? `⭐ ${lang === 'zh' ? `已添加 ${name} 至收藏车站` : (lang === 'en' ? `Added ${name} to Favorites` : `บันทึก ${name} เป็นสถานีโปรดแล้ว`)}`
+                    : `${lang === 'zh' ? `已从收藏移除 ${name}` : (lang === 'en' ? `Removed ${name} from Favorites` : `ลบ ${name} ออกจากสถานีโปรดแล้ว`)}`);
+            },
+
+            toggleNearestFavorite() {
+                const pin = this.nearestList.find(r => r.station.StationKey === this.pinnedKey) || this.nearest;
+                if (pin && pin.station) {
+                    this.toggleFavoriteStation(pin.station.StationKey);
+                }
+            },
+
+            pickFavStation(key) {
+                if (!key) return;
+                this.pinStation(key);
+                this.toggleStation(key);
+            },
+
+            renderFavoritesBar() {
+                const bar = document.getElementById('favoritesBar');
+                if (!bar) return;
+                const favs = this.getFavorites();
+                if (!favs || !favs.length) {
+                    bar.style.display = 'none';
+                    bar.innerHTML = '';
+                    return;
+                }
+                bar.style.display = 'flex';
+                const chipsHtml = favs.map(key => {
+                    const s = this.findStation(key);
+                    if (!s) return '';
+                    const name = stName(s);
+                    const color = s.StationLineColor || (typeof LINE_BRAND_COLORS !== 'undefined' && LINE_BRAND_COLORS[s.StationLineId]) || '#7AB420';
+                    return `<button type="button" class="fav-chip-item" onclick="App.pickFavStation('${esc(key)}')" title="${esc(name)}">
+                        <span class="fav-chip-code" style="background:${color}">${esc(key)}</span>
+                        <span class="fav-chip-name">${esc(name)}</span>
+                    </button>`;
+                }).filter(Boolean).join('');
+
+                bar.innerHTML = `
+                    <span class="fav-bar-lbl">★ ${lang === 'zh' ? '收藏车站:' : (lang === 'en' ? 'Favorites:' : 'สถานีโปรด:')}</span>
+                    ${chipsHtml}
+                `;
             }
         };
 
@@ -10853,6 +11223,9 @@ setOriginFromActionSheet() {
             const q = qRaw.toLowerCase().trim();
             const qNoSpace = q.replace(/\s+/g, '');
             if (!q) return false;
+
+            // ตรวจสอบกับฐานข้อมูลสถานที่สำคัญ / แลนด์มาร์ก (Feature 3)
+            if (getLandmarkMatch(station.StationKey, qRaw)) return true;
 
             // StationKey (รหัสสถานีสากล เช่น YL20, CEN, N8) ค้นหาได้เสมอ
             const key = (station.StationKey || '').toLowerCase();

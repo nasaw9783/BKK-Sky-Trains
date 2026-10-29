@@ -781,7 +781,10 @@ gQIDAQAB
             bus: (s, c, cls) => `<svg class="ui-ic ui-ic-bus ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || '#f59e0b'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6v6"/><path d="M16 6v6"/><path d="M4 6h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-1H7v1a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2Z"/><circle cx="7" cy="15" r="1" fill="${c || '#f59e0b'}"/><circle cx="17" cy="15" r="1" fill="${c || '#f59e0b'}"/></svg>`,
 
             // 🅿️ Park & Ride
-            parking: (s, c, cls) => `<svg class="ui-ic ui-ic-parking ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || '#3b82f6'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="4"/><path d="M9 17V7h4a3 3 0 0 1 0 6H9"/></svg>`
+            parking: (s, c, cls) => `<svg class="ui-ic ui-ic-parking ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || '#3b82f6'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="4"/><path d="M9 17V7h4a3 3 0 0 1 0 6H9"/></svg>`,
+
+            // 💻 Device / System Auto
+            device: (s, c, cls) => `<svg class="ui-ic ui-ic-device ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || 'currentColor'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>`
         };
 
         function getUiIcon(name, size = 18, color = '', extraClass = '') {
@@ -1113,9 +1116,10 @@ gQIDAQAB
                 moreLangTitle: 'ภาษา',
                 moreLangDesc: 'เลือกภาษาที่ต้องการให้แสดงผลในระบบ',
                 moreThemeTitle: 'ธีมการแสดงผล',
-                moreThemeDesc: 'ปรับแต่งธีมสว่างหรือมืดตามสภาพแสง',
-                themeDark: 'โหมดมืด',
+                moreThemeDesc: 'เลือกโหมดสว่าง โหมดมืด หรือปรับตามระบบอุปกรณ์ของคุณ',
                 themeLight: 'โหมดสว่าง',
+                themeDark: 'โหมดมืด',
+                themeAuto: 'ตั้งค่าตามอุปกรณ์',
                 moreClockTitle: 'รูปแบบเวลา',
                 moreClockDesc: 'เลือกรูปแบบการแสดงเวลาของนาฬิกาที่แถบหัวเว็บ',
                 moreClock24Lbl: '24 ชั่วโมง',
@@ -1452,9 +1456,10 @@ gQIDAQAB
                 moreLangTitle: 'Language',
                 moreLangDesc: 'Select system display language',
                 moreThemeTitle: 'Display Theme',
-                moreThemeDesc: 'Choose between dark mode and light mode',
-                themeDark: 'Dark Mode',
+                moreThemeDesc: 'Choose light, dark, or follow your device settings',
                 themeLight: 'Light Mode',
+                themeDark: 'Dark Mode',
+                themeAuto: 'Device Default',
                 moreClockTitle: 'Clock Format',
                 moreClockDesc: 'Choose the time display format for the header clock',
                 moreClock24Lbl: '24 Hours (24H)',
@@ -1791,9 +1796,10 @@ gQIDAQAB
                 moreLangTitle: '语言',
                 moreLangDesc: '选择系统显示语言',
                 moreThemeTitle: '显示主题',
-                moreThemeDesc: '根据喜好选择深色模式或浅色模式',
-                themeDark: '深色模式',
+                moreThemeDesc: '选择浅色、深色模式或跟随系统设备设置',
                 themeLight: '浅色模式',
+                themeDark: '深色模式',
+                themeAuto: '跟随系统',
                 moreClockTitle: '时间格式',
                 moreClockDesc: '选择顶部时钟的时间显示格式',
                 moreClock24Lbl: '24 小时制',
@@ -6984,12 +6990,24 @@ setOriginFromActionSheet() {
 
 
 
-            /* ---------- theme (dark mode) ---------- */
+            /* ---------- theme (dark mode & auto) ---------- */
             setTheme(t) {
-                const cur = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
-                const next = t || (cur === 'dark' ? 'light' : 'dark');
-                document.documentElement.classList.toggle('dark', next === 'dark');
+                let next = t;
+                if (!next) {
+                    let cur = 'auto';
+                    try { cur = localStorage.getItem('bts_theme') || 'auto'; } catch (e) { }
+                    next = cur === 'dark' ? 'light' : 'dark';
+                }
                 try { localStorage.setItem('bts_theme', next); } catch (e) { }
+
+                let effectiveDark = false;
+                if (next === 'auto') {
+                    effectiveDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                } else {
+                    effectiveDark = (next === 'dark');
+                }
+                document.documentElement.classList.toggle('dark', effectiveDark);
+
                 this.updateThemeBtn();
                 this.updateMapTheme();
                 this.renderMoreView();
@@ -6998,11 +7016,34 @@ setOriginFromActionSheet() {
             updateThemeBtn() {
                 const b = document.getElementById('themeBtn');
                 if (b) b.innerHTML = document.documentElement.classList.contains('dark') ? getUiIcon('sun', 16, '#f59e0b') : getUiIcon('moon', 16, 'currentColor');
-                const isDark = document.documentElement.classList.contains('dark');
+                let storedTheme = 'auto';
+                try { storedTheme = localStorage.getItem('bts_theme') || 'auto'; } catch (e) { }
                 const darkBtn = document.getElementById('themeOptDark');
                 const lightBtn = document.getElementById('themeOptLight');
-                if (darkBtn) darkBtn.classList.toggle('active', isDark);
-                if (lightBtn) lightBtn.classList.toggle('active', !isDark);
+                const autoBtn = document.getElementById('themeOptAuto');
+                if (darkBtn) darkBtn.classList.toggle('active', storedTheme === 'dark');
+                if (lightBtn) lightBtn.classList.toggle('active', storedTheme === 'light');
+                if (autoBtn) autoBtn.classList.toggle('active', storedTheme === 'auto');
+            },
+
+            initThemeListener() {
+                if (typeof window !== 'undefined' && window.matchMedia) {
+                    const mql = window.matchMedia('(prefers-color-scheme: dark)');
+                    const onChange = (e) => {
+                        let curTheme = 'auto';
+                        try { curTheme = localStorage.getItem('bts_theme') || 'auto'; } catch (err) { }
+                        if (curTheme === 'auto') {
+                            document.documentElement.classList.toggle('dark', e.matches);
+                            this.updateThemeBtn();
+                            this.updateMapTheme();
+                        }
+                    };
+                    if (mql.addEventListener) {
+                        mql.addEventListener('change', onChange);
+                    } else if (mql.addListener) {
+                        mql.addListener(onChange);
+                    }
+                }
             },
 
             /* ---------- background geofencing & more settings ---------- */
@@ -7066,11 +7107,14 @@ setOriginFromActionSheet() {
                 });
 
                 // 3. Theme Segmented Buttons
-                const isDark = document.documentElement.classList.contains('dark');
+                let storedTheme = 'auto';
+                try { storedTheme = localStorage.getItem('bts_theme') || 'auto'; } catch (e) { }
                 const darkBtn = document.getElementById('themeOptDark');
                 const lightBtn = document.getElementById('themeOptLight');
-                if (darkBtn) darkBtn.classList.toggle('active', isDark);
-                if (lightBtn) lightBtn.classList.toggle('active', !isDark);
+                const autoBtn = document.getElementById('themeOptAuto');
+                if (darkBtn) darkBtn.classList.toggle('active', storedTheme === 'dark');
+                if (lightBtn) lightBtn.classList.toggle('active', storedTheme === 'light');
+                if (autoBtn) autoBtn.classList.toggle('active', storedTheme === 'auto');
 
                 // 4. Clock Format Segmented Buttons
                 const curClockFmt = this.clockFormat || '24';
@@ -7301,8 +7345,9 @@ setOriginFromActionSheet() {
                 set('moreLangDesc', T('moreLangDesc'));
                 set('moreThemeTitle', T('moreThemeTitle'));
                 set('moreThemeDesc', T('moreThemeDesc'));
-                set('moreThemeDarkLbl', T('themeDark'));
                 set('moreThemeLightLbl', T('themeLight'));
+                set('moreThemeDarkLbl', T('themeDark'));
+                set('moreThemeAutoLbl', T('themeAuto'));
                 set('moreClockTitle', T('moreClockTitle'));
                 set('moreClockDesc', T('moreClockDesc'));
                 set('moreClock24Lbl', T('moreClock24Lbl'));
@@ -7363,6 +7408,7 @@ setOriginFromActionSheet() {
                     try { document.documentElement.classList.add('is-flutter-app'); } catch (e) { }
                 }
                 this.applyStaticLang();
+                this.initThemeListener();
                 this.updateThemeBtn();   // ธีมถูกตั้งไว้แล้วจากสคริปต์ใน <head> — ปรับไอคอนปุ่มให้ตรง
                 this.updateMapTheme();
                 this.startClock();

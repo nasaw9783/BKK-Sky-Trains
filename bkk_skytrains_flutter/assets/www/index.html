@@ -8017,8 +8017,12 @@
             overflow: hidden;
         }
         .settings-segment-btn .segment-name {
-            font-size: 12px;
+            font-size: 11.5px;
             font-weight: 600;
+            line-height: 1.25;
+            text-align: center;
+            letter-spacing: 0;
+            word-break: break-word;
         }
         .settings-sub-label {
             font-size: 11px;
@@ -8056,6 +8060,11 @@
             border-radius: 50%;
             background: rgba(0, 0, 0, 0.05);
             margin-bottom: 2px;
+        }
+        .settings-segment-btn .segment-icon svg {
+            display: block;
+            margin: auto;
+            flex-shrink: 0;
         }
 
         /* Version Hero & Details */
@@ -9283,8 +9292,12 @@
             // 1. Theme initialization (Prevent dark mode flash)
             try {
                 const urlTheme = new URLSearchParams(location.search).get('theme');
-                if (localStorage.getItem('bts_theme') === 'dark' || urlTheme === 'dark') {
+                const savedTheme = localStorage.getItem('bts_theme');
+                const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (urlTheme === 'dark' || savedTheme === 'dark' || ((!savedTheme || savedTheme === 'auto') && prefersDark)) {
                     document.documentElement.classList.add('dark');
+                } else if (urlTheme === 'light' || savedTheme === 'light' || ((!savedTheme || savedTheme === 'auto') && !prefersDark)) {
+                    document.documentElement.classList.remove('dark');
                 }
             } catch (e) { }
 
@@ -9776,19 +9789,25 @@
                     </div>
                 </div>
                 <div class="settings-card-body">
-                    <div class="settings-desc" id="moreThemeDesc">ปรับแต่งธีมสว่างหรือมืดตามสภาพแสง</div>
-                    <div class="settings-segment-grid two-cols">
+                    <div class="settings-desc" id="moreThemeDesc">เลือกโหมดสว่าง โหมดมืด หรือปรับตามระบบอุปกรณ์ของคุณ</div>
+                    <div class="settings-segment-grid">
+                        <button type="button" class="settings-segment-btn" id="themeOptLight" onclick="App.setTheme('light')">
+                            <span class="segment-icon">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                            </span>
+                            <span class="segment-name" id="moreThemeLightLbl">โหมดสว่าง</span>
+                        </button>
                         <button type="button" class="settings-segment-btn" id="themeOptDark" onclick="App.setTheme('dark')">
                             <span class="segment-icon">
                                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" fill-opacity="0.15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
                             </span>
                             <span class="segment-name" id="moreThemeDarkLbl">โหมดมืด</span>
                         </button>
-                        <button type="button" class="settings-segment-btn" id="themeOptLight" onclick="App.setTheme('light')">
+                        <button type="button" class="settings-segment-btn" id="themeOptAuto" onclick="App.setTheme('auto')">
                             <span class="segment-icon">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
                             </span>
-                            <span class="segment-name" id="moreThemeLightLbl">โหมดสว่าง</span>
+                            <span class="segment-name" id="moreThemeAutoLbl">ตั้งค่าตามอุปกรณ์</span>
                         </button>
                     </div>
                 </div>
@@ -10468,7 +10487,7 @@
 
     <!-- Application Controller -->
     <script src="js/leaflet.js"></script>
-    <script src="js/app.js?v=20261029_11"></script>
+    <script src="js/app.js?v=20261029_12"></script>
 
     <!-- PWA: ลงทะเบียน service worker (เฉพาะเมื่อรันบน HTTP/HTTPS) -->
     <script>

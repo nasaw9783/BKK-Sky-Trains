@@ -7506,6 +7506,7 @@ setOriginFromActionSheet() {
                     const isInput = tag === 'input' || tag === 'textarea' || (e.target && e.target.isContentEditable);
 
                     if (e.key === 'Escape') {
+                        this.closeInterchangeModal();
                         this.closeMapActionSheet();
                         this.closeStationPicker();
                         this.closeExitDropdown();
@@ -10464,6 +10465,105 @@ setOriginFromActionSheet() {
                     <span class="fav-bar-lbl">★ ${lang === 'zh' ? '收藏车站:' : (lang === 'en' ? 'Favorites:' : 'สถานีโปรด:')}</span>
                     ${chipsHtml}
                 `;
+            },
+
+            /* ---------- INTERCHANGE HUB MODAL (OPTION 3) ---------- */
+            openInterchangeModal(stationKey, ctxLineId) {
+                const modal = document.getElementById('interchangeModal');
+                if (!modal) return;
+                const s = this.findStation(stationKey);
+                if (!s) return;
+
+                const curLineId = ctxLineId || s.StationLineId;
+                const curLine = this.lineById[curLineId] || MRT_LINE_BY_ID[curLineId];
+                const color = s.StationLineColor || curLine?.LineColor || '#7AB420';
+
+                const connections = (this.connections[stationKey] || [])
+                    .filter(c => c.isBranch || c.lineId !== curLineId);
+
+                // Update modal header
+                const badgeEl = document.getElementById('interchangeStationBadge');
+                if (badgeEl) {
+                    badgeEl.textContent = s.StationKey;
+                    badgeEl.style.background = color;
+                }
+                const nameEl = document.getElementById('interchangeStationName');
+                if (nameEl) nameEl.textContent = 'สถานี' + stName(s);
+                const subEl = document.getElementById('interchangeStationSub');
+                if (subEl) {
+                    const enName = s.StationName_EN || s.StationNameEN || '';
+                    subEl.textContent = `${enName} Station — ${lang === 'zh' ? '换乘枢纽' : (lang === 'en' ? 'Transit Interchange' : 'จุดเปลี่ยนสายรถไฟ')}`;
+                }
+
+                // Summary banner
+                const summaryText = document.getElementById('interchangeSummaryText');
+                if (summaryText) {
+                    const totalLines = 1 + connections.length;
+                    summaryText.textContent = lang === 'zh'
+                        ? `共 ${totalLines} 条轨道交通线路在此交汇 (Interchange Hub)`
+                        : (lang === 'en'
+                            ? `Interchange connecting ${totalLines} transit lines (Interchange Hub)`
+                            : `จุดเชื่อมต่อโครงข่ายรถไฟฟ้า ${connections.length} สายทาง (Interchange Hub)`);
+                }
+
+                // Current line capsule
+                const curPill = document.getElementById('interchangeCurPill');
+                if (curPill && curLine) {
+                    curPill.textContent = lang === 'zh' ? (LINE_NAMES_ZH[curLine.LineId] || curLine.LineName_EN) : (lang === 'en' ? curLine.LineName_EN : curLine.LineName_TH);
+                    curPill.style.background = curLine.LineColor;
+                }
+                const curName = document.getElementById('interchangeCurName');
+                if (curName) {
+                    curName.textContent = lang === 'zh' ? '当前浏览车站' : (lang === 'en' ? 'Current Station' : 'สถานีที่กำลังเปิดดู');
+                }
+
+                // Connecting lines list
+                const listEl = document.getElementById('interchangeConnectingList');
+                if (listEl) {
+                    listEl.innerHTML = connections.map(c => {
+                        const line = this.lineById[c.lineId] || MRT_LINE_BY_ID[c.lineId];
+                        const lineName = line ? (lang === 'zh' ? (LINE_NAMES_ZH[line.LineId] || line.LineName_EN) : (lang === 'en' ? line.LineName_EN : line.LineName_TH)) : '';
+                        const lineOperator = line ? (lang === 'zh' ? (line.operatorZH || line.OperatorZH || '') : (lang === 'en' ? (line.operatorEN || line.OperatorEN || '') : (line.operatorTH || line.OperatorTH || line.OperatorName || ''))) : '';
+                        const connSt = this.findStation(c.key);
+                        const connStName = connSt ? stName(connSt) : '';
+                        const walkText = getInterchangeTransferDetail(stationKey, c.key, c.lineId);
+
+                        return `
+                            <div class="interchange-connect-card" style="border-left-color:${c.color};">
+                                <div class="interchange-card-top">
+                                    <div class="interchange-line-identity">
+                                        <div class="interchange-icon-box" style="background:${c.color}20;">
+                                            ${getLineIconSvg(c.lineId, false, 16)}
+                                        </div>
+                                        <div>
+                                            <div class="interchange-name-bold">${esc(lineName)}</div>
+                                            ${lineOperator ? `<div class="interchange-operator-sub">${esc(lineOperator)}</div>` : ''}
+                                        </div>
+                                    </div>
+                                    <span class="interchange-st-code" style="background:${c.color};">${esc(c.key)}</span>
+                                </div>
+
+                                ${connStName && connStName !== stName(s) ? `<div style="font-size:11.5px;color:var(--ink);font-weight:600;margin-top:2px;">สถานีเชื่อมต่อ: <span style="color:${c.color}">${esc(connStName)} (${esc(c.key)})</span></div>` : ''}
+
+                                <div class="interchange-walk-info">
+                                    ${walkText}
+                                </div>
+
+                                <button type="button" class="interchange-jump-btn" onclick="App.jumpTo('${esc(c.key)}', ${c.lineId}); App.closeInterchangeModal();">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+                                    <span>${lang === 'zh' ? `立即前往 ${lineName}` : (lang === 'en' ? `Jump to ${lineName}` : `สลับไปยัง ${lineName} ทันที`)}</span>
+                                </button>
+                            </div>
+                        `;
+                    }).join('');
+                }
+
+                modal.style.display = 'flex';
+            },
+
+            closeInterchangeModal() {
+                const modal = document.getElementById('interchangeModal');
+                if (modal) modal.style.display = 'none';
             }
         };
 
@@ -12120,23 +12220,86 @@ setOriginFromActionSheet() {
                 </div>`;
         }
 
-        // ป้าย "เชื่อมต่อสาย X" สำหรับสถานีเปลี่ยนสาย หรือสายแยก — กดเพื่อกระโดดไปสายนั้น
-        // ctxLineId = สายที่กำลังแสดงอยู่ จะไม่โชว์ป้ายของสายตัวเอง (สยามดูจากสุขุมวิท → เห็น ⇄ สายสีลม) เว้นแต่เป็นสายแยก (isBranch)
+        function getInterchangeTransferDetail(fromKey, toKey, toLineId) {
+            // บางซื่อ BL11 <-> สถานีกลางกรุงเทพอภิวัฒน์ RN01, RW01
+            if (fromKey === 'BL11' || toKey === 'BL11' || fromKey === 'RN01' || toKey === 'RN01' || fromKey === 'RW01' || toKey === 'RW01') {
+                return lang === 'zh' ? '🚇 地下人行通道直通阿披瓦中央车站，步行约 100 米（约 2 分钟）'
+                    : (lang === 'en' ? '🚇 Underground Pedestrian Tunnel directly connecting to Krung Thep Aphiwat (~100m, 2 min walk)'
+                    : '🚇 อุโมงค์ทางเชื่อมใต้ดิน (Underground Tunnel) สู่สถานีกลางกรุงเทพอภิวัฒน์ ~100 ม. (เดิน 2 นาที)');
+            }
+            // ลาดพร้าว BL15 <-> YL01
+            if (fromKey === 'BL15' || toKey === 'BL15' || fromKey === 'YL01' || toKey === 'YL01') {
+                return lang === 'zh' ? '🚶 经由 Concourse 层换乘空中连廊及停车场连通，约 80 米'
+                    : (lang === 'en' ? '🚶 Skywalk Link via Concourse Level and Park & Ride building (~80m)'
+                    : '🚶 สกายวอล์กทางเชื่อม (Skywalk Link) จากชั้น Concourse ผ่านอาคารจอดแล้วจร ~80 ม.');
+            }
+            // พหลโยธิน BL14 <-> ห้าแยกลาดพร้าว N9
+            if (fromKey === 'BL14' || toKey === 'BL14' || fromKey === 'N9' || toKey === 'N9') {
+                return lang === 'zh' ? '🚶 经由空中连廊横跨拉抛五岔路口，约 120 米'
+                    : (lang === 'en' ? '🚶 Skywalk Link across Ha Yaek Lat Phrao intersection (~120m)'
+                    : '🚶 สกายวอล์กทางเชื่อม (Skywalk Link) ข้ามห้าแยกลาดพร้าว ~120 ม.');
+            }
+            // สวนจตุจักร BL13 <-> หมอชิต N8
+            if (fromKey === 'BL13' || toKey === 'BL13' || fromKey === 'N8' || toKey === 'N8') {
+                return lang === 'zh' ? '🚶 出入口 1、2 设有扶梯及电梯，与 BTS 车站入口相邻约 30 米'
+                    : (lang === 'en' ? '🚶 Exit 1 & 2 escalator/elevator directly adjacent to BTS entrance (~30m)'
+                    : '🚶 ทางออก 1, 2 บันไดเลื่อนและลิฟต์เชื่อมต่อหน้าทางเข้าสถานี BTS หมอชิต ~30 ม.');
+            }
+            // สยาม CEN (สุขุมวิท <-> สีลม)
+            if (fromKey === 'CEN' && toKey === 'CEN') {
+                return lang === 'zh' ? '🔄 同台/同站双层换乘平台（4站台），可直接移步至对向换乘 0 米'
+                    : (lang === 'en' ? '🔄 Cross-Platform 2-Level Interchange (4 Platforms), walk across platform directly (0m)'
+                    : '🔄 สถานีร่วม 4 ชานชาลา 2 ชั้น (Cross-Platform Interchange) เดินข้ามชานชาลาฝั่งตรงข้ามได้ทันที 0 ม.');
+            }
+            // อโศก E4 <-> สุขุมวิท BL22
+            if (fromKey === 'E4' || toKey === 'E4' || fromKey === 'BL22' || toKey === 'BL22') {
+                return lang === 'zh' ? '🚶 3号出口空中连廊及扶梯直达 MRT 3号出口约 40 米'
+                    : (lang === 'en' ? '🚶 Exit 3 Skywalk and escalator connecting directly to MRT Exit 3 (~40m)'
+                    : '🚶 ทางออก 3 สกายวอล์กและบันไดเลื่อนเชื่อมชั้น Concourse สู่ MRT ทางออก 3 ~40 ม.');
+            }
+            // พญาไท N2 <-> ARL A8
+            if (fromKey === 'N2' || toKey === 'N2' || fromKey === 'A8' || toKey === 'A8') {
+                return lang === 'zh' ? '🚶 站厅层设有连廊直连机场快轨 ARL 站台约 50 米'
+                    : (lang === 'en' ? '🚶 Direct Concourse Skywalk link to Airport Rail Link (~50m)'
+                    : '🚶 ทางเชื่อมสกายวอล์กชั้นชานชาลา/จำหน่ายตั๋ว เชื่อมตรงสู่ ARL พญาไท ~50 ม.');
+            }
+            // ศาลาแดง S2 <-> สีลม BL26
+            if (fromKey === 'S2' || toKey === 'S2' || fromKey === 'BL26' || toKey === 'BL26') {
+                return lang === 'zh' ? '🚶 4号出口连廊连通至 MRT 2号出口约 150 米'
+                    : (lang === 'en' ? '🚶 Exit 4 Skywalk connecting to MRT Si Lom Exit 2 (~150m)'
+                    : '🚶 สกายวอล์กทางออก 4 เชื่อมสู่ทางออก 2 ของสถานี MRT สีลม ~150 ม.');
+            }
+            // กรุงธนบุรี S7 <-> สายสีทอง G1
+            if (fromKey === 'S7' || toKey === 'S7' || fromKey === 'G1' || toKey === 'G1') {
+                return lang === 'zh' ? '🚶 3号出口梯道及无障碍坡道直达金线 APM 站台约 20 米'
+                    : (lang === 'en' ? '🚶 Exit 3 stairs and accessibility ramp to APM Gold Line platform (~20m)'
+                    : '🚶 ทางออก 3 บันไดและทางลาดเชื่อมสู่ชานชาลาสายสีทอง ~20 ม.');
+            }
+            // บางหว้า S12 <-> BL34
+            if (fromKey === 'S12' || toKey === 'S12' || fromKey === 'BL34' || toKey === 'BL34') {
+                return lang === 'zh' ? '🚶 站内连廊连通 BTS 与 MRT 站厅约 50 米'
+                    : (lang === 'en' ? '🚶 Concourse walkway connecting BTS and MRT (~50m)'
+                    : '🚶 ทางเชื่อมสกายวอล์กระหว่างชานชาลา BTS และ MRT บางหว้า ~50 ม.');
+            }
+            // สายแยกเมืองทอง PK10 <-> MT01 / MT02
+            if (fromKey === 'PK10' || toKey === 'PK10' || fromKey.startsWith('MT') || toKey.startsWith('MT')) {
+                return lang === 'zh' ? '🔄 湖滨支线站台换乘（无需出闸）'
+                    : (lang === 'en' ? '🔄 Muang Thong Thani Branch Line Platform (Within paid area)'
+                    : '🔄 ชานชาลาสายแยกอิมแพ็ค เมืองทองธานี (ภายในระบบ)');
+            }
+            // Default
+            return lang === 'zh' ? '🚶 设有连接通道及便捷人行步道，换乘顺畅'
+                : (lang === 'en' ? '🚶 Connected walkway & short walking distance between stations'
+                : '🚶 ทางเชื่อมต่อระหว่างสถานีและทางเดินเท้าในระยะใกล้');
+        }
+
+        // ปุ่ม "จุดเปลี่ยนสายรถไฟ" สำหรับสถานีเปลี่ยนสาย หรือสายแยก — แตะแล้วเปิดป็อบอัพการ์ด (OPTION 3)
         function connBadges(stationKey, ctxLineId) {
-            return (App.connections[stationKey] || [])
-                .filter(c => c.isBranch || c.lineId !== ctxLineId)
-                .map(c => {
-                    const line = App.lineById[c.lineId] || MRT_LINE_BY_ID[c.lineId];
-                    const label = c.isBranch
-                        ? (lang === 'en' ? (c.labelEn || 'Branch') : (lang === 'zh' ? (c.labelZh || '支线') : (c.labelTh || 'สายแยก')))
-                        : T('connLine', esc(line ? shortLineName(line) : ''));
-                    const titleText = c.isBranch
-                        ? (lang === 'en' ? `Connect to ${c.labelEn || c.key}` : (lang === 'zh' ? `换乘至 ${c.labelZh || c.key}` : `เชื่อมต่อ ${c.labelTh || c.key}`))
-                        : T('connTitle', esc(c.key));
-                    return ` <span class="badge conn-b" style="color:${c.color};background:${c.color}14;border:1px solid ${c.color}32;border-radius:var(--radius-full);font-size:10px;font-weight:600;padding:2px 7px;display:inline-flex;align-items:center;justify-content:center;line-height:1;box-sizing:border-box;letter-spacing:0;gap:4px;vertical-align:middle;"
-                    onclick="event.stopPropagation();App.jumpTo('${esc(c.key)}',${c.lineId})"
-                    title="${titleText}">${getLineIconSvg(c.lineId, false, 12)} <span>${label}</span></span>`;
-                }).join('');
+            const conns = (App.connections[stationKey] || [])
+                .filter(c => c.isBranch || c.lineId !== ctxLineId);
+            if (!conns.length) return '';
+            const lbl = lang === 'zh' ? '换乘车站' : (lang === 'en' ? 'Interchange' : 'จุดเปลี่ยนสายรถไฟ');
+            return ` <button type="button" class="btn-interchange-chip" onclick="event.stopPropagation();App.openInterchangeModal('${esc(stationKey)}', ${ctxLineId || 0});" title="${lang === 'zh' ? '查看全部换乘线路' : (lang === 'en' ? 'View connecting transit lines' : 'ดูสายสี/ไลน์เชื่อมต่อทั้งหมด')}"><svg class="ui-ic-interchange" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg> <span>${lbl}</span></button>`;
         }
 
         /* ================= JOURNEY (from → to) ================= */

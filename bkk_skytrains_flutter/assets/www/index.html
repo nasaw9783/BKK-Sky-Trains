@@ -8956,6 +8956,40 @@
             border-color: #0284c7;
         }
 
+        /* จัดตำแหน่งแถวสถานีที่มีจุดเปลี่ยนสาย: ให้รหัสสถานีอยู่ข้างชื่อสถานีในบรรทัดเดียวกันเป๊ะ (Option 1: Line-1 Top Alignment) */
+        .st-row.has-interchange .st-rail,
+        .st-row:has(.st-interchange-subrow) .st-rail {
+            align-items: flex-start;
+            padding-top: 13.5px;
+        }
+        .st-row.has-interchange .st-row-head,
+        .st-row:has(.st-interchange-subrow) .st-row-head {
+            align-items: flex-start;
+        }
+        .st-row.has-interchange .st-btn,
+        .st-row:has(.st-interchange-subrow) .st-btn {
+            align-items: flex-start;
+            padding: 10px 6px 10px 6px;
+        }
+        .st-row.has-interchange .st-key,
+        .st-row:has(.st-interchange-subrow) .st-key {
+            margin-top: 0px;
+        }
+        .st-row.has-interchange .names .th,
+        .st-row:has(.st-interchange-subrow) .names .th {
+            margin-top: 1px;
+            min-height: 20px;
+        }
+        .st-row.has-interchange .st-dist,
+        .st-row:has(.st-interchange-subrow) .st-dist {
+            margin-top: 1px;
+        }
+        .st-row.has-interchange .st-star-btn,
+        .st-row:has(.st-interchange-subrow) .st-star-btn {
+            align-self: flex-start;
+            margin-top: 7px;
+        }
+
         /* ป็อบอัพการ์ดกะทัดรัด Compact Quick-Transfer Modal (Option 2: Sleek Command Center) */
         .interchange-modal-overlay {
             position: fixed;
@@ -10456,7 +10490,7 @@
 
     <!-- Application Controller -->
     <script src="js/leaflet.js"></script>
-    <script src="js/app.js?v=20261029_07"></script>
+    <script src="js/app.js?v=20261029_08"></script>
 
     <!-- PWA: ลงทะเบียน service worker (เฉพาะเมื่อรันบน HTTP/HTTPS) -->
     <script>

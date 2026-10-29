@@ -10281,7 +10281,7 @@ setOriginFromActionSheet() {
                         </div>
                         <div class="st-main">
                             <div class="st-row-head">
-                                <button class="st-btn" onclick="App.toggleStation('${esc(s.StationKey)}')">
+                                <div class="st-btn" role="button" tabindex="0" onclick="App.toggleStation('${esc(s.StationKey)}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();App.toggleStation('${esc(s.StationKey)}');}">
                                     <span class="st-key${isBrt ? ' st-key-brt' : ''}" style="${isBrt ? '' : 'background:' + color}">${esc(s.StationKey)}</span>
                                     <div class="names">
                                         <div class="th">${esc(stName(s))}
@@ -10294,7 +10294,7 @@ setOriginFromActionSheet() {
                                         ${cb ? `<div class="st-interchange-subrow">${cb}</div>` : ''}
                                     </div>
                                     ${km != null ? `<span class="st-dist">${fmtDist(km)}</span>` : ''}
-                                </button>
+                                </div>
                                 <button type="button" class="st-star-btn ${isFav ? 'active' : ''}" onclick="App.toggleFavoriteStation('${esc(s.StationKey)}', event)" title="${isFav ? 'ลบออกจากสถานีโปรด' : 'บันทึกเป็นสถานีโปรด'}">${isFav ? '★' : '☆'}</button>
                             </div>
                             ${open ? `<div class="st-expand">

@@ -2174,6 +2174,14 @@
             box-sizing: border-box;
         }
 
+        .st-name-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%;
+            min-width: 0;
+        }
+
         .st-btn .names {
             flex: 1;
             min-width: 0;
@@ -8890,7 +8898,8 @@
         .st-interchange-subrow {
             display: flex;
             align-items: center;
-            margin-top: 4px;
+            margin-top: 5px;
+            margin-left: 50px;
             line-height: 1;
             align-self: flex-start;
         }
@@ -8960,7 +8969,7 @@
         .st-row.has-interchange .st-rail,
         .st-row:has(.st-interchange-subrow) .st-rail {
             align-items: flex-start;
-            padding-top: 13.5px;
+            padding-top: 11.5px;
         }
         .st-row.has-interchange .st-row-head,
         .st-row:has(.st-interchange-subrow) .st-row-head {
@@ -8969,25 +8978,17 @@
         .st-row.has-interchange .st-btn,
         .st-row:has(.st-interchange-subrow) .st-btn {
             align-items: flex-start;
-            padding: 10px 6px 10px 6px;
-        }
-        .st-row.has-interchange .st-key,
-        .st-row:has(.st-interchange-subrow) .st-key {
-            margin-top: 0px;
-        }
-        .st-row.has-interchange .names .th,
-        .st-row:has(.st-interchange-subrow) .names .th {
-            margin-top: 1px;
-            min-height: 20px;
+            padding: 8px 6px 10px 6px;
         }
         .st-row.has-interchange .st-dist,
         .st-row:has(.st-interchange-subrow) .st-dist {
+            align-self: flex-start;
             margin-top: 1px;
         }
         .st-row.has-interchange .st-star-btn,
         .st-row:has(.st-interchange-subrow) .st-star-btn {
             align-self: flex-start;
-            margin-top: 7px;
+            margin-top: 5px;
         }
 
         /* ป็อบอัพการ์ดกะทัดรัด Compact Quick-Transfer Modal (Option 2: Sleek Command Center) */
@@ -10490,7 +10491,7 @@
 
     <!-- Application Controller -->
     <script src="js/leaflet.js"></script>
-    <script src="js/app.js?v=20261029_08"></script>
+    <script src="js/app.js?v=20261029_09"></script>
 
     <!-- PWA: ลงทะเบียน service worker (เฉพาะเมื่อรันบน HTTP/HTTPS) -->
     <script>

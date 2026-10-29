@@ -10281,14 +10281,16 @@ setOriginFromActionSheet() {
                         <div class="st-main">
                             <div class="st-row-head">
                                 <div class="st-btn" role="button" tabindex="0" onclick="App.toggleStation('${esc(s.StationKey)}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();App.toggleStation('${esc(s.StationKey)}');}">
-                                    <span class="st-key${isBrt ? ' st-key-brt' : ''}" style="${isBrt ? '' : 'background:' + color}">${esc(s.StationKey)}</span>
                                     <div class="names">
-                                        <div class="th">${esc(stName(s))}
-                                            ${crowded ? `<span class="badge crowd-b">${T('crowded')}</span>` : ''}
-                                            ${isNear ? `<span class="badge near-b">${T('nearYou')}</span>` : ''}
-                                            ${isSiam ? `<span class="badge inter-b">${T('fourPlat')}</span>` : ''}
-                                            ${isTerminus ? `<span class="badge" style="background:var(--bg-subtle);color:var(--muted);border:1px solid var(--line);font-size:9.5px;font-weight:600;padding:2px 6px;border-radius:var(--radius-full);display:inline-flex;align-items:center;justify-content:center;line-height:1;box-sizing:border-box;letter-spacing:0;vertical-align:middle;">${lang === 'en' ? 'Terminus' : (lang === 'zh' ? '终点站' : 'ปลายทาง')}</span>` : ''}
-                                            ${lmMatch ? `<span class="landmark-badge">📍 ใกล้ ${esc(lmMatch)}</span>` : ''}
+                                        <div class="st-name-row">
+                                            <span class="st-key${isBrt ? ' st-key-brt' : ''}" style="${isBrt ? '' : 'background:' + color}">${esc(s.StationKey)}</span>
+                                            <div class="th">${esc(stName(s))}
+                                                ${crowded ? `<span class="badge crowd-b">${T('crowded')}</span>` : ''}
+                                                ${isNear ? `<span class="badge near-b">${T('nearYou')}</span>` : ''}
+                                                ${isSiam ? `<span class="badge inter-b">${T('fourPlat')}</span>` : ''}
+                                                ${isTerminus ? `<span class="badge" style="background:var(--bg-subtle);color:var(--muted);border:1px solid var(--line);font-size:9.5px;font-weight:600;padding:2px 6px;border-radius:var(--radius-full);display:inline-flex;align-items:center;justify-content:center;line-height:1;box-sizing:border-box;letter-spacing:0;vertical-align:middle;">${lang === 'en' ? 'Terminus' : (lang === 'zh' ? '终点站' : 'ปลายทาง')}</span>` : ''}
+                                                ${lmMatch ? `<span class="landmark-badge">📍 ใกล้ ${esc(lmMatch)}</span>` : ''}
+                                            </div>
                                         </div>
                                         ${cb ? `<div class="st-interchange-subrow">${cb}</div>` : ''}
                                     </div>

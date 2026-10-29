@@ -9074,32 +9074,6 @@
             box-sizing: border-box;
             white-space: nowrap;
         }
-        .interchange-modal-close {
-            background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: var(--muted, #94a3b8);
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 13px;
-            line-height: 1;
-            transition: all 0.2s ease;
-            box-sizing: border-box;
-        }
-        html:not(.dark) .interchange-modal-close {
-            background: #f1f5f9;
-            border-color: #cbd5e1;
-            color: #64748b;
-        }
-        .interchange-modal-close:hover {
-            background: rgba(244, 63, 94, 0.15);
-            color: #f43f5e;
-            border-color: rgba(244, 63, 94, 0.3);
-        }
         .interchange-cur-capsule-compact {
             background: #0d1c31;
             border: 1px solid #1e3a5f;
@@ -10433,7 +10407,7 @@
     </div>
 
     <!-- ===== Interchange Hub Modal Dialog (Option 2: Sleek Command Center) ===== -->
-    <div id="interchangeModal" class="interchange-modal-overlay" onclick="if(event.target===this) App.closeInterchangeModal();" role="dialog" aria-modal="true" style="display:none;">
+    <div id="interchangeModal" class="interchange-modal-overlay" role="dialog" aria-modal="true" style="display:none;">
         <div class="interchange-modal-card">
             <!-- Modal Header -->
             <div class="interchange-modal-head">
@@ -10446,7 +10420,6 @@
                 </div>
                 <div class="interchange-head-right">
                     <span class="opt2-status-pill">● ACTIVE INTERCHANGE</span>
-                    <button type="button" class="interchange-modal-close" onclick="App.closeInterchangeModal();" aria-label="ปิด">✕</button>
                 </div>
             </div>
 
@@ -10483,7 +10456,7 @@
 
     <!-- Application Controller -->
     <script src="js/leaflet.js"></script>
-    <script src="js/app.js?v=20261029_06"></script>
+    <script src="js/app.js?v=20261029_07"></script>
 
     <!-- PWA: ลงทะเบียน service worker (เฉพาะเมื่อรันบน HTTP/HTTPS) -->
     <script>

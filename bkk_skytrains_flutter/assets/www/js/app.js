@@ -7506,7 +7506,6 @@ setOriginFromActionSheet() {
                     const isInput = tag === 'input' || tag === 'textarea' || (e.target && e.target.isContentEditable);
 
                     if (e.key === 'Escape') {
-                        this.closeInterchangeModal();
                         this.closeMapActionSheet();
                         this.closeStationPicker();
                         this.closeExitDropdown();

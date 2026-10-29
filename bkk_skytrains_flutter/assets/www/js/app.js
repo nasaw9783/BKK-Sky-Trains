@@ -6024,25 +6024,45 @@ setOriginFromActionSheet() {
                                 <span>${isZh ? '全线 20 泰铢封顶 (EMV Contactless)' : (isEn ? 'Flat 20 Baht Fare (EMV Contactless)' : 'รถไฟฟ้า 20 บาทตลอดสาย (EMV Contactless)')}</span>
                             </h3>
                             <div style="font-size:12.5px;color:var(--ink);line-height:1.6">
-                                ${isZh ? '使用 <b>EMV Contactless</b> 信用卡/借记卡刷卡乘车，单程最高票价不超过 <b>20 泰铢</b>：' : (isEn ? 'Passengers paying with <b>EMV Contactless</b> credit/debit cards pay a maximum fare of <b>฿20</b>:' : 'ผู้โดยสารที่แตะจ่ายด้วยบัตรเครดิต/เดบิต <b>EMV Contactless</b> เดินทางด้วยค่าโดยสารสูงสุดไม่เกิน <b>20 บาท</b>:')}
-                                <ul style="margin:8px 0 8px 6px;padding-left:14px;list-style:none">
-                                    <li style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-                                        ${getLineIconSvg(102, false, 18)}
-                                        <span><b>${isZh ? 'MRT 紫线 | (差隆拉差探):' : (isEn ? 'MRT Purple Line | (Chalong Ratchatham):' : 'MRT สายสีม่วง | (ฉลองรัชธรรม):')}</b> ${isZh ? '空磅派 ↔ 岛本 (最高 20 泰铢)' : (isEn ? 'Khlong Bang Phai ↔ Tao Poon (Max ฿20)' : 'คลองบางไผ่ ↔ เตาปูน (สูงสุด 20 บาท)')}</span>
-                                    </li>
-                                    <li style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-                                        ${getLineIconSvg(103, false, 18)}
-                                        <span><b>${isZh ? 'SRT 暗红线 | (塔尼拉塔雅):' : (isEn ? 'SRT Dark Red Line | (Thani Ratthaya):' : 'SRT สายสีแดงเข้ม | (ธานีรัถยา):')}</b> ${isZh ? '曼谷阿披瓦中央车站 ↔ 兰实 (最高 20 泰铢)' : (isEn ? 'Krung Thep Aphiwat ↔ Rangsit (Max ฿20)' : 'กรุงเทพอภิวัฒน์ ↔ รังสิต (สูงสุด 20 บาท)')}</span>
-                                    </li>
-                                    <li style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-                                        ${getLineIconSvg(105, false, 18)}
-                                        <span><b>${isZh ? 'SRT 浅红线 | (那空威提):' : (isEn ? 'SRT Light Red Line | (Nakhon Withi):' : 'SRT สายสีแดงอ่อน | (นครวิถี):')}</b> ${isZh ? '曼谷阿披瓦中央车站 ↔ 达林参 (最高 20 泰铢)' : (isEn ? 'Krung Thep Aphiwat ↔ Taling Chan (Max ฿20)' : 'กรุงเทพอภิวัฒน์ ↔ ตลิ่งชัน (สูงสุด 20 บาท)')}</span>
-                                    </li>
-                                    <li style="display:flex;align-items:center;gap:8px">
-                                        <span style="display:inline-flex;align-items:center;gap:3px">${getLineIconSvg(102, false, 15)}⇄${getLineIconSvg(103, false, 15)}/${getLineIconSvg(105, false, 15)}</span>
-                                        <span><b>${isZh ? '紫线与红线换乘 (Purple ⇄ Red):' : (isEn ? 'Cross-line Transfer (Purple ⇄ Red):' : 'เชื่อมต่อข้ามสายสีม่วงและสายสีแดง:')}</b> ${isZh ? '两线合并最高不超 20 泰铢 (需在挽赐/曼颂站 30 分钟内换乘)' : (isEn ? 'Max ฿20 combined (transfer at Bang Sue / Bang Son within 30 mins)' : 'สูงสุดรวมไม่เกิน 20 บาท (แตะเปลี่ยนขบวนที่สถานีบางซื่อ/บางซ่อน ภายใน 30 นาที)')}</span>
-                                    </li>
-                                </ul>
+                                ${isZh ? '使用 <b>EMV Contactless</b> 信用卡/借记卡刷卡乘车，单程最高票价不超过 <b>20 泰铢</b>' : (isEn ? 'Passengers paying with <b>EMV Contactless</b> credit/debit cards pay a maximum fare of <b>฿20</b>' : 'ผู้โดยสารที่แตะจ่ายด้วยบัตรเครดิต/เดบิต <b>EMV Contactless</b> เดินทางด้วยค่าโดยสารสูงสุดไม่เกิน <b>20 บาท</b>')}
+                                <div style="margin:10px 0 4px 6px;display:flex;flex-direction:column;gap:10px;">
+                                    <div style="display:flex;flex-direction:column;gap:3px;">
+                                        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                                            ${getLineIconSvg(102, false, 18)}
+                                            ${formatLineTitleWithTag(isZh ? 'MRT 紫线 | (差隆拉差探)' : (isEn ? 'MRT Purple Line | (Chalong Ratchatham)' : 'MRT สายสีม่วง | (ฉลองรัชธรรม)'), '#8A2C9B', 'card')}
+                                        </div>
+                                        <div style="padding-left:26px;font-size:12px;color:var(--muted);line-height:1.4;">
+                                            ${isZh ? '空磅派 ↔ 岛本 (最高 20 泰铢)' : (isEn ? 'Khlong Bang Phai ↔ Tao Poon (Max ฿20)' : 'คลองบางไผ่ ↔ เตาปูน (สูงสุด 20 บาท)')}
+                                        </div>
+                                    </div>
+                                    <div style="display:flex;flex-direction:column;gap:3px;">
+                                        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                                            ${getLineIconSvg(103, false, 18)}
+                                            ${formatLineTitleWithTag(isZh ? 'SRT 暗红线 | (塔尼拉塔雅)' : (isEn ? 'SRT Dark Red Line | (Thani Ratthaya)' : 'SRT สายสีแดงเข้ม | (ธานีรัถยา)'), '#B91C1C', 'card')}
+                                        </div>
+                                        <div style="padding-left:26px;font-size:12px;color:var(--muted);line-height:1.4;">
+                                            ${isZh ? '曼谷阿披瓦中央车站 ↔ 兰实 (最高 20 泰铢)' : (isEn ? 'Krung Thep Aphiwat ↔ Rangsit (Max ฿20)' : 'กรุงเทพอภิวัฒน์ ↔ รังสิต (สูงสุด 20 บาท)')}
+                                        </div>
+                                    </div>
+                                    <div style="display:flex;flex-direction:column;gap:3px;">
+                                        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                                            ${getLineIconSvg(105, false, 18)}
+                                            ${formatLineTitleWithTag(isZh ? 'SRT 浅红线 | (那空威提)' : (isEn ? 'SRT Light Red Line | (Nakhon Withi)' : 'SRT สายสีแดงอ่อน | (นครวิถี)'), '#F87171', 'card')}
+                                        </div>
+                                        <div style="padding-left:26px;font-size:12px;color:var(--muted);line-height:1.4;">
+                                            ${isZh ? '曼谷阿披瓦中央车站 ↔ 达林参 (最高 20 泰铢)' : (isEn ? 'Krung Thep Aphiwat ↔ Taling Chan (Max ฿20)' : 'กรุงเทพอภิวัฒน์ ↔ ตลิ่งชัน (สูงสุด 20 บาท)')}
+                                        </div>
+                                    </div>
+                                    <div style="display:flex;flex-direction:column;gap:3px;">
+                                        <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                                            <span style="display:inline-flex;align-items:center;gap:3px;">${getLineIconSvg(102, false, 15)}⇄${getLineIconSvg(103, false, 15)}/${getLineIconSvg(105, false, 15)}</span>
+                                            <span class="line-card-main-name">${isZh ? '紫线与红线换乘 (Purple ⇄ Red)' : (isEn ? 'Cross-line Transfer (Purple ⇄ Red)' : 'เชื่อมต่อข้ามสายสีม่วงและสายสีแดง')}</span>
+                                        </div>
+                                        <div style="padding-left:26px;font-size:12px;color:var(--muted);line-height:1.4;">
+                                            ${isZh ? '两线合并最高不超 20 泰铢 (需在挽赐/曼颂站 30 分钟内换乘)' : (isEn ? 'Max ฿20 combined (transfer at Bang Sue / Bang Son within 30 mins)' : 'สูงสุดรวมไม่เกิน 20 บาท (แตะเปลี่ยนขบวนที่สถานีบางซื่อ/บางซ่อน ภายใน 30 นาที)')}
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 

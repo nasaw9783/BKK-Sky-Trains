@@ -12293,13 +12293,13 @@ setOriginFromActionSheet() {
                 : '🚶 ทางเชื่อมต่อระหว่างสถานีและทางเดินเท้าในระยะใกล้');
         }
 
-        // ปุ่ม "จุดเปลี่ยนสายรถไฟ" สำหรับสถานีเปลี่ยนสาย หรือสายแยก — แตะแล้วเปิดป็อบอัพการ์ด (OPTION 3)
+        // ปุ่ม "จุดเปลี่ยนสายรถไฟ" สำหรับสถานีเปลี่ยนสาย หรือสายแยก — แตะแล้วเปิดป็อบอัพการ์ด (OPTION 3: PURE MINIMAL)
         function connBadges(stationKey, ctxLineId) {
             const conns = (App.connections[stationKey] || [])
                 .filter(c => c.isBranch || c.lineId !== ctxLineId);
             if (!conns.length) return '';
             const lbl = lang === 'zh' ? '换乘车站' : (lang === 'en' ? 'Interchange' : 'จุดเปลี่ยนสายรถไฟ');
-            return ` <button type="button" class="btn-interchange-chip" onclick="event.stopPropagation();App.openInterchangeModal('${esc(stationKey)}', ${ctxLineId || 0});" title="${lang === 'zh' ? '查看全部换乘线路' : (lang === 'en' ? 'View connecting transit lines' : 'ดูสายสี/ไลน์เชื่อมต่อทั้งหมด')}"><svg class="ui-ic-interchange" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg> <span>${lbl}</span></button>`;
+            return ` <button type="button" class="btn-interchange-opt3" onclick="event.stopPropagation();App.openInterchangeModal('${esc(stationKey)}', ${ctxLineId || 0});" title="${lang === 'zh' ? '查看全部换乘线路' : (lang === 'en' ? 'View connecting transit lines' : 'ดูสายสี/ไลน์เชื่อมต่อทั้งหมด')}"><span>⇄ ${lbl}</span></button>`;
         }
 
         /* ================= JOURNEY (from → to) ================= */

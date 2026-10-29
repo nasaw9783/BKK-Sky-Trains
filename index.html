@@ -2177,6 +2177,9 @@
         .st-btn .names {
             flex: 1;
             min-width: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         .st-btn .names .th {
@@ -8882,7 +8885,13 @@
         }
 
         /* ===== INTERCHANGE BUTTON & POPUP CARD (OPTION 3: COMPACT QUICK-TRANSFER) ===== */
-        /* ปุ่มบนแถวสถานี สไตล์มินิมอล กะทัดรัด คล่องตัวสูง (Option 3) */
+        /* ปุ่มบนแถวสถานี สไตล์มินิมอล กะทัดรัด คล่องตัวสูง (Option 3 - Sub-row with Connecting Color Dots) */
+        .st-interchange-subrow {
+            display: flex;
+            align-items: center;
+            margin-top: 3.5px;
+            line-height: 1;
+        }
         .btn-interchange-opt3 {
             background: transparent;
             border: 1px dashed rgba(56, 189, 248, 0.6);
@@ -8905,6 +8914,20 @@
             user-select: none !important;
             caret-color: transparent !important;
             -webkit-tap-highlight-color: transparent;
+        }
+        .btn-interchange-dots {
+            display: inline-flex;
+            align-items: center;
+            gap: 3.5px;
+            margin-left: 2px;
+        }
+        .btn-interchange-dot {
+            width: 5.5px;
+            height: 5.5px;
+            border-radius: 50%;
+            display: inline-block;
+            flex-shrink: 0;
+            box-shadow: 0 0 2px rgba(0, 0, 0, 0.4);
         }
         .btn-interchange-opt3:hover, .btn-interchange-opt3:active {
             background: rgba(56, 189, 248, 0.15);
@@ -10361,7 +10384,7 @@
 
     <!-- Application Controller -->
     <script src="js/leaflet.js"></script>
-    <script src="js/app.js?v=20261029_02"></script>
+    <script src="js/app.js?v=20261029_03"></script>
 
     <!-- PWA: ลงทะเบียน service worker (เฉพาะเมื่อรันบน HTTP/HTTPS) -->
     <script>

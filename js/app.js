@@ -10272,6 +10272,7 @@ setOriginFromActionSheet() {
                     const arr = open ? this.arrivals[s.StationKey] : null;
                     // IsCrowded มีเฉพาะสายจาก StationList API — สาย MRT static ไม่มีฟิลด์นี้
                     const crowded = s.IsCrowded === true;
+                    const cb = connBadges(s.StationKey, s.StationLineId);
                     return `
                     <div class="st-row${crowded ? ' crowded' : ''}${isBranch ? ' branch-row' : ''}${isBrt ? ' brt-row' : ''}" id="row-${esc(s.StationKey)}-${s.StationLineId}">
                         <div class="st-rail">
@@ -10289,8 +10290,8 @@ setOriginFromActionSheet() {
                                             ${isSiam ? `<span class="badge inter-b">${T('fourPlat')}</span>` : ''}
                                             ${isTerminus ? `<span class="badge" style="background:var(--bg-subtle);color:var(--muted);border:1px solid var(--line);font-size:9.5px;font-weight:600;padding:2px 6px;border-radius:var(--radius-full);display:inline-flex;align-items:center;justify-content:center;line-height:1;box-sizing:border-box;letter-spacing:0;vertical-align:middle;">${lang === 'en' ? 'Terminus' : (lang === 'zh' ? '终点站' : 'ปลายทาง')}</span>` : ''}
                                             ${lmMatch ? `<span class="landmark-badge">📍 ใกล้ ${esc(lmMatch)}</span>` : ''}
-                                            ${connBadges(s.StationKey, s.StationLineId)}
                                         </div>
+                                        ${cb ? `<div class="st-interchange-subrow">${cb}</div>` : ''}
                                     </div>
                                     ${km != null ? `<span class="st-dist">${fmtDist(km)}</span>` : ''}
                                 </button>
@@ -12293,13 +12294,23 @@ setOriginFromActionSheet() {
                 : '🚶 ทางเชื่อมต่อระหว่างสถานีและทางเดินเท้าในระยะใกล้');
         }
 
-        // ปุ่ม "จุดเปลี่ยนสายรถไฟ" สำหรับสถานีเปลี่ยนสาย หรือสายแยก — แตะแล้วเปิดป็อบอัพการ์ด (OPTION 3: PURE MINIMAL)
+        // ปุ่ม "จุดเปลี่ยนสายรถไฟ" สำหรับสถานีเปลี่ยนสาย หรือสายแยก — แตะแล้วเปิดป็อบอัพการ์ด (OPTION 3: พร้อมจุดสีสายเชื่อมต่อ Sub-layout 3)
         function connBadges(stationKey, ctxLineId) {
             const conns = (App.connections[stationKey] || [])
                 .filter(c => c.isBranch || c.lineId !== ctxLineId);
             if (!conns.length) return '';
             const lbl = lang === 'zh' ? '换乘车站' : (lang === 'en' ? 'Interchange' : 'จุดเปลี่ยนสายรถไฟ');
-            return ` <button type="button" class="btn-interchange-opt3" onclick="event.stopPropagation();App.openInterchangeModal('${esc(stationKey)}', ${ctxLineId || 0});" title="${lang === 'zh' ? '查看全部换乘线路' : (lang === 'en' ? 'View connecting transit lines' : 'ดูสายสี/ไลน์เชื่อมต่อทั้งหมด')}"><span>⇄ ${lbl}</span></button>`;
+            const seenColors = new Set();
+            const dots = [];
+            for (const c of conns) {
+                const col = c.color || (typeof LINE_BRAND_COLORS !== 'undefined' && LINE_BRAND_COLORS[c.lineId]) || '#38bdf8';
+                if (!seenColors.has(col)) {
+                    seenColors.add(col);
+                    dots.push(`<span class="btn-interchange-dot" style="background:${col};"></span>`);
+                }
+            }
+            const dotsHtml = dots.length ? `<span class="btn-interchange-dots">${dots.join('')}</span>` : '';
+            return `<button type="button" class="btn-interchange-opt3" onclick="event.stopPropagation();App.openInterchangeModal('${esc(stationKey)}', ${ctxLineId || 0});" title="${lang === 'zh' ? '查看全部换乘线路' : (lang === 'en' ? 'View connecting transit lines' : 'ดูสายสี/ไลน์เชื่อมต่อทั้งหมด')}"><span>⇄ ${lbl}</span>${dotsHtml}</button>`;
         }
 
         /* ================= JOURNEY (from → to) ================= */

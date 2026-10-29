@@ -8904,6 +8904,8 @@
             align-self: flex-start;
         }
         .btn-interchange-opt3 {
+            white-space: nowrap;
+            flex-shrink: 0;
             background: transparent;
             border: 1px dashed rgba(56, 189, 248, 0.6);
             color: #38bdf8;
@@ -8965,32 +8967,7 @@
             border-color: #0284c7;
         }
 
-        /* จัดตำแหน่งแถวสถานีที่มีจุดเปลี่ยนสาย: ให้รหัสสถานีอยู่ข้างชื่อสถานีในบรรทัดเดียวกันเป๊ะ (Option 1: Line-1 Top Alignment) */
-        .st-row.has-interchange .st-rail,
-        .st-row:has(.st-interchange-subrow) .st-rail {
-            align-items: flex-start;
-            padding-top: 11.5px;
-        }
-        .st-row.has-interchange .st-row-head,
-        .st-row:has(.st-interchange-subrow) .st-row-head {
-            align-items: flex-start;
-        }
-        .st-row.has-interchange .st-btn,
-        .st-row:has(.st-interchange-subrow) .st-btn {
-            align-items: flex-start;
-            padding: 8px 6px 10px 6px;
-        }
-        .st-row.has-interchange .st-dist,
-        .st-row:has(.st-interchange-subrow) .st-dist {
-            align-self: flex-start;
-            margin-top: 1px;
-        }
-        .st-row.has-interchange .st-star-btn,
-        .st-row:has(.st-interchange-subrow) .st-star-btn {
-            align-self: flex-start;
-            margin-top: 5px;
-        }
-
+        /* ปุ่มจุดเปลี่ยนสายรถไฟอยู่ข้างชื่อสถานีในบรรทัดเดียวกัน (Inline Next to Name) */
         /* ป็อบอัพการ์ดกะทัดรัด Compact Quick-Transfer Modal (Option 2: Sleek Command Center) */
         .interchange-modal-overlay {
             position: fixed;
@@ -10491,7 +10468,7 @@
 
     <!-- Application Controller -->
     <script src="js/leaflet.js"></script>
-    <script src="js/app.js?v=20261029_09"></script>
+    <script src="js/app.js?v=20261029_10"></script>
 
     <!-- PWA: ลงทะเบียน service worker (เฉพาะเมื่อรันบน HTTP/HTTPS) -->
     <script>

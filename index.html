@@ -8917,19 +8917,27 @@
             caret-color: transparent !important;
             -webkit-tap-highlight-color: transparent;
         }
-        .btn-interchange-dots {
+        .btn-interchange-icons {
             display: inline-flex;
             align-items: center;
             gap: 3.5px;
-            margin-left: 2px;
+            margin-left: 3px;
         }
-        .btn-interchange-dot {
-            width: 5.5px;
-            height: 5.5px;
-            border-radius: 50%;
-            display: inline-block;
+        .btn-interchange-capsule {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1px 3.5px;
+            border-radius: 4px;
+            line-height: 1;
+            box-sizing: border-box;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
             flex-shrink: 0;
-            box-shadow: 0 0 2px rgba(0, 0, 0, 0.4);
+        }
+        .btn-interchange-capsule svg {
+            display: block;
+            margin: auto;
+            flex-shrink: 0;
         }
         .btn-interchange-opt3:hover, .btn-interchange-opt3:active {
             background: rgba(56, 189, 248, 0.15);
@@ -10386,7 +10394,7 @@
 
     <!-- Application Controller -->
     <script src="js/leaflet.js"></script>
-    <script src="js/app.js?v=20261029_04"></script>
+    <script src="js/app.js?v=20261029_05"></script>
 
     <!-- PWA: ลงทะเบียน service worker (เฉพาะเมื่อรันบน HTTP/HTTPS) -->
     <script>

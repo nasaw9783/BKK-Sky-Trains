@@ -12294,23 +12294,25 @@ setOriginFromActionSheet() {
                 : '🚶 ทางเชื่อมต่อระหว่างสถานีและทางเดินเท้าในระยะใกล้');
         }
 
-        // ปุ่ม "จุดเปลี่ยนสายรถไฟ" สำหรับสถานีเปลี่ยนสาย หรือสายแยก — แตะแล้วเปิดป็อบอัพการ์ด (OPTION 3: พร้อมจุดสีสายเชื่อมต่อ Sub-layout 3)
+        // ปุ่ม "จุดเปลี่ยนสายรถไฟ" สำหรับสถานีเปลี่ยนสาย หรือสายแยก — แตะแล้วเปิดป็อบอัพการ์ด (OPTION 1: พร้อมไอคอนรถไฟใน Mini Accent Capsule)
         function connBadges(stationKey, ctxLineId) {
             const conns = (App.connections[stationKey] || [])
                 .filter(c => c.isBranch || c.lineId !== ctxLineId);
             if (!conns.length) return '';
             const lbl = lang === 'zh' ? '换乘车站' : (lang === 'en' ? 'Interchange' : 'จุดเปลี่ยนสายรถไฟ');
-            const seenColors = new Set();
-            const dots = [];
+            const seenLines = new Set();
+            const icons = [];
             for (const c of conns) {
-                const col = c.color || (typeof LINE_BRAND_COLORS !== 'undefined' && LINE_BRAND_COLORS[c.lineId]) || '#38bdf8';
-                if (!seenColors.has(col)) {
-                    seenColors.add(col);
-                    dots.push(`<span class="btn-interchange-dot" style="background:${col};"></span>`);
+                const lineId = c.lineId;
+                if (!seenLines.has(lineId)) {
+                    seenLines.add(lineId);
+                    const col = c.color || (typeof LINE_BRAND_COLORS !== 'undefined' && LINE_BRAND_COLORS[lineId]) || '#38bdf8';
+                    const iconSvg = typeof getLineIconSvg === 'function' ? getLineIconSvg(lineId, col, 14) : '';
+                    icons.push(`<span class="btn-interchange-capsule" style="background:${col}26;border:1px solid ${col}55;">${iconSvg}</span>`);
                 }
             }
-            const dotsHtml = dots.length ? `<span class="btn-interchange-dots">${dots.join('')}</span>` : '';
-            return `<button type="button" class="btn-interchange-opt3" onclick="event.stopPropagation();App.openInterchangeModal('${esc(stationKey)}', ${ctxLineId || 0});" title="${lang === 'zh' ? '查看全部换乘线路' : (lang === 'en' ? 'View connecting transit lines' : 'ดูสายสี/ไลน์เชื่อมต่อทั้งหมด')}"><span>⇄ ${lbl}</span>${dotsHtml}</button>`;
+            const iconsHtml = icons.length ? `<span class="btn-interchange-icons">${icons.join('')}</span>` : '';
+            return `<button type="button" class="btn-interchange-opt3" onclick="event.stopPropagation();App.openInterchangeModal('${esc(stationKey)}', ${ctxLineId || 0});" title="${lang === 'zh' ? '查看全部换乘线路' : (lang === 'en' ? 'View connecting transit lines' : 'ดูสายสี/ไลน์เชื่อมต่อทั้งหมด')}"><span>⇄ ${lbl}</span>${iconsHtml}</button>`;
         }
 
         /* ================= JOURNEY (from → to) ================= */

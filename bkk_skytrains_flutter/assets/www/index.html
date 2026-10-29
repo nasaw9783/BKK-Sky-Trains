@@ -8956,14 +8956,14 @@
             border-color: #0284c7;
         }
 
-        /* ป็อบอัพการ์ดกะทัดรัด Compact Quick-Transfer Modal (Option 3) */
+        /* ป็อบอัพการ์ดกะทัดรัด Compact Quick-Transfer Modal (Option 2: Sleek Command Center) */
         .interchange-modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.72);
+            background: rgba(0, 0, 0, 0.75);
             backdrop-filter: blur(8px);
             -webkit-backdrop-filter: blur(8px);
             display: none;
@@ -8981,8 +8981,8 @@
             to { opacity: 1; }
         }
         .interchange-modal-card {
-            background: linear-gradient(145deg, #0d1627, #070d18);
-            border: 1px solid rgba(56, 189, 248, 0.35);
+            background: #0b121f;
+            border: 1px solid #1e3a5f;
             border-radius: 16px;
             width: 100%;
             max-width: 420px;
@@ -8992,28 +8992,38 @@
             max-height: 90vh;
             overflow-y: auto;
             animation: popModalCard 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            user-select: none !important;
+            caret-color: transparent !important;
         }
         @keyframes popModalCard {
             from { transform: scale(0.92) translateY(10px); opacity: 0; }
             to { transform: scale(1) translateY(0); opacity: 1; }
         }
         html:not(.dark) .interchange-modal-card {
-            background: linear-gradient(145deg, #ffffff, #f8fafc);
+            background: #ffffff;
             border-color: rgba(2, 132, 199, 0.3);
             box-shadow: 0 20px 35px rgba(0, 0, 0, 0.18);
         }
         .interchange-modal-head {
             display: flex;
-            align-items: flex-start;
+            align-items: center;
             justify-content: space-between;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
             padding-bottom: 10px;
-            border-bottom: 1px solid var(--line, rgba(255, 255, 255, 0.1));
+            border-bottom: 1px solid #1e3a5f;
+        }
+        html:not(.dark) .interchange-modal-head {
+            border-bottom-color: #e2e8f0;
         }
         .interchange-head-left {
             display: flex;
             align-items: center;
             gap: 10px;
+        }
+        .interchange-head-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
         .interchange-station-badge {
             font-family: inherit;
@@ -9031,20 +9041,42 @@
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
         }
         .interchange-head-titles h3 {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 800;
-            color: var(--ink, #f8fafc);
+            color: #ffffff;
             line-height: 1.2;
             margin: 0;
         }
+        html:not(.dark) .interchange-head-titles h3 {
+            color: #0f172a;
+        }
         .interchange-head-titles span {
-            font-size: 11px;
-            color: var(--muted, #94a3b8);
+            font-size: 10.5px;
+            color: #94a3b8;
             font-weight: 500;
+        }
+        html:not(.dark) .interchange-head-titles span {
+            color: #64748b;
+        }
+        .opt2-status-pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            color: #38bdf8;
+            background: rgba(56, 189, 248, 0.12);
+            padding: 3px 7px;
+            border-radius: 4px;
+            line-height: 1;
+            box-sizing: border-box;
+            white-space: nowrap;
         }
         .interchange-modal-close {
             background: rgba(255, 255, 255, 0.08);
-            border: 1px solid var(--line, rgba(255, 255, 255, 0.15));
+            border: 1px solid rgba(255, 255, 255, 0.15);
             color: var(--muted, #94a3b8);
             width: 28px;
             height: 28px;
@@ -9056,6 +9088,12 @@
             font-size: 13px;
             line-height: 1;
             transition: all 0.2s ease;
+            box-sizing: border-box;
+        }
+        html:not(.dark) .interchange-modal-close {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+            color: #64748b;
         }
         .interchange-modal-close:hover {
             background: rgba(244, 63, 94, 0.15);
@@ -9063,18 +9101,20 @@
             border-color: rgba(244, 63, 94, 0.3);
         }
         .interchange-cur-capsule-compact {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--line, rgba(255, 255, 255, 0.1));
-            border-radius: 10px;
-            padding: 6px 10px;
+            background: #0d1c31;
+            border: 1px solid #1e3a5f;
+            border-radius: 8px;
+            padding: 7px 10px;
             margin-bottom: 12px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             font-size: 11px;
+            box-sizing: border-box;
         }
         html:not(.dark) .interchange-cur-capsule-compact {
             background: #f1f5f9;
+            border-color: #cbd5e1;
         }
         .interchange-cur-info {
             display: flex;
@@ -9082,29 +9122,41 @@
             gap: 6px;
         }
         .interchange-cur-pill {
-            font-size: 10px;
+            font-size: 11px;
             font-weight: 800;
             color: #ffffff;
-            padding: 2px 7px;
-            border-radius: 5px;
+            line-height: 1;
+        }
+        .opt2-current-tag {
+            color: #38bdf8;
+            font-weight: 800;
+            font-size: 10px;
+            letter-spacing: 0.5px;
+            display: inline-flex;
+            align-items: center;
             line-height: 1;
         }
         .interchange-connect-card {
-            background: var(--bg-card, #152238);
-            border: 1px solid var(--line, rgba(255, 255, 255, 0.1));
-            border-left: 4px solid var(--line, rgba(255, 255, 255, 0.1));
-            border-radius: 10px;
-            padding: 10px 12px;
+            background: #111e33;
+            border: 1px dashed rgba(56, 189, 248, 0.4);
+            border-radius: 12px;
+            padding: 12px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            margin-bottom: 8px;
+            gap: 8px;
+            margin-bottom: 10px;
             transition: all 0.2s ease;
             box-sizing: border-box;
         }
+        html:not(.dark) .interchange-connect-card {
+            background: #ffffff;
+            border: 1px dashed rgba(2, 132, 199, 0.4);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
         .interchange-connect-card:hover {
             transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+            border-color: var(--card-accent, #38bdf8);
         }
         .interchange-card-top {
             display: flex;
@@ -9117,20 +9169,29 @@
             gap: 8px;
         }
         .interchange-icon-box {
-            width: 24px;
-            height: 24px;
+            width: 26px;
+            height: 26px;
             border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
             line-height: 1;
+            box-sizing: border-box;
+        }
+        .interchange-icon-box svg {
+            display: block;
+            margin: auto;
+            flex-shrink: 0;
         }
         .interchange-name-bold {
-            font-size: 12.5px;
+            font-size: 13.5px;
             font-weight: 800;
-            color: var(--ink, #f8fafc);
+            color: #ffffff;
             line-height: 1.2;
+        }
+        html:not(.dark) .interchange-name-bold {
+            color: #0f172a;
         }
         .interchange-operator-sub {
             font-size: 10px;
@@ -9138,69 +9199,94 @@
         }
         .interchange-st-code {
             font-family: inherit;
-            font-size: 10px;
+            font-size: 11px;
             font-weight: 800;
             color: #ffffff;
-            padding: 2px 6px;
+            padding: 2px 8px;
             border-radius: 5px;
             line-height: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            letter-spacing: 0;
         }
         .interchange-walk-info {
-            font-size: 10.5px;
-            color: var(--muted, #94a3b8);
-            background: rgba(0, 0, 0, 0.2);
-            padding: 4px 8px;
+            font-size: 11px;
+            color: #94a3b8;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 6px 10px;
             border-radius: 6px;
-            line-height: 1.35;
+            line-height: 1.4;
+            box-sizing: border-box;
         }
         html:not(.dark) .interchange-walk-info {
             background: #f1f5f9;
+            color: #475569;
         }
         .interchange-jump-btn {
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: #ffffff;
-            border: none;
+            background: transparent;
+            border: 1.5px solid var(--card-accent, #38bdf8);
+            color: var(--card-accent, #38bdf8);
             font-family: inherit;
-            font-size: 11px;
-            font-weight: 700;
-            padding: 6px 12px;
-            border-radius: 7px;
+            font-size: 11.5px;
+            font-weight: 800;
+            padding: 7px 14px;
+            border-radius: 8px;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
+            width: 100%;
             transition: all 0.2s ease;
-            box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);
-            margin-top: 2px;
+            box-sizing: border-box;
+            line-height: 1;
         }
         .interchange-jump-btn:hover {
-            transform: scale(1.02);
-            box-shadow: 0 4px 10px rgba(16, 185, 129, 0.4);
+            background: var(--card-accent, #38bdf8);
+            color: #ffffff;
+            box-shadow: 0 0 14px var(--card-accent, #38bdf8);
         }
         .interchange-modal-foot {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding-top: 8px;
-            border-top: 1px solid var(--line, rgba(255, 255, 255, 0.1));
-            font-size: 10.5px;
-            color: var(--muted, #94a3b8);
+            padding-top: 10px;
+            border-top: 1px solid #1e3a5f;
+            font-size: 11px;
+            color: #64748b;
+        }
+        html:not(.dark) .interchange-modal-foot {
+            border-top-color: #e2e8f0;
+            color: #64748b;
         }
         .interchange-foot-dismiss-btn {
-            background: var(--bg-card, #152238);
-            border: 1px solid var(--line, rgba(255, 255, 255, 0.15));
-            color: var(--ink, #f8fafc);
+            background: #111e33;
+            border: 1px solid #1e3a5f;
+            color: #94a3b8;
             font-family: inherit;
             font-size: 11px;
             font-weight: 700;
-            padding: 4px 12px;
+            padding: 5px 14px;
             border-radius: 7px;
             cursor: pointer;
             transition: all 0.2s ease;
+            box-sizing: border-box;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+        html:not(.dark) .interchange-foot-dismiss-btn {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+            color: #334155;
         }
         .interchange-foot-dismiss-btn:hover {
-            background: var(--line, rgba(255, 255, 255, 0.2));
+            color: #ffffff;
+            border-color: #38bdf8;
+            background: rgba(56, 189, 248, 0.15);
         }
     </style>
     <script>
@@ -10346,7 +10432,7 @@
         </div>
     </div>
 
-    <!-- ===== Interchange Hub Modal Dialog (Option 3: Compact Quick-Transfer Flyout) ===== -->
+    <!-- ===== Interchange Hub Modal Dialog (Option 2: Sleek Command Center) ===== -->
     <div id="interchangeModal" class="interchange-modal-overlay" onclick="if(event.target===this) App.closeInterchangeModal();" role="dialog" aria-modal="true" style="display:none;">
         <div class="interchange-modal-card">
             <!-- Modal Header -->
@@ -10358,20 +10444,23 @@
                         <span id="interchangeStationSub">จุดเปลี่ยนสายรถไฟ</span>
                     </div>
                 </div>
-                <button type="button" class="interchange-modal-close" onclick="App.closeInterchangeModal();" aria-label="ปิด">✕</button>
+                <div class="interchange-head-right">
+                    <span class="opt2-status-pill">● ACTIVE INTERCHANGE</span>
+                    <button type="button" class="interchange-modal-close" onclick="App.closeInterchangeModal();" aria-label="ปิด">✕</button>
+                </div>
             </div>
 
-            <!-- Current Line Single Row (Compact) -->
+            <!-- Current Line Single Row (Compact Command Bar) -->
             <div class="interchange-cur-capsule-compact">
                 <div class="interchange-cur-info">
-                    <span style="color:var(--muted);">ชานชาลาปัจจุบัน:</span>
+                    <span style="color:var(--muted,#94a3b8);">สายปัจจุบัน:</span>
                     <span class="interchange-cur-pill" id="interchangeCurPill">MRT สายสีน้ำเงิน</span>
                 </div>
-                <span style="color:#38bdf8;font-weight:700;font-size:10px;">สถานีนี้</span>
+                <span class="opt2-current-tag">CURRENT HUB</span>
             </div>
 
             <!-- Section Title -->
-            <div style="font-size:11px;font-weight:700;color:var(--muted);margin-bottom:6px;display:flex;align-items:center;gap:4px;">
+            <div style="font-size:11px;font-weight:700;color:var(--muted,#94a3b8);margin-bottom:8px;display:flex;align-items:center;gap:4px;">
                 <span>สายสี / ไลน์ ที่เชื่อมต่อทั้งหมด:</span>
             </div>
 
@@ -10394,7 +10483,7 @@
 
     <!-- Application Controller -->
     <script src="js/leaflet.js"></script>
-    <script src="js/app.js?v=20261029_05"></script>
+    <script src="js/app.js?v=20261029_06"></script>
 
     <!-- PWA: ลงทะเบียน service worker (เฉพาะเมื่อรันบน HTTP/HTTPS) -->
     <script>

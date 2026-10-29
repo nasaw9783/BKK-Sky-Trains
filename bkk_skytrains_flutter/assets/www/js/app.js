@@ -10468,7 +10468,7 @@ setOriginFromActionSheet() {
                 `;
             },
 
-            /* ---------- INTERCHANGE HUB MODAL (OPTION 3) ---------- */
+            /* ---------- INTERCHANGE HUB MODAL (OPTION 2: Sleek Command Center) ---------- */
             openInterchangeModal(stationKey, ctxLineId) {
                 const modal = document.getElementById('interchangeModal');
                 if (!modal) return;
@@ -10496,29 +10496,15 @@ setOriginFromActionSheet() {
                     subEl.textContent = `${enName} Station — ${lang === 'zh' ? '换乘枢纽' : (lang === 'en' ? 'Transit Interchange' : 'จุดเปลี่ยนสายรถไฟ')}`;
                 }
 
-                // Summary banner
-                const summaryText = document.getElementById('interchangeSummaryText');
-                if (summaryText) {
-                    const totalLines = 1 + connections.length;
-                    summaryText.textContent = lang === 'zh'
-                        ? `共 ${totalLines} 条轨道交通线路在此交汇 (Interchange Hub)`
-                        : (lang === 'en'
-                            ? `Interchange connecting ${totalLines} transit lines (Interchange Hub)`
-                            : `จุดเชื่อมต่อโครงข่ายรถไฟฟ้า ${connections.length} สายทาง (Interchange Hub)`);
-                }
-
-                // Current line capsule
+                // Current line command bar
                 const curPill = document.getElementById('interchangeCurPill');
                 if (curPill && curLine) {
-                    curPill.textContent = lang === 'zh' ? (LINE_NAMES_ZH[curLine.LineId] || curLine.LineName_EN) : (lang === 'en' ? curLine.LineName_EN : curLine.LineName_TH);
-                    curPill.style.background = curLine.LineColor;
-                }
-                const curName = document.getElementById('interchangeCurName');
-                if (curName) {
-                    curName.textContent = lang === 'zh' ? '当前浏览车站' : (lang === 'en' ? 'Current Station' : 'สถานีที่กำลังเปิดดู');
+                    const curLineName = lang === 'zh' ? (LINE_NAMES_ZH[curLine.LineId] || curLine.LineName_EN) : (lang === 'en' ? curLine.LineName_EN : curLine.LineName_TH);
+                    curPill.textContent = curLineName;
+                    curPill.style.color = curLine.LineColor;
                 }
 
-                // Connecting lines list
+                // Connecting lines list (Option 2: Sleek Command Center)
                 const listEl = document.getElementById('interchangeConnectingList');
                 if (listEl) {
                     listEl.innerHTML = connections.map(c => {
@@ -10530,11 +10516,11 @@ setOriginFromActionSheet() {
                         const walkText = getInterchangeTransferDetail(stationKey, c.key, c.lineId);
 
                         return `
-                            <div class="interchange-connect-card" style="border-left-color:${c.color};">
+                            <div class="interchange-connect-card" style="--card-accent:${c.color};">
                                 <div class="interchange-card-top">
                                     <div class="interchange-line-identity">
-                                        <div class="interchange-icon-box" style="background:${c.color}20;">
-                                            ${getLineIconSvg(c.lineId, false, 16)}
+                                        <div class="interchange-icon-box" style="background:${c.color}25;">
+                                            ${getLineIconSvg(c.lineId, c.color, 16)}
                                         </div>
                                         <div>
                                             <div class="interchange-name-bold">${esc(lineName)}</div>
@@ -10544,15 +10530,15 @@ setOriginFromActionSheet() {
                                     <span class="interchange-st-code" style="background:${c.color};">${esc(c.key)}</span>
                                 </div>
 
-                                ${connStName && connStName !== stName(s) ? `<div style="font-size:11.5px;color:var(--ink);font-weight:600;margin-top:2px;">สถานีเชื่อมต่อ: <span style="color:${c.color}">${esc(connStName)} (${esc(c.key)})</span></div>` : ''}
+                                ${connStName && connStName !== stName(s) ? `<div style="font-size:11.5px;color:var(--ink,#f8fafc);font-weight:600;margin-top:2px;">สถานีเชื่อมต่อ: <span style="color:${c.color}">${esc(connStName)} (${esc(c.key)})</span></div>` : ''}
 
                                 <div class="interchange-walk-info">
                                     ${walkText}
                                 </div>
 
-                                <button type="button" class="interchange-jump-btn" onclick="App.jumpTo('${esc(c.key)}', ${c.lineId}); App.closeInterchangeModal();">
-                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
-                                    <span>${lang === 'zh' ? `立即前往 ${lineName}` : (lang === 'en' ? `Jump to ${lineName}` : `สลับไปยัง ${lineName} ทันที`)}</span>
+                                <button type="button" class="interchange-jump-btn" style="--card-accent:${c.color};" onclick="App.jumpTo('${esc(c.key)}', ${c.lineId}); App.closeInterchangeModal();">
+                                    <span style="font-size:13px;display:inline-flex;align-items:center;justify-content:center;">⇄</span>
+                                    <span>${lang === 'zh' ? `立即前往 ${lineName}` : (lang === 'en' ? `Switch to ${lineName}` : `สลับไปยัง ${lineName} ทันที`)}</span>
                                 </button>
                             </div>
                         `;

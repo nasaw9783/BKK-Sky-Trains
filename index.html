@@ -2100,6 +2100,21 @@
             animation: pulseRing 1.8s infinite;
         }
 
+        /* Active Glow Node (ตัวเลือกที่ 2) เมื่อเปิดการ์ดข้อมูลสถานี */
+        .st-row.is-open .st-rail .node,
+        .st-rail .node.node-glow {
+            border-color: #0284c7 !important;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.35), 0 0 10px rgba(2, 132, 199, 0.5) !important;
+            transform: scale(1.15);
+        }
+
+        html.dark .st-row.is-open .st-rail .node,
+        html.dark .st-rail .node.node-glow {
+            border-color: #38bdf8 !important;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.4), 0 0 12px #38bdf8 !important;
+            transform: scale(1.15);
+        }
+
         .st-row.branch-row {
             background: rgba(215, 104, 134, 0.035);
             border-radius: var(--radius-md);
@@ -10575,7 +10590,7 @@
 
     <!-- Application Controller -->
     <script src="js/leaflet.js"></script>
-    <script src="js/app.js?v=20261030_03"></script>
+    <script src="js/app.js?v=20261030_04"></script>
 
     <!-- PWA: ลงทะเบียน service worker (เฉพาะเมื่อรันบน HTTP/HTTPS) -->
     <script>

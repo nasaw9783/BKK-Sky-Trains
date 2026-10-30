@@ -12364,7 +12364,7 @@ setOriginFromActionSheet() {
                 }
             }
             const iconsHtml = icons.length ? `<span class="btn-interchange-icons">${icons.join('')}</span>` : '';
-            return `<button type="button" class="btn-interchange-opt3" onclick="event.stopPropagation();App.openInterchangeModal('${esc(stationKey)}', ${ctxLineId || 0});" title="${lang === 'zh' ? '查看全部换乘线路' : (lang === 'en' ? 'View connecting transit lines' : 'ดูสายสี/ไลน์เชื่อมต่อทั้งหมด')}"><span>⇄ ${lbl}</span>${iconsHtml}</button>`;
+            return `<button type="button" class="btn-interchange-opt3" onclick="event.stopPropagation();App.openInterchangeModal('${esc(stationKey)}', ${ctxLineId || 0});" title="${lang === 'zh' ? '查看全部换乘线路' : (lang === 'en' ? 'View connecting transit lines' : 'ดูสายสี/ไลน์เชื่อมต่อทั้งหมด')}"><span class="btn-interchange-lbl">⇄ ${lbl}</span>${iconsHtml}</button>`;
         }
 
         /* ================= JOURNEY (from → to) ================= */

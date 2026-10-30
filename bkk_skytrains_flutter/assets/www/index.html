@@ -2197,8 +2197,13 @@
             color: var(--ink);
             display: flex;
             align-items: center;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
             gap: 6px;
+            white-space: nowrap;
+        }
+        .st-name-text {
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .st-dist {
@@ -2542,6 +2547,93 @@
             white-space: nowrap;
             flex: 0 0 auto;
             line-height: 1;
+        }
+
+        /* Mobile & Flutter App: แถวสถานีและจุดเปลี่ยนสายรถไฟอยู่บรรทัดเดียวกัน 100% สม่ำเสมอเท่ากันทุกสถานี */
+        @media (max-width: 480px) {
+            .st-rail {
+                width: 34px;
+            }
+            .st-btn {
+                gap: 6px;
+                padding: 6px 4px;
+            }
+            .st-key {
+                min-width: 36px;
+                font-size: 10px;
+                padding: 2.5px 5px;
+            }
+            .st-btn .names .th {
+                font-size: 13.5px;
+                gap: 5px;
+                flex-wrap: nowrap !important;
+                white-space: nowrap !important;
+            }
+            .btn-interchange-opt3 {
+                font-size: 9px;
+                padding: 1.5px 5.5px;
+                gap: 3px;
+                flex-shrink: 0;
+                white-space: nowrap;
+            }
+            .btn-interchange-capsule {
+                padding: 1px 2px;
+            }
+            .btn-interchange-capsule svg {
+                width: 12px;
+                height: 12px;
+            }
+            .st-dist {
+                font-size: 10.5px;
+                padding: 1.5px 5.5px;
+            }
+            .st-star-btn {
+                width: 28px;
+                height: 28px;
+                font-size: 14px;
+            }
+        }
+
+        html.is-flutter-app .st-rail {
+            width: 34px;
+        }
+        html.is-flutter-app .st-btn {
+            gap: 6px;
+            padding: 6px 4px;
+        }
+        html.is-flutter-app .st-key {
+            min-width: 36px;
+            font-size: 10px;
+            padding: 2.5px 5px;
+        }
+        html.is-flutter-app .st-btn .names .th {
+            font-size: 13.5px;
+            gap: 5px;
+            flex-wrap: nowrap !important;
+            white-space: nowrap !important;
+        }
+        html.is-flutter-app .btn-interchange-opt3 {
+            font-size: 9px;
+            padding: 1.5px 5px;
+            gap: 3px;
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+        html.is-flutter-app .btn-interchange-capsule {
+            padding: 1px 2px;
+        }
+        html.is-flutter-app .btn-interchange-capsule svg {
+            width: 12px;
+            height: 12px;
+        }
+        html.is-flutter-app .st-dist {
+            font-size: 10.5px;
+            padding: 1.5px 5.5px;
+        }
+        html.is-flutter-app .st-star-btn {
+            width: 28px;
+            height: 28px;
+            font-size: 14px;
         }
 
         /* ===== Modern Frequency Table Container ===== */
@@ -10487,7 +10579,7 @@
 
     <!-- Application Controller -->
     <script src="js/leaflet.js"></script>
-    <script src="js/app.js?v=20261029_12"></script>
+    <script src="js/app.js?v=20261030_01"></script>
 
     <!-- PWA: ลงทะเบียน service worker (เฉพาะเมื่อรันบน HTTP/HTTPS) -->
     <script>

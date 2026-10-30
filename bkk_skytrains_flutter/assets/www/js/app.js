@@ -821,8 +821,7 @@ gQIDAQAB
                 notFound: q => `ไม่พบสถานี “${q}”`,
                 nearYou: 'ใกล้คุณ',
                 crowded: 'หนาแน่น',
-                interchange: 'เปลี่ยนสาย · 4 ชานชาลา',
-                fourPlat: '4 ชานชาลา',
+                interchange: 'เปลี่ยนสาย',
                 line: n => `สาย${n}`,
                 connLine: n => `⇄ สาย${n}`,
                 connTitle: k => `เชื่อมต่อสถานี ${k}`,
@@ -1161,8 +1160,7 @@ gQIDAQAB
                 notFound: q => `No station found for “${q}”`,
                 nearYou: 'Nearest',
                 crowded: 'Crowded',
-                interchange: 'Interchange · 4 platforms',
-                fourPlat: '4 platforms',
+                interchange: 'Interchange',
                 line: n => `${n} Line`,
                 connLine: n => `⇄ ${n} Line`,
                 connTitle: k => `Connects to ${k}`,
@@ -1501,8 +1499,7 @@ gQIDAQAB
                 notFound: q => `未找到车站 “${q}”`,
                 nearYou: '附近',
                 crowded: '拥挤',
-                interchange: '换乘站 · 4 侧站台',
-                fourPlat: '4 侧站台',
+                interchange: '换乘站',
                 line: n => `${n}线`,
                 connLine: n => `⇄ ${n}线`,
                 connTitle: k => `连接至 ${k}`,
@@ -10105,7 +10102,7 @@ setOriginFromActionSheet() {
                         <div class="names">
                             <div class="th">${esc(stName(s))}${crowded ? ` <span class="badge crowd-b">${T('crowded')}</span>` : ''}</div>
                             ${(s.StationKey === SIAM_KEY || (App.connections[s.StationKey] || []).length)
-                        ? `<div class="en">${s.StationKey === SIAM_KEY ? `<span class="badge inter-b">${T('interchange')}</span>` : ''}${connBadges(s.StationKey, s.StationLineId)}</div>` : ''}
+                        ? `<div class="en">${connBadges(s.StationKey, s.StationLineId)}</div>` : ''}
                         </div>
                         ${distChip}
                     </div>
@@ -10354,7 +10351,6 @@ setOriginFromActionSheet() {
                                             ${cb || ''}
                                             ${crowded ? `<span class="badge crowd-b">${T('crowded')}</span>` : ''}
                                             ${isNear ? `<span class="badge near-b">${T('nearYou')}</span>` : ''}
-                                            ${isSiam ? `<span class="badge inter-b">${T('fourPlat')}</span>` : ''}
                                             ${isTerminus ? `<span class="badge" style="background:var(--bg-subtle);color:var(--muted);border:1px solid var(--line);font-size:9.5px;font-weight:600;padding:2px 6px;border-radius:var(--radius-full);display:inline-flex;align-items:center;justify-content:center;line-height:1;box-sizing:border-box;letter-spacing:0;vertical-align:middle;">${lang === 'en' ? 'Terminus' : (lang === 'zh' ? '终点站' : 'ปลายทาง')}</span>` : ''}
                                             ${lmMatch ? `<span class="landmark-badge">📍 ใกล้ ${esc(lmMatch)}</span>` : ''}
                                         </div>

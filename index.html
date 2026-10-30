@@ -204,115 +204,192 @@
             color-scheme: dark;
         }
 
-        /* ===== Clear Glass Theme Palette & Sub-Styles (โหมดโปร่งใส/เคลียร์) ===== */
+        /* ===== True Clear Glass Theme Palette & Full-Glassmorphism (โหมดโปร่งใส/เคลียร์) ===== */
         html.theme-clear {
             --bg: #060b14;
-            --bg-subtle: #0c1424;
+            --bg-subtle: rgba(255, 255, 255, 0.05);
+            --card: rgba(15, 23, 42, 0.58);
+            --card-hover: rgba(30, 41, 59, 0.7);
+            --glass-bg: rgba(15, 23, 42, 0.6);
+            --glass-border: rgba(255, 255, 255, 0.15);
             --ink: #f8fafc;
             --ink-secondary: #cbd5e1;
             --muted: #94a3b8;
             --faint: #64748b;
-            --dock-bg: rgba(15, 23, 42, 0.78);
-            --dock-border: rgba(255, 255, 255, 0.15);
+            --line: rgba(255, 255, 255, 0.12);
+            --line-subtle: rgba(255, 255, 255, 0.06);
+            --dock-bg: rgba(15, 23, 42, 0.65);
+            --dock-border: rgba(255, 255, 255, 0.16);
             color-scheme: dark;
         }
 
-        html.theme-clear body {
-            background-color: #060b14;
-            background-image: 
-                radial-gradient(circle at 10% 15%, rgba(14, 165, 233, 0.14) 0%, transparent 45%),
-                radial-gradient(circle at 90% 85%, rgba(16, 185, 129, 0.12) 0%, transparent 45%),
-                radial-gradient(circle at 50% 50%, rgba(245, 158, 11, 0.07) 0%, transparent 50%);
-            background-attachment: fixed;
+        /* Ambient Glass Orbs (Active only in theme-clear) */
+        .ambient-glass-orb {
+            display: none;
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(95px);
+            opacity: 0.55;
+            pointer-events: none;
+            z-index: 0;
+            transition: all 0.5s ease;
+        }
+
+        html.theme-clear .ambient-glass-orb {
+            display: block;
+        }
+
+        .ambient-glass-orb.orb-1 {
+            width: 420px;
+            height: 420px;
+            background: radial-gradient(circle, rgba(14, 165, 233, 0.8) 0%, rgba(14, 165, 233, 0) 70%);
+            top: -50px;
+            left: -100px;
+        }
+
+        .ambient-glass-orb.orb-2 {
+            width: 450px;
+            height: 450px;
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.7) 0%, rgba(16, 185, 129, 0) 70%);
+            bottom: 80px;
+            right: -120px;
+        }
+
+        .ambient-glass-orb.orb-3 {
+            width: 350px;
+            height: 350px;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.5) 0%, rgba(245, 158, 11, 0) 70%);
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Sub-style 2: Aurora Mesh Glass */
+        html.theme-clear.glass-aurora .ambient-glass-orb {
+            opacity: 0.7;
+            filter: blur(80px);
+        }
+        html.theme-clear.glass-aurora .ambient-glass-orb.orb-1 {
+            background: radial-gradient(circle, rgba(56, 189, 248, 0.85) 0%, transparent 70%);
+        }
+        html.theme-clear.glass-aurora .ambient-glass-orb.orb-2 {
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.75) 0%, transparent 70%);
+        }
+        html.theme-clear.glass-aurora .ambient-glass-orb.orb-3 {
+            background: radial-gradient(circle, rgba(16, 185, 129, 0.6) 0%, transparent 70%);
+        }
+
+        /* Sub-style 3: Minimal Clear */
+        html.theme-clear.glass-minimal .ambient-glass-orb {
+            opacity: 0.35;
+            filter: blur(110px);
+        }
+
+        /* Override Body & Header in Clear Mode */
+        html.theme-clear body,
+        html.dark.theme-clear body {
+            background-color: #060b14 !important;
+            background-image: none !important;
+        }
+
+        html.theme-clear body::before {
+            background: transparent !important;
+        }
+
+        html.theme-clear header.app {
+            background: rgba(10, 16, 29, 0.65) !important;
+            backdrop-filter: blur(24px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12) !important;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35) !important;
+        }
+
+        html.theme-clear nav.dock {
+            background: rgba(15, 23, 42, 0.65) !important;
+            backdrop-filter: blur(24px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.16) !important;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6) !important;
+        }
+
+        html.theme-clear .search-box {
+            background: rgba(15, 23, 42, 0.55) !important;
+            backdrop-filter: blur(16px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.14) !important;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25) !important;
+        }
+
+        html.theme-clear .plat {
+            background: rgba(255, 255, 255, 0.04) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            backdrop-filter: blur(12px) !important;
+            -webkit-backdrop-filter: blur(12px) !important;
+        }
+
+        html.theme-clear .train {
+            background: rgba(0, 0, 0, 0.3) !important;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+            backdrop-filter: blur(8px) !important;
+            -webkit-backdrop-filter: blur(8px) !important;
+        }
+
+        html.theme-clear .st-row:hover {
+            background: rgba(255, 255, 255, 0.04) !important;
         }
 
         /* 1. Frosted Glass (สไตล์ที่ 1: กระจกฝ้าหรูหรา - ค่าเริ่มต้น) */
-        html.theme-clear.glass-frosted {
-            --card: rgba(15, 23, 42, 0.62);
-            --card-hover: rgba(30, 41, 59, 0.72);
-            --glass-bg: rgba(15, 23, 42, 0.65);
-            --glass-border: rgba(255, 255, 255, 0.14);
-            --line: rgba(255, 255, 255, 0.1);
-            --line-subtle: rgba(255, 255, 255, 0.06);
-        }
         html.theme-clear.glass-frosted .card,
         html.theme-clear.glass-frosted .settings-card,
-        html.theme-clear.glass-frosted .nearby-station-card,
-        html.theme-clear.glass-frosted .traffic-info-card,
-        html.theme-clear.glass-frosted .action-sheet,
+        html.theme-clear.glass-frosted .quick-planner-banner,
+        html.theme-clear.glass-frosted .disruption-alert-banner,
+        html.theme-clear.glass-frosted .st-expand,
         html.theme-clear.glass-frosted .picker-modal,
+        html.theme-clear.glass-frosted .action-sheet,
         html.theme-clear.glass-frosted .mrt-freq-table-container,
-        html.theme-clear.glass-frosted .station-detail-card {
-            background: rgba(15, 23, 42, 0.62) !important;
-            backdrop-filter: blur(20px) saturate(180%) !important;
-            -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-            border: 1px solid rgba(255, 255, 255, 0.14) !important;
-            box-shadow: 0 12px 36px 0 rgba(0, 0, 0, 0.45) !important;
+        html.theme-clear.glass-frosted .station-detail-card,
+        html.theme-clear.glass-frosted .nearby-station-card {
+            background: rgba(15, 23, 42, 0.58) !important;
+            backdrop-filter: blur(22px) saturate(180%) !important;
+            -webkit-backdrop-filter: blur(22px) saturate(180%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.15) !important;
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45), inset 0 1px 1px rgba(255, 255, 255, 0.12) !important;
         }
 
         /* 2. Aurora Mesh Glass (สไตล์ที่ 2: ประกายออโรร่าสีโครงข่าย) */
-        html.theme-clear.glass-aurora {
-            --bg: #030712;
-            --card: rgba(10, 16, 31, 0.52);
-            --card-hover: rgba(15, 23, 42, 0.65);
-            --glass-bg: rgba(10, 16, 31, 0.55);
-            --glass-border: rgba(56, 189, 248, 0.25);
-            --line: rgba(56, 189, 248, 0.15);
-            --line-subtle: rgba(56, 189, 248, 0.08);
-        }
-        html.theme-clear.glass-aurora body {
-            background-color: #030712;
-            background-image: 
-                radial-gradient(circle at 15% 25%, rgba(56, 189, 248, 0.22) 0%, transparent 45%),
-                radial-gradient(circle at 85% 75%, rgba(168, 85, 247, 0.18) 0%, transparent 45%),
-                radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.14) 0%, transparent 50%);
-            background-attachment: fixed;
-        }
         html.theme-clear.glass-aurora .card,
         html.theme-clear.glass-aurora .settings-card,
-        html.theme-clear.glass-aurora .nearby-station-card,
-        html.theme-clear.glass-aurora .traffic-info-card,
-        html.theme-clear.glass-aurora .action-sheet,
+        html.theme-clear.glass-aurora .quick-planner-banner,
+        html.theme-clear.glass-aurora .disruption-alert-banner,
+        html.theme-clear.glass-aurora .st-expand,
         html.theme-clear.glass-aurora .picker-modal,
+        html.theme-clear.glass-aurora .action-sheet,
         html.theme-clear.glass-aurora .mrt-freq-table-container,
-        html.theme-clear.glass-aurora .station-detail-card {
-            background: linear-gradient(135deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.02) 100%), rgba(10, 16, 31, 0.52) !important;
-            backdrop-filter: blur(24px) saturate(200%) !important;
-            -webkit-backdrop-filter: blur(24px) saturate(200%) !important;
-            border: 1px solid rgba(56, 189, 248, 0.25) !important;
-            box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.2) !important;
+        html.theme-clear.glass-aurora .station-detail-card,
+        html.theme-clear.glass-aurora .nearby-station-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.02) 100%), rgba(10, 16, 31, 0.5) !important;
+            backdrop-filter: blur(26px) saturate(210%) !important;
+            -webkit-backdrop-filter: blur(26px) saturate(210%) !important;
+            border: 1px solid rgba(56, 189, 248, 0.3) !important;
+            box-shadow: 0 20px 48px -10px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.25) !important;
         }
 
         /* 3. Pure Minimal Clear (สไตล์ที่ 3: โปร่งใส 85% มินิมอล) */
-        html.theme-clear.glass-minimal {
-            --bg: #060b14;
-            --card: rgba(11, 18, 33, 0.38);
-            --card-hover: rgba(15, 23, 42, 0.5);
-            --glass-bg: rgba(11, 18, 33, 0.4);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --line: rgba(255, 255, 255, 0.08);
-            --line-subtle: rgba(255, 255, 255, 0.04);
-        }
-        html.theme-clear.glass-minimal body {
-            background-color: #060b14;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(14, 165, 233, 0.1) 0%, transparent 45%),
-                radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.09) 0%, transparent 45%);
-            background-attachment: fixed;
-        }
         html.theme-clear.glass-minimal .card,
         html.theme-clear.glass-minimal .settings-card,
-        html.theme-clear.glass-minimal .nearby-station-card,
-        html.theme-clear.glass-minimal .traffic-info-card,
-        html.theme-clear.glass-minimal .action-sheet,
+        html.theme-clear.glass-minimal .quick-planner-banner,
+        html.theme-clear.glass-minimal .disruption-alert-banner,
+        html.theme-clear.glass-minimal .st-expand,
         html.theme-clear.glass-minimal .picker-modal,
+        html.theme-clear.glass-minimal .action-sheet,
         html.theme-clear.glass-minimal .mrt-freq-table-container,
-        html.theme-clear.glass-minimal .station-detail-card {
-            background: rgba(11, 18, 33, 0.38) !important;
+        html.theme-clear.glass-minimal .station-detail-card,
+        html.theme-clear.glass-minimal .nearby-station-card {
+            background: rgba(11, 18, 33, 0.35) !important;
             backdrop-filter: blur(14px) !important;
             -webkit-backdrop-filter: blur(14px) !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3) !important;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35) !important;
         }
 
         /* Sub-indicator pointer arrow on button 4 */
@@ -9752,6 +9829,11 @@
 </head>
 
 <body>
+    <!-- Ambient Background Glow Orbs for Clear Glass Mode -->
+    <div class="ambient-glass-orb orb-1" aria-hidden="true"></div>
+    <div class="ambient-glass-orb orb-2" aria-hidden="true"></div>
+    <div class="ambient-glass-orb orb-3" aria-hidden="true"></div>
+
     <!-- ===== Top Pull-To-Refresh Indicator ===== -->
     <div id="pullToRefreshBar" class="pull-refresh-bar">
         <div class="pull-refresh-pill">
@@ -10920,7 +11002,7 @@
 
     <!-- Application Controller -->
     <script src="js/leaflet.js"></script>
-    <script src="js/app.js?v=20261030_11"></script>
+    <script src="js/app.js?v=20261030_12"></script>
 
     <!-- PWA: ลงทะเบียน service worker (เฉพาะเมื่อรันบน HTTP/HTTPS) -->
     <script>

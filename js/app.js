@@ -1156,6 +1156,8 @@ gQIDAQAB
                 moreDateEraLabel: '2. ระบบศักราช:',
                 dateEraBeLbl: 'พุทธศักราช (พ.ศ.)',
                 dateEraCeLbl: 'คริสต์ศักราช (ค.ศ.)',
+                dateEraBeSub: (y) => `พ.ศ. ${y}`,
+                dateEraCeSub: (y) => `ค.ศ. ${y}`,
                 moreVersionTitle: 'ข้อมูลแอปพลิเคชัน',
                 moreVersionUpToDate: 'เวอร์ชันล่าสุด',
                 moreVersionLabel: 'เวอร์ชัน',
@@ -1501,6 +1503,8 @@ gQIDAQAB
                 moreDateEraLabel: '2. Era System:',
                 dateEraBeLbl: 'Buddhist Era (B.E.)',
                 dateEraCeLbl: 'Common Era (C.E.)',
+                dateEraBeSub: (y) => `B.E. ${y}`,
+                dateEraCeSub: (y) => `C.E. ${y}`,
                 moreVersionTitle: 'App Information',
                 moreVersionUpToDate: 'Latest Release',
                 moreVersionLabel: 'Version',
@@ -1846,6 +1850,8 @@ gQIDAQAB
                 moreDateEraLabel: '2. 纪年系统:',
                 dateEraBeLbl: '佛历 (B.E.)',
                 dateEraCeLbl: '公历 (C.E.)',
+                dateEraBeSub: (y) => `佛历 ${y}`,
+                dateEraCeSub: (y) => `公元 ${y}`,
                 moreVersionTitle: '应用信息',
                 moreVersionUpToDate: '最新版本',
                 moreVersionLabel: '版本',
@@ -7351,8 +7357,8 @@ setOriginFromActionSheet() {
                 if (sampleWeekday) {
                     sampleWeekday.textContent = nowSample.toLocaleDateString(T('clockLocale'), { weekday: 'short', day: 'numeric', month: 'short' });
                 }
-                if (sampleEraBe) sampleEraBe.textContent = `ปี ${yBE}`;
-                if (sampleEraCe) sampleEraCe.textContent = `ปี ${yCE}`;
+                if (sampleEraBe) sampleEraBe.textContent = T('dateEraBeSub', yBE);
+                if (sampleEraCe) sampleEraCe.textContent = T('dateEraCeSub', yCE);
 
                 // 6. Platform info
                 const platEl = document.getElementById('morePlatformValue');

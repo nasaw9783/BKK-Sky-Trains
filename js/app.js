@@ -10753,11 +10753,19 @@ setOriginFromActionSheet() {
                     badgeEl.style.background = color;
                 }
                 const nameEl = document.getElementById('interchangeStationName');
-                if (nameEl) nameEl.textContent = 'สถานี' + stName(s);
+                if (nameEl) {
+                    if (lang === 'th') {
+                        const rawName = stName(s);
+                        nameEl.textContent = rawName.startsWith('สถานี') ? rawName : 'สถานี' + rawName;
+                    } else if (lang === 'zh') {
+                        nameEl.textContent = stName(s) + '站';
+                    } else {
+                        nameEl.textContent = stName(s);
+                    }
+                }
                 const subEl = document.getElementById('interchangeStationSub');
                 if (subEl) {
-                    const enName = s.StationName_EN || s.StationNameEN || '';
-                    subEl.textContent = `${enName} Station — ${lang === 'zh' ? '换乘枢纽' : (lang === 'en' ? 'Transit Interchange' : 'จุดเปลี่ยนสายรถไฟ')}`;
+                    subEl.textContent = lang === 'zh' ? '换乘枢纽' : (lang === 'en' ? 'Transit Interchange' : 'จุดเปลี่ยนสายรถไฟ');
                 }
 
                 // Current line command bar
@@ -10794,7 +10802,7 @@ setOriginFromActionSheet() {
                                     <span class="interchange-st-code" style="background:${c.color};">${esc(c.key)}</span>
                                 </div>
 
-                                ${connStName && connStName !== stName(s) ? `<div style="font-size:11.5px;color:var(--ink,#f8fafc);font-weight:600;margin-top:2px;">สถานีเชื่อมต่อ: <span style="color:${c.color}">${esc(connStName)} (${esc(c.key)})</span></div>` : ''}
+                                ${connStName ? `<div style="font-size:11.5px;color:var(--ink,#f8fafc);font-weight:600;margin-top:2px;">${lang === 'zh' ? '换乘车站:' : (lang === 'en' ? 'Connecting Station:' : 'สถานีเชื่อมต่อ:')} <span style="color:${c.color}">${esc(connStName)} (${esc(c.key)})</span></div>` : ''}
 
                                 <div class="interchange-walk-info">
                                     ${walkText}

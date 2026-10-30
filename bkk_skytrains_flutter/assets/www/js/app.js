@@ -7053,6 +7053,66 @@ setOriginFromActionSheet() {
                 this.updateThemeBtn();
                 this.updateMapTheme();
                 this.renderMoreView();
+
+                if (isClear) {
+                    this.startGlassAutoHideTimer(10);
+                } else {
+                    this.collapseGlassSubmodes();
+                }
+            },
+
+            glassTimer: null,
+
+            startGlassAutoHideTimer(sec = 10) {
+                if (this.glassTimer) {
+                    clearInterval(this.glassTimer);
+                    this.glassTimer = null;
+                }
+                const subBox = document.getElementById('glassSubmodesBox');
+                if (!subBox) return;
+
+                subBox.style.display = 'block';
+                subBox.classList.remove('is-collapsed');
+
+                const arrow = document.querySelector('#themeOptClear .sub-arrow-indicator');
+                if (arrow) arrow.classList.remove('collapsed');
+
+                const bar = document.getElementById('glassTimerBar');
+                if (bar) {
+                    bar.style.transition = 'none';
+                    bar.style.transform = 'scaleX(1)';
+                    setTimeout(() => {
+                        bar.style.transition = `transform ${sec}s linear`;
+                        bar.style.transform = 'scaleX(0)';
+                    }, 40);
+                }
+
+                let remaining = sec;
+                const badgeSec = document.getElementById('glassTimerSec');
+                if (badgeSec) badgeSec.textContent = remaining + 's';
+
+                this.glassTimer = setInterval(() => {
+                    remaining--;
+                    if (badgeSec) badgeSec.textContent = Math.max(0, remaining) + 's';
+                    if (remaining <= 0) {
+                        clearInterval(this.glassTimer);
+                        this.glassTimer = null;
+                        this.collapseGlassSubmodes();
+                    }
+                }, 1000);
+            },
+
+            collapseGlassSubmodes() {
+                if (this.glassTimer) {
+                    clearInterval(this.glassTimer);
+                    this.glassTimer = null;
+                }
+                const subBox = document.getElementById('glassSubmodesBox');
+                if (subBox) {
+                    subBox.classList.add('is-collapsed');
+                }
+                const arrow = document.querySelector('#themeOptClear .sub-arrow-indicator');
+                if (arrow) arrow.classList.add('collapsed');
             },
 
             setGlassStyle(style) {
@@ -7069,6 +7129,10 @@ setOriginFromActionSheet() {
 
                 this.updateThemeBtn();
                 this.renderMoreView();
+
+                if (isClear) {
+                    this.startGlassAutoHideTimer(10);
+                }
             },
 
             updateThemeBtn() {
@@ -7097,7 +7161,12 @@ setOriginFromActionSheet() {
 
                 const subBox = document.getElementById('glassSubmodesBox');
                 if (subBox) {
-                    subBox.style.display = (storedTheme === 'clear') ? 'block' : 'none';
+                    if (storedTheme === 'clear') {
+                        subBox.style.display = 'block';
+                    } else {
+                        subBox.style.display = 'none';
+                        this.collapseGlassSubmodes();
+                    }
                 }
 
                 const frostedBtn = document.getElementById('glassSubFrosted');
@@ -7205,7 +7274,12 @@ setOriginFromActionSheet() {
 
                 const subBox = document.getElementById('glassSubmodesBox');
                 if (subBox) {
-                    subBox.style.display = (storedTheme === 'clear') ? 'block' : 'none';
+                    if (storedTheme === 'clear') {
+                        subBox.style.display = 'block';
+                    } else {
+                        subBox.style.display = 'none';
+                        this.collapseGlassSubmodes();
+                    }
                 }
 
                 const frostedBtn = document.getElementById('glassSubFrosted');

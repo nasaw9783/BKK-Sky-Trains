@@ -411,7 +411,7 @@
             display: block;
         }
 
-        /* Expandable Sub-Styles Container */
+        /* Expandable Sub-Styles Container (Auto-Hide 10s) */
         .glass-submodes-wrap {
             margin-top: 12px;
             border-radius: var(--radius-md, 14px);
@@ -419,18 +419,74 @@
             border: 1px solid rgba(255, 255, 255, 0.12);
             padding: 12px;
             box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.08), 0 8px 24px rgba(0, 0, 0, 0.2);
-            animation: fadeInSub 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            overflow: hidden;
+            max-height: 240px;
+            opacity: 1;
+            transform: translateY(0);
+            transition: max-height 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+                        opacity 0.35s ease,
+                        margin-top 0.45s ease,
+                        padding-top 0.45s ease,
+                        padding-bottom 0.45s ease,
+                        border-width 0.45s ease,
+                        transform 0.45s ease;
         }
 
-        @keyframes fadeInSub {
-            from {
-                opacity: 0;
-                transform: translateY(-6px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .glass-submodes-wrap.is-collapsed {
+            max-height: 0 !important;
+            opacity: 0 !important;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+            margin-top: 0 !important;
+            border-top-width: 0 !important;
+            border-bottom-width: 0 !important;
+            transform: translateY(-6px) !important;
+            pointer-events: none !important;
+        }
+
+        /* Top Progress Bar (10s Countdown) */
+        .glass-timer-bar-wrap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.08);
+            overflow: hidden;
+            border-top-left-radius: var(--radius-md, 14px);
+            border-top-right-radius: var(--radius-md, 14px);
+        }
+
+        .glass-timer-bar {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, #38bdf8, #10b981);
+            transform-origin: left;
+            transform: scaleX(1);
+            transition: transform 0.1s linear;
+        }
+
+        /* Timer Badge */
+        .glass-timer-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 999px;
+            background: rgba(56, 189, 248, 0.12);
+            border: 1px solid rgba(56, 189, 248, 0.28);
+            color: #e0f2fe;
+            font-variant-numeric: tabular-nums;
+            line-height: 1;
+        }
+
+        .glass-timer-badge .clock-icon {
+            display: inline-block;
+            font-size: 10px;
+            line-height: 1;
         }
 
         .submodes-header {
@@ -10299,13 +10355,21 @@
                         </button>
                     </div>
 
-                    <!-- Expandable Glass Submodes Box -->
-                    <div class="glass-submodes-wrap" id="glassSubmodesBox" style="display:none;">
+                    <!-- Expandable Glass Submodes Box (Auto-Hide 10s) -->
+                    <div class="glass-submodes-wrap is-collapsed" id="glassSubmodesBox" style="display:none;">
+                        <!-- Top Progress Bar (10s countdown) -->
+                        <div class="glass-timer-bar-wrap" id="glassTimerBarWrap">
+                            <div class="glass-timer-bar" id="glassTimerBar"></div>
+                        </div>
                         <div class="submodes-header">
                             <span class="submodes-title" id="moreGlassStyleTitle">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                                 <span>สไตล์ความโปร่งใส (GLASS STYLE)</span>
                             </span>
+                            <div class="glass-timer-badge" id="glassTimerBadge">
+                                <span class="clock-icon">⏳</span>
+                                <span id="glassTimerSec">10s</span>
+                            </div>
                         </div>
                         <div class="submodes-grid">
                             <button type="button" class="submode-btn active" id="glassSubFrosted" onclick="App.setGlassStyle('frosted')">
@@ -11002,7 +11066,7 @@
 
     <!-- Application Controller -->
     <script src="js/leaflet.js"></script>
-    <script src="js/app.js?v=20261030_12"></script>
+    <script src="js/app.js?v=20261030_13"></script>
 
     <!-- PWA: ลงทะเบียน service worker (เฉพาะเมื่อรันบน HTTP/HTTPS) -->
     <script>

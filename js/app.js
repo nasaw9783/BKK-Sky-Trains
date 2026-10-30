@@ -1133,10 +1133,15 @@ gQIDAQAB
                 moreLangDesc: 'เลือกภาษาที่ต้องการให้แสดงผลในระบบ',
                 moreLangAuto: 'ตั้งค่าตามอุปกรณ์',
                 moreThemeTitle: 'ธีมการแสดงผล',
-                moreThemeDesc: 'เลือกโหมดสว่าง โหมดมืด หรือปรับตามระบบอุปกรณ์ของคุณ',
+                moreThemeDesc: 'เลือกโหมดสว่าง โหมดมืด ปรับตามอุปกรณ์ หรือโหมดโปร่งใสเคลียร์พิเศษ',
                 themeLight: 'โหมดสว่าง',
                 themeDark: 'โหมดมืด',
-                themeAuto: 'ตั้งค่าตามอุปกรณ์',
+                themeAuto: 'ตามอุปกรณ์',
+                themeClear: 'โปร่งใส/เคลียร์',
+                moreGlassStyleTitle: 'สไตล์ความโปร่งใส (GLASS STYLE)',
+                moreGlassFrosted: 'กระจกฝ้า',
+                moreGlassAurora: 'ออโรร่า',
+                moreGlassMinimal: 'มินิมอล',
                 moreClockTitle: 'รูปแบบเวลา',
                 moreClockDesc: 'เลือกรูปแบบการแสดงเวลาของนาฬิกาที่แถบหัวเว็บ',
                 moreClock24Lbl: '24 ชั่วโมง',
@@ -1473,10 +1478,15 @@ gQIDAQAB
                 moreLangDesc: 'Select system display language',
                 moreLangAuto: 'Device Default',
                 moreThemeTitle: 'Appearance',
-                moreThemeDesc: 'Choose light, dark, or follow your device settings',
+                moreThemeDesc: 'Choose light, dark, follow device settings, or clear glass mode',
                 themeLight: 'Light Mode',
                 themeDark: 'Dark Mode',
                 themeAuto: 'Device Default',
+                themeClear: 'Clear Glass',
+                moreGlassStyleTitle: 'Glass Style',
+                moreGlassFrosted: 'Frosted Glass',
+                moreGlassAurora: 'Aurora Glass',
+                moreGlassMinimal: 'Minimal Clear',
                 moreClockTitle: 'Clock Format',
                 moreClockDesc: 'Choose the time display format for the header clock',
                 moreClock24Lbl: '24 Hours (24H)',
@@ -1813,10 +1823,15 @@ gQIDAQAB
                 moreLangDesc: '选择系统显示语言',
                 moreLangAuto: '跟随系统',
                 moreThemeTitle: '外观',
-                moreThemeDesc: '选择浅色、深色模式或跟随系统设备设置',
+                moreThemeDesc: '选择浅色、深色模式、跟随系统设备或透明质感模式',
                 themeLight: '浅色模式',
                 themeDark: '深色模式',
                 themeAuto: '跟随系统',
+                themeClear: '透明质感',
+                moreGlassStyleTitle: '透明风格',
+                moreGlassFrosted: '磨砂质感',
+                moreGlassAurora: '极光质感',
+                moreGlassMinimal: '极简透明',
                 moreClockTitle: '时间格式',
                 moreClockDesc: '选择顶部时钟的时间显示格式',
                 moreClock24Lbl: '24 小时制',
@@ -7007,7 +7022,7 @@ setOriginFromActionSheet() {
 
 
 
-            /* ---------- theme (dark mode & auto) ---------- */
+            /* ---------- theme (dark mode & auto & clear glass) ---------- */
             setTheme(t) {
                 let next = t;
                 if (!next) {
@@ -7018,29 +7033,79 @@ setOriginFromActionSheet() {
                 try { localStorage.setItem('bts_theme', next); } catch (e) { }
 
                 let effectiveDark = false;
-                if (next === 'auto') {
+                const isClear = (next === 'clear');
+                if (isClear) {
+                    effectiveDark = true;
+                } else if (next === 'auto') {
                     effectiveDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
                 } else {
                     effectiveDark = (next === 'dark');
                 }
                 document.documentElement.classList.toggle('dark', effectiveDark);
+                document.documentElement.classList.toggle('theme-clear', isClear);
+
+                let curGlass = 'frosted';
+                try { curGlass = localStorage.getItem('bts_glass_style') || 'frosted'; } catch (e) { }
+                ['frosted', 'aurora', 'minimal'].forEach(s => {
+                    document.documentElement.classList.toggle('glass-' + s, isClear && curGlass === s);
+                });
 
                 this.updateThemeBtn();
                 this.updateMapTheme();
                 this.renderMoreView();
             },
 
+            setGlassStyle(style) {
+                const valid = ['frosted', 'aurora', 'minimal'].includes(style) ? style : 'frosted';
+                try { localStorage.setItem('bts_glass_style', valid); } catch (e) { }
+
+                let curTheme = 'auto';
+                try { curTheme = localStorage.getItem('bts_theme') || 'auto'; } catch (e) { }
+                const isClear = (curTheme === 'clear');
+
+                ['frosted', 'aurora', 'minimal'].forEach(s => {
+                    document.documentElement.classList.toggle('glass-' + s, isClear && valid === s);
+                });
+
+                this.updateThemeBtn();
+                this.renderMoreView();
+            },
+
             updateThemeBtn() {
                 const b = document.getElementById('themeBtn');
-                if (b) b.innerHTML = document.documentElement.classList.contains('dark') ? getUiIcon('sun', 16, '#f59e0b') : getUiIcon('moon', 16, 'currentColor');
+                if (b) {
+                    const isClear = document.documentElement.classList.contains('theme-clear');
+                    if (isClear) {
+                        b.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>`;
+                    } else {
+                        b.innerHTML = document.documentElement.classList.contains('dark') ? getUiIcon('sun', 16, '#f59e0b') : getUiIcon('moon', 16, 'currentColor');
+                    }
+                }
                 let storedTheme = 'auto';
                 try { storedTheme = localStorage.getItem('bts_theme') || 'auto'; } catch (e) { }
+                let storedGlass = 'frosted';
+                try { storedGlass = localStorage.getItem('bts_glass_style') || 'frosted'; } catch (e) { }
+
                 const darkBtn = document.getElementById('themeOptDark');
                 const lightBtn = document.getElementById('themeOptLight');
                 const autoBtn = document.getElementById('themeOptAuto');
+                const clearBtn = document.getElementById('themeOptClear');
                 if (darkBtn) darkBtn.classList.toggle('active', storedTheme === 'dark');
                 if (lightBtn) lightBtn.classList.toggle('active', storedTheme === 'light');
                 if (autoBtn) autoBtn.classList.toggle('active', storedTheme === 'auto');
+                if (clearBtn) clearBtn.classList.toggle('active', storedTheme === 'clear');
+
+                const subBox = document.getElementById('glassSubmodesBox');
+                if (subBox) {
+                    subBox.style.display = (storedTheme === 'clear') ? 'block' : 'none';
+                }
+
+                const frostedBtn = document.getElementById('glassSubFrosted');
+                const auroraBtn = document.getElementById('glassSubAurora');
+                const minimalBtn = document.getElementById('glassSubMinimal');
+                if (frostedBtn) frostedBtn.classList.toggle('active', storedGlass === 'frosted');
+                if (auroraBtn) auroraBtn.classList.toggle('active', storedGlass === 'aurora');
+                if (minimalBtn) minimalBtn.classList.toggle('active', storedGlass === 'minimal');
             },
 
             initThemeListener() {
@@ -7127,12 +7192,28 @@ setOriginFromActionSheet() {
                 // 3. Theme Segmented Buttons
                 let storedTheme = 'auto';
                 try { storedTheme = localStorage.getItem('bts_theme') || 'auto'; } catch (e) { }
+                let storedGlass = 'frosted';
+                try { storedGlass = localStorage.getItem('bts_glass_style') || 'frosted'; } catch (e) { }
                 const darkBtn = document.getElementById('themeOptDark');
                 const lightBtn = document.getElementById('themeOptLight');
                 const autoBtn = document.getElementById('themeOptAuto');
+                const clearBtn = document.getElementById('themeOptClear');
                 if (darkBtn) darkBtn.classList.toggle('active', storedTheme === 'dark');
                 if (lightBtn) lightBtn.classList.toggle('active', storedTheme === 'light');
                 if (autoBtn) autoBtn.classList.toggle('active', storedTheme === 'auto');
+                if (clearBtn) clearBtn.classList.toggle('active', storedTheme === 'clear');
+
+                const subBox = document.getElementById('glassSubmodesBox');
+                if (subBox) {
+                    subBox.style.display = (storedTheme === 'clear') ? 'block' : 'none';
+                }
+
+                const frostedBtn = document.getElementById('glassSubFrosted');
+                const auroraBtn = document.getElementById('glassSubAurora');
+                const minimalBtn = document.getElementById('glassSubMinimal');
+                if (frostedBtn) frostedBtn.classList.toggle('active', storedGlass === 'frosted');
+                if (auroraBtn) auroraBtn.classList.toggle('active', storedGlass === 'aurora');
+                if (minimalBtn) minimalBtn.classList.toggle('active', storedGlass === 'minimal');
 
                 // 4. Clock Format Segmented Buttons
                 const curClockFmt = this.clockFormat || '24';
@@ -7377,6 +7458,15 @@ setOriginFromActionSheet() {
                 set('moreThemeLightLbl', T('themeLight'));
                 set('moreThemeDarkLbl', T('themeDark'));
                 set('moreThemeAutoLbl', T('themeAuto'));
+                set('moreThemeClearLbl', T('themeClear'));
+                const glassTitleEl = document.getElementById('moreGlassStyleTitle');
+                if (glassTitleEl) {
+                    const span = glassTitleEl.querySelector('span');
+                    if (span) span.textContent = T('moreGlassStyleTitle');
+                }
+                set('glassSubFrostedLbl', T('moreGlassFrosted'));
+                set('glassSubAuroraLbl', T('moreGlassAurora'));
+                set('glassSubMinimalLbl', T('moreGlassMinimal'));
                 set('moreClockTitle', T('moreClockTitle'));
                 set('moreClockDesc', T('moreClockDesc'));
                 set('moreClock24Lbl', T('moreClock24Lbl'));

@@ -2603,6 +2603,15 @@
                 height: 28px;
                 font-size: 14px;
             }
+            .settings-segment-grid.four-cols {
+                gap: 5px;
+            }
+            .settings-segment-grid.four-cols .settings-segment-btn {
+                padding: 8px 3px;
+            }
+            .settings-segment-grid.four-cols .settings-segment-btn .segment-name {
+                font-size: 10px;
+            }
         }
 
         html.is-flutter-app .st-rail {
@@ -2645,6 +2654,15 @@
             width: 28px;
             height: 28px;
             font-size: 14px;
+        }
+        html.is-flutter-app .settings-segment-grid.four-cols {
+            gap: 5px;
+        }
+        html.is-flutter-app .settings-segment-grid.four-cols .settings-segment-btn {
+            padding: 8px 3px;
+        }
+        html.is-flutter-app .settings-segment-grid.four-cols .settings-segment-btn .segment-name {
+            font-size: 10px;
         }
 
         /* ===== Modern Frequency Table Container ===== */
@@ -8077,6 +8095,10 @@
         .settings-segment-grid.two-cols {
             grid-template-columns: repeat(2, 1fr);
         }
+        .settings-segment-grid.four-cols {
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+        }
         .settings-segment-btn {
             display: flex;
             flex-direction: column;
@@ -9828,7 +9850,7 @@
                 </div>
                 <div class="settings-card-body">
                     <div class="settings-desc" id="moreLangDesc">เลือกภาษาที่ต้องการให้แสดงผลในระบบ</div>
-                    <div class="settings-segment-grid">
+                    <div class="settings-segment-grid four-cols">
                         <button type="button" class="settings-segment-btn" id="langOptTh" onclick="App.setLang('th')">
                             <span class="segment-flag">
                                 <svg class="flag-icon" viewBox="0 0 27 18" width="27" height="18" aria-hidden="true">
@@ -9866,6 +9888,15 @@
                             </span>
                             <span class="segment-name">中文</span>
                             <span class="segment-code">ZH</span>
+                        </button>
+                        <button type="button" class="settings-segment-btn" id="langOptAuto" onclick="App.setLang('auto')">
+                            <span class="segment-icon">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+                                </svg>
+                            </span>
+                            <span class="segment-name" id="moreLangAutoLbl">ตั้งค่าตามอุปกรณ์</span>
+                            <span class="segment-code">AUTO</span>
                         </button>
                     </div>
                 </div>
@@ -10590,7 +10621,7 @@
 
     <!-- Application Controller -->
     <script src="js/leaflet.js"></script>
-    <script src="js/app.js?v=20261030_06"></script>
+    <script src="js/app.js?v=20261030_07"></script>
 
     <!-- PWA: ลงทะเบียน service worker (เฉพาะเมื่อรันบน HTTP/HTTPS) -->
     <script>

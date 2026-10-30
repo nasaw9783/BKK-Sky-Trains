@@ -799,7 +799,24 @@ gQIDAQAB
 
 
         /* ================= I18N (สลับภาษาได้ทั้งเว็บ — แสดงทีละภาษาเพื่อประหยัดพื้นที่) ================= */
-        let lang = localStorage.getItem('bts_lang') || 'th';
+        function getDeviceLang() {
+            try {
+                const navLangs = (typeof navigator !== 'undefined' && navigator.languages && navigator.languages.length)
+                    ? navigator.languages : [(typeof navigator !== 'undefined' ? navigator.language : '') || ''];
+                for (let i = 0; i < navLangs.length; i++) {
+                    const l = (navLangs[i] || '').toLowerCase();
+                    if (l.startsWith('zh')) return 'zh';
+                    if (l.startsWith('th')) return 'th';
+                    if (l.startsWith('en')) return 'en';
+                }
+                if (typeof navigator !== 'undefined' && navigator.language) return 'en';
+            } catch (e) { }
+            return 'th';
+        }
+
+        let storedLangInit = 'th';
+        try { storedLangInit = localStorage.getItem('bts_lang') || 'th'; } catch (e) { }
+        let lang = storedLangInit === 'auto' ? getDeviceLang() : storedLangInit;
 
         const I18N = {
             th: {
@@ -1114,6 +1131,7 @@ gQIDAQAB
                 moreNotifInactive: 'ปิดการทำงาน (ประหยัดพลังงาน)',
                 moreLangTitle: 'ภาษา',
                 moreLangDesc: 'เลือกภาษาที่ต้องการให้แสดงผลในระบบ',
+                moreLangAuto: 'ตั้งค่าตามอุปกรณ์',
                 moreThemeTitle: 'ธีมการแสดงผล',
                 moreThemeDesc: 'เลือกโหมดสว่าง โหมดมืด หรือปรับตามระบบอุปกรณ์ของคุณ',
                 themeLight: 'โหมดสว่าง',
@@ -1453,6 +1471,7 @@ gQIDAQAB
                 moreNotifInactive: 'Disabled (Battery Saver)',
                 moreLangTitle: 'Language',
                 moreLangDesc: 'Select system display language',
+                moreLangAuto: 'Device Default',
                 moreThemeTitle: 'Appearance',
                 moreThemeDesc: 'Choose light, dark, or follow your device settings',
                 themeLight: 'Light Mode',
@@ -1792,6 +1811,7 @@ gQIDAQAB
                 moreNotifInactive: '已关闭（省电模式）',
                 moreLangTitle: '语言',
                 moreLangDesc: '选择系统显示语言',
+                moreLangAuto: '跟随系统',
                 moreThemeTitle: '外观',
                 moreThemeDesc: '选择浅色、深色模式或跟随系统设备设置',
                 themeLight: '浅色模式',
@@ -7097,10 +7117,11 @@ setOriginFromActionSheet() {
                 }
 
                 // 2. Language Segmented Buttons
-                const curLang = lang || 'th';
-                ['th', 'en', 'zh'].forEach(l => {
+                let storedLang = 'th';
+                try { storedLang = localStorage.getItem('bts_lang') || 'th'; } catch (e) { }
+                ['th', 'en', 'zh', 'auto'].forEach(l => {
                     const btn = document.getElementById('langOpt' + l.charAt(0).toUpperCase() + l.slice(1));
-                    if (btn) btn.classList.toggle('active', curLang === l);
+                    if (btn) btn.classList.toggle('active', storedLang === l);
                 });
 
                 // 3. Theme Segmented Buttons
@@ -7191,13 +7212,22 @@ setOriginFromActionSheet() {
             /* ---------- language ---------- */
             setLang(l) {
                 if (l) {
-                    lang = l;
+                    if (l === 'auto') {
+                        try { localStorage.setItem('bts_lang', 'auto'); } catch (e) { }
+                        lang = getDeviceLang();
+                    } else {
+                        try { localStorage.setItem('bts_lang', l); } catch (e) { }
+                        lang = l;
+                    }
                 } else {
-                    if (lang === 'th') lang = 'en';
-                    else if (lang === 'en') lang = 'zh';
-                    else lang = 'th';
+                    let curStored = 'th';
+                    try { curStored = localStorage.getItem('bts_lang') || 'th'; } catch (e) { }
+                    if (curStored === 'th') this.setLang('en');
+                    else if (curStored === 'en') this.setLang('zh');
+                    else if (curStored === 'zh') this.setLang('auto');
+                    else this.setLang('th');
+                    return;
                 }
-                localStorage.setItem('bts_lang', lang);
                 this.applyStaticLang();
                 this.renderTabs();
                 this.renderNearest();
@@ -7210,6 +7240,7 @@ setOriginFromActionSheet() {
                 this.renderTimetablesView(true);
                 this.renderQuickHubChips();
                 this.renderExitsView(this.selectedExitKey);
+                this.renderSettings();
                 if (this.journey.picking) this.renderPicker();
             },
 
@@ -7340,6 +7371,7 @@ setOriginFromActionSheet() {
                 set('moreNotifDesc', T('moreNotifDesc'));
                 set('moreLangTitle', T('moreLangTitle'));
                 set('moreLangDesc', T('moreLangDesc'));
+                set('moreLangAutoLbl', T('moreLangAuto'));
                 set('moreThemeTitle', T('moreThemeTitle'));
                 set('moreThemeDesc', T('moreThemeDesc'));
                 set('moreThemeLightLbl', T('themeLight'));

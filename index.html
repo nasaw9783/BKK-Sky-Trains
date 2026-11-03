@@ -2463,6 +2463,14 @@
             z-index: 1;
         }
 
+        .st-row:first-child .st-rail .track {
+            top: 24px;
+        }
+
+        .st-row:last-child .st-rail .track {
+            bottom: calc(100% - 24px);
+        }
+
         html.dark .st-rail .track {
             background: #334155;
         }
@@ -2473,12 +2481,22 @@
             width: 14px;
             height: 14px;
             border-radius: 50%;
-            background: var(--card);
+            background: #0B111E;
             border: 3.5px solid #94a3b8;
-            box-shadow: 0 0 0 2px var(--card);
+            box-shadow: 0 0 0 2px #0B111E;
             transition: all var(--transition-fast);
             box-sizing: border-box;
             margin-top: 17px;
+        }
+
+        html:not(.dark) .st-rail .node {
+            background: #ffffff;
+            box-shadow: 0 0 0 2px #ffffff;
+        }
+
+        html.theme-clear .st-rail .node {
+            background: #060b14;
+            box-shadow: 0 0 0 2px #060b14;
         }
 
         .st-rail .node.inter {

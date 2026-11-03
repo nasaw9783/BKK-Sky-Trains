@@ -6544,15 +6544,6 @@ setOriginFromActionSheet() {
                         `;
                     }
 
-                    const formatMetricVal = (raw) => {
-                        if (!raw) return '';
-                        const m = String(raw).match(/^(.*?)\s*(\([\s\S]*?\))\s*$/);
-                        if (m) {
-                            return `${esc(m[1])}<span class="val-sub">${esc(m[2])}</span>`;
-                        }
-                        return esc(raw);
-                    };
-
                     bodyHtml = `
                         <!-- Line Hero Card -->
                         <div class="line-hero-card" style="border-left:5px solid ${activeLine.color}">
@@ -6805,6 +6796,15 @@ setOriginFromActionSheet() {
                     const d1Last = activeLine.dir1?.last ? `${activeLine.dir1.last}${activeLine.dir1.last !== '-' ? timeUnit : ''}` : '-';
                     const d2First = activeLine.dir2?.first ? `${activeLine.dir2.first}${activeLine.dir2.first !== '-' ? timeUnit : ''}` : '-';
                     const d2Last = activeLine.dir2?.last ? `${activeLine.dir2.last}${activeLine.dir2.last !== '-' ? timeUnit : ''}` : '-';
+
+                    const formatMetricVal = (raw) => {
+                        if (!raw) return '';
+                        const m = String(raw).match(/^(.*?)\s*(\([\s\S]*?\))\s*$/);
+                        if (m) {
+                            return `${esc(m[1])}<span class="val-sub">${esc(m[2])}</span>`;
+                        }
+                        return esc(raw);
+                    };
 
                     // คำนวณความถี่สด
                     const liveFreq = getCurrentMrtFreq(activeLine.id);

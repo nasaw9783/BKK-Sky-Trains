@@ -6834,7 +6834,7 @@ setOriginFromActionSheet() {
                                         ${code ? `<span class="stn-code-badge" style="background:${activeLine.color}">${esc(code)}</span>` : ''}
                                         <b class="dir-dest-title">${esc(name)}</b>
                                     </div>
-                                    <span class="dir-dest-pill-tag">${esc(sub)}</span>
+                                    <div class="dir-dest-sub">${esc(sub)}</div>
                                 </div>
                             `;
                         }

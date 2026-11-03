@@ -3583,6 +3583,22 @@
             right: -2px;
         }
 
+        /* Clear Glass: เว้นช่องว่างเส้นรางเรดาร์ด้านหลังวงกลมสถานี เพื่อคงความใสมองทะลุได้ และลบเส้นรางสีอ่อนพาดผ่านรูสถานี */
+        html.theme-clear .rt-mid:has(.nd) .tl.l {
+            right: calc(50% + 4px);
+        }
+        html.theme-clear .rt-mid:has(.nd) .tl.r {
+            left: calc(50% + 4px);
+        }
+        html.theme-clear .rt-mid:has(.nd.cur) .tl.l,
+        html.theme-clear .rt-mid:has(.nd.near) .tl.l {
+            right: calc(50% + 6px);
+        }
+        html.theme-clear .rt-mid:has(.nd.cur) .tl.r,
+        html.theme-clear .rt-mid:has(.nd.near) .tl.r {
+            left: calc(50% + 6px);
+        }
+
         .rt-mid .nd {
             position: absolute;
             top: 50%;

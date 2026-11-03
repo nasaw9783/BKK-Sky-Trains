@@ -4968,6 +4968,28 @@
             display: none;
         }
 
+        /* Clear Glass: เว้นช่องว่างเส้นรางแนวตั้งหน้าค้นหาเส้นทางด้านหลังวงกลมสถานี เพื่อคงความใสมองทะลุได้ และลบเส้นรางสีอ่อนพาดผ่านรูสถานี */
+        html.theme-clear .j-step:not(.end) .ndw::before {
+            -webkit-mask-image: linear-gradient(
+                to bottom,
+                #000 0%,
+                #000 calc(50% - 5px),
+                transparent calc(50% - 5px),
+                transparent calc(50% + 5px),
+                #000 calc(50% + 5px),
+                #000 100%
+            );
+            mask-image: linear-gradient(
+                to bottom,
+                #000 0%,
+                #000 calc(50% - 5px),
+                transparent calc(50% - 5px),
+                transparent calc(50% + 5px),
+                #000 calc(50% + 5px),
+                #000 100%
+            );
+        }
+
         .j-step .nd {
             width: 10px;
             height: 10px;

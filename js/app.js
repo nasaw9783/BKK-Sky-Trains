@@ -834,7 +834,6 @@ gQIDAQAB
                 currentLocation: 'ตำแหน่งปัจจุบัน',
                 lastLocation: 'ตำแหน่งที่บันทึกไว้',
                 confirmHere: 'ฉันอยู่ที่สถานีนี้ (ยืนยันพิกัด)',
-                imAtThisStation: 'ฉันอยู่ที่สถานีนี้',
                 searchPh: 'ค้นหา รหัสสถานี หรือ ชื่อสถานี เช่น CEN , สยาม',
                 notFound: q => `ไม่พบสถานี “${q}”`,
                 nearYou: 'ใกล้คุณ',
@@ -1182,7 +1181,6 @@ gQIDAQAB
                 currentLocation: 'Current Location',
                 lastLocation: 'Saved Location',
                 confirmHere: "I'm at this station (Confirm)",
-                imAtThisStation: "I'm at this station",
                 searchPh: 'Search station code or name e.g. CEN, Siam',
                 notFound: q => `No station found for “${q}”`,
                 nearYou: 'Nearest',
@@ -1530,7 +1528,6 @@ gQIDAQAB
                 currentLocation: '当前位置',
                 lastLocation: '上次保存位置',
                 confirmHere: '我在此站（确认位置）',
-                imAtThisStation: '我在此站',
                 searchPh: '搜索车站编号或站名，如 CEN、暹罗、Siam',
                 notFound: q => `未找到车站 “${q}”`,
                 nearYou: '附近',
@@ -8837,16 +8834,8 @@ setOriginFromActionSheet() {
                 clearTimeout(this._ipFallbackTimer);
                 this.locating = false;
                 this.locError = null;
-
-                const newAcc = accuracy || 10;
-                // หากผู้ใช้เพิ่งกด calibrate สถานีเอง และพิกัดที่ส่งมายังหยาบมาก (accuracy > 150m) ให้คงสถานะ calibrated ไว้
-                const wasCalibrated = Boolean(this.userPos?.calibrated);
-                const keepCalibrated = wasCalibrated && newAcc > 150;
-
-                this.userPos = { lat, lon, accuracy: newAcc, calibrated: keepCalibrated };
-                if (!keepCalibrated) {
-                    this.saveUserPosition(this.userPos, null, false);
-                }
+                this.userPos = { lat, lon, accuracy: accuracy || 10, calibrated: false };
+                this.saveUserPosition(this.userPos, null, false);
                 this.computeNearest();
                 this.renderNearest();
                 this.renderNearestExit();
@@ -10359,12 +10348,8 @@ setOriginFromActionSheet() {
                     : (this.locating
                         ? `<div class="dist-chip"><div class="v" style="display:flex;align-items:center;justify-content:center;gap:4px;"><span class="spin dark sm"></span></div><div class="l">${T('locating')}</div></div>`
                         : (isAtStationNow
-                            ? `<div class="dist-chip at-station" onclick="App.locate(true)" style="background:rgba(16,185,129,0.12);border:1px solid #10b981;cursor:pointer;" title="${lang === 'zh' ? '已在车站 (点击重新定位)' : (lang === 'en' ? 'At station (Tap to refresh GPS)' : 'อยู่ที่สถานี (แตะเพื่ออัปเดต GPS)')}"><div class="v" style="color:#10b981;font-weight:700">${getUiIcon('pin', 13, '#10b981')} ${T('atStation')}</div><div class="l" style="color:var(--text-sub,#64748b)">${T('currentLocation')}</div></div>`
-                            : `<div class="dist-chip" onclick="App.calibrateToStation('${esc(s.StationKey)}')" style="cursor:pointer;" title="${lang === 'zh' ? '点击确认在此站' : (lang === 'en' ? 'Tap to confirm at this station' : 'แตะเพื่อยืนยันว่าอยู่ที่สถานีนี้')}"><div class="v">${fmtDist(pin.km, s.StationKey)}</div><div class="l">${T('fromYou')}</div></div>`));
-
-                const quickCalibrateBtn = (!isAtStationNow && pin.km != null && pin.km <= 0.8)
-                    ? `<div style="margin-top:4px;"><button type="button" class="btn-calibrate-quick" onclick="App.calibrateToStation('${esc(s.StationKey)}')" title="${lang === 'zh' ? '点击确认在此站' : (lang === 'en' ? 'Tap to confirm at this station' : 'แตะเพื่อยืนยันว่าอยู่ที่สถานีนี้')}">${getUiIcon('pin', 11, '#10b981')} <span>${esc(T('imAtThisStation'))}</span></button></div>`
-                    : '';
+                            ? `<div class="dist-chip at-station" style="background:rgba(16,185,129,0.12);border:1px solid #10b981"><div class="v" style="color:#10b981;font-weight:700">${getUiIcon('pin', 13, '#10b981')} ${T('atStation')}</div><div class="l" style="color:var(--text-sub,#64748b)">${T('currentLocation')}</div></div>`
+                            : `<div class="dist-chip"><div class="v">${fmtDist(pin.km, s.StationKey)}</div><div class="l">${T('fromYou')}</div></div>`));
 
                 el.innerHTML = `
                     ${this.locError ? `<div class="err-box" style="margin:0 0 10px">${this.locError}</div>` : ''}
@@ -10375,7 +10360,6 @@ setOriginFromActionSheet() {
                             <div class="th">${esc(stName(s))}${crowded ? ` <span class="badge crowd-b">${T('crowded')}</span>` : ''}</div>
                             ${(s.StationKey === SIAM_KEY || (App.connections[s.StationKey] || []).length)
                         ? `<div class="en">${connBadges(s.StationKey, s.StationLineId)}</div>` : ''}
-                            ${quickCalibrateBtn}
                         </div>
                         ${distChip}
                     </div>

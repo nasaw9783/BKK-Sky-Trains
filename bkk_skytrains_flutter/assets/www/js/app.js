@@ -3678,8 +3678,8 @@ gQIDAQAB
                 offPeakFreqTH: 'ยังไม่เปิดให้บริการ',
                 offPeakFreqEN: 'Not in service',
                 offPeakFreqZH: '尚未开通运营',
-                dir1: { code: 'OR28', toTH: 'แยกร่มเกล้า (ยังไม่เปิดให้บริการ)', toEN: 'Yaek Rom Klao (Not in Service)', toZH: '耶隆高 (尚未开通)', first: '-', last: '-' },
-                dir2: { code: 'OR01', toTH: 'บางขุนนนท์ (ยังไม่เปิดให้บริการ)', toEN: 'Bang Khun Non (Not in Service)', toZH: '挽坤暖 (尚未开通)', first: '-', last: '-' }
+                dir1: { code: 'OR28', toTH: 'แยกร่มเกล้า', toEN: 'Yaek Rom Klao', toZH: '耶隆高', subTH: '(ยังไม่เปิดให้บริการ)', subEN: '(Not in Service)', subZH: '(尚未开通)', first: '-', last: '-' },
+                dir2: { code: 'OR01', toTH: 'บางขุนนนท์', toEN: 'Bang Khun Non', toZH: '挽坤暖', subTH: '(ยังไม่เปิดให้บริการ)', subEN: '(Not in Service)', subZH: '(尚未开通)', first: '-', last: '-' }
             }
         ];
 
@@ -6786,8 +6786,10 @@ setOriginFromActionSheet() {
                     // ข้อมูลทิศทางปลายทางและรหัสสถานี
                     const d1Code = activeLine.dir1?.code || '';
                     const d1Name = isZh ? (activeLine.dir1?.toZH || activeLine.dir1?.toEN || '') : (isEn ? (activeLine.dir1?.toEN || '') : (activeLine.dir1?.toTH || ''));
+                    const d1Sub = isZh ? (activeLine.dir1?.subZH || '') : (isEn ? (activeLine.dir1?.subEN || '') : (activeLine.dir1?.subTH || ''));
                     const d2Code = activeLine.dir2?.code || '';
                     const d2Name = isZh ? (activeLine.dir2?.toZH || activeLine.dir2?.toEN || '') : (isEn ? (activeLine.dir2?.toEN || '') : (activeLine.dir2?.toTH || ''));
+                    const d2Sub = isZh ? (activeLine.dir2?.subZH || '') : (isEn ? (activeLine.dir2?.subEN || '') : (activeLine.dir2?.subTH || ''));
 
                     const timeUnit = isZh ? '' : (isEn ? '' : ' นาที');
                     const d1First = activeLine.dir1?.first ? `${activeLine.dir1.first}${activeLine.dir1.first !== '-' ? timeUnit : ''}` : '-';
@@ -6824,15 +6826,32 @@ setOriginFromActionSheet() {
                     }
 
                     // ขบวนแรก-สุดท้ายแยกทิศทาง พร้อมป้ายรหัสสถานีและการจัดช่องเวลาให้สวยงาม ไม่หลุดกรอบ/ตกบรรทัด
+                    const makeDirDestHtml = (code, name, sub) => {
+                        if (sub) {
+                            return `
+                                <div class="dir-dest-wrap" style="flex-direction:column;gap:3px;width:100%;text-align:center;">
+                                    <div style="display:inline-flex;align-items:center;justify-content:center;gap:6px;">
+                                        ${code ? `<span class="stn-code-badge" style="background:${activeLine.color}">${esc(code)}</span>` : ''}
+                                        <b class="dir-dest-title">${esc(name)}</b>
+                                    </div>
+                                    <span class="dir-dest-pill-tag">${esc(sub)}</span>
+                                </div>
+                            `;
+                        }
+                        return `
+                            <div class="dir-dest-wrap">
+                                ${code ? `<span class="stn-code-badge" style="background:${activeLine.color}">${esc(code)}</span>` : ''}
+                                <b class="dir-dest-title">${esc(name)}</b>
+                            </div>
+                        `;
+                    };
+
                     const dirCards = `
                         <div class="dir-timetables-grid">
                             <div class="dir-time-card">
                                 <div class="dir-card-header">
                                     <span class="dir-label">${isZh ? '开往方向' : (isEn ? 'Towards Direction' : 'ทิศทางมุ่งหน้า')}</span>
-                                    <div class="dir-dest-wrap">
-                                        ${d1Code ? `<span class="stn-code-badge" style="background:${activeLine.color}">${esc(d1Code)}</span>` : ''}
-                                        <b class="dir-dest-title">${esc(d1Name)}</b>
-                                    </div>
+                                    ${makeDirDestHtml(d1Code, d1Name, d1Sub)}
                                 </div>
                                 <div class="dir-times-grid">
                                     <div class="dir-time-item">
@@ -6848,10 +6867,7 @@ setOriginFromActionSheet() {
                             <div class="dir-time-card">
                                 <div class="dir-card-header">
                                     <span class="dir-label">${isZh ? '开往方向' : (isEn ? 'Towards Direction' : 'ทิศทางมุ่งหน้า')}</span>
-                                    <div class="dir-dest-wrap">
-                                        ${d2Code ? `<span class="stn-code-badge" style="background:${activeLine.color}">${esc(d2Code)}</span>` : ''}
-                                        <b class="dir-dest-title">${esc(d2Name)}</b>
-                                    </div>
+                                    ${makeDirDestHtml(d2Code, d2Name, d2Sub)}
                                 </div>
                                 <div class="dir-times-grid">
                                     <div class="dir-time-item">

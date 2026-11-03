@@ -18,7 +18,6 @@ class BkkWebViewScreen extends StatefulWidget {
 
 class _BkkWebViewScreenState extends State<BkkWebViewScreen> {
   late final WebViewController _controller;
-  bool _isLoading = true;
   StreamSubscription<Position>? _positionStreamSub;
   double? _bestAccuracy;
   DateTime? _lastDispatchedTime;
@@ -32,13 +31,6 @@ class _BkkWebViewScreenState extends State<BkkWebViewScreen> {
       prefs.remove('bkk_native_geofence_enabled');
       prefs.remove('bkk_native_geofence_radius');
     }).catchError((_) {});
-
-    // Watchdog to guarantee loading indicator is dismissed if onPageFinished stalls
-    Future.delayed(const Duration(seconds: 4), () {
-      if (mounted && _isLoading) {
-        setState(() => _isLoading = false);
-      }
-    });
 
     late final WebViewController controller;
     controller = WebViewController()
@@ -62,11 +54,7 @@ class _BkkWebViewScreenState extends State<BkkWebViewScreen> {
       )
       ..setNavigationDelegate(
         NavigationDelegate(
-          onPageStarted: (url) {
-            if (mounted) setState(() => _isLoading = true);
-          },
           onPageFinished: (url) {
-            if (mounted) setState(() => _isLoading = false);
             _injectBridgeHelpers();
             _requestNativeLocation(interactive: false);
           },
@@ -305,15 +293,7 @@ class _BkkWebViewScreenState extends State<BkkWebViewScreen> {
         body: SafeArea(
           top: true,
           bottom: false,
-          child: Stack(
-            children: [
-              WebViewWidget(controller: _controller),
-              if (_isLoading)
-                const Center(
-                  child: CircularProgressIndicator(color: Color(0xFF22C55E)),
-                ),
-            ],
-          ),
+          child: WebViewWidget(controller: _controller),
         ),
       ),
     );

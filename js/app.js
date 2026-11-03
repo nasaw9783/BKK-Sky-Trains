@@ -10909,7 +10909,7 @@ setOriginFromActionSheet() {
                                     <span class="interchange-st-code" style="background:${c.color};">${esc(c.key)}</span>
                                 </div>
 
-                                ${connStName ? `<div style="font-size:11.5px;color:var(--ink,#f8fafc);font-weight:600;margin-top:2px;display:flex;align-items:center;flex-wrap:wrap;gap:5px;"><span>${lang === 'zh' ? '换乘车站:' : (lang === 'en' ? 'Connecting Station:' : 'สถานีเชื่อมต่อ:')}</span><span class="interchange-conn-st-badge${isBrt ? ' st-key-brt' : ''}" style="${badgeStyle}">${esc(c.key)}</span><span style="color:${c.color}">${esc(connStName)}</span></div>` : ''}
+                                ${connStName ? `<div class="interchange-conn-st-row"><span>${lang === 'zh' ? '换乘车站:' : (lang === 'en' ? 'Connecting Station:' : 'สถานีเชื่อมต่อ:')}</span><span class="interchange-conn-st-badge${isBrt ? ' st-key-brt' : ''}" style="${badgeStyle}">${esc(c.key)}</span><span style="color:${c.color}">${esc(connStName)}</span></div>` : ''}
 
                                 <div class="interchange-walk-info">
                                     ${walkText}

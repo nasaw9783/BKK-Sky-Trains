@@ -3349,9 +3349,9 @@ gQIDAQAB
                 nameTH: 'BTS สายสีทอง', nameZH: 'BTS 金线',
                 nameEN: 'BTS Gold Line',
                 color: '#C9A038',
-                operatorTH: 'กรุงเทพธนาคม (KT) / BTSC',
-                operatorEN: 'Krungthep Thanakom / BTSC',
-                operatorZH: '曼谷塔纳空 (KT) / BTSC',
+                operatorTH: 'กรุงเทพธนาคม (KT) / BTSC (ระบบรถไฟฟ้าบีทีเอส)',
+                operatorEN: 'KT (Krungthep Thanakom) / BTSC (Bangkok Mass Transit System)',
+                operatorZH: '曼谷塔纳空 (KT) / BTSC (曼谷大众运输系统公司)',
                 terminusTH: 'กรุงธนบุรี ↔ คลองสาน (3 สถานี)',
                 terminusEN: 'Krung Thon Buri ↔ Khlong San (3 Stations)',
                 terminusZH: '吞武里城 ↔ 空讪 (3 个车站)',
@@ -3451,9 +3451,9 @@ gQIDAQAB
                 nameTH: 'MRT สายสีน้ำเงิน | (เฉลิมรัชมงคล)', nameZH: 'MRT 蓝线 | (差隆拉差蒙坤)',
                 nameEN: 'MRT Blue Line | (Chaloem Ratchamongkhon)',
                 color: '#0284C7',
-                operatorTH: 'BEM (Bangkok Expressway and Metro) / รฟม.',
-                operatorEN: 'BEM / MRTA (Mass Rapid Transit Authority)',
-                operatorZH: 'BEM (曼谷高速与地铁) / 泰国大众捷运局 (MRTA)',
+                operatorTH: 'BEM (ทางด่วนและรถไฟฟ้ากรุงเทพ) / รฟม. (การรถไฟฟ้าขนส่งมวลชนแห่งประเทศไทย)',
+                operatorEN: 'BEM (Bangkok Expressway and Metro) / MRTA (Mass Rapid Transit Authority of Thailand)',
+                operatorZH: 'BEM (曼谷高速与地铁) / MRTA (泰国大众捷运局)',
                 terminusTH: 'ท่าพระ ↔ หลักสอง (สายวงกลม, 38 สถานี)',
                 terminusEN: 'Tha Phra ↔ Lak Song (Loop Line, 38 Stations)',
                 terminusZH: '塔帕 ↔ 叻颂 (环线, 38 个车站)',
@@ -3485,9 +3485,9 @@ gQIDAQAB
                 nameTH: 'MRT สายสีม่วง | (ฉลองรัชธรรม)', nameZH: 'MRT 紫线 | (差隆拉差探)',
                 nameEN: 'MRT Purple Line | (Chalong Ratchatham)',
                 color: '#8A2C9B',
-                operatorTH: 'BEM (Bangkok Expressway and Metro) / รฟม.',
-                operatorEN: 'BEM / MRTA (Mass Rapid Transit Authority)',
-                operatorZH: 'BEM (曼谷高速与地铁) / 泰国大众捷运局 (MRTA)',
+                operatorTH: 'BEM (ทางด่วนและรถไฟฟ้ากรุงเทพ) / รฟม. (การรถไฟฟ้าขนส่งมวลชนแห่งประเทศไทย)',
+                operatorEN: 'BEM (Bangkok Expressway and Metro) / MRTA (Mass Rapid Transit Authority of Thailand)',
+                operatorZH: 'BEM (曼谷高速与地铁) / MRTA (泰国大众捷运局)',
                 terminusTH: 'คลองบางไผ่ ↔ เตาปูน (16 สถานี)',
                 terminusEN: 'Khlong Bang Phai ↔ Tao Poon (16 Stations)',
                 terminusZH: '曼艾空邦派 ↔ 岛本 (16 个车站)',
@@ -3588,8 +3588,8 @@ gQIDAQAB
                 nameEN: 'ARL Airport Rail Link',
                 color: '#8A1538',
                 operatorTH: 'รถไฟฟ้า ร.ฟ.ท. (เอเชีย เอรา วัน)',
-                operatorEN: 'SRT Electrified Train (Asia Era One)',
-                operatorZH: '亚洲第一快铁 (Asia Era One) / 泰国国家铁路',
+                operatorEN: 'SRTET (Asia Era One / State Railway of Thailand)',
+                operatorZH: 'SRTET (亚洲第一快铁 / 泰国国家铁路)',
                 terminusTH: 'พญาไท ↔ สุวรรณภูมิ (8 สถานี)',
                 terminusEN: 'Phaya Thai ↔ Suvarnabhumi (8 Stations)',
                 terminusZH: '披耶泰 ↔ 素万那普机场 (8 个车站)',
@@ -3621,9 +3621,9 @@ gQIDAQAB
                 nameTH: 'BRT', nameZH: 'BRT',
                 nameEN: 'BRT',
                 color: '#82C341',
-                operatorTH: 'กทม. / ระบบรถโดยสารด่วนพิเศษ BRT',
-                operatorEN: 'BMA / Bangkok BRT Express Bus',
-                operatorZH: '曼谷市政府 (BMA) / BRT 快速公交',
+                operatorTH: 'กทม. (กรุงเทพมหานคร) / BRT (ระบบรถโดยสารด่วนพิเศษ)',
+                operatorEN: 'BMA (Bangkok Metropolitan Administration) / BRT (Bangkok Bus Rapid Transit)',
+                operatorZH: 'BMA (曼谷市政府) / BRT (快速公交系统)',
                 terminusTH: 'สาทร ↔ ราชพฤกษ์ (12 สถานี)',
                 terminusEN: 'Sathorn ↔ Ratchaphruek (12 Stations)',
                 terminusZH: '沙吞 ↔ 叻差普 (12 个车站)',
@@ -3655,9 +3655,9 @@ gQIDAQAB
                 nameTH: 'MRT สายสีส้ม (ยังไม่เปิดให้บริการ)', nameZH: 'MRT 橙线 (尚未开通)',
                 nameEN: 'MRT Orange Line (Not in Service)',
                 color: '#F58220',
-                operatorTH: 'BEM (Bangkok Expressway and Metro) / รฟม. (ยังไม่เปิดให้บริการ)',
-                operatorEN: 'BEM / MRTA (Mass Rapid Transit Authority) (Not in Service)',
-                operatorZH: 'BEM (曼谷高速与地铁) / 泰国大众捷运局 (尚未开通运营)',
+                operatorTH: 'BEM (ทางด่วนและรถไฟฟ้ากรุงเทพ) / รฟม. (การรถไฟฟ้าขนส่งมวลชนแห่งประเทศไทย) (ยังไม่เปิดให้บริการ)',
+                operatorEN: 'BEM (Bangkok Expressway and Metro) / MRTA (Mass Rapid Transit Authority of Thailand) (Not in Service)',
+                operatorZH: 'BEM (曼谷高速与地铁) / MRTA (泰国大众捷运局) (尚未开通运营)',
                 terminusTH: 'บางขุนนนท์ ↔ แยกร่มเกล้า (ยังไม่เปิดให้บริการ)',
                 terminusEN: 'Bang Khun Non ↔ Yaek Rom Klao (Not in Service)',
                 terminusZH: '挽坤暖 ↔ 耶隆高 (尚未开通运营)',
@@ -3751,6 +3751,60 @@ gQIDAQAB
                 return `<span class="${mainClass}">${main}</span><span class="${tagClass}" style="color:${lineColor};border:1px solid ${lineColor}55;background:${lineColor}18;">${tag}</span>`;
             }
             return `<span class="${mainClass}">${esc(s)}</span>`;
+        }
+
+        function formatLineHeroMeta(activeLine, isZh, isEn, terminusHtml) {
+            if (!activeLine) return '';
+            const rawOp = isZh ? (activeLine.operatorZH || activeLine.operatorEN) : (isEn ? activeLine.operatorEN : activeLine.operatorTH);
+            if (!rawOp) return '';
+
+            // Extract any "(Not in Service)" suffix
+            let note = '';
+            let cleanOp = String(rawOp).trim();
+            if (cleanOp.includes('(ยังไม่เปิดให้บริการ)')) {
+                note = isZh ? '(尚未开通运营)' : (isEn ? '(Not in Service)' : '(ยังไม่เปิดให้บริการ)');
+                cleanOp = cleanOp.replace(/\(ยังไม่เปิดให้บริการ\)/g, '').trim();
+            } else if (cleanOp.includes('(Not in Service)')) {
+                note = isZh ? '(尚未开通运营)' : (isEn ? '(Not in Service)' : '(ยังไม่เปิดให้บริการ)');
+                cleanOp = cleanOp.replace(/\(Not in Service\)/g, '').trim();
+            } else if (cleanOp.includes('(尚未开通运营)')) {
+                note = isZh ? '(尚未开通运营)' : (isEn ? '(Not in Service)' : '(ยังไม่เปิดให้บริการ)');
+                cleanOp = cleanOp.replace(/\(尚未开通运营\)/g, '').trim();
+            }
+
+            const parts = cleanOp.split('/').map(p => p.trim()).filter(Boolean);
+            const entities = parts.map(p => {
+                const m = p.match(/^(.*?)\s*\((.*?)\)$/);
+                if (m) {
+                    let first = m[1].trim();
+                    let second = m[2].trim();
+                    if (second.length <= 5 && /^[A-Zก-๙\.\s]+$/.test(second)) {
+                        return { tag: second, name: first };
+                    }
+                    return { tag: first, name: second };
+                }
+                return { tag: isZh ? '运营' : (isEn ? 'OP' : 'ผู้ให้บริการ'), name: p };
+            });
+
+            const routeLabel = isZh ? '路线' : (isEn ? 'ROUTE' : 'เส้นทาง');
+
+            let itemsHtml = entities.map(e => `
+                <div class="line-hero-meta-item">
+                    <span class="line-hero-meta-tag">${esc(e.tag)}</span>
+                    <span class="line-hero-meta-name">${esc(e.name)}${note ? ` <span style="color:#ea580c;font-weight:700;">${esc(note)}</span>` : ''}</span>
+                </div>
+            `).join('');
+
+            if (terminusHtml) {
+                itemsHtml += `
+                    <div class="line-hero-meta-item is-route">
+                        <span class="line-hero-meta-tag is-route">${routeLabel}</span>
+                        <span class="line-hero-meta-name is-route">${terminusHtml}</span>
+                    </div>
+                `;
+            }
+
+            return `<div class="line-hero-meta-list">${itemsHtml}</div>`;
         }
 
         function renderLineFilterBar(activeLineId, onClickHandlerName, barId = '') {
@@ -6550,21 +6604,16 @@ setOriginFromActionSheet() {
                     bodyHtml = `
                         <!-- Line Hero Card -->
                         <div class="line-hero-card" style="border-left:5px solid ${activeLine.color}">
-                            <div class="line-hero-header" style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
-                                <div style="display:flex;align-items:flex-start;gap:10px;min-width:0;flex:1;">
-                                    <div style="flex-shrink:0;margin-top:2px;">${getLineIconSvg(activeLine.id, false, 28)}</div>
-                                    <div style="min-width:0;flex:1;">
-                                        <div class="line-hero-title-wrap">${formatLineTitleWithTag(lineName, activeLine.color)}</div>
-                                        <div style="font-size:12px;color:var(--muted);line-height:1.45;word-break:break-word;margin-top:3px;">
-                                            <div>${esc(operator)}</div>
-                                            <div style="margin-top:2px;">${esc(terminus)}</div>
-                                        </div>
-                                    </div>
+                            <div class="line-hero-header" style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+                                <div style="display:flex;align-items:center;gap:10px;min-width:0;flex:1;">
+                                    <div style="flex-shrink:0;">${getLineIconSvg(activeLine.id, false, 28)}</div>
+                                    <div class="line-hero-title-wrap">${formatLineTitleWithTag(lineName, activeLine.color)}</div>
                                 </div>
                                 <button type="button" class="btn btn-ghost" style="padding:5px 10px;font-size:11.5px;margin-left:auto;white-space:nowrap;flex-shrink:0;" onclick="App.setFaresLine(0)">
                                     ${isZh ? '查看全部线路' : (isEn ? 'View All Lines' : 'ดูทุกสาย')} ↺
                                 </button>
                             </div>
+                            ${formatLineHeroMeta(activeLine, isZh, isEn, esc(terminus))}
 
                             <div class="line-metrics-grid">
                                 <div class="line-metric-box">
@@ -6943,21 +6992,16 @@ setOriginFromActionSheet() {
                     bodyHtml = `
                         <!-- Line Hero Card -->
                         <div class="line-hero-card" style="border-left:5px solid ${activeLine.color}">
-                            <div class="line-hero-header" style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
-                                <div style="display:flex;align-items:flex-start;gap:10px;min-width:0;flex:1;">
-                                    <div style="flex-shrink:0;margin-top:2px;">${getLineIconSvg(activeLine.id, false, 28)}</div>
-                                    <div style="min-width:0;flex:1;">
-                                        <div class="line-hero-title-wrap">${formatLineTitleWithTag(lineName, activeLine.color)}</div>
-                                        <div style="font-size:12px;color:var(--muted);line-height:1.45;word-break:break-word;margin-top:3px;">
-                                            <div>${esc(operator)}</div>
-                                            <div style="margin-top:2px;">${terminusHtml}</div>
-                                        </div>
-                                    </div>
+                            <div class="line-hero-header" style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+                                <div style="display:flex;align-items:center;gap:10px;min-width:0;flex:1;">
+                                    <div style="flex-shrink:0;">${getLineIconSvg(activeLine.id, false, 28)}</div>
+                                    <div class="line-hero-title-wrap">${formatLineTitleWithTag(lineName, activeLine.color)}</div>
                                 </div>
                                 <button type="button" class="btn btn-ghost" style="padding:5px 10px;font-size:11.5px;margin-left:auto;white-space:nowrap;flex-shrink:0;" onclick="App.setTimetablesLine(0)">
                                     ${isZh ? '查看全部线路' : (isEn ? 'View All Lines' : 'ดูทุกสาย')} ↺
                                 </button>
                             </div>
+                            ${formatLineHeroMeta(activeLine, isZh, isEn, terminusHtml)}
 
                             <div style="margin:8px 0 12px;">
                                 ${liveFreqHtml}

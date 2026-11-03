@@ -9218,11 +9218,11 @@
             border-color: rgba(234, 179, 8, 0.4);
         }
 
-        /* Option 4: Compact Bento Grid Station List in Timetables View (Static / Non-clickable) */
+        /* Station Chips List in Timetables View (Styled after Journey Planner Station Picker - Option 2) */
         .line-stations-bento-grid {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 8px;
+            gap: 6px 8px;
             width: 100%;
             box-sizing: border-box;
         }
@@ -9235,30 +9235,31 @@
         .line-stn-bento-card {
             background: var(--bg-card, var(--card, #1e293b));
             border: 1px solid var(--line, rgba(148, 163, 184, 0.2));
-            border-radius: 12px;
-            padding: 8px 10px;
+            border-radius: 8px;
+            padding: 6px 8px;
             display: flex;
             align-items: center;
-            gap: 9px;
+            gap: 6px;
             cursor: default !important;
             position: relative;
             outline: none;
             text-align: left;
             width: 100%;
             box-sizing: border-box;
+            min-height: 38px;
             caret-color: transparent !important;
             user-select: none !important;
             -webkit-user-select: none !important;
             pointer-events: none;
         }
         .bento-chip-code {
-            font-size: 10.5px;
+            font-size: 9.5px;
             font-weight: 800;
             font-family: 'JetBrains Mono', 'Prompt', monospace, sans-serif;
             color: #ffffff;
-            padding: 3.5px 6.5px;
-            border-radius: 7px;
-            min-width: 34px;
+            padding: 2.5px 5.5px;
+            border-radius: 5px;
+            min-width: 30px;
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -9266,19 +9267,18 @@
             line-height: 1;
             letter-spacing: 0;
             flex-shrink: 0;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+            box-shadow: 0 1.5px 4px rgba(0, 0, 0, 0.2);
             caret-color: transparent !important;
             user-select: none !important;
             cursor: default !important;
         }
         .bento-name-primary {
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 700;
             color: var(--ink, #f8fafc);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            line-height: 1.25;
+            white-space: normal;
+            word-break: break-word;
+            line-height: 1.2;
             caret-color: transparent !important;
             user-select: none !important;
             cursor: default !important;

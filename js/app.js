@@ -7588,7 +7588,6 @@ setOriginFromActionSheet() {
                 // Interchange Hub Modal
                 set('interchangeStatusPill', lang === 'zh' ? '● 运营中换乘枢纽' : (lang === 'en' ? '● ACTIVE INTERCHANGE' : '● จุดเชื่อมต่อพร้อมบริการ'));
                 set('interchangeCurLineLbl', lang === 'zh' ? '当前线路:' : (lang === 'en' ? 'Current Line:' : 'สายปัจจุบัน:'));
-                set('interchangeCurTag', lang === 'zh' ? '当前站点' : (lang === 'en' ? 'CURRENT HUB' : 'สถานีปัจจุบัน'));
                 set('interchangeSectionTitle', lang === 'zh' ? '所有换乘接驳线路:' : (lang === 'en' ? 'All Connecting Lines:' : 'สายสี / ไลน์ ที่เชื่อมต่อทั้งหมด:'));
                 set('interchangeFareMediaNote', lang === 'zh' ? '乘车卡: EMV Contactless / 专用交通卡' : (lang === 'en' ? 'Fare Media: EMV Contactless / Line Card' : 'แตะบัตร: EMV Contactless / บัตรเฉพาะสาย'));
                 set('interchangeDismissBtn', lang === 'zh' ? '关闭' : (lang === 'en' ? 'Close' : 'ปิด'));
@@ -10797,10 +10796,6 @@ setOriginFromActionSheet() {
                     }
                     curPill.textContent = curLineName;
                     curPill.style.color = curCatLine ? curCatLine.color : (curLine?.LineColor || color);
-                }
-                const curTag = document.getElementById('interchangeCurTag');
-                if (curTag) {
-                    curTag.textContent = lang === 'zh' ? '当前站点' : (lang === 'en' ? 'CURRENT HUB' : 'สถานีปัจจุบัน');
                 }
 
                 // Section Title

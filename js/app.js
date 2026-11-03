@@ -3474,8 +3474,8 @@ gQIDAQAB
                 offPeakFreqTH: '5.00 - 8.00 นาที',
                 offPeakFreqEN: '5.00 - 8.00 min',
                 offPeakFreqZH: '5.00 - 8.00 分钟',
-                dir1: { code: 'BL01', toTH: 'ท่าพระ (ผ่านบางซื่อ)', toEN: 'Tha Phra (via Bang Sue)', toZH: '塔帕 (途经挽赐)', first: '05:30', last: '23:30' },
-                dir2: { code: 'BL38', toTH: 'หลักสอง (ผ่านหัวลำโพง)', toEN: 'Lak Song (via Hua Lamphong)', toZH: '叻颂 (途经华南蓬)', first: '05:30', last: '23:30' }
+                dir1: { code: 'BL01', toTH: 'ท่าพระ', toEN: 'Tha Phra', toZH: '塔帕', first: '05:30', last: '23:30' },
+                dir2: { code: 'BL38', toTH: 'หลักสอง', toEN: 'Lak Song', toZH: '叻颂', first: '05:30', last: '23:30' }
             },
             {
                 id: 102,

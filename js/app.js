@@ -6908,13 +6908,16 @@ setOriginFromActionSheet() {
 
                         const stationChips = lineStations.map(s => {
                             const sKey = s.StationKey;
-                            // แสดงเฉพาะชื่อภาษาที่เลือกใช้งานเท่านั้น ห้ามมีภาษาอื่นมาประปน
                             const name = stName(s);
+                            const nameLen = name.length;
+                            const sizeClass = nameLen > 20 ? 'chip-name-xxlong' : (nameLen > 15 ? 'chip-name-xlong' : (nameLen > 11 ? 'chip-name-long' : ''));
 
                             return `
-                                <div class="line-stn-bento-card" title="${esc(name)}">
-                                    <span class="bento-chip-code" style="background:${color};color:${codeTextColor}">${esc(sKey)}</span>
-                                    <span class="bento-name-primary">${esc(name)}</span>
+                                <div class="station-picker-chip static-chip" title="${esc(name)}">
+                                    <span class="chip-code" style="background:${color};color:${codeTextColor}">${esc(sKey)}</span>
+                                    <div style="display:flex;flex-direction:column;min-width:0;text-align:left;line-height:1.2;">
+                                        <span class="chip-name ${sizeClass}">${esc(name)}</span>
+                                    </div>
                                 </div>
                             `;
                         }).join('');
@@ -6929,7 +6932,7 @@ setOriginFromActionSheet() {
                                     <span id="stnListChev" style="position:absolute;right:0;font-size:12px;color:var(--muted);transition:transform .2s ease;display:inline-flex;align-items:center;justify-content:center;">▼</span>
                                 </div>
                                 <div id="stnListBody" style="display:none;margin-top:10px;">
-                                    <div class="line-stations-bento-grid">
+                                    <div class="line-stations-grid">
                                         ${stationChips}
                                     </div>
                                 </div>

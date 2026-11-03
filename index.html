@@ -2467,6 +2467,12 @@
             background: #334155;
         }
 
+        /* Clear Glass: เว้นช่องว่างเส้นรางด้านหลังวงกลมสถานี เพื่อคงความใสมองทะลุได้ และลบเส้นรางสีอ่อนพาดผ่านรูสถานี */
+        html.theme-clear .st-rail .track {
+            -webkit-mask-image: linear-gradient(to bottom, #000 17px, transparent 17px, transparent 31px, #000 31px);
+            mask-image: linear-gradient(to bottom, #000 17px, transparent 17px, transparent 31px, #000 31px);
+        }
+
         .st-rail .node {
             position: relative;
             z-index: 2;

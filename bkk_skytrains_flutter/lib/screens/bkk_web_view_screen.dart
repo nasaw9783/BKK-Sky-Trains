@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,9 @@ class BkkWebViewScreen extends StatefulWidget {
 class _BkkWebViewScreenState extends State<BkkWebViewScreen> {
   late final WebViewController _controller;
   bool _isLoading = true;
+  StreamSubscription<Position>? _positionStreamSub;
+  double? _bestAccuracy;
+  DateTime? _lastDispatchedTime;
 
   @override
   void initState() {
@@ -180,20 +184,27 @@ class _BkkWebViewScreenState extends State<BkkWebViewScreen> {
         return;
       }
 
-      // If user pressed "Relocate" (interactive == true), NEVER use stale cached lastKnownPosition.
-      // For initial background launch (interactive == false), only use if fresh (< 5 mins) and accurate (<= 100m).
+      // If user pressed "Relocate" (interactive == true), reset accuracy filter
+      if (interactive) {
+        _bestAccuracy = null;
+        _lastDispatchedTime = null;
+      }
+
+      // For initial background launch (interactive == false), only use lastKnown if fresh (< 45s) and accurate (<= 40m)
       if (!interactive) {
         try {
           final lastKnown = await Geolocator.getLastKnownPosition();
           if (lastKnown != null) {
             final age = DateTime.now().difference(lastKnown.timestamp);
-            if (age < const Duration(minutes: 5) && lastKnown.accuracy <= 100) {
+            if (age < const Duration(seconds: 45) && lastKnown.accuracy <= 40) {
               debugPrint('Fresh last known location used (${age.inSeconds}s old): ${lastKnown.latitude}, ${lastKnown.longitude}');
+              _bestAccuracy = lastKnown.accuracy;
+              _lastDispatchedTime = DateTime.now();
               _controller.runJavaScript(
                 "if (window.App && App.onNativeLocationSuccess) { App.onNativeLocationSuccess(${lastKnown.latitude}, ${lastKnown.longitude}, ${lastKnown.accuracy}); }",
               );
             } else {
-              debugPrint('Stale last known location discarded (${age.inMinutes}m old, acc: ${lastKnown.accuracy}m)');
+              debugPrint('Stale last known location discarded (${age.inSeconds}s old, acc: ${lastKnown.accuracy}m)');
             }
           }
         } catch (e) {
@@ -201,44 +212,69 @@ class _BkkWebViewScreenState extends State<BkkWebViewScreen> {
         }
       }
 
-      // Request fresh live GPS fix with adequate satellite lock window (14 seconds)
+      // 1. Start continuous live GPS stream to actively refine accuracy under elevated station roofs/canopies
+      await _positionStreamSub?.cancel();
+      final streamSettings = defaultTargetPlatform == TargetPlatform.android
+          ? AndroidSettings(
+              accuracy: LocationAccuracy.best,
+              distanceFilter: 2,
+              forceLocationManager: false,
+              intervalDuration: const Duration(seconds: 2),
+            )
+          : const LocationSettings(
+              accuracy: LocationAccuracy.best,
+              distanceFilter: 2,
+            );
+
+      _positionStreamSub = Geolocator.getPositionStream(
+        locationSettings: streamSettings,
+      ).listen(
+        (Position livePos) {
+          final now = DateTime.now();
+          final isBetter = _bestAccuracy == null || livePos.accuracy <= _bestAccuracy!;
+          final timeElapsed = _lastDispatchedTime == null || now.difference(_lastDispatchedTime!).inMilliseconds >= 1500;
+
+          if (isBetter || timeElapsed) {
+            if (isBetter) _bestAccuracy = livePos.accuracy;
+            _lastDispatchedTime = now;
+            debugPrint('Native GPS stream update: ${livePos.latitude}, ${livePos.longitude}, acc: ${livePos.accuracy}');
+            _controller.runJavaScript(
+              "if (window.App && App.onNativeLocationSuccess) { App.onNativeLocationSuccess(${livePos.latitude}, ${livePos.longitude}, ${livePos.accuracy}); }",
+            );
+          }
+        },
+        onError: (err) {
+          debugPrint('Location stream error: $err');
+        },
+      );
+
+      // 2. Concurrently attempt immediate high-accuracy single fix
       try {
         final LocationSettings locationSettings;
         if (defaultTargetPlatform == TargetPlatform.android) {
           locationSettings = AndroidSettings(
             accuracy: LocationAccuracy.high,
             forceLocationManager: false,
-            timeLimit: const Duration(seconds: 14),
+            timeLimit: const Duration(seconds: 10),
           );
         } else {
           locationSettings = const LocationSettings(
             accuracy: LocationAccuracy.high,
-            timeLimit: Duration(seconds: 14),
+            timeLimit: Duration(seconds: 10),
           );
         }
-        final livePos = await Geolocator.getCurrentPosition(locationSettings: locationSettings);
-        debugPrint('Fresh native GPS location obtained: ${livePos.latitude}, ${livePos.longitude}, acc: ${livePos.accuracy}');
-        _controller.runJavaScript(
-          "if (window.App && App.onNativeLocationSuccess) { App.onNativeLocationSuccess(${livePos.latitude}, ${livePos.longitude}, ${livePos.accuracy}); }",
-        );
+        final singlePos = await Geolocator.getCurrentPosition(locationSettings: locationSettings);
+        final now = DateTime.now();
+        if (_bestAccuracy == null || singlePos.accuracy <= _bestAccuracy!) {
+          _bestAccuracy = singlePos.accuracy;
+          _lastDispatchedTime = now;
+          debugPrint('Immediate native GPS location obtained: ${singlePos.latitude}, ${singlePos.longitude}, acc: ${singlePos.accuracy}');
+          _controller.runJavaScript(
+            "if (window.App && App.onNativeLocationSuccess) { App.onNativeLocationSuccess(${singlePos.latitude}, ${singlePos.longitude}, ${singlePos.accuracy}); }",
+          );
+        }
       } catch (e) {
-        debugPrint('High accuracy fix failed ($e), falling back to balanced/network accuracy...');
-        try {
-          final fallbackSettings = const LocationSettings(
-            accuracy: LocationAccuracy.medium,
-            timeLimit: Duration(seconds: 8),
-          );
-          final fallbackPos = await Geolocator.getCurrentPosition(locationSettings: fallbackSettings);
-          debugPrint('Fallback balanced location obtained: ${fallbackPos.latitude}, ${fallbackPos.longitude}, acc: ${fallbackPos.accuracy}');
-          _controller.runJavaScript(
-            "if (window.App && App.onNativeLocationSuccess) { App.onNativeLocationSuccess(${fallbackPos.latitude}, ${fallbackPos.longitude}, ${fallbackPos.accuracy}); }",
-          );
-        } catch (e2) {
-          debugPrint('Balanced fix failed ($e2)');
-          _controller.runJavaScript(
-            "if (window.App && App.onNativeLocationError) { App.onNativeLocationError('gps_timeout'); }",
-          );
-        }
+        debugPrint('High accuracy single fix wait ($e) — continuous stream will continue refining.');
       }
     } catch (e) {
       debugPrint('Geolocator outer failed: $e');
@@ -246,6 +282,12 @@ class _BkkWebViewScreenState extends State<BkkWebViewScreen> {
         "if (window.App && App.onNativeLocationError) { App.onNativeLocationError('$e'); }",
       );
     }
+  }
+
+  @override
+  void dispose() {
+    _positionStreamSub?.cancel();
+    super.dispose();
   }
 
   @override

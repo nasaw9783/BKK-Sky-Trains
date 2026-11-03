@@ -834,6 +834,7 @@ gQIDAQAB
                 currentLocation: 'ตำแหน่งปัจจุบัน',
                 lastLocation: 'ตำแหน่งที่บันทึกไว้',
                 confirmHere: 'ฉันอยู่ที่สถานีนี้ (ยืนยันพิกัด)',
+                imAtThisStation: 'ฉันอยู่ที่สถานีนี้',
                 searchPh: 'ค้นหา รหัสสถานี หรือ ชื่อสถานี เช่น CEN , สยาม',
                 notFound: q => `ไม่พบสถานี “${q}”`,
                 nearYou: 'ใกล้คุณ',
@@ -1181,6 +1182,7 @@ gQIDAQAB
                 currentLocation: 'Current Location',
                 lastLocation: 'Saved Location',
                 confirmHere: "I'm at this station (Confirm)",
+                imAtThisStation: "I'm at this station",
                 searchPh: 'Search station code or name e.g. CEN, Siam',
                 notFound: q => `No station found for “${q}”`,
                 nearYou: 'Nearest',
@@ -1528,6 +1530,7 @@ gQIDAQAB
                 currentLocation: '当前位置',
                 lastLocation: '上次保存位置',
                 confirmHere: '我在此站（确认位置）',
+                imAtThisStation: '我在此站',
                 searchPh: '搜索车站编号或站名，如 CEN、暹罗、Siam',
                 notFound: q => `未找到车站 “${q}”`,
                 nearYou: '附近',
@@ -2342,9 +2345,27 @@ gQIDAQAB
             return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         }
 
-        function fmtDist(km) {
+        function isAtStation(km, stationKey = null) {
+            if (km == null) return false;
+            // 1. ผู้ใช้จงใจเลือก/ยืนยันสถานีนี้เอง (calibrated)
+            if (typeof App !== 'undefined' && App.userPos?.calibrated) {
+                if (stationKey && stationKey === App.pinnedKey) return true;
+                if (!stationKey && (!km || km <= 0.45)) return true;
+            }
+            // 2. รัศมีบริเวณพื้นที่สถานี (Station Precinct Radius: ชานชาลา ทางเชื่อม สกายวอล์ก บันได และทางออกทั้งหมด ~250 ม.)
+            if (km <= 0.25) return true;
+
+            // 3. ความคลาดเคลื่อนสัญญาณ GPS ใต้โครงสร้างคอนกรีต/หลังคาสถานี (GPS canopy uncertainty tolerance)
+            const accKm = (typeof App !== 'undefined' && App.userPos?.accuracy) ? (App.userPos.accuracy / 1000) : 0;
+            if (accKm > 0.03 && km <= 0.40 && (km - accKm) <= 0.20) {
+                return true;
+            }
+            return false;
+        }
+
+        function fmtDist(km, stationKey = null) {
             if (km == null) return '';
-            if (km <= 0.12) return T('atStation');
+            if (isAtStation(km, stationKey)) return T('atStation');
             return km < 1 ? Math.round(km * 1000) + T('mUnit') : km.toFixed(1) + T('kmUnit');
         }
 
@@ -8783,8 +8804,8 @@ setOriginFromActionSheet() {
                     if (!raw) return null;
                     const data = JSON.parse(raw);
                     // หากผู้ใช้จงใจเลือกสถานีเอง (calibrated) จำไว้ 14 วัน
-                    // หากเป็นตำแหน่ง GPS อัตโนมัติ จำไว้ไม่เกิน 30 นาที เพื่อป้องกันการแสดงสถานีเก่าข้ามวันข้ามเขต
-                    const maxAge = data.calibrated ? (14 * 24 * 3600 * 1000) : (30 * 60 * 1000);
+                    // หากเป็นตำแหน่ง GPS อัตโนมัติ จำไว้ไม่เกิน 5 นาที เพื่อป้องกันการแสดงสถานีเก่าข้ามวันข้ามเขต
+                    const maxAge = data.calibrated ? (14 * 24 * 3600 * 1000) : (5 * 60 * 1000);
                     if (Date.now() - data.timestamp < maxAge && data.lat && data.lon) {
                         return data;
                     }
@@ -8816,8 +8837,16 @@ setOriginFromActionSheet() {
                 clearTimeout(this._ipFallbackTimer);
                 this.locating = false;
                 this.locError = null;
-                this.userPos = { lat, lon, accuracy: accuracy || 10, calibrated: false };
-                this.saveUserPosition(this.userPos, null, false);
+
+                const newAcc = accuracy || 10;
+                // หากผู้ใช้เพิ่งกด calibrate สถานีเอง และพิกัดที่ส่งมายังหยาบมาก (accuracy > 150m) ให้คงสถานะ calibrated ไว้
+                const wasCalibrated = Boolean(this.userPos?.calibrated);
+                const keepCalibrated = wasCalibrated && newAcc > 150;
+
+                this.userPos = { lat, lon, accuracy: newAcc, calibrated: keepCalibrated };
+                if (!keepCalibrated) {
+                    this.saveUserPosition(this.userPos, null, false);
+                }
                 this.computeNearest();
                 this.renderNearest();
                 this.renderNearestExit();
@@ -9008,12 +9037,12 @@ setOriginFromActionSheet() {
                     return;
                 }
 
-                // บน Desktop PC หรือ file:// ที่ไม่มีฮาร์ดแวร์ GPS ดาวเทียม ให้ดึงตำแหน่งผ่านเครือข่ายควบคู่ไปพร้อมกันหากรอนานเกิน 1.2 วินาที
+                // บน Desktop PC หรือ file:// ที่ไม่มีฮาร์ดแวร์ GPS ดาวเทียม ให้ดึงตำแหน่งผ่านเครือข่ายควบคู่ไปพร้อมกันหากรอนานเกิน 1.8 วินาที
                 this._ipFallbackTimer = setTimeout(() => {
                     if (!resolvedByGps) {
                         applyIpFallback(null);
                     }
-                }, 1200);
+                }, 1800);
 
                 const onPositionSuccess = (pos) => {
                     resolvedByGps = true;
@@ -9025,21 +9054,25 @@ setOriginFromActionSheet() {
                     const lat = pos.coords.latitude;
                     const lon = pos.coords.longitude;
 
-                    this.userPos = { lat, lon, accuracy: acc, calibrated: false };
-                    this.saveUserPosition(this.userPos, null, false);
-                    this.computeNearest();
-                    this.locError = null;
-                    this.updateRelocateBtn();
-                    this.renderNearest();
-                    this.renderNearestExit();
-                    this.renderStrip();
+                    // ปรับปรุงตำแหน่งเมื่อได้ความแม่นยำดีขึ้น
+                    const prevAcc = this.userPos?.accuracy || 9999;
+                    if (!this.userPos || acc <= prevAcc || Math.abs(lat - this.userPos.lat) > 0.0005) {
+                        this.userPos = { lat, lon, accuracy: acc, calibrated: false };
+                        this.saveUserPosition(this.userPos, null, false);
+                        this.computeNearest();
+                        this.locError = null;
+                        this.updateRelocateBtn();
+                        this.renderNearest();
+                        this.renderNearestExit();
+                        this.renderStrip();
 
-                    if (interactive && this.nearest?.station) {
-                        this.showNearestStationToast(this.nearest.station, this.nearest.km, false);
+                        if (interactive && this.nearest?.station) {
+                            this.showNearestStationToast(this.nearest.station, this.nearest.km, false);
+                        }
                     }
                 };
 
-                // ขั้นที่ 1: ลองค้นหาด้วยความแม่นยำสูง (Timeout 3.5 วินาที, maximumAge 15 วินาที)
+                // ขั้นที่ 1: ลองค้นหาด้วยความแม่นยำสูง (Timeout 8 วินาที, maximumAge 10 วินาที)
                 try {
                     navigator.geolocation.getCurrentPosition(
                         onPositionSuccess,
@@ -9049,7 +9082,7 @@ setOriginFromActionSheet() {
                                 applyIpFallback(err1);
                                 return;
                             }
-                            // ขั้นที่ 2: สลับมาลอง Cellular / Wi-Fi Positioning ทันที (Timeout 3 วินาที, maximumAge 60 วินาที)
+                            // ขั้นที่ 2: สลับมาลอง Cellular / Wi-Fi Positioning ทันที (Timeout 4 วินาที, maximumAge 30 วินาที)
                             try {
                                 navigator.geolocation.getCurrentPosition(
                                     onPositionSuccess,
@@ -9057,15 +9090,41 @@ setOriginFromActionSheet() {
                                         clearTimeout(this._ipFallbackTimer);
                                         applyIpFallback(err2);
                                     },
-                                    { enableHighAccuracy: false, maximumAge: 60000, timeout: 3000 }
+                                    { enableHighAccuracy: false, maximumAge: 30000, timeout: 4000 }
                                 );
                             } catch (e2) {
                                 clearTimeout(this._ipFallbackTimer);
                                 applyIpFallback(err1);
                             }
                         },
-                        { enableHighAccuracy: true, maximumAge: 15000, timeout: 3500 }
+                        { enableHighAccuracy: true, maximumAge: 10000, timeout: 8000 }
                     );
+
+                    // ติดตามสัญญาณดาวเทียมชั่วคราว (15 วินาที) เพื่ออัปเดตความแม่นยำให้สูงขึ้นแบบอัตโนมัติ
+                    if (navigator.geolocation && navigator.geolocation.watchPosition) {
+                        if (this._browserWatchId != null) {
+                            navigator.geolocation.clearWatch(this._browserWatchId);
+                        }
+                        this._browserWatchId = navigator.geolocation.watchPosition(
+                            (pos) => {
+                                onPositionSuccess(pos);
+                                if (pos.coords.accuracy && pos.coords.accuracy <= 25) {
+                                    if (this._browserWatchId != null) {
+                                        navigator.geolocation.clearWatch(this._browserWatchId);
+                                        this._browserWatchId = null;
+                                    }
+                                }
+                            },
+                            null,
+                            { enableHighAccuracy: true, maximumAge: 5000, timeout: 12000 }
+                        );
+                        setTimeout(() => {
+                            if (this._browserWatchId != null) {
+                                navigator.geolocation.clearWatch(this._browserWatchId);
+                                this._browserWatchId = null;
+                            }
+                        }, 15000);
+                    }
                 } catch (e) {
                     clearTimeout(this._ipFallbackTimer);
                     applyIpFallback({ code: 2 });
@@ -9102,12 +9161,12 @@ setOriginFromActionSheet() {
                     ? (lang === 'en' ? 'Approximate Nearest Station' : (lang === 'zh' ? '大约最近车站' : 'พบสถานีโดยประมาณ'))
                     : (lang === 'en' ? 'Nearest Station Detected' : (lang === 'zh' ? '检测到附近车站' : 'ตรวจพบสถานีใกล้คุณ'));
 
-                const isAtStation = (km != null && km <= 0.12) || (this.userPos && this.userPos.calibrated && (!km || km <= 0.3));
+                const isAt = isAtStation(km, station.StationKey);
                 let chipHtml = '';
-                if (isAtStation) {
+                if (isAt) {
                     chipHtml = `<span class="toast-status-chip"><span class="live-dot"></span><span>${esc(T('atStation'))}</span></span>`;
                 } else if (km != null) {
-                    chipHtml = `<span class="toast-dist-chip"><span>${esc(fmtDist(km))}</span></span>`;
+                    chipHtml = `<span class="toast-dist-chip"><span>${esc(fmtDist(km, station.StationKey))}</span></span>`;
                 }
 
                 const html = `
@@ -9544,17 +9603,17 @@ setOriginFromActionSheet() {
                     ? haversineKm(this.userPos.lat, this.userPos.lon, targetStation.Latitude, targetStation.Longitude)
                     : null);
 
-                const isAtStation = km != null && km <= 0.12;
+                const isAt = isAtStation(km, targetStation.StationKey);
                 if (chipEl) {
-                    chipEl.classList.toggle('at-station', isAtStation);
+                    chipEl.classList.toggle('at-station', isAt);
                 }
                 if (distEl) {
                     distEl.innerHTML = km != null
-                        ? (isAtStation ? `${getUiIcon('pin', 13, '#10b981')} ${T('atStation')}` : fmtDist(km))
+                        ? (isAt ? `${getUiIcon('pin', 13, '#10b981')} ${T('atStation')}` : fmtDist(km, targetStation.StationKey))
                         : (lang === 'en' ? 'Near you' : (lang === 'zh' ? '附近' : 'ใกล้คุณ'));
                 }
                 if (distLbl) {
-                    distLbl.textContent = isAtStation ? T('currentLocation') : T('fromYou');
+                    distLbl.textContent = isAt ? T('currentLocation') : T('fromYou');
                 }
             },
 
@@ -10196,9 +10255,9 @@ setOriginFromActionSheet() {
             getStationTrainIconColor(r, lineId) {
                 const brandColor = r.station.StationLineColor || LINE_BRAND_COLORS[lineId] || '#7AB420';
 
-                // 1. ตรวจจับว่าตรวจพบว่าอยู่ที่สถานีแล้วหรือไม่ (ระยะห่าง <= 120 เมตร หรือสถานีที่ calibrate ตำแหน่งแล้ว)
-                const isAtStation = (r.km != null && r.km <= 0.12) || (this.userPos?.calibrated && r.station.StationKey === this.pinnedKey);
-                if (isAtStation) {
+                // 1. ตรวจจับว่าตรวจพบว่าอยู่ที่สถานีแล้วหรือไม่ (ระยะห่างตามรัศมีสถานี หรือสถานีที่ calibrate ตำแหน่งแล้ว)
+                const isAt = isAtStation(r.km, r.station.StationKey);
+                if (isAt) {
                     return brandColor; // อยู่ที่สถานีแล้ว → มีสีเต็ม 100%
                 }
 
@@ -10224,9 +10283,9 @@ setOriginFromActionSheet() {
                     return '#ffffff'; // อยู่นอกสถานี → เป็นสีขาว
                 }
 
-                // 3. เมื่อรถไฟกำลังเข้าสถานีใหม่ (ระยะ 0.8 กม. ลงมาจนถึง 0.12 กม. หรือตามเวลาที่รถไฟกำลังเข้าสถานี)
+                // 3. เมื่อรถไฟกำลังเข้าสถานีใหม่ (ระยะ 0.8 กม. ลงมาจนถึง 0.25 กม. หรือตามเวลาที่รถไฟกำลังเข้าสถานี)
                 // ค่อย ๆ เริ่มมีสีจนเต็ม เมื่อถึงสถานีใหม่
-                const distRatio = (r.km != null && r.km <= 0.8) ? Math.max(0, Math.min(1, (0.8 - r.km) / (0.8 - 0.12))) : 0;
+                const distRatio = (r.km != null && r.km <= 0.8) ? Math.max(0, Math.min(1, (0.8 - r.km) / (0.8 - 0.25))) : 0;
                 const effectiveRatio = Math.max(distRatio, arrivalRatio);
 
                 if (effectiveRatio >= 0.98) return brandColor;
@@ -10268,7 +10327,7 @@ setOriginFromActionSheet() {
                     const isSel = r.station.StationKey === this.pinnedKey;
                     const lineId = r.station.StationLineId || 1;
                     const stColor = r.station.StationLineColor || LINE_BRAND_COLORS[lineId] || '#7AB420';
-                    const distStr = fmtDist(r.km);
+                    const distStr = isAtStation(r.km, r.station.StationKey) ? T('atStation') : fmtDist(r.km, r.station.StationKey);
                     const nm = stName(r.station);
                     const nameClass = nm.length > 14 ? 'chip-name xxlong' : (nm.length > 9 ? 'chip-name xlong' : (nm.length > 5 ? 'chip-name long' : 'chip-name'));
                     const iconColor = this.getStationTrainIconColor(r, lineId);
@@ -10286,7 +10345,7 @@ setOriginFromActionSheet() {
                 const crowded = s.IsCrowded === true;
                 // ยังไม่รู้ตำแหน่งจริง (km == null) — แสดงปุ่มค้นหาสถานีใกล้ฉัน
                 const isFallback = pin.km == null;
-                const isAtStation = pin.km != null && pin.km <= 0.12;
+                const isAtStationNow = isAtStation(pin.km, s.StationKey);
 
                 const fallbackBtn = !isFallback ? '' : (this.locating
                     ? `<button class="btn btn-big" style="margin-bottom:10px" onclick="App.locate(true)"><span class="spin"></span> ${T('locating')}</button>`
@@ -10299,9 +10358,13 @@ setOriginFromActionSheet() {
                        </div>`
                     : (this.locating
                         ? `<div class="dist-chip"><div class="v" style="display:flex;align-items:center;justify-content:center;gap:4px;"><span class="spin dark sm"></span></div><div class="l">${T('locating')}</div></div>`
-                        : (isAtStation
-                            ? `<div class="dist-chip at-station" style="background:rgba(16,185,129,0.12);border:1px solid #10b981"><div class="v" style="color:#10b981;font-weight:700">${getUiIcon('pin', 13, '#10b981')} ${T('atStation')}</div><div class="l" style="color:var(--text-sub,#64748b)">${T('currentLocation')}</div></div>`
-                            : `<div class="dist-chip"><div class="v">${fmtDist(pin.km)}</div><div class="l">${T('fromYou')}</div></div>`));
+                        : (isAtStationNow
+                            ? `<div class="dist-chip at-station" onclick="App.locate(true)" style="background:rgba(16,185,129,0.12);border:1px solid #10b981;cursor:pointer;" title="${lang === 'zh' ? '已在车站 (点击重新定位)' : (lang === 'en' ? 'At station (Tap to refresh GPS)' : 'อยู่ที่สถานี (แตะเพื่ออัปเดต GPS)')}"><div class="v" style="color:#10b981;font-weight:700">${getUiIcon('pin', 13, '#10b981')} ${T('atStation')}</div><div class="l" style="color:var(--text-sub,#64748b)">${T('currentLocation')}</div></div>`
+                            : `<div class="dist-chip" onclick="App.calibrateToStation('${esc(s.StationKey)}')" style="cursor:pointer;" title="${lang === 'zh' ? '点击确认在此站' : (lang === 'en' ? 'Tap to confirm at this station' : 'แตะเพื่อยืนยันว่าอยู่ที่สถานีนี้')}"><div class="v">${fmtDist(pin.km, s.StationKey)}</div><div class="l">${T('fromYou')}</div></div>`));
+
+                const quickCalibrateBtn = (!isAtStationNow && pin.km != null && pin.km <= 0.8)
+                    ? `<div style="margin-top:4px;"><button type="button" class="btn-calibrate-quick" onclick="App.calibrateToStation('${esc(s.StationKey)}')" title="${lang === 'zh' ? '点击确认在此站' : (lang === 'en' ? 'Tap to confirm at this station' : 'แตะเพื่อยืนยันว่าอยู่ที่สถานีนี้')}">${getUiIcon('pin', 11, '#10b981')} <span>${esc(T('imAtThisStation'))}</span></button></div>`
+                    : '';
 
                 el.innerHTML = `
                     ${this.locError ? `<div class="err-box" style="margin:0 0 10px">${this.locError}</div>` : ''}
@@ -10312,6 +10375,7 @@ setOriginFromActionSheet() {
                             <div class="th">${esc(stName(s))}${crowded ? ` <span class="badge crowd-b">${T('crowded')}</span>` : ''}</div>
                             ${(s.StationKey === SIAM_KEY || (App.connections[s.StationKey] || []).length)
                         ? `<div class="en">${connBadges(s.StationKey, s.StationLineId)}</div>` : ''}
+                            ${quickCalibrateBtn}
                         </div>
                         ${distChip}
                     </div>

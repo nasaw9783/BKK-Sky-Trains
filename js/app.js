@@ -7585,6 +7585,14 @@ setOriginFromActionSheet() {
                 set('nearestPopupActionLbl', T('popupAction'));
                 set('nearestPopupDismissLbl', T('popupDismiss'));
 
+                // Interchange Hub Modal
+                set('interchangeStatusPill', lang === 'zh' ? '● 运营中换乘枢纽' : (lang === 'en' ? '● ACTIVE INTERCHANGE' : '● จุดเชื่อมต่อพร้อมบริการ'));
+                set('interchangeCurLineLbl', lang === 'zh' ? '当前线路:' : (lang === 'en' ? 'Current Line:' : 'สายปัจจุบัน:'));
+                set('interchangeCurTag', lang === 'zh' ? '当前站点' : (lang === 'en' ? 'CURRENT HUB' : 'สถานีปัจจุบัน'));
+                set('interchangeSectionTitle', lang === 'zh' ? '所有换乘接驳线路:' : (lang === 'en' ? 'All Connecting Lines:' : 'สายสี / ไลน์ ที่เชื่อมต่อทั้งหมด:'));
+                set('interchangeFareMediaNote', lang === 'zh' ? '乘车卡: EMV Contactless / 专用交通卡' : (lang === 'en' ? 'Fare Media: EMV Contactless / Line Card' : 'แตะบัตร: EMV Contactless / บัตรเฉพาะสาย'));
+                set('interchangeDismissBtn', lang === 'zh' ? '关闭' : (lang === 'en' ? 'Close' : 'ปิด'));
+
                 // Footer
                 set('footerNote', T('footer'));
             },
@@ -10740,13 +10748,18 @@ setOriginFromActionSheet() {
                 if (!s) return;
 
                 const curLineId = ctxLineId || s.StationLineId;
+                const curCatLine = TRANSIT_LINES_CATALOG.find(l => l.id === curLineId);
                 const curLine = this.lineById[curLineId] || MRT_LINE_BY_ID[curLineId];
-                const color = s.StationLineColor || curLine?.LineColor || '#7AB420';
+                const color = s.StationLineColor || curCatLine?.color || curLine?.LineColor || '#7AB420';
 
                 const connections = (this.connections[stationKey] || [])
                     .filter(c => c.isBranch || c.lineId !== curLineId);
 
-                // Update modal header
+                // Update modal header & status pill
+                const statusPill = document.getElementById('interchangeStatusPill');
+                if (statusPill) {
+                    statusPill.textContent = lang === 'zh' ? '● 运营中换乘枢纽' : (lang === 'en' ? '● ACTIVE INTERCHANGE' : '● จุดเชื่อมต่อพร้อมบริการ');
+                }
                 const badgeEl = document.getElementById('interchangeStationBadge');
                 if (badgeEl) {
                     badgeEl.textContent = s.StationKey;
@@ -10769,20 +10782,51 @@ setOriginFromActionSheet() {
                 }
 
                 // Current line command bar
+                const curLineLbl = document.getElementById('interchangeCurLineLbl');
+                if (curLineLbl) {
+                    curLineLbl.textContent = lang === 'zh' ? '当前线路:' : (lang === 'en' ? 'Current Line:' : 'สายปัจจุบัน:');
+                }
                 const curPill = document.getElementById('interchangeCurPill');
-                if (curPill && curLine) {
-                    const curLineName = lang === 'zh' ? (LINE_NAMES_ZH[curLine.LineId] || curLine.LineName_EN) : (lang === 'en' ? curLine.LineName_EN : curLine.LineName_TH);
+                if (curPill) {
+                    let curLineName = '';
+                    if (curCatLine) {
+                        const rawCurName = lang === 'zh' ? (curCatLine.nameZH || curCatLine.nameEN) : (lang === 'en' ? curCatLine.nameEN : curCatLine.nameTH);
+                        curLineName = rawCurName.split('|')[0].trim();
+                    } else if (curLine) {
+                        curLineName = lang === 'zh' ? (LINE_NAMES_ZH[curLine.LineId] || curLine.LineName_EN) : (lang === 'en' ? curLine.LineName_EN : curLine.LineName_TH);
+                    }
                     curPill.textContent = curLineName;
-                    curPill.style.color = curLine.LineColor;
+                    curPill.style.color = curCatLine ? curCatLine.color : (curLine?.LineColor || color);
+                }
+                const curTag = document.getElementById('interchangeCurTag');
+                if (curTag) {
+                    curTag.textContent = lang === 'zh' ? '当前站点' : (lang === 'en' ? 'CURRENT HUB' : 'สถานีปัจจุบัน');
+                }
+
+                // Section Title
+                const secTitle = document.getElementById('interchangeSectionTitle');
+                if (secTitle) {
+                    secTitle.textContent = lang === 'zh' ? '所有换乘接驳线路:' : (lang === 'en' ? 'All Connecting Lines:' : 'สายสี / ไลน์ ที่เชื่อมต่อทั้งหมด:');
                 }
 
                 // Connecting lines list (Option 2: Sleek Command Center)
                 const listEl = document.getElementById('interchangeConnectingList');
                 if (listEl) {
                     listEl.innerHTML = connections.map(c => {
+                        const catLine = TRANSIT_LINES_CATALOG.find(l => l.id === c.lineId);
                         const line = this.lineById[c.lineId] || MRT_LINE_BY_ID[c.lineId];
-                        const lineName = line ? (lang === 'zh' ? (LINE_NAMES_ZH[line.LineId] || line.LineName_EN) : (lang === 'en' ? line.LineName_EN : line.LineName_TH)) : '';
-                        const lineOperator = line ? (lang === 'zh' ? (line.operatorZH || line.OperatorZH || '') : (lang === 'en' ? (line.operatorEN || line.OperatorEN || '') : (line.operatorTH || line.OperatorTH || line.OperatorName || ''))) : '';
+                        let lineFullName = '';
+                        let lineOperator = '';
+
+                        if (catLine) {
+                            lineFullName = lang === 'zh' ? (catLine.nameZH || catLine.nameEN) : (lang === 'en' ? catLine.nameEN : catLine.nameTH);
+                            lineOperator = lang === 'zh' ? (catLine.operatorZH || catLine.operatorEN) : (lang === 'en' ? catLine.operatorEN : catLine.operatorTH);
+                        } else if (line) {
+                            lineFullName = lang === 'zh' ? (LINE_NAMES_ZH[line.LineId] || line.LineName_EN) : (lang === 'en' ? line.LineName_EN : line.LineName_TH);
+                            lineOperator = line ? (lang === 'zh' ? (line.operatorZH || line.OperatorZH || '') : (lang === 'en' ? (line.operatorEN || line.OperatorEN || '') : (line.operatorTH || line.OperatorTH || line.OperatorName || ''))) : '';
+                        }
+
+                        const cleanLineName = lineFullName.split('|')[0].trim();
                         const connSt = this.findStation(c.key);
                         const connStName = connSt ? stName(connSt) : '';
                         const walkText = getInterchangeTransferDetail(stationKey, c.key, c.lineId);
@@ -10795,7 +10839,7 @@ setOriginFromActionSheet() {
                                             ${getLineIconSvg(c.lineId, c.color, 16)}
                                         </div>
                                         <div>
-                                            <div class="interchange-name-bold">${esc(lineName)}</div>
+                                            <div class="interchange-name-bold">${formatLineTitleWithTag(lineFullName, c.color, 'card')}</div>
                                             ${lineOperator ? `<div class="interchange-operator-sub">${esc(lineOperator)}</div>` : ''}
                                         </div>
                                     </div>
@@ -10810,11 +10854,21 @@ setOriginFromActionSheet() {
 
                                 <button type="button" class="interchange-jump-btn" style="--card-accent:${c.color};" onclick="App.jumpTo('${esc(c.key)}', ${c.lineId}); App.closeInterchangeModal();">
                                     <span style="font-size:13px;display:inline-flex;align-items:center;justify-content:center;">⇄</span>
-                                    <span>${lang === 'zh' ? `立即前往 ${lineName}` : (lang === 'en' ? `Switch to ${lineName}` : `สลับไปยัง ${lineName} ทันที`)}</span>
+                                    <span>${lang === 'zh' ? `立即前往 ${cleanLineName}` : (lang === 'en' ? `Switch to ${cleanLineName}` : `สลับไปยัง ${cleanLineName} ทันที`)}</span>
                                 </button>
                             </div>
                         `;
                     }).join('');
+                }
+
+                // Modal Footer
+                const fareMedia = document.getElementById('interchangeFareMediaNote');
+                if (fareMedia) {
+                    fareMedia.textContent = lang === 'zh' ? '乘车卡: EMV Contactless / 专用交通卡' : (lang === 'en' ? 'Fare Media: EMV Contactless / Line Card' : 'แตะบัตร: EMV Contactless / บัตรเฉพาะสาย');
+                }
+                const dismissBtn = document.getElementById('interchangeDismissBtn');
+                if (dismissBtn) {
+                    dismissBtn.textContent = lang === 'zh' ? '关闭' : (lang === 'en' ? 'Close' : 'ปิด');
                 }
 
                 modal.style.display = 'flex';

@@ -11027,7 +11027,7 @@
             <div class="interchange-modal-head">
                 <div class="interchange-meta-row">
                     <span class="interchange-station-badge" id="interchangeStationBadge">BL11</span>
-                    <span class="opt2-status-pill">● ACTIVE INTERCHANGE</span>
+                    <span class="opt2-status-pill" id="interchangeStatusPill">● จุดเชื่อมต่อพร้อมบริการ</span>
                 </div>
                 <div class="interchange-head-titles">
                     <h3 id="interchangeStationName">สถานีบางซื่อ</h3>
@@ -11038,15 +11038,15 @@
             <!-- Current Line Single Row (Compact Command Bar) -->
             <div class="interchange-cur-capsule-compact">
                 <div class="interchange-cur-info">
-                    <span style="color:var(--muted,#94a3b8);">สายปัจจุบัน:</span>
+                    <span style="color:var(--muted,#94a3b8);" id="interchangeCurLineLbl">สายปัจจุบัน:</span>
                     <span class="interchange-cur-pill" id="interchangeCurPill">MRT สายสีน้ำเงิน</span>
                 </div>
-                <span class="opt2-current-tag">CURRENT HUB</span>
+                <span class="opt2-current-tag" id="interchangeCurTag">สถานีปัจจุบัน</span>
             </div>
 
             <!-- Section Title -->
             <div style="font-size:11px;font-weight:700;color:var(--muted,#94a3b8);margin-bottom:8px;display:flex;align-items:center;gap:4px;">
-                <span>สายสี / ไลน์ ที่เชื่อมต่อทั้งหมด:</span>
+                <span id="interchangeSectionTitle">สายสี / ไลน์ ที่เชื่อมต่อทั้งหมด:</span>
             </div>
 
             <!-- Connecting Lines List -->
@@ -11054,8 +11054,8 @@
 
             <!-- Modal Footer -->
             <div class="interchange-modal-foot">
-                <span>แตะบัตร: EMV Contactless / บัตรเฉพาะสาย</span>
-                <button type="button" class="interchange-foot-dismiss-btn" onclick="App.closeInterchangeModal();">ปิด</button>
+                <span id="interchangeFareMediaNote">แตะบัตร: EMV Contactless / บัตรเฉพาะสาย</span>
+                <button type="button" class="interchange-foot-dismiss-btn" id="interchangeDismissBtn" onclick="App.closeInterchangeModal();">ปิด</button>
             </div>
         </div>
     </div>

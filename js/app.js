@@ -10873,6 +10873,10 @@ setOriginFromActionSheet() {
                         const connSt = this.findStation(c.key);
                         const connStName = connSt ? stName(connSt) : '';
                         const walkText = getInterchangeTransferDetail(stationKey, c.key, c.lineId);
+                        const isYellow = c.lineId === 4 || c.color === '#FFD100' || c.color === '#FAD53D';
+                        const isBrt = c.lineId === 201;
+                        const badgeTextColor = isYellow ? '#0f172a' : '#ffffff';
+                        const badgeStyle = isBrt ? '' : `background:${c.color};color:${badgeTextColor};`;
 
                         return `
                             <div class="interchange-connect-card" style="--card-accent:${c.color};">
@@ -10889,7 +10893,7 @@ setOriginFromActionSheet() {
                                     <span class="interchange-st-code" style="background:${c.color};">${esc(c.key)}</span>
                                 </div>
 
-                                ${connStName ? `<div style="font-size:11.5px;color:var(--ink,#f8fafc);font-weight:600;margin-top:2px;">${lang === 'zh' ? '换乘车站:' : (lang === 'en' ? 'Connecting Station:' : 'สถานีเชื่อมต่อ:')} <span style="color:${c.color}">${esc(connStName)} (${esc(c.key)})</span></div>` : ''}
+                                ${connStName ? `<div style="font-size:11.5px;color:var(--ink,#f8fafc);font-weight:600;margin-top:2px;display:flex;align-items:center;flex-wrap:wrap;gap:5px;"><span>${lang === 'zh' ? '换乘车站:' : (lang === 'en' ? 'Connecting Station:' : 'สถานีเชื่อมต่อ:')}</span><span class="interchange-conn-st-badge${isBrt ? ' st-key-brt' : ''}" style="${badgeStyle}">${esc(c.key)}</span><span style="color:${c.color}">${esc(connStName)}</span></div>` : ''}
 
                                 <div class="interchange-walk-info">
                                     ${walkText}

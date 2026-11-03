@@ -3587,9 +3587,9 @@ gQIDAQAB
                 nameTH: 'ARL แอร์พอร์ต ลิงก์', nameZH: 'ARL 机场快线',
                 nameEN: 'ARL Airport Rail Link',
                 color: '#8A1538',
-                operatorTH: 'รถไฟฟ้า ร.ฟ.ท. (เอเชีย เอรา วัน)',
-                operatorEN: 'SRTET (Asia Era One / State Railway of Thailand)',
-                operatorZH: 'SRTET (亚洲第一快铁 / 泰国国家铁路)',
+                operatorTH: 'SRTET (รถไฟฟ้า ร.ฟ.ท.) / Asia Era One (เอเชีย เอรา วัน)',
+                operatorEN: 'SRTET (State Railway of Thailand Electrified Train) / Asia Era One (Asia Era One)',
+                operatorZH: 'SRTET (泰国国家铁路电气化列车) / Asia Era One (亚洲第一快铁)',
                 terminusTH: 'พญาไท ↔ สุวรรณภูมิ (8 สถานี)',
                 terminusEN: 'Phaya Thai ↔ Suvarnabhumi (8 Stations)',
                 terminusZH: '披耶泰 ↔ 素万那普机场 (8 个车站)',
@@ -3779,11 +3779,11 @@ gQIDAQAB
                     let first = m[1].trim();
                     let second = m[2].trim();
                     if (second.length <= 5 && /^[A-Zก-๙\.\s]+$/.test(second)) {
-                        return { tag: second, name: first };
+                        return { tag: second.replace(/[()]/g, ''), name: first.replace(/[()]/g, '') };
                     }
-                    return { tag: first, name: second };
+                    return { tag: first.replace(/[()]/g, ''), name: second.replace(/[()]/g, '') };
                 }
-                return { tag: isZh ? '运营' : (isEn ? 'OP' : 'ผู้ให้บริการ'), name: p };
+                return { tag: isZh ? '运营' : (isEn ? 'OP' : 'ผู้ให้บริการ'), name: p.replace(/[()]/g, '') };
             });
 
             const routeLabel = isZh ? '路线' : (isEn ? 'ROUTE' : 'เส้นทาง');

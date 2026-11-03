@@ -6544,6 +6544,15 @@ setOriginFromActionSheet() {
                         `;
                     }
 
+                    const formatMetricVal = (raw) => {
+                        if (!raw) return '';
+                        const m = String(raw).match(/^(.*?)\s*(\([\s\S]*?\))\s*$/);
+                        if (m) {
+                            return `${esc(m[1])}<span class="val-sub">${esc(m[2])}</span>`;
+                        }
+                        return esc(raw);
+                    };
+
                     bodyHtml = `
                         <!-- Line Hero Card -->
                         <div class="line-hero-card" style="border-left:5px solid ${activeLine.color}">
@@ -6951,19 +6960,19 @@ setOriginFromActionSheet() {
                             <div class="line-metrics-grid">
                                 <div class="line-metric-box">
                                     <div class="label">${isZh ? '首班发车时间' : (isEn ? 'First Train Service' : 'เวลาขบวนแรก')}</div>
-                                    <div class="val" style="color:${activeLine.color};">${esc(isZh ? (activeLine.firstTrainZH || activeLine.firstTrainEN) : (isEn ? activeLine.firstTrainEN : activeLine.firstTrainTH))}</div>
+                                    <div class="val" style="color:${activeLine.color};">${formatMetricVal(isZh ? (activeLine.firstTrainZH || activeLine.firstTrainEN) : (isEn ? activeLine.firstTrainEN : activeLine.firstTrainTH))}</div>
                                 </div>
                                 <div class="line-metric-box">
                                     <div class="label">${isZh ? '末班收车时间' : (isEn ? 'Last Train Service' : 'เวลาขบวนสุดท้าย')}</div>
-                                    <div class="val">${esc(isZh ? (activeLine.lastTrainZH || activeLine.lastTrainEN) : (isEn ? activeLine.lastTrainEN : activeLine.lastTrainTH))}</div>
+                                    <div class="val">${formatMetricVal(isZh ? (activeLine.lastTrainZH || activeLine.lastTrainEN) : (isEn ? activeLine.lastTrainEN : activeLine.lastTrainTH))}</div>
                                 </div>
                                 <div class="line-metric-box">
                                     <div class="label">${isZh ? '高峰发车间隔' : (isEn ? 'Peak Hour Headway' : 'ความถี่ช่วงเร่งด่วน')}</div>
-                                    <div class="val" style="font-size:13px;color:${activeLine.color};">${esc(isZh ? (activeLine.peakFreqZH || activeLine.peakFreqEN) : (isEn ? activeLine.peakFreqEN : activeLine.peakFreqTH))}</div>
+                                    <div class="val" style="color:${activeLine.color};">${formatMetricVal(isZh ? (activeLine.peakFreqZH || activeLine.peakFreqEN) : (isEn ? activeLine.peakFreqEN : activeLine.peakFreqTH))}</div>
                                 </div>
                                 <div class="line-metric-box">
                                     <div class="label">${isZh ? '平峰发车间隔' : (isEn ? 'Off-Peak Headway' : 'ความถี่ช่วงปกติ')}</div>
-                                    <div class="val" style="font-size:13px;">${esc(isZh ? (activeLine.offPeakFreqZH || activeLine.offPeakFreqEN) : (isEn ? activeLine.offPeakFreqEN : activeLine.offPeakFreqTH))}</div>
+                                    <div class="val">${formatMetricVal(isZh ? (activeLine.offPeakFreqZH || activeLine.offPeakFreqEN) : (isEn ? activeLine.offPeakFreqEN : activeLine.offPeakFreqTH))}</div>
                                 </div>
                             </div>
                         </div>

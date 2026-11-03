@@ -6590,7 +6590,7 @@ setOriginFromActionSheet() {
 
                         <!-- Action Button to Switch to Timetables of this Line -->
                         <div style="text-align:center;margin:16px 0 6px;">
-                            <button type="button" class="btn btn-primary" style="background:${activeLine.color};border-color:${activeLine.color};box-shadow:0 4px 14px ${activeLine.color}40;display:inline-flex;align-items:center;gap:8px;white-space:nowrap;padding:11px 22px;max-width:100%;"
+                            <button type="button" class="btn btn-primary" style="background:${activeLine.color};border-color:${activeLine.color};color:#ffffff !important;box-shadow:0 4px 14px ${activeLine.color}40;display:inline-flex;align-items:center;gap:8px;white-space:nowrap;padding:11px 22px;max-width:100%;"
                                 onclick="App.switchView('timetables');App.setTimetablesLine(${activeLine.id})">
                                 <span>${getUiIcon('clock', 14, '#fff')} ${isZh ? '查看该线路列车时刻与发车频次' : (isEn ? 'View Timetables of This Line' : 'ดูเวลาเดินรถ & ความถี่สายนี้')}</span>
                                 <span>➔</span>
@@ -7011,7 +7011,7 @@ setOriginFromActionSheet() {
 
                         <!-- Action Button to Switch to Fares of this Line -->
                         <div style="text-align:center;margin:16px 0 6px;">
-                            <button type="button" class="btn btn-primary" style="background:${activeLine.color};border-color:${activeLine.color};box-shadow:0 4px 14px ${activeLine.color}40;display:inline-flex;align-items:center;gap:8px;white-space:nowrap;padding:11px 22px;max-width:100%;"
+                            <button type="button" class="btn btn-primary" style="background:${activeLine.color};border-color:${activeLine.color};color:#ffffff !important;box-shadow:0 4px 14px ${activeLine.color}40;display:inline-flex;align-items:center;gap:8px;white-space:nowrap;padding:11px 22px;max-width:100%;"
                                 onclick="App.switchView('fares');App.setFaresLine(${activeLine.id})">
                                 <span>${getUiIcon('card', 14, '#fff')} ${isZh ? '查询该线路票价与计费' : (isEn ? 'Check Fares of This Line' : 'เช็คอัตราค่าโดยสารสายนี้')}</span>
                                 <span>➔</span>

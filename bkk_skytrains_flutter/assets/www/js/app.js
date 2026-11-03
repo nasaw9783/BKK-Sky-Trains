@@ -1142,6 +1142,7 @@ gQIDAQAB
                 moreGlassFrosted: 'กระจกฝ้า',
                 moreGlassAurora: 'ออโรร่า',
                 moreGlassMinimal: 'มินิมอล',
+                moreGlassCrystal: 'กระจกใส',
                 moreClockTitle: 'รูปแบบเวลา',
                 moreClockDesc: 'เลือกรูปแบบการแสดงเวลาของนาฬิกาที่แถบหัวเว็บ',
                 moreClock24Lbl: '24 ชั่วโมง',
@@ -1489,6 +1490,7 @@ gQIDAQAB
                 moreGlassFrosted: 'Frosted Glass',
                 moreGlassAurora: 'Aurora Glass',
                 moreGlassMinimal: 'Minimal Clear',
+                moreGlassCrystal: 'Crystal Glass',
                 moreClockTitle: 'Clock Format',
                 moreClockDesc: 'Choose the time display format for the header clock',
                 moreClock24Lbl: '24 Hours (24H)',
@@ -1836,6 +1838,7 @@ gQIDAQAB
                 moreGlassFrosted: '磨砂质感',
                 moreGlassAurora: '极光质感',
                 moreGlassMinimal: '极简透明',
+                moreGlassCrystal: '透亮水晶',
                 moreClockTitle: '时间格式',
                 moreClockDesc: '选择顶部时钟的时间显示格式',
                 moreClock24Lbl: '24 小时制',
@@ -7095,7 +7098,7 @@ setOriginFromActionSheet() {
 
                 let curGlass = 'frosted';
                 try { curGlass = localStorage.getItem('bts_glass_style') || 'frosted'; } catch (e) { }
-                ['frosted', 'aurora', 'minimal'].forEach(s => {
+                ['frosted', 'aurora', 'minimal', 'crystal'].forEach(s => {
                     document.documentElement.classList.toggle('glass-' + s, isClear && curGlass === s);
                 });
 
@@ -7165,14 +7168,14 @@ setOriginFromActionSheet() {
             },
 
             setGlassStyle(style) {
-                const valid = ['frosted', 'aurora', 'minimal'].includes(style) ? style : 'frosted';
+                const valid = ['frosted', 'aurora', 'minimal', 'crystal'].includes(style) ? style : 'frosted';
                 try { localStorage.setItem('bts_glass_style', valid); } catch (e) { }
 
                 let curTheme = 'auto';
                 try { curTheme = localStorage.getItem('bts_theme') || 'auto'; } catch (e) { }
                 const isClear = (curTheme === 'clear');
 
-                ['frosted', 'aurora', 'minimal'].forEach(s => {
+                ['frosted', 'aurora', 'minimal', 'crystal'].forEach(s => {
                     document.documentElement.classList.toggle('glass-' + s, isClear && valid === s);
                 });
 
@@ -7224,6 +7227,8 @@ setOriginFromActionSheet() {
                 if (frostedBtn) frostedBtn.classList.toggle('active', storedGlass === 'frosted');
                 if (auroraBtn) auroraBtn.classList.toggle('active', storedGlass === 'aurora');
                 if (minimalBtn) minimalBtn.classList.toggle('active', storedGlass === 'minimal');
+                const crystalBtn = document.getElementById('glassSubCrystal');
+                if (crystalBtn) crystalBtn.classList.toggle('active', storedGlass === 'crystal');
             },
 
             initThemeListener() {
@@ -7590,6 +7595,7 @@ setOriginFromActionSheet() {
                 set('glassSubFrostedLbl', T('moreGlassFrosted'));
                 set('glassSubAuroraLbl', T('moreGlassAurora'));
                 set('glassSubMinimalLbl', T('moreGlassMinimal'));
+                set('glassSubCrystalLbl', T('moreGlassCrystal'));
                 set('moreClockTitle', T('moreClockTitle'));
                 set('moreClockDesc', T('moreClockDesc'));
                 set('moreClock24Lbl', T('moreClock24Lbl'));

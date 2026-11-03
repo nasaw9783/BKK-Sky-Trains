@@ -285,6 +285,12 @@
             filter: blur(110px);
         }
 
+        /* Sub-style 4: Crystal See-Through Glass (กระจกใส มองทะลุได้) */
+        html.theme-clear.glass-crystal .ambient-glass-orb {
+            opacity: 0.5;
+            filter: blur(95px);
+        }
+
         /* Override Body & Header in Clear Mode */
         html.theme-clear body,
         html.dark.theme-clear body {
@@ -390,6 +396,59 @@
             -webkit-backdrop-filter: blur(14px) !important;
             border: 1px solid rgba(255, 255, 255, 0.12) !important;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35) !important;
+        }
+
+        /* 4. Crystal Clear See-Through Glass (สไตล์ที่ 4: กระจกใส มองทะลุได้) */
+        html.theme-clear.glass-crystal .card,
+        html.theme-clear.glass-crystal .settings-card,
+        html.theme-clear.glass-crystal .quick-planner-banner,
+        html.theme-clear.glass-crystal .disruption-alert-banner,
+        html.theme-clear.glass-crystal .st-expand,
+        html.theme-clear.glass-crystal .picker-modal,
+        html.theme-clear.glass-crystal .action-sheet,
+        html.theme-clear.glass-crystal .mrt-freq-table-container,
+        html.theme-clear.glass-crystal .station-detail-card,
+        html.theme-clear.glass-crystal .nearby-station-card {
+            background: rgba(15, 23, 42, 0.16) !important;
+            backdrop-filter: blur(5px) saturate(140%) !important;
+            -webkit-backdrop-filter: blur(5px) saturate(140%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.22) !important;
+            box-shadow: 0 12px 36px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+        }
+
+        html.theme-clear.glass-crystal header.app {
+            background: rgba(10, 16, 29, 0.35) !important;
+            backdrop-filter: blur(10px) !important;
+            -webkit-backdrop-filter: blur(10px) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.18) !important;
+        }
+
+        html.theme-clear.glass-crystal nav.dock {
+            background: rgba(15, 23, 42, 0.35) !important;
+            backdrop-filter: blur(12px) !important;
+            -webkit-backdrop-filter: blur(12px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.22) !important;
+        }
+
+        html.theme-clear.glass-crystal .search-box {
+            background: rgba(15, 23, 42, 0.25) !important;
+            backdrop-filter: blur(8px) !important;
+            -webkit-backdrop-filter: blur(8px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        }
+
+        html.theme-clear.glass-crystal .plat {
+            background: rgba(255, 255, 255, 0.04) !important;
+            border: 1px solid rgba(255, 255, 255, 0.18) !important;
+            backdrop-filter: blur(4px) !important;
+            -webkit-backdrop-filter: blur(4px) !important;
+        }
+
+        html.theme-clear.glass-crystal .train {
+            background: rgba(0, 0, 0, 0.2) !important;
+            border: 1px solid rgba(255, 255, 255, 0.18) !important;
+            backdrop-filter: blur(4px) !important;
+            -webkit-backdrop-filter: blur(4px) !important;
         }
 
         /* Sub-indicator pointer arrow on button 4 */
@@ -510,8 +569,8 @@
 
         .submodes-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 6px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px;
         }
 
         .submode-btn {
@@ -573,6 +632,12 @@
             background: rgba(16, 185, 129, 0.2);
             color: #10b981;
             border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .submode-btn:nth-child(4) .submode-icon-circle {
+            background: rgba(255, 255, 255, 0.15);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.35);
         }
 
         .submode-btn.active .submode-title {
@@ -10491,6 +10556,11 @@
                                 <span class="submode-icon-circle">💎</span>
                                 <span class="submode-title" id="glassSubMinimalLbl">มินิมอล</span>
                                 <span class="submode-tag">Minimal</span>
+                            </button>
+                            <button type="button" class="submode-btn" id="glassSubCrystal" onclick="App.setGlassStyle('crystal')">
+                                <span class="submode-icon-circle">🪟</span>
+                                <span class="submode-title" id="glassSubCrystalLbl">กระจกใส</span>
+                                <span class="submode-tag">Crystal</span>
                             </button>
                         </div>
                     </div>

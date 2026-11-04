@@ -4257,11 +4257,20 @@
             box-sizing: border-box;
             opacity: 0;
             transition: opacity 0.22s ease;
+            touch-action: none !important;
+            overscroll-behavior: contain !important;
+            user-select: none !important;
+            -webkit-user-select: none !important;
         }
 
         .map-legend-sheet.active {
             display: flex;
             opacity: 1;
+        }
+
+        body.modal-backdrop-locked {
+            overflow: hidden !important;
+            touch-action: none !important;
         }
 
         .map-legend-box {
@@ -4270,6 +4279,9 @@
             border-radius: 18px;
             width: 100%;
             max-width: 450px;
+            max-height: 85vh;
+            overflow-y: auto;
+            touch-action: pan-y;
             box-shadow: 0 24px 48px rgba(0, 0, 0, 0.45);
             padding: 16px 18px;
             box-sizing: border-box;
@@ -4309,10 +4321,17 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
+            text-align: center;
+            line-height: 1;
+            box-sizing: border-box;
+            letter-spacing: 0;
             cursor: pointer;
             font-size: 13px;
             font-weight: bold;
             transition: all var(--transition-fast);
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            caret-color: transparent !important;
         }
 
         .map-legend-box-close:hover {
@@ -10349,7 +10368,7 @@
                 <div class="map-hint-body"><span class="map-hint-phrase"><b>วิธีใช้งาน:</b> แตะที่จุดสถานีใดๆ บนแผนผัง</span> <span class="map-hint-phrase">เพื่อดูข้อมูลสถานี, เลือกเป็น <b>สถานีต้นทาง/ปลายทาง</b></span> <span class="map-hint-phrase">หรือดู <b>ข้อมูลทางออก & เวลาขบวนรถ</b> ได้ทันที</span></div>
             </div>
             <!-- Floating Transit Lines Legend Modal (เปิด-ปิด ไม่บดบังสถานีบนแผนที่) -->
-            <div class="map-legend-sheet" id="mapLegendSheet" onclick="if(event.target===this)App.toggleMapLegend()">
+            <div class="map-legend-sheet" id="mapLegendSheet">
                 <div class="map-legend-box">
                     <div class="map-legend-box-head">
                         <div class="map-legend-box-title">

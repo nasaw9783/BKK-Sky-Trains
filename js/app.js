@@ -4218,6 +4218,13 @@ gQIDAQAB
                     view.classList.toggle('active', view.id === 'view' + viewName.charAt(0).toUpperCase() + viewName.slice(1));
                 });
 
+                if (viewName !== 'map') {
+                    const legendSheet = document.getElementById('mapLegendSheet');
+                    if (legendSheet && legendSheet.classList.contains('active')) {
+                        this.toggleMapLegend();
+                    }
+                }
+
                 // Trigger view specific rendering
                 if (viewName === 'home') {
                     this.scrollActiveTabIntoView();
@@ -5107,6 +5114,19 @@ gQIDAQAB
                 const sheet = document.getElementById('mapLegendSheet');
                 if (sheet) {
                     const isActive = sheet.classList.toggle('active');
+                    if (isActive) {
+                        document.body.classList.add('modal-backdrop-locked');
+                        if (document.body) document.body.style.overflow = 'hidden';
+                        if (this.geoMap && this.geoMap.dragging) {
+                            try { this.geoMap.dragging.disable(); } catch (e) {}
+                        }
+                    } else {
+                        document.body.classList.remove('modal-backdrop-locked');
+                        if (document.body) document.body.style.overflow = '';
+                        if (this.geoMap && this.geoMap.dragging) {
+                            try { this.geoMap.dragging.enable(); } catch (e) {}
+                        }
+                    }
                     const label = isActive ? (lang === 'en' ? 'Close' : (lang === 'zh' ? '关闭图例' : 'ปิดสัญลักษณ์')) : (lang === 'en' ? 'Legend' : (lang === 'zh' ? '图例' : 'สัญลักษณ์'));
                     const btnText = document.getElementById('mapLegendBtnText');
                     if (btnText) btnText.textContent = label;

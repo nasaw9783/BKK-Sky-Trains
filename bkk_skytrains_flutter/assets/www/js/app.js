@@ -8630,6 +8630,27 @@ setOriginFromActionSheet() {
                         return;
                     }
 
+                    // 1. กรณีทำงานบน Flutter App (Android / iOS): ใช้ Native Share Bridge ส่งตรงเข้าแอปแชทโดยไม่ดาวน์โหลดลงเครื่อง
+                    if (window.BKKShareBridge) {
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                            try {
+                                window.BKKShareBridge.postMessage(JSON.stringify({
+                                    action: 'shareRouteImage',
+                                    base64: reader.result,
+                                    title: title,
+                                    text: shareText
+                                }));
+                            } catch (e) {
+                                console.error('Error posting to BKKShareBridge:', e);
+                                this.copyImageOnlyToClipboard(blob, i);
+                            }
+                        };
+                        reader.readAsDataURL(blob);
+                        return;
+                    }
+
+                    // 2. กรณีทำงานบน Mobile Web Browser (Safari iOS / Chrome Android ที่รองรับ Web Share API Level 2)
                     let file = null;
                     try {
                         file = new File([blob], 'bkk-skytrain-route.png', { type: 'image/png' });
@@ -8643,37 +8664,29 @@ setOriginFromActionSheet() {
                             text: shareText,
                             files: [file]
                         }).catch(err => {
+                            // หากผู้ใช้กดยกเลิกในหน้าต่างแชร์ของระบบ (AbortError) ไม่ต้องทำอะไร
                             if (err && err.name !== 'AbortError') {
-                                this.fallbackSaveRouteImage(blob);
+                                this.copyImageOnlyToClipboard(blob, i);
                             }
                         });
-                    } else {
-                        this.fallbackSaveRouteImage(blob);
+                        return;
                     }
+
+                    // 3. กรณีบน Desktop PC หรือบราวเซอร์ที่ไม่รองรับการส่งไฟล์ข้ามแอปโดยตรง:
+                    // คัดลอกรูปภาพลง Clipboard (ใน Memory) เพื่อให้กด Ctrl+V ใน LINE / Telegram ได้ทันที โดยไม่ต้องดาวน์โหลดไฟล์ลงเครื่อง
+                    this.copyImageOnlyToClipboard(blob, i);
                 } catch (err) {
                     console.error('Error generating/sharing route card image:', err);
                     this.fallbackShareText(i);
                 }
             },
 
-            fallbackSaveRouteImage(blob) {
-                // 1. ดาวน์โหลดไฟล์ภาพ PNG
-                const link = document.createElement('a');
-                link.download = 'bkk-skytrain-route.png';
-                link.href = URL.createObjectURL(blob);
-                document.body.appendChild(link);
-                link.click();
-                setTimeout(() => {
-                    document.body.removeChild(link);
-                    URL.revokeObjectURL(link.href);
-                }, 2000);
-
-                // 2. คัดลอกภาพลง Clipboard เพื่อให้กด Ctrl+V ในแชทได้ทันที
+            copyImageOnlyToClipboard(blob, i) {
                 const toastMsg = lang === 'zh'
-                    ? '📸 路线图已保存并复制到剪贴板 (可直接粘贴至聊天室)'
+                    ? '📸 路线图已复制至剪贴板！可直接在 LINE / Telegram 中按 Ctrl+V 发送 (未下载文件)'
                     : (lang === 'en'
-                        ? '📸 Route image saved & copied to clipboard (ready to paste in chat)'
-                        : '📸 บันทึกรูปภาพและคัดลอกลง Clipboard แล้ว (กดวางในแชทได้ทันที)');
+                        ? '📸 Route image copied to clipboard! Press Ctrl+V in LINE or Telegram (no file downloaded)'
+                        : '📸 คัดลอกรูปภาพแล้ว! สามารถกดวาง (Ctrl+V) ในแชท LINE หรือ Telegram ได้ทันที (ไม่ต้องดาวน์โหลดลงเครื่อง)');
 
                 if (navigator.clipboard && navigator.clipboard.write) {
                     navigator.clipboard.write([
@@ -8681,16 +8694,10 @@ setOriginFromActionSheet() {
                     ]).then(() => {
                         this.showToast(toastMsg);
                     }).catch(() => {
-                        const savedMsg = lang === 'zh'
-                            ? '📸 已下载路线图图片'
-                            : (lang === 'en' ? '📸 Route image downloaded' : '📸 ดาวน์โหลดรูปภาพเส้นทางเรียบร้อยแล้ว');
-                        this.showToast(savedMsg);
+                        this.fallbackShareText(i ?? (this.journey?.openRoute ?? 0));
                     });
                 } else {
-                    const savedMsg = lang === 'zh'
-                        ? '📸 已下载路线图图片'
-                        : (lang === 'en' ? '📸 Route image downloaded' : '📸 ดาวน์โหลดรูปภาพเส้นทางเรียบร้อยแล้ว');
-                    this.showToast(savedMsg);
+                    this.fallbackShareText(i ?? (this.journey?.openRoute ?? 0));
                 }
             },
 

@@ -31,10 +31,11 @@ class MainActivity : FlutterActivity() {
                     val plat1Time = call.argument<String>("plat1Time") ?: ""
                     val plat2Text = call.argument<String>("plat2Text") ?: ""
                     val plat2Time = call.argument<String>("plat2Time") ?: ""
+                    val lineColor = call.argument<String>("lineColor") ?: "#7AB420"
 
                     showLockScreenNotification(
                         stationKey, stationName, distanceText,
-                        plat1Text, plat1Time, plat2Text, plat2Time
+                        plat1Text, plat1Time, plat2Text, plat2Time, lineColor
                     )
                     result.success(true)
                 }
@@ -71,7 +72,8 @@ class MainActivity : FlutterActivity() {
         plat1Text: String,
         plat1Time: String,
         plat2Text: String,
-        plat2Time: String
+        plat2Time: String,
+        lineColor: String = "#7AB420"
     ) {
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
@@ -100,6 +102,10 @@ class MainActivity : FlutterActivity() {
             .setContentIntent(pendingIntent)
             .setAutoCancel(false)
             .setOnlyAlertOnce(true)
+
+        try {
+            builder.setColor(android.graphics.Color.parseColor(lineColor))
+        } catch (_: Exception) {}
 
         notificationManager.notify(NOTIFICATION_ID, builder.build())
     }

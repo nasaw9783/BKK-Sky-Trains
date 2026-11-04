@@ -69,6 +69,7 @@ class LiveTransitService {
             'stationKey': stationKey,
             'stationName': stationName,
             'distanceText': distanceText,
+            'lineColor': lineColor,
             'plat1Text': plat1Dest,
             'plat1Time': plat1Time,
             'plat2Text': plat2Dest,

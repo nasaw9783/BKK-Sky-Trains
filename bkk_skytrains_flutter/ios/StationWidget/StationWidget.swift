@@ -1,5 +1,8 @@
 import WidgetKit
 import SwiftUI
+#if canImport(ActivityKit)
+import ActivityKit
+#endif
 
 // MARK: - Color Extension for Hex Support
 extension Color {
@@ -399,10 +402,194 @@ struct StationWidget: Widget {
     }
 }
 
+// MARK: - Live Activity & Dynamic Island (เกาะหรรษา) Attributes
+#if canImport(ActivityKit)
+public struct TransitActivityAttributes: ActivityAttributes {
+    public struct ContentState: Codable, Hashable {
+        public var stationKey: String
+        public var stationName: String
+        public var distance: String
+        public var lineColor: String
+        public var plat1Dest: String
+        public var plat1Time: String
+        public var plat2Dest: String
+        public var plat2Time: String
+
+        public init(
+            stationKey: String,
+            stationName: String,
+            distance: String,
+            lineColor: String,
+            plat1Dest: String,
+            plat1Time: String,
+            plat2Dest: String,
+            plat2Time: String
+        ) {
+            self.stationKey = stationKey
+            self.stationName = stationName
+            self.distance = distance
+            self.lineColor = lineColor
+            self.plat1Dest = plat1Dest
+            self.plat1Time = plat1Time
+            self.plat2Dest = plat2Dest
+            self.plat2Time = plat2Time
+        }
+    }
+
+    public var title: String
+
+    public init(title: String) {
+        self.title = title
+    }
+}
+
+// MARK: - Live Activity & Dynamic Island (เกาะหรรษา) Widget
+@available(iOSApplicationExtension 16.1, *)
+struct StationLiveActivityWidget: Widget {
+    let kind: String = "StationLiveActivityWidget"
+
+    var body: some WidgetConfiguration {
+        ActivityConfiguration(for: TransitActivityAttributes.self) { context in
+            // Lock Screen Live Activity Banner (ใต้ตัวเลขนาฬิกาบนหน้าจอล็อก)
+            HStack(spacing: 12) {
+                VStack(alignment: .leading, spacing: 3) {
+                    HStack(spacing: 6) {
+                        Text(context.state.stationKey)
+                            .font(.system(size: 11, weight: .black, design: .monospaced))
+                            .padding(.horizontal, 5)
+                            .padding(.vertical, 2)
+                            .background(Color(hex: context.state.lineColor))
+                            .foregroundColor(.white)
+                            .clipShape(RoundedRectangle(cornerRadius: 4))
+
+                        Text(context.state.stationName)
+                            .font(.system(size: 14, weight: .bold))
+                            .foregroundColor(.white)
+                    }
+
+                    if !context.state.distance.isEmpty {
+                        Text("📍 ตรวจพบใกล้ตัวคุณ (\(context.state.distance))")
+                            .font(.system(size: 10, weight: .semibold))
+                            .foregroundColor(Color(hex: "#10b981"))
+                    }
+                }
+
+                Spacer()
+
+                VStack(alignment: .trailing, spacing: 3) {
+                    HStack(spacing: 4) {
+                        Text(context.state.plat1Dest)
+                            .font(.system(size: 10, weight: .medium))
+                            .foregroundColor(.secondary)
+                            .lineLimit(1)
+                        Text(context.state.plat1Time)
+                            .font(.system(size: 11, weight: .heavy, design: .monospaced))
+                            .foregroundColor(Color(hex: "#10b981"))
+                    }
+                    HStack(spacing: 4) {
+                        Text(context.state.plat2Dest)
+                            .font(.system(size: 10, weight: .medium))
+                            .foregroundColor(.secondary)
+                            .lineLimit(1)
+                        Text(context.state.plat2Time)
+                            .font(.system(size: 11, weight: .heavy, design: .monospaced))
+                            .foregroundColor(Color(hex: "#10b981"))
+                    }
+                }
+            }
+            .padding(14)
+            .background(Color(hex: "#0f172a").opacity(0.92))
+        } dynamicIsland: { context in
+            DynamicIsland {
+                // Expanded Dynamic Island (เกาะหรรษาเมื่อกดแตะค้าง)
+                DynamicIslandExpandedRegion(.leading) {
+                    HStack(spacing: 5) {
+                        Text(context.state.stationKey)
+                            .font(.system(size: 11, weight: .black, design: .monospaced))
+                            .padding(.horizontal, 5)
+                            .padding(.vertical, 2)
+                            .background(Color(hex: context.state.lineColor))
+                            .foregroundColor(.white)
+                            .clipShape(RoundedRectangle(cornerRadius: 4))
+                        Text(context.state.stationName)
+                            .font(.system(size: 13, weight: .bold))
+                            .foregroundColor(.white)
+                    }
+                }
+                DynamicIslandExpandedRegion(.trailing) {
+                    Text(context.state.distance)
+                        .font(.system(size: 11, weight: .bold))
+                        .foregroundColor(Color(hex: "#10b981"))
+                }
+                DynamicIslandExpandedRegion(.bottom) {
+                    HStack(spacing: 8) {
+                        HStack {
+                            Text(context.state.plat1Dest)
+                                .font(.system(size: 10, weight: .medium))
+                                .foregroundColor(.secondary)
+                                .lineLimit(1)
+                            Spacer()
+                            Text(context.state.plat1Time)
+                                .font(.system(size: 12, weight: .heavy, design: .monospaced))
+                                .foregroundColor(Color(hex: "#10b981"))
+                        }
+                        .padding(6)
+                        .background(Color.white.opacity(0.08))
+                        .clipShape(RoundedRectangle(cornerRadius: 6))
+
+                        HStack {
+                            Text(context.state.plat2Dest)
+                                .font(.system(size: 10, weight: .medium))
+                                .foregroundColor(.secondary)
+                                .lineLimit(1)
+                            Spacer()
+                            Text(context.state.plat2Time)
+                                .font(.system(size: 12, weight: .heavy, design: .monospaced))
+                                .foregroundColor(Color(hex: "#10b981"))
+                        }
+                        .padding(6)
+                        .background(Color.white.opacity(0.08))
+                        .clipShape(RoundedRectangle(cornerRadius: 6))
+                    }
+                }
+            } compactLeading: {
+                // เกาะหรรษาฝั่งซ้าย: ป้ายรหัสสถานีในกรอบสีสาย
+                Text(context.state.stationKey)
+                    .font(.system(size: 10.5, weight: .black, design: .monospaced))
+                    .padding(.horizontal, 4)
+                    .padding(.vertical, 1)
+                    .background(Color(hex: context.state.lineColor))
+                    .foregroundColor(.white)
+                    .clipShape(RoundedRectangle(cornerRadius: 3))
+            } compactTrailing: {
+                // เกาะหรรษาฝั่งขวา: เวลารถไฟฟ้าเข้า
+                HStack(spacing: 3) {
+                    Text("🚆")
+                        .font(.system(size: 9))
+                    Text(context.state.plat1Time)
+                        .font(.system(size: 10.5, weight: .heavy, design: .monospaced))
+                        .foregroundColor(Color(hex: "#10b981"))
+                }
+            } minimal: {
+                // วงกลมมินิมอลเมื่อมีแอปอื่นแชร์เกาะหรรษา
+                Text(context.state.stationKey)
+                    .font(.system(size: 9, weight: .black, design: .monospaced))
+                    .foregroundColor(Color(hex: context.state.lineColor))
+            }
+        }
+    }
+}
+#endif
+
 // MARK: - Widget Bundle
 @main
 struct StationWidgetBundle: WidgetBundle {
     var body: some Widget {
         StationWidget()
+        #if canImport(ActivityKit)
+        if #available(iOSApplicationExtension 16.1, *) {
+            StationLiveActivityWidget()
+        }
+        #endif
     }
 }

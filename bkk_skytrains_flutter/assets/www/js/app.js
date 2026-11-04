@@ -11451,14 +11451,10 @@ setOriginFromActionSheet() {
             }
 
             // 6. MRT สายสีส้ม (LineId: 106) — OR01 (บางขุนนนท์) <-> OR28 (แยกร่มเกล้า)
+            // หมายเหตุ: โครงการอยู่ระหว่างการก่อสร้างและทดสอบระบบ ยังไม่เปิดให้บริการ จึงไม่มีตำแหน่งและเวลารถเข้าสถานี
             else if (lineId === MRT_LINE_IDS.ORANGE) {
-                const num = parseInt(key.replace(/\D/g, ''), 10) || 1;
-                const idx = Math.max(0, Math.min(27, num - 1));
-                const travelPerStation = 2.2;
-
                 // Platform 1: ไปแยกร่มเกล้า (OR28)
                 const isTerm1 = (key === 'OR28');
-                const offset1 = idx * travelPerStation;
                 const dest1 = getDestPair('OR28', 'แยกร่มเกล้า', 'Yaek Rom Klao');
                 platforms.push({
                     platform: 1,
@@ -11467,12 +11463,11 @@ setOriginFromActionSheet() {
                     DestinationStation: dest1,
                     DestinationStation_key: 'OR28',
                     isDropOffOnly: isTerm1,
-                    train_list: makeTrains(1, dest1, 'OR28', offset1, isTerm1)
+                    train_list: []
                 });
 
                 // Platform 2: ไปบางขุนนนท์ (OR01)
                 const isTerm2 = (key === 'OR01');
-                const offset2 = (27 - idx) * travelPerStation + (interval * 0.5);
                 const dest2 = getDestPair('OR01', 'บางขุนนนท์', 'Bang Khun Non');
                 platforms.push({
                     platform: 2,
@@ -11481,7 +11476,7 @@ setOriginFromActionSheet() {
                     DestinationStation: dest2,
                     DestinationStation_key: 'OR01',
                     isDropOffOnly: isTerm2,
-                    train_list: makeTrains(2, dest2, 'OR01', offset2, isTerm2)
+                    train_list: []
                 });
             }
 
@@ -12939,20 +12934,23 @@ setOriginFromActionSheet() {
             };
 
             const Z = { prev: [], next: [] };
-            for (const p of plats) {
-                const from = fromOf(p);
-                for (const t of displayTrains(station.StationKey, p.platform, p.train_list, arr.fetchedAt, block.lineId)) {
-                    if (t.status !== 'pending') {
-                        Z[from].push({ t, m: 0, approx: false, eta: null });
-                        continue;
+            const isNotOperating = (Number(block.lineId) === 106 || Number(station.StationLineId) === 106 || station.StationKey?.startsWith('OR'));
+            if (!isNotOperating) {
+                for (const p of plats) {
+                    const from = fromOf(p);
+                    for (const t of displayTrains(station.StationKey, p.platform, p.train_list, arr.fetchedAt, block.lineId)) {
+                        if (t.status !== 'pending') {
+                            Z[from].push({ t, m: 0, approx: false, eta: null });
+                            continue;
+                        }
+                        // ใช้เวลาเลขล่าสุดที่รู้ (รวมค่าจำจากรอบก่อนเมื่อ API ตอบ --)
+                        // ขบวนที่ไม่รู้เวลาเลย → ไม่วาดบน map (ตำแหน่งระบุไม่ได้)
+                        const eta = bestEta(station.StationKey, p.platform, t, arr.fetchedAt);
+                        if (!eta) continue;
+                        const m = eta.base - (Date.now() - eta.at) / 60000;
+                        if (m < -0.75 || m > 200) continue;
+                        Z[from].push({ t, m, approx: eta.approx, eta });
                     }
-                    // ใช้เวลาเลขล่าสุดที่รู้ (รวมค่าจำจากรอบก่อนเมื่อ API ตอบ --)
-                    // ขบวนที่ไม่รู้เวลาเลย → ไม่วาดบน map (ตำแหน่งระบุไม่ได้)
-                    const eta = bestEta(station.StationKey, p.platform, t, arr.fetchedAt);
-                    if (!eta) continue;
-                    const m = eta.base - (Date.now() - eta.at) / 60000;
-                    if (m < -0.75 || m > 200) continue;
-                    Z[from].push({ t, m, approx: eta.approx, eta });
                 }
             }
             const asc = (a, b) => a.m - b.m;
@@ -13046,7 +13044,7 @@ setOriginFromActionSheet() {
                     <div class="rt-lane rail"></div>
                     <div class="rt-lane rail"></div>
                     <div class="rt-lane rail jc">${atP1 ? chip(atP1, true) : ''}</div>
-                    <div class="rt-lane rail arrow-lane"><span class="rt-arrow">→</span></div>
+                    <div class="rt-lane rail arrow-lane">${allP1.length ? '<span class="rt-arrow">→</span>' : ''}</div>
                     <div class="rt-lane rail"></div>
                     <div class="rt-lane rail"></div>`;
             } else if (!next) {
@@ -13102,7 +13100,7 @@ setOriginFromActionSheet() {
                 btmLanes = `
                     <div class="rt-lane rail"></div>
                     <div class="rt-lane rail"></div>
-                    <div class="rt-lane rail arrow-lane"><span class="rt-arrow">←</span></div>
+                    <div class="rt-lane rail arrow-lane">${allP2.length ? '<span class="rt-arrow">←</span>' : ''}</div>
                     <div class="rt-lane rail jc">${atP2 ? chip(atP2, true) : ''}</div>
                     <div class="rt-lane rail"></div>
                     <div class="rt-lane rail"></div>

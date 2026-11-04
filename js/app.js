@@ -678,6 +678,12 @@ gQIDAQAB
             // 🧭 Compass / GPS Navigation / Relocate
             compass: (s, c, cls) => `<svg class="ui-ic ui-ic-compass ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || 'currentColor'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" fill="${c || 'currentColor'}" fill-opacity="0.3"/></svg>`,
 
+            // 🔗 Share Network
+            share: (s, c, cls) => `<svg class="ui-ic ui-ic-share ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || 'currentColor'}" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3" fill="${c || 'currentColor'}" fill-opacity="0.2"/><circle cx="6" cy="12" r="3" fill="${c || 'currentColor'}" fill-opacity="0.2"/><circle cx="18" cy="19" r="3" fill="${c || 'currentColor'}" fill-opacity="0.2"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>`,
+
+            // 📋 Copy / Clipboard
+            copy: (s, c, cls) => `<svg class="ui-ic ui-ic-copy ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || 'currentColor'}" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="8" height="4" x="8" y="2" rx="1.5" ry="1.5" fill="${c || 'currentColor'}" fill-opacity="0.3"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></svg>`,
+
             // 🚪 Station Exits & Facilities
             door: (s, c, cls) => `<svg class="ui-ic ui-ic-door ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || '#8b5cf6'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 20V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v14"/><path d="M2 20h20"/><circle cx="14" cy="12" r="1" fill="${c || '#8b5cf6'}"/></svg>`,
 
@@ -8526,7 +8532,15 @@ setOriginFromActionSheet() {
                 });
 
                 const mainLineId = linesUsed[0] || 1;
-                const lineSvg = typeof getLineIconSvg === 'function' ? getLineIconSvg(mainLineId, false, 20) : '';
+                const mainLineColor = (typeof LINE_BRAND_COLORS !== 'undefined' && LINE_BRAND_COLORS[mainLineId]) || '#C9A038';
+                const lineSvg = typeof getLineIconSvg === 'function' ? getLineIconSvg(mainLineId, mainLineColor, 22) : '';
+                const pinSvg = typeof getUiIcon === 'function' ? getUiIcon('pin', 16, '#f43f5e') : '';
+                const flagSvg = typeof getUiIcon === 'function' ? getUiIcon('flag', 16, '#ef4444') : '';
+                const timerSvg = typeof getUiIcon === 'function' ? getUiIcon('timer', 16, '#10b981') : '';
+                const cardSvg = typeof getUiIcon === 'function' ? getUiIcon('card', 16, '#10b981') : '';
+                const compassSvg = typeof getUiIcon === 'function' ? getUiIcon('compass', 15, '#38bdf8') : '';
+                const interchangeSvg = `<svg viewBox="0 0 36 18" width="22" height="11" fill="none" style="vertical-align:middle;display:inline-block;"><circle cx="8" cy="9" r="5" fill="#ffffff" stroke="#64748b" stroke-width="2.5"/><circle cx="8" cy="9" r="2.2" fill="#0f172a"/><line x1="13" y1="9" x2="23" y2="9" stroke="#64748b" stroke-width="2.5"/><circle cx="28" cy="9" r="5" fill="#ffffff" stroke="#64748b" stroke-width="2.5"/><circle cx="28" cy="9" r="2.2" fill="#0f172a"/></svg>`;
+
                 const lineNames = linesUsed.map(lid => getLineOptLabel({ LineId: lid })).join(' ➔ ');
 
                 const transferText = (lang === 'zh')
@@ -8543,24 +8557,59 @@ setOriginFromActionSheet() {
                 const fareLabel = (lang === 'zh') ? '预估票价' : (lang === 'en' ? 'Total Fare' : 'ค่าโดยสาร');
                 const planLabel = (lang === 'zh') ? '查看路线详情' : (lang === 'en' ? 'Plan your journey' : 'วางแผนเส้นทาง');
 
-                return `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:440px;padding:16px 18px;border:1.5px solid #10b981;border-radius:14px;background:#0f172a;color:#f8fafc;line-height:1.6;">
-                    <div style="font-size:15px;font-weight:800;color:#ffffff;display:flex;align-items:center;gap:8px;margin-bottom:10px;">
-                        ${lineSvg}
-                        <span>${titleText}</span>
+                return `<div style="font-family:'Plus Jakarta Sans','Noto Sans Thai',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:440px;padding:18px 20px;border:1.5px solid #10b981;border-radius:16px;background:#0f172a;color:#f8fafc;box-shadow:0 6px 20px rgba(0,0,0,0.45);line-height:1.6;">
+                    <div style="font-size:15px;font-weight:800;color:#ffffff;display:flex;align-items:center;justify-content:space-between;padding-bottom:12px;border-bottom:1px dashed rgba(148,163,184,0.25);">
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <div style="width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:${mainLineColor}22;border:1px solid ${mainLineColor}44;">
+                                ${lineSvg}
+                            </div>
+                            <div>
+                                <div style="font-size:14.5px;font-weight:800;color:#ffffff;">${titleText}</div>
+                                <div style="font-size:11px;color:#94a3b8;font-weight:600;">Bangkok Mass Transit Network</div>
+                            </div>
+                        </div>
+                        <div style="background:rgba(16,185,129,0.15);border:1px solid rgba(16,185,129,0.4);color:#34d399;font-size:13.5px;font-weight:800;padding:4px 10px;border-radius:20px;display:flex;align-items:center;gap:5px;">
+                            ${cardSvg}
+                            <span>${fareDisplay}</span>
+                        </div>
                     </div>
-                    <div style="border-top:1px dashed rgba(148,163,184,0.3);margin:10px 0;"></div>
-                    <div style="font-size:13.5px;margin-bottom:4px;"><span style="color:#ef4444;">🚩</span> <b>${originLabel}:</b> [${esc(j.from)}] ${esc(fromName)}</div>
-                    <div style="font-size:13.5px;margin-bottom:6px;"><span style="color:#10b981;">🏁</span> <b>${destLabel}:</b> [${esc(j.to)}] ${esc(toName)}</div>
-                    ${lineNames ? `<div style="font-size:12.5px;color:#38bdf8;margin-bottom:8px;">🚆 ${esc(lineNames)}</div>` : ''}
-                    <div style="font-size:12.5px;color:#cbd5e1;line-height:1.6;">
-                        <div>⏱️ <b>${timeLabel}:</b> ประมาณ ${time} นาที (${countStn} สถานี)</div>
-                        <div>🔄 <b>${transferLabel}:</b> ${transferText}</div>
-                        <div>💰 <b>${fareLabel}:</b> <span style="font-size:14px;font-weight:800;color:#10b981;">${fareDisplay}</span></div>
+                    <div style="margin:12px 0;background:rgba(3,7,18,0.5);border-radius:12px;padding:12px 14px;border:1px solid rgba(148,163,184,0.15);display:flex;flex-direction:column;gap:8px;">
+                        <div style="display:flex;align-items:center;gap:8px;font-size:13px;">
+                            <div style="width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.06);flex-shrink:0;">${pinSvg}</div>
+                            <span style="color:#94a3b8;font-size:12px;">${originLabel}:</span>
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:800;padding:2px 6px;border-radius:4px;background:${mainLineColor};color:#ffffff;">${esc(j.from)}</span>
+                            <span style="font-weight:700;color:#ffffff;">${esc(fromName)}</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:8px;font-size:13px;">
+                            <div style="width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.06);flex-shrink:0;">${flagSvg}</div>
+                            <span style="color:#94a3b8;font-size:12px;">${destLabel}:</span>
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:800;padding:2px 6px;border-radius:4px;background:${mainLineColor};color:#ffffff;">${esc(j.to)}</span>
+                            <span style="font-weight:700;color:#ffffff;">${esc(toName)}</span>
+                        </div>
                     </div>
-                    <div style="border-top:1px dashed rgba(148,163,184,0.3);margin:10px 0;"></div>
-                    <div style="font-size:12.5px;color:#94a3b8;">
-                        🔗 <b>${planLabel}:</b><br>
-                        <a href="https://bkk-skytrains.vercel.app/" style="color:#38bdf8;text-decoration:none;font-weight:700;">https://bkk-skytrains.vercel.app/</a>
+                    ${lineNames ? `<div style="display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:8px;font-size:12px;font-weight:700;background:${mainLineColor}20;color:#ffffff;border:1px solid ${mainLineColor}45;margin-bottom:10px;">${lineSvg}<span>${esc(lineNames)}</span></div>` : ''}
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;">
+                        <div style="background:rgba(3,7,18,0.4);border:1px solid rgba(148,163,184,0.15);border-radius:10px;padding:8px 10px;display:flex;align-items:center;gap:8px;">
+                            <div style="width:20px;height:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">${timerSvg}</div>
+                            <div>
+                                <div style="font-size:10.5px;color:#94a3b8;font-weight:600;">${timeLabel}</div>
+                                <div style="font-size:12px;color:#ffffff;font-weight:700;">~${time} นาที (${countStn} สถานี)</div>
+                            </div>
+                        </div>
+                        <div style="background:rgba(3,7,18,0.4);border:1px solid rgba(148,163,184,0.15);border-radius:10px;padding:8px 10px;display:flex;align-items:center;gap:8px;">
+                            <div style="width:20px;height:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">${interchangeSvg}</div>
+                            <div>
+                                <div style="font-size:10.5px;color:#94a3b8;font-weight:600;">${transferLabel}</div>
+                                <div style="font-size:12px;color:#ffffff;font-weight:700;">${transferText}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="padding-top:10px;border-top:1px dashed rgba(148,163,184,0.25);font-size:12px;">
+                        <div style="display:flex;align-items:center;gap:6px;color:#94a3b8;font-weight:700;margin-bottom:2px;">
+                            ${compassSvg}
+                            <span>${planLabel}:</span>
+                        </div>
+                        <a href="https://bkk-skytrains.vercel.app/" style="color:#38bdf8;text-decoration:none;font-weight:700;font-family:'JetBrains Mono',monospace;display:block;padding-left:21px;">https://bkk-skytrains.vercel.app/</a>
                     </div>
                 </div>`;
             },
@@ -13147,21 +13196,11 @@ setOriginFromActionSheet() {
                 ${rm.StaticMapSrc ? `<div class="j-map-wrap"><a class="j-map-link" href="${esc(rm.StaticMapSrc)}" target="_blank" rel="noopener">${getUiIcon('map', 14, 'currentColor')} <span>${T('jMap')}</span></a></div>` : ''}
                 <div class="j-action-bar">
                     <button type="button" class="btn-j-share" onclick="App.shareJourneyRoute(${i})">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <circle cx="18" cy="5" r="3" fill="currentColor" fill-opacity="0.2"></circle>
-                            <circle cx="6" cy="12" r="3" fill="currentColor" fill-opacity="0.2"></circle>
-                            <circle cx="18" cy="19" r="3" fill="currentColor" fill-opacity="0.2"></circle>
-                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-                        </svg>
+                        ${getUiIcon('share', 15)}
                         <span>${lang === 'zh' ? '分享路线' : (lang === 'en' ? 'Share Route' : 'แชร์เส้นทาง')}</span>
                     </button>
                     <button type="button" class="btn-j-copy" onclick="App.copyJourneySummary(${i})">
-                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <rect width="8" height="4" x="8" y="2" rx="1.5" ry="1.5" fill="currentColor" fill-opacity="0.3"></rect>
-                            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
-                            <path d="m9 14 2 2 4-4"></path>
-                        </svg>
+                        ${getUiIcon('copy', 15)}
                         <span>${lang === 'zh' ? '复制行程' : (lang === 'en' ? 'Copy Summary' : 'คัดลอกสรุป')}</span>
                     </button>
                 </div>` : ''}

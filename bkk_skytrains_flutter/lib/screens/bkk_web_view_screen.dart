@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
@@ -51,12 +50,6 @@ class _BkkWebViewScreenState extends State<BkkWebViewScreen> {
         'BKKLiveBridge',
         onMessageReceived: (JavaScriptMessage message) {
           _handleLiveBridgeMessage(message.message);
-        },
-      )
-      ..addJavaScriptChannel(
-        'BKKShareBridge',
-        onMessageReceived: (JavaScriptMessage message) {
-          _handleShareMessage(message.message);
         },
       )
       ..setNavigationDelegate(
@@ -147,36 +140,6 @@ class _BkkWebViewScreenState extends State<BkkWebViewScreen> {
       }
     } catch (e) {
       debugPrint('[BKKLiveBridge] Error handling message: $e');
-    }
-  }
-
-  void _handleShareMessage(String message) async {
-    try {
-      final dynamic data = jsonDecode(message);
-      if (data is Map) {
-        final action = data['action'];
-        if (action == 'shareRouteImage') {
-          String base64Data = (data['base64'] ?? '').toString();
-          if (base64Data.contains(',')) {
-            base64Data = base64Data.split(',').last;
-          }
-          final bytes = base64Decode(base64Data);
-          final xFile = XFile.fromData(
-            bytes,
-            mimeType: 'image/png',
-            name: 'bkk-skytrain-route.png',
-          );
-          await SharePlus.instance.share(
-            ShareParams(
-              files: [xFile],
-              text: (data['text'] ?? '').toString(),
-              subject: (data['title'] ?? '').toString(),
-            ),
-          );
-        }
-      }
-    } catch (e) {
-      debugPrint('[BKKShareBridge] Error sharing image: $e');
     }
   }
 

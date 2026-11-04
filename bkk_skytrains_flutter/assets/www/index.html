@@ -6866,8 +6866,12 @@
         .picker-bg {
             position: absolute;
             inset: 0;
-            cursor: pointer;
+            cursor: default;
             z-index: 1;
+            touch-action: none !important;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            caret-color: transparent !important;
         }
 
         .picker-head {

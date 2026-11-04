@@ -8709,7 +8709,7 @@ setOriginFromActionSheet() {
                 const quickBarHtml = `<div class="picker-quick-bar">${favHtml}${poiChipsHtml}</div>`;
 
                 el.innerHTML = `
-                    <div class="picker-bg" onclick="App.closePicker()"></div>
+                    <div class="picker-bg"></div>
                     <div class="picker">
                         <div class="picker-head">
                             <div style="display:flex;gap:8px;align-items:center;">

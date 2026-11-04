@@ -8453,25 +8453,122 @@ setOriginFromActionSheet() {
                 const toName = toSt ? stName(toSt) : j.to;
                 const time = rm.Duration || rm.TotalTime || rm.DurationMinute || rm.TotalDurationMinute || Math.max(1, (rm.RoutesJorney || []).length * 2);
                 const countStn = rm.Count_Station ?? (rm.RoutesJorney || []).length;
-                const fare = rm.TotalFare ?? rm.Fare ?? 0;
+                const fareVal = (rm.FareRate_Total != null && rm.FareRate_Total !== '') ? rm.FareRate_Total : (rm.TotalFare ?? rm.Fare ?? '-');
+                const fareDisplay = (fareVal !== '-' && !isNaN(fareVal)) ? `฿${fareVal}` : (fareVal === '-' ? '-' : `฿${fareVal}`);
                 const transfers = rm.Count_InterChange || 0;
 
+                // ตรวจหาสายรถไฟฟ้าที่ใช้ในเส้นทาง
+                const linesUsed = [];
+                const seenLines = new Set();
+                (rm.RoutesJorney || []).forEach(st => {
+                    let lid = st.LineId;
+                    if (!lid && App.keyLines && App.keyLines[st.StationCode]) {
+                        lid = App.keyLines[st.StationCode][0]?.lineId;
+                    }
+                    if (lid && !seenLines.has(lid)) {
+                        seenLines.add(lid);
+                        linesUsed.push(lid);
+                    }
+                });
+
+                const lineNames = linesUsed.map(lid => {
+                    const iconEmoji = (lid === 1 || lid === 2 || lid === 201) ? '🟢'
+                        : (lid === 3 || lid === 4) ? '🟡'
+                        : (lid === 5) ? '🌸'
+                        : (lid === 101) ? '🔵'
+                        : (lid === 102) ? '🟣'
+                        : (lid === 103 || lid === 105) ? '🔴'
+                        : (lid === 104) ? '🟤'
+                        : (lid === 106) ? '🟠' : '🚇';
+                    const name = getLineOptLabel({ LineId: lid });
+                    return `${iconEmoji} ${name}`;
+                }).join(' ➔ ');
+
+                const lineSection = lineNames ? `${lineNames}\n` : '';
+
                 if (lang === 'zh') {
-                    const transferText = transfers > 0 ? `，换乘 ${transfers} 次` : '，无需换乘';
-                    return `🚆 BKK SkyTrains 行程规划\n起点: ${fromName} (${j.from}) ➔ 终点: ${toName} (${j.to})\n⏱️ 乘车时间: 约 ${time} 分钟 (${countStn} 个车站${transferText})\n💰 预估票价: ฿${fare}\n\n查看路线详情: https://bkk-skytrains.vercel.app/`;
+                    const transferText = transfers > 0 ? `换乘 ${transfers} 次` : '无需换乘 (直达)';
+                    return `🚆 Bangkok SkyTrains | 行程规划\n━━━━━━━━━━━━━━━━━━\n🚩 起点: [${j.from}] ${fromName}\n🏁 终点: [${j.to}] ${toName}\n${lineSection}\n⏱️ 乘车时间: 约 ${time} 分钟 (${countStn} 个车站)\n🔄 换乘情况: ${transferText}\n💰 预估票价: ${fareDisplay}\n━━━━━━━━━━━━━━━━━━\n🔗 查看路线详情:\nhttps://bkk-skytrains.vercel.app/`;
                 } else if (lang === 'en') {
-                    const transferText = transfers > 0 ? `, ${transfers} transfer(s)` : ', direct';
-                    return `🚆 BKK SkyTrains Route Summary\nFrom: ${fromName} (${j.from}) ➔ To: ${toName} (${j.to})\n⏱️ Travel Time: Approx. ${time} mins (${countStn} stations${transferText})\n💰 Total Fare: ฿${fare}\n\nPlan your journey: https://bkk-skytrains.vercel.app/`;
+                    const transferText = transfers > 0 ? `${transfers} transfer(s)` : 'Direct (No transfer required)';
+                    return `🚆 Bangkok SkyTrains | Route Summary\n━━━━━━━━━━━━━━━━━━\n🚩 Origin: [${j.from}] ${fromName}\n🏁 Destination: [${j.to}] ${toName}\n${lineSection}\n⏱️ Travel Time: Approx. ${time} mins (${countStn} stations)\n🔄 Transfers: ${transferText}\n💰 Total Fare: ${fareDisplay}\n━━━━━━━━━━━━━━━━━━\n🔗 Plan your journey:\nhttps://bkk-skytrains.vercel.app/`;
                 } else {
-                    const transferText = transfers > 0 ? ` (เปลี่ยนสาย ${transfers} ครั้ง)` : ' (ไม่ต้องเปลี่ยนสาย)';
-                    return `🚆 สรุปการเดินทาง BKK SkyTrains\nต้นทาง: ${fromName} (${j.from}) ➔ ปลายทาง: ${toName} (${j.to})\n⏱️ เวลาเดินทาง: ประมาณ ${time} นาที (${countStn} สถานี${transferText})\n💰 ค่าโดยสาร: ฿${fare}\n\nวางแผนเส้นทางได้ที่: https://bkk-skytrains.vercel.app/`;
+                    const transferText = transfers > 0 ? `เปลี่ยนสาย ${transfers} ครั้ง` : 'ไม่ต้องเปลี่ยนสาย (เดินทางตรง)';
+                    return `🚆 Bangkok SkyTrains | สรุปการเดินทาง\n━━━━━━━━━━━━━━━━━━\n🚩 ต้นทาง: [${j.from}] ${fromName}\n🏁 ปลายทาง: [${j.to}] ${toName}\n${lineSection}\n⏱️ เวลาเดินทาง: ประมาณ ${time} นาที (${countStn} สถานี)\n🔄 การเปลี่ยนสาย: ${transferText}\n💰 ค่าโดยสาร: ${fareDisplay}\n━━━━━━━━━━━━━━━━━━\n🔗 วางแผนเส้นทาง:\nhttps://bkk-skytrains.vercel.app/`;
                 }
+            },
+
+            getJourneySummaryHtml(i) {
+                const j = this.journey;
+                if (!j || !j.result || !j.result.RoutesMap || !j.result.RoutesMap[i]) return '';
+                const rm = j.result.RoutesMap[i];
+                const fromSt = this.findStation(j.from);
+                const toSt = this.findStation(j.to);
+                const fromName = fromSt ? stName(fromSt) : j.from;
+                const toName = toSt ? stName(toSt) : j.to;
+                const time = rm.Duration || rm.TotalTime || rm.DurationMinute || rm.TotalDurationMinute || Math.max(1, (rm.RoutesJorney || []).length * 2);
+                const countStn = rm.Count_Station ?? (rm.RoutesJorney || []).length;
+                const fareVal = (rm.FareRate_Total != null && rm.FareRate_Total !== '') ? rm.FareRate_Total : (rm.TotalFare ?? rm.Fare ?? '-');
+                const fareDisplay = (fareVal !== '-' && !isNaN(fareVal)) ? `฿${fareVal}` : (fareVal === '-' ? '-' : `฿${fareVal}`);
+                const transfers = rm.Count_InterChange || 0;
+
+                const linesUsed = [];
+                const seenLines = new Set();
+                (rm.RoutesJorney || []).forEach(st => {
+                    let lid = st.LineId;
+                    if (!lid && App.keyLines && App.keyLines[st.StationCode]) {
+                        lid = App.keyLines[st.StationCode][0]?.lineId;
+                    }
+                    if (lid && !seenLines.has(lid)) {
+                        seenLines.add(lid);
+                        linesUsed.push(lid);
+                    }
+                });
+
+                const mainLineId = linesUsed[0] || 1;
+                const lineSvg = typeof getLineIconSvg === 'function' ? getLineIconSvg(mainLineId, false, 20) : '';
+                const lineNames = linesUsed.map(lid => getLineOptLabel({ LineId: lid })).join(' ➔ ');
+
+                const transferText = (lang === 'zh')
+                    ? (transfers > 0 ? `换乘 ${transfers} 次` : '无需换乘 (直达)')
+                    : (lang === 'en'
+                        ? (transfers > 0 ? `${transfers} transfer(s)` : 'Direct (No transfer required)')
+                        : (transfers > 0 ? `เปลี่ยนสาย ${transfers} ครั้ง` : 'ไม่ต้องเปลี่ยนสาย (เดินทางตรง)'));
+
+                const titleText = (lang === 'zh') ? 'Bangkok SkyTrains | 行程规划' : (lang === 'en' ? 'Bangkok SkyTrains | Route Summary' : 'Bangkok SkyTrains | สรุปการเดินทาง');
+                const originLabel = (lang === 'zh') ? '起点' : (lang === 'en' ? 'Origin' : 'ต้นทาง');
+                const destLabel = (lang === 'zh') ? '终点' : (lang === 'en' ? 'Destination' : 'ปลายทาง');
+                const timeLabel = (lang === 'zh') ? '乘车时间' : (lang === 'en' ? 'Travel Time' : 'เวลาเดินทาง');
+                const transferLabel = (lang === 'zh') ? '换乘情况' : (lang === 'en' ? 'Transfers' : 'การเปลี่ยนสาย');
+                const fareLabel = (lang === 'zh') ? '预估票价' : (lang === 'en' ? 'Total Fare' : 'ค่าโดยสาร');
+                const planLabel = (lang === 'zh') ? '查看路线详情' : (lang === 'en' ? 'Plan your journey' : 'วางแผนเส้นทาง');
+
+                return `<div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;max-width:440px;padding:16px 18px;border:1.5px solid #10b981;border-radius:14px;background:#0f172a;color:#f8fafc;line-height:1.6;">
+                    <div style="font-size:15px;font-weight:800;color:#ffffff;display:flex;align-items:center;gap:8px;margin-bottom:10px;">
+                        ${lineSvg}
+                        <span>${titleText}</span>
+                    </div>
+                    <div style="border-top:1px dashed rgba(148,163,184,0.3);margin:10px 0;"></div>
+                    <div style="font-size:13.5px;margin-bottom:4px;"><span style="color:#ef4444;">🚩</span> <b>${originLabel}:</b> [${esc(j.from)}] ${esc(fromName)}</div>
+                    <div style="font-size:13.5px;margin-bottom:6px;"><span style="color:#10b981;">🏁</span> <b>${destLabel}:</b> [${esc(j.to)}] ${esc(toName)}</div>
+                    ${lineNames ? `<div style="font-size:12.5px;color:#38bdf8;margin-bottom:8px;">🚆 ${esc(lineNames)}</div>` : ''}
+                    <div style="font-size:12.5px;color:#cbd5e1;line-height:1.6;">
+                        <div>⏱️ <b>${timeLabel}:</b> ประมาณ ${time} นาที (${countStn} สถานี)</div>
+                        <div>🔄 <b>${transferLabel}:</b> ${transferText}</div>
+                        <div>💰 <b>${fareLabel}:</b> <span style="font-size:14px;font-weight:800;color:#10b981;">${fareDisplay}</span></div>
+                    </div>
+                    <div style="border-top:1px dashed rgba(148,163,184,0.3);margin:10px 0;"></div>
+                    <div style="font-size:12.5px;color:#94a3b8;">
+                        🔗 <b>${planLabel}:</b><br>
+                        <a href="https://bkk-skytrains.vercel.app/" style="color:#38bdf8;text-decoration:none;font-weight:700;">https://bkk-skytrains.vercel.app/</a>
+                    </div>
+                </div>`;
             },
 
             shareJourneyRoute(i) {
                 const text = this.getJourneySummaryText(i);
                 if (!text) return;
-                const title = lang === 'zh' ? 'BKK SkyTrains 行程规划' : (lang === 'en' ? 'BKK SkyTrains Route Summary' : 'สรุปการเดินทาง BKK SkyTrains');
+                const title = lang === 'zh' ? 'Bangkok SkyTrains 行程规划' : (lang === 'en' ? 'Bangkok SkyTrains Route Summary' : 'สรุปการเดินทาง Bangkok SkyTrains');
                 if (navigator.share) {
                     navigator.share({
                         title: title,
@@ -8490,7 +8587,35 @@ setOriginFromActionSheet() {
             copyJourneySummary(i) {
                 const text = this.getJourneySummaryText(i);
                 if (!text) return;
+                const html = this.getJourneySummaryHtml(i);
                 const successMsg = lang === 'zh' ? '📋 已复制行程规划摘要到剪贴板' : (lang === 'en' ? '📋 Journey summary copied to clipboard' : '📋 คัดลอกรายละเอียดการเดินทางเรียบร้อยแล้ว');
+
+                if (navigator.clipboard && navigator.clipboard.write) {
+                    try {
+                        const textBlob = new Blob([text], { type: 'text/plain' });
+                        const htmlBlob = new Blob([html || text], { type: 'text/html' });
+                        navigator.clipboard.write([
+                            new ClipboardItem({
+                                'text/plain': textBlob,
+                                'text/html': htmlBlob
+                            })
+                        ]).then(() => {
+                            this.showToast(successMsg);
+                        }).catch(() => {
+                            if (navigator.clipboard.writeText) {
+                                navigator.clipboard.writeText(text).then(() => {
+                                    this.showToast(successMsg);
+                                }).catch(() => {
+                                    this.fallbackCopyText(text, successMsg);
+                                });
+                            } else {
+                                this.fallbackCopyText(text, successMsg);
+                            }
+                        });
+                        return;
+                    } catch (e) { }
+                }
+
                 if (navigator.clipboard && navigator.clipboard.writeText) {
                     navigator.clipboard.writeText(text).then(() => {
                         this.showToast(successMsg);
@@ -13022,19 +13147,20 @@ setOriginFromActionSheet() {
                 ${rm.StaticMapSrc ? `<div class="j-map-wrap"><a class="j-map-link" href="${esc(rm.StaticMapSrc)}" target="_blank" rel="noopener">${getUiIcon('map', 14, 'currentColor')} <span>${T('jMap')}</span></a></div>` : ''}
                 <div class="j-action-bar">
                     <button type="button" class="btn-j-share" onclick="App.shareJourneyRoute(${i})">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="18" cy="5" r="3"></circle>
-                            <circle cx="6" cy="12" r="3"></circle>
-                            <circle cx="18" cy="19" r="3"></circle>
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <circle cx="18" cy="5" r="3" fill="currentColor" fill-opacity="0.2"></circle>
+                            <circle cx="6" cy="12" r="3" fill="currentColor" fill-opacity="0.2"></circle>
+                            <circle cx="18" cy="19" r="3" fill="currentColor" fill-opacity="0.2"></circle>
                             <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
                             <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
                         </svg>
                         <span>${lang === 'zh' ? '分享路线' : (lang === 'en' ? 'Share Route' : 'แชร์เส้นทาง')}</span>
                     </button>
                     <button type="button" class="btn-j-copy" onclick="App.copyJourneySummary(${i})">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <rect width="8" height="4" x="8" y="2" rx="1.5" ry="1.5" fill="currentColor" fill-opacity="0.3"></rect>
+                            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                            <path d="m9 14 2 2 4-4"></path>
                         </svg>
                         <span>${lang === 'zh' ? '复制行程' : (lang === 'en' ? 'Copy Summary' : 'คัดลอกสรุป')}</span>
                     </button>

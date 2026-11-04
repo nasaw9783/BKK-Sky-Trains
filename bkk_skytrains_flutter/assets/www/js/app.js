@@ -8614,23 +8614,403 @@ setOriginFromActionSheet() {
                 </div>`;
             },
 
-            shareJourneyRoute(i) {
+            async shareJourneyRoute(i) {
+                const rm = this.journey?.result?.RoutesMap?.[i];
+                if (!rm) return;
+
+                const title = lang === 'zh'
+                    ? 'Bangkok SkyTrains 行程规划'
+                    : (lang === 'en' ? 'Bangkok SkyTrains Route Summary' : 'สรุปการเดินทาง Bangkok SkyTrains');
+                const shareText = this.getJourneySummaryText(i);
+
+                try {
+                    const blob = await this.generateRouteCardImageBlob(i);
+                    if (!blob) {
+                        this.fallbackShareText(i);
+                        return;
+                    }
+
+                    let file = null;
+                    try {
+                        file = new File([blob], 'bkk-skytrain-route.png', { type: 'image/png' });
+                    } catch (_) {
+                        file = null;
+                    }
+
+                    if (file && navigator.canShare && navigator.canShare({ files: [file] })) {
+                        navigator.share({
+                            title: title,
+                            text: shareText,
+                            files: [file]
+                        }).catch(err => {
+                            if (err && err.name !== 'AbortError') {
+                                this.fallbackSaveRouteImage(blob);
+                            }
+                        });
+                    } else {
+                        this.fallbackSaveRouteImage(blob);
+                    }
+                } catch (err) {
+                    console.error('Error generating/sharing route card image:', err);
+                    this.fallbackShareText(i);
+                }
+            },
+
+            fallbackSaveRouteImage(blob) {
+                // 1. ดาวน์โหลดไฟล์ภาพ PNG
+                const link = document.createElement('a');
+                link.download = 'bkk-skytrain-route.png';
+                link.href = URL.createObjectURL(blob);
+                document.body.appendChild(link);
+                link.click();
+                setTimeout(() => {
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(link.href);
+                }, 2000);
+
+                // 2. คัดลอกภาพลง Clipboard เพื่อให้กด Ctrl+V ในแชทได้ทันที
+                const toastMsg = lang === 'zh'
+                    ? '📸 路线图已保存并复制到剪贴板 (可直接粘贴至聊天室)'
+                    : (lang === 'en'
+                        ? '📸 Route image saved & copied to clipboard (ready to paste in chat)'
+                        : '📸 บันทึกรูปภาพและคัดลอกลง Clipboard แล้ว (กดวางในแชทได้ทันที)');
+
+                if (navigator.clipboard && navigator.clipboard.write) {
+                    navigator.clipboard.write([
+                        new ClipboardItem({ 'image/png': blob })
+                    ]).then(() => {
+                        this.showToast(toastMsg);
+                    }).catch(() => {
+                        const savedMsg = lang === 'zh'
+                            ? '📸 已下载路线图图片'
+                            : (lang === 'en' ? '📸 Route image downloaded' : '📸 ดาวน์โหลดรูปภาพเส้นทางเรียบร้อยแล้ว');
+                        this.showToast(savedMsg);
+                    });
+                } else {
+                    const savedMsg = lang === 'zh'
+                        ? '📸 已下载路线图图片'
+                        : (lang === 'en' ? '📸 Route image downloaded' : '📸 ดาวน์โหลดรูปภาพเส้นทางเรียบร้อยแล้ว');
+                    this.showToast(savedMsg);
+                }
+            },
+
+            fallbackShareText(i) {
                 const text = this.getJourneySummaryText(i);
                 if (!text) return;
-                const title = lang === 'zh' ? 'Bangkok SkyTrains 行程规划' : (lang === 'en' ? 'Bangkok SkyTrains Route Summary' : 'สรุปการเดินทาง Bangkok SkyTrains');
+                const title = lang === 'zh'
+                    ? 'Bangkok SkyTrains 行程规划'
+                    : (lang === 'en' ? 'Bangkok SkyTrains Route Summary' : 'สรุปการเดินทาง Bangkok SkyTrains');
                 if (navigator.share) {
                     navigator.share({
                         title: title,
                         text: text,
                         url: 'https://bkk-skytrains.vercel.app/'
                     }).catch(err => {
-                        if (err.name !== 'AbortError') {
+                        if (err && err.name !== 'AbortError') {
                             this.copyJourneySummary(i);
                         }
                     });
                 } else {
                     this.copyJourneySummary(i);
                 }
+            },
+
+            generateRouteCardImageBlob(i) {
+                const j = this.journey;
+                if (!j || !j.result || !j.result.RoutesMap || !j.result.RoutesMap[i]) return Promise.resolve(null);
+                const rm = j.result.RoutesMap[i];
+                const steps = rm.RoutesJorney || [];
+                if (!steps.length) return Promise.resolve(null);
+
+                // คำนวณสายและสีสำหรับแต่ละสถานี
+                let prevLine = null, prevColor = '#94a3b8';
+                const picks = [];
+                steps.forEach((st, k) => {
+                    const entries = App.keyLines[st.StationCode] || [];
+                    let pick = entries.find(e => e.lineId === st.LineId)
+                        || entries.find(e => e.lineId === prevLine);
+                    if (!pick) {
+                        const nextLines = (App.keyLines[steps[k + 1]?.StationCode] || []).map(e => e.lineId);
+                        pick = entries.find(e => nextLines.includes(e.lineId)) || entries[0]
+                            || { lineId: prevLine, color: prevColor };
+                    }
+                    picks.push(pick);
+                    prevLine = pick.lineId;
+                    prevColor = pick.color;
+                });
+
+                // ตรวจสอบค่าโดยสารแยกประเภท
+                const fi = Array.isArray(rm.FareRateInfo) ? rm.FareRateInfo[0] : rm.FareRateInfo;
+                const FARE_DETAIL_ZH = {
+                    'บุคคลทั่วไป': '普通成人单程票',
+                    'นักเรียน นักศึกษา': '学生优惠卡',
+                    'นักเรียน/นักศึกษา': '学生优惠卡',
+                    'ผู้สูงอายุ': '长者优待卡',
+                    'Single Journey Card': '单程票',
+                    'Rabbit Card': '兔子卡 (成人)',
+                    'Student Card': '学生卡',
+                    'Senior Card': '长者卡'
+                };
+                const fareList = (fi?.FareRate_List || []).map(f => {
+                    const fName = lang === 'zh'
+                        ? (FARE_DETAIL_ZH[f.FareDetail] || FARE_DETAIL_ZH[f.FareDetail_ENG] || f.FareDetail_ENG || f.FareDetail)
+                        : (lang === 'en' ? (f.FareDetail_ENG || f.FareDetail) : f.FareDetail);
+                    return { name: fName, price: f.FarePrice };
+                });
+
+                const isSameStation = steps.length === 1 || (rm.TotalTime === 0 && (rm.Count_Station ?? steps.length) <= 1);
+                const badgeLabel = rm.LabelTag || (isSameStation ? T('jSameStation') : (i === 0 ? T('jRecommended') : ''));
+                const fareDisplay = (rm.FareRate_Total != null && rm.FareRate_Total !== '') ? rm.FareRate_Total : (rm.TotalFare ?? rm.Fare ?? '-');
+                const timeDisplay = rm.TotalTime != null ? rm.TotalTime : (rm.Duration || '?');
+                const kmDisplay = rm.TotalKm != null ? rm.TotalKm : '?';
+                const countStn = rm.Count_Station ?? steps.length;
+
+                // คำนวณความสูง dynamic ของการ์ด
+                let curY = 98;
+                const stepPositions = [];
+                steps.forEach((st, k) => {
+                    const hasTransferBefore = k > 0 && picks[k].lineId !== picks[k - 1].lineId;
+                    if (hasTransferBefore) curY += 28;
+                    stepPositions.push({ k, st, pick: picks[k], y: curY, hasTransferBefore });
+                    curY += 42;
+                });
+
+                const lastStepY = stepPositions[stepPositions.length - 1].y;
+                const divider1Y = lastStepY + 28;
+                curY = divider1Y + 24;
+
+                const fareStartY = curY;
+                if (fareList.length > 0) {
+                    curY += 24; // title
+                    fareList.forEach(() => { curY += 25; });
+                    curY += 2; // space before divider
+                }
+
+                const divider2Y = fareList.length > 0 ? curY : null;
+                const footerY = divider2Y ? (divider2Y + 22) : (divider1Y + 24);
+                const totalHeight = footerY + 20;
+
+                const width = 480;
+                const dpr = Math.min(window.devicePixelRatio || 2, 3);
+                const canvas = document.createElement('canvas');
+                canvas.width = Math.round(width * dpr);
+                canvas.height = Math.round(totalHeight * dpr);
+                const ctx = canvas.getContext('2d');
+                ctx.scale(dpr, dpr);
+
+                const FONT_SANS = '"Prompt", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+                const FONT_MONO = '"JetBrains Mono", monospace';
+
+                function drawRoundRect(c, x, y, w, h, r) {
+                    c.beginPath();
+                    c.moveTo(x + r, y);
+                    c.lineTo(x + w - r, y);
+                    c.quadraticCurveTo(x + w, y, x + w, y + r);
+                    c.lineTo(x + w, y + h - r);
+                    c.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+                    c.lineTo(x + r, y + h);
+                    c.quadraticCurveTo(x, y + h, x, y + h - r);
+                    c.lineTo(x, y + r);
+                    c.quadraticCurveTo(x, y, x + r, y);
+                    c.closePath();
+                }
+
+                // 1. Background Card
+                ctx.fillStyle = '#0f172a';
+                drawRoundRect(ctx, 0, 0, width, totalHeight, 16);
+                ctx.fill();
+
+                // 2. Active Card Border (Green)
+                ctx.strokeStyle = '#10b981';
+                ctx.lineWidth = 2;
+                drawRoundRect(ctx, 0, 0, width, totalHeight, 16);
+                ctx.stroke();
+
+                // 3. Header
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 16px ' + FONT_SANS;
+                const routeTitle = T('jRoute', i + 1);
+                ctx.fillText(routeTitle, 18, 34);
+
+                // Badge
+                if (badgeLabel) {
+                    ctx.font = 'bold 11px ' + FONT_SANS;
+                    const titleW = ctx.measureText(routeTitle).width;
+                    const badgeW = ctx.measureText(badgeLabel).width + 16;
+                    const badgeX = 18 + titleW + 10;
+                    ctx.fillStyle = isSameStation ? 'rgba(2, 132, 199, 0.25)' : 'rgba(180, 83, 9, 0.35)';
+                    drawRoundRect(ctx, badgeX, 20, badgeW, 20, 10);
+                    ctx.fill();
+                    ctx.strokeStyle = isSameStation ? 'rgba(2, 132, 199, 0.5)' : '#92400e';
+                    ctx.lineWidth = 1;
+                    drawRoundRect(ctx, badgeX, 20, badgeW, 20, 10);
+                    ctx.stroke();
+                    ctx.fillStyle = isSameStation ? '#38bdf8' : '#fde68a';
+                    ctx.fillText(badgeLabel, badgeX + 8, 34);
+                }
+
+                // Total Fare
+                ctx.font = 'bold 18px ' + FONT_SANS;
+                ctx.fillStyle = '#10b981';
+                const fareStr = (fareDisplay !== '-' && !isNaN(fareDisplay)) ? `฿${fareDisplay}` : (fareDisplay === '-' ? '-' : `฿${fareDisplay}`);
+                const fareW = ctx.measureText(fareStr).width;
+                ctx.fillText(fareStr, width - 18 - fareW, 34);
+
+                // Summary Subtitle
+                ctx.font = '12px ' + FONT_SANS;
+                ctx.fillStyle = '#94a3b8';
+                const transferSuffix = rm.Count_InterChange
+                    ? (' · ' + (lang === 'zh' ? '换乘' : (lang === 'en' ? 'Transfer' : 'เปลี่ยนสาย')) + ' ×' + rm.Count_InterChange)
+                    : '';
+                const sumText = `⏱️ ${T('jMin', timeDisplay)} · ${T('jStations', countStn)} · ${kmDisplay} ${T('kmUnit').trim()}${transferSuffix}`;
+                ctx.fillText(sumText, 18, 55);
+
+                // Divider line
+                ctx.strokeStyle = 'rgba(148, 163, 184, 0.18)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(18, 68);
+                ctx.lineTo(width - 18, 68);
+                ctx.stroke();
+
+                // 4. Station Timeline (Rail Line)
+                for (let idx = 0; idx < stepPositions.length - 1; idx++) {
+                    const p1 = stepPositions[idx];
+                    const p2 = stepPositions[idx + 1];
+                    ctx.strokeStyle = p1.pick.color || '#10b981';
+                    ctx.lineWidth = 4;
+                    ctx.beginPath();
+                    ctx.moveTo(34, p1.y);
+                    if (p2.hasTransferBefore) {
+                        const midY = (p1.y + p2.y) / 2;
+                        ctx.lineTo(34, midY - 6);
+                        ctx.stroke();
+
+                        ctx.strokeStyle = p2.pick.color || '#10b981';
+                        ctx.beginPath();
+                        ctx.moveTo(34, midY + 6);
+                        ctx.lineTo(34, p2.y);
+                        ctx.stroke();
+                    } else {
+                        ctx.lineTo(34, p2.y);
+                        ctx.stroke();
+                    }
+                }
+
+                // Station Steps
+                stepPositions.forEach(sp => {
+                    if (sp.hasTransferBefore) {
+                        const transY = sp.y - 23;
+                        ctx.fillStyle = 'rgba(56, 189, 248, 0.15)';
+                        drawRoundRect(ctx, 48, transY - 11, 150, 20, 6);
+                        ctx.fill();
+                        ctx.strokeStyle = 'rgba(56, 189, 248, 0.4)';
+                        ctx.lineWidth = 1;
+                        drawRoundRect(ctx, 48, transY - 11, 150, 20, 6);
+                        ctx.stroke();
+                        ctx.fillStyle = '#38bdf8';
+                        ctx.font = 'bold 11px ' + FONT_SANS;
+                        ctx.fillText('⇄ ' + T('jTransfer'), 58, transY + 3);
+                    }
+
+                    const isEnd = sp.k === 0 || sp.k === steps.length - 1;
+                    const isBrt = sp.pick.lineId === 201 || (sp.st.StationCode && String(sp.st.StationCode).startsWith('B') && !String(sp.st.StationCode).startsWith('BL'));
+
+                    // Node Circle
+                    ctx.fillStyle = '#0f172a';
+                    ctx.beginPath();
+                    ctx.arc(34, sp.y, isEnd ? 7 : 5.5, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.strokeStyle = sp.pick.color || '#10b981';
+                    ctx.lineWidth = isEnd ? 3.5 : 2.5;
+                    ctx.stroke();
+
+                    // Station Code Pill
+                    const codeText = String(sp.st.StationCode || '');
+                    ctx.font = 'bold 10px ' + FONT_MONO;
+                    const codeMetrics = ctx.measureText(codeText);
+                    const pillW = Math.max(28, codeMetrics.width + 10);
+                    ctx.fillStyle = isBrt ? '#82C341' : (sp.pick.color || '#10b981');
+                    drawRoundRect(ctx, 52, sp.y - 10, pillW, 20, 5);
+                    ctx.fill();
+                    ctx.fillStyle = '#ffffff';
+                    ctx.textAlign = 'center';
+                    ctx.fillText(codeText, 52 + (pillW / 2), sp.y + 4);
+                    ctx.textAlign = 'left';
+
+                    // Station Name
+                    const stTitle = destName(sp.st.Title);
+                    ctx.fillStyle = '#ffffff';
+                    ctx.font = (isEnd ? 'bold 14px ' : '500 13px ') + FONT_SANS;
+                    ctx.fillText(stTitle, 52 + pillW + 10, sp.y + 4);
+
+                    // Arrival Time
+                    if (sp.st.TimeRoute) {
+                        ctx.font = '12px ' + FONT_MONO;
+                        ctx.fillStyle = '#94a3b8';
+                        const timeW = ctx.measureText(sp.st.TimeRoute).width;
+                        ctx.fillText(sp.st.TimeRoute, width - 18 - timeW, sp.y + 4);
+                    }
+                });
+
+                // Divider after Steps
+                ctx.strokeStyle = 'rgba(148, 163, 184, 0.18)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(18, divider1Y);
+                ctx.lineTo(width - 18, divider1Y);
+                ctx.stroke();
+
+                // 5. Fares Breakdown (if any)
+                if (fareList.length > 0) {
+                    ctx.fillStyle = '#ffffff';
+                    ctx.font = 'bold 13px ' + FONT_SANS;
+                    ctx.fillText(T('jFareTypes'), 18, fareStartY);
+
+                    let fRowY = fareStartY + 24;
+                    fareList.forEach(f => {
+                        ctx.font = '12px ' + FONT_SANS;
+                        ctx.fillStyle = '#94a3b8';
+                        ctx.fillText(f.name, 18, fRowY);
+
+                        ctx.font = 'bold 13px ' + FONT_MONO;
+                        ctx.fillStyle = '#ffffff';
+                        const priceStr = `฿${f.price}`;
+                        const priceW = ctx.measureText(priceStr).width;
+                        ctx.fillText(priceStr, width - 18 - priceW, fRowY);
+                        fRowY += 25;
+                    });
+
+                    // Divider after fares
+                    if (divider2Y) {
+                        ctx.strokeStyle = 'rgba(148, 163, 184, 0.15)';
+                        ctx.lineWidth = 1;
+                        ctx.beginPath();
+                        ctx.moveTo(18, divider2Y);
+                        ctx.lineTo(width - 18, divider2Y);
+                        ctx.stroke();
+                    }
+                }
+
+                // 6. Watermark Footer
+                ctx.font = '11.5px ' + FONT_SANS;
+                ctx.fillStyle = '#64748b';
+                const brandText = lang === 'zh'
+                    ? '🚆 Bangkok SkyTrains · 实时行程规划'
+                    : (lang === 'en' ? '🚆 Bangkok SkyTrains · Live Journey Planner' : '🚆 Bangkok SkyTrains · วางแผนเส้นทางสด');
+                ctx.fillText(brandText, 18, footerY);
+
+                ctx.font = 'bold 11px ' + FONT_MONO;
+                ctx.fillStyle = '#38bdf8';
+                const urlText = 'bkk-skytrains.vercel.app';
+                const urlW = ctx.measureText(urlText).width;
+                ctx.fillText(urlText, width - 18 - urlW, footerY);
+
+                return new Promise(resolve => {
+                    canvas.toBlob(blob => {
+                        resolve(blob);
+                    }, 'image/png');
+                });
             },
 
             copyJourneySummary(i) {

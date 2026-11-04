@@ -5110,22 +5110,54 @@ gQIDAQAB
                 }
             },
 
+            lockBackgroundScreen() {
+                this._modalLockCount = (this._modalLockCount || 0) + 1;
+                document.body.classList.add('modal-backdrop-locked');
+                document.documentElement.classList.add('modal-backdrop-locked');
+                if (document.body) document.body.style.overflow = 'hidden';
+                if (this.geoMap && this.geoMap.dragging) {
+                    try { this.geoMap.dragging.disable(); } catch (e) {}
+                }
+            },
+
+            unlockBackgroundScreen(force = false) {
+                if (force) {
+                    this._modalLockCount = 0;
+                } else {
+                    this._modalLockCount = Math.max(0, (this._modalLockCount || 1) - 1);
+                }
+                const legendSheet = document.getElementById('mapLegendSheet');
+                const nearestPopup = document.getElementById('nearestStationPopup');
+                const interchangeModal = document.getElementById('interchangeModal');
+                const pickerOverlay = document.getElementById('pickerOverlay');
+                const trafficPopup = document.getElementById('trafficDisruptionPopup');
+
+                const hasOtherActiveModal = (this._modalLockCount > 0) ||
+                    (legendSheet && legendSheet.classList.contains('active')) ||
+                    (nearestPopup && nearestPopup.style.display !== 'none' && nearestPopup.style.display !== '') ||
+                    (interchangeModal && interchangeModal.style.display !== 'none' && interchangeModal.style.display !== '') ||
+                    (pickerOverlay && !pickerOverlay.hidden) ||
+                    (trafficPopup && trafficPopup.style.display === 'flex');
+
+                if (!hasOtherActiveModal || force) {
+                    this._modalLockCount = 0;
+                    document.body.classList.remove('modal-backdrop-locked');
+                    document.documentElement.classList.remove('modal-backdrop-locked');
+                    if (document.body) document.body.style.overflow = '';
+                    if (this.geoMap && this.geoMap.dragging) {
+                        try { this.geoMap.dragging.enable(); } catch (e) {}
+                    }
+                }
+            },
+
             toggleMapLegend() {
                 const sheet = document.getElementById('mapLegendSheet');
                 if (sheet) {
                     const isActive = sheet.classList.toggle('active');
                     if (isActive) {
-                        document.body.classList.add('modal-backdrop-locked');
-                        if (document.body) document.body.style.overflow = 'hidden';
-                        if (this.geoMap && this.geoMap.dragging) {
-                            try { this.geoMap.dragging.disable(); } catch (e) {}
-                        }
+                        this.lockBackgroundScreen();
                     } else {
-                        document.body.classList.remove('modal-backdrop-locked');
-                        if (document.body) document.body.style.overflow = '';
-                        if (this.geoMap && this.geoMap.dragging) {
-                            try { this.geoMap.dragging.enable(); } catch (e) {}
-                        }
+                        this.unlockBackgroundScreen();
                     }
                     const label = isActive ? (lang === 'en' ? 'Close' : (lang === 'zh' ? '关闭图例' : 'ปิดสัญลักษณ์')) : (lang === 'en' ? 'Legend' : (lang === 'zh' ? '图例' : 'สัญลักษณ์'));
                     const btnText = document.getElementById('mapLegendBtnText');
@@ -8346,14 +8378,14 @@ setOriginFromActionSheet() {
                 this.renderPicker();
                 const el = document.getElementById('pickerOverlay');
                 if (el) el.hidden = false;
-                if (document.body) document.body.style.overflow = 'hidden';
+                this.lockBackgroundScreen();
             },
 
             closePicker() {
                 this.journey.picking = null;
                 const el = document.getElementById('pickerOverlay');
                 if (el) { el.hidden = true; el.innerHTML = ''; }
-                if (document.body) document.body.style.overflow = '';
+                this.unlockBackgroundScreen();
             },
 
             pickJourneyStation(key) {
@@ -9646,6 +9678,7 @@ setOriginFromActionSheet() {
 
                 if (openModal) {
                     modal.style.display = 'flex';
+                    this.lockBackgroundScreen();
                 }
             },
 
@@ -9715,6 +9748,7 @@ setOriginFromActionSheet() {
                 const panel = document.getElementById('nearestPopupRoutePanel');
                 if (trigger) trigger.setAttribute('aria-expanded', 'false');
                 if (panel) panel.hidden = true;
+                this.unlockBackgroundScreen();
             },
 
             handleNotificationOpen(stationKey) {
@@ -11111,11 +11145,13 @@ setOriginFromActionSheet() {
                 }
 
                 modal.style.display = 'flex';
+                this.lockBackgroundScreen();
             },
 
             closeInterchangeModal() {
                 const modal = document.getElementById('interchangeModal');
                 if (modal) modal.style.display = 'none';
+                this.unlockBackgroundScreen();
             }
         };
 

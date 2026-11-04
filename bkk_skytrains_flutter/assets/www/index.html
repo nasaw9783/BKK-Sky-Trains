@@ -4268,9 +4268,11 @@
             opacity: 1;
         }
 
-        body.modal-backdrop-locked {
+        body.modal-backdrop-locked,
+        html.modal-backdrop-locked {
             overflow: hidden !important;
             touch-action: none !important;
+            overscroll-behavior: none !important;
         }
 
         .map-legend-box {
@@ -6828,11 +6830,16 @@
             inset: 0;
             background: rgba(15, 23, 42, 0.6);
             backdrop-filter: blur(6px);
-            z-index: 130;
+            -webkit-backdrop-filter: blur(6px);
+            z-index: 10000;
             display: flex;
             align-items: flex-end;
             justify-content: center;
             animation: viewFadeIn 0.2s ease;
+            touch-action: none !important;
+            overscroll-behavior: contain !important;
+            user-select: none !important;
+            -webkit-user-select: none !important;
         }
 
         .picker {
@@ -6852,6 +6859,8 @@
             box-sizing: border-box;
             position: relative;
             z-index: 10;
+            touch-action: pan-y;
+            overscroll-behavior: contain;
         }
 
         .picker-bg {
@@ -7401,6 +7410,10 @@
             justify-content: center;
             padding: 16px;
             animation: fadeInOverlay 0.25s ease-out;
+            touch-action: none !important;
+            overscroll-behavior: contain !important;
+            user-select: none !important;
+            -webkit-user-select: none !important;
         }
 
         @keyframes fadeInOverlay {
@@ -7422,6 +7435,8 @@
             gap: 12px;
             animation: slideDownModal 0.3s cubic-bezier(0.16, 1, 0.3, 1);
             overflow-y: auto;
+            touch-action: pan-y;
+            overscroll-behavior: contain;
             user-select: none !important;
             -webkit-user-select: none !important;
             -moz-user-select: none !important;
@@ -9733,8 +9748,11 @@
             padding: 16px;
             box-sizing: border-box;
             user-select: none !important;
+            -webkit-user-select: none !important;
             caret-color: transparent !important;
             animation: fadeInModal 0.2s ease;
+            touch-action: none !important;
+            overscroll-behavior: contain !important;
         }
         @keyframes fadeInModal {
             from { opacity: 0; }
@@ -9751,8 +9769,11 @@
             box-shadow: 0 20px 45px rgba(0, 0, 0, 0.6), 0 0 20px rgba(56, 189, 248, 0.15);
             max-height: 90vh;
             overflow-y: auto;
+            touch-action: pan-y;
+            overscroll-behavior: contain;
             animation: popModalCard 0.25s cubic-bezier(0.16, 1, 0.3, 1);
             user-select: none !important;
+            -webkit-user-select: none !important;
             caret-color: transparent !important;
         }
         @keyframes popModalCard {

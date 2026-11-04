@@ -8458,13 +8458,13 @@ setOriginFromActionSheet() {
 
                 if (lang === 'zh') {
                     const transferText = transfers > 0 ? `，换乘 ${transfers} 次` : '，无需换乘';
-                    return `🚆 BKK SkyTrains 行程规划\n起点: ${fromName} (${j.from}) ➔ 终点: ${toName} (${j.to})\n⏱️ 乘车时间: 约 ${time} 分钟 (${countStn} 个车站${transferText})\n💰 预估票价: ฿${fare}\n\n查看路线详情: https://bkkskytrain.online`;
+                    return `🚆 BKK SkyTrains 行程规划\n起点: ${fromName} (${j.from}) ➔ 终点: ${toName} (${j.to})\n⏱️ 乘车时间: 约 ${time} 分钟 (${countStn} 个车站${transferText})\n💰 预估票价: ฿${fare}\n\n查看路线详情: https://bkk-skytrains.vercel.app/`;
                 } else if (lang === 'en') {
                     const transferText = transfers > 0 ? `, ${transfers} transfer(s)` : ', direct';
-                    return `🚆 BKK SkyTrains Route Summary\nFrom: ${fromName} (${j.from}) ➔ To: ${toName} (${j.to})\n⏱️ Travel Time: Approx. ${time} mins (${countStn} stations${transferText})\n💰 Total Fare: ฿${fare}\n\nPlan your journey: https://bkkskytrain.online`;
+                    return `🚆 BKK SkyTrains Route Summary\nFrom: ${fromName} (${j.from}) ➔ To: ${toName} (${j.to})\n⏱️ Travel Time: Approx. ${time} mins (${countStn} stations${transferText})\n💰 Total Fare: ฿${fare}\n\nPlan your journey: https://bkk-skytrains.vercel.app/`;
                 } else {
                     const transferText = transfers > 0 ? ` (เปลี่ยนสาย ${transfers} ครั้ง)` : ' (ไม่ต้องเปลี่ยนสาย)';
-                    return `🚆 สรุปการเดินทาง BKK SkyTrains\nต้นทาง: ${fromName} (${j.from}) ➔ ปลายทาง: ${toName} (${j.to})\n⏱️ เวลาเดินทาง: ประมาณ ${time} นาที (${countStn} สถานี${transferText})\n💰 ค่าโดยสาร: ฿${fare}\n\nวางแผนเส้นทางได้ที่: https://bkkskytrain.online`;
+                    return `🚆 สรุปการเดินทาง BKK SkyTrains\nต้นทาง: ${fromName} (${j.from}) ➔ ปลายทาง: ${toName} (${j.to})\n⏱️ เวลาเดินทาง: ประมาณ ${time} นาที (${countStn} สถานี${transferText})\n💰 ค่าโดยสาร: ฿${fare}\n\nวางแผนเส้นทางได้ที่: https://bkk-skytrains.vercel.app/`;
                 }
             },
 
@@ -8476,7 +8476,7 @@ setOriginFromActionSheet() {
                     navigator.share({
                         title: title,
                         text: text,
-                        url: 'https://bkkskytrain.online'
+                        url: 'https://bkk-skytrains.vercel.app/'
                     }).catch(err => {
                         if (err.name !== 'AbortError') {
                             this.copyJourneySummary(i);

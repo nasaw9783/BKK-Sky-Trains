@@ -4,6 +4,20 @@ import SwiftUI
 import ActivityKit
 #endif
 
+// MARK: - View Extension for iOS 16/17 Widget Background Compatibility
+extension View {
+    @ViewBuilder
+    func widgetBackground<V: View>(_ backgroundView: V) -> some View {
+        if #available(iOSApplicationExtension 17.0, *) {
+            containerBackground(for: .widget) {
+                backgroundView
+            }
+        } else {
+            background(backgroundView)
+        }
+    }
+}
+
 // MARK: - Color Extension for Hex Support
 extension Color {
     init(hex: String) {
@@ -171,9 +185,7 @@ struct StationAccessoryRectangularView: View {
                     .foregroundColor(.primary)
             }
         }
-        .containerBackground(for: .widget) {
-            Color.clear
-        }
+        .widgetBackground(Color.clear)
     }
 }
 
@@ -202,9 +214,7 @@ struct StationAccessoryCircularView: View {
                 .font(.system(size: 9.5, weight: .bold))
                 .lineLimit(1)
         }
-        .containerBackground(for: .widget) {
-            Color.clear
-        }
+        .widgetBackground(Color.clear)
     }
 }
 
@@ -266,9 +276,7 @@ struct StationSystemSmallView: View {
             .clipShape(RoundedRectangle(cornerRadius: 6))
         }
         .padding(12)
-        .containerBackground(for: .widget) {
-            Color(hex: "#1e293b")
-        }
+        .widgetBackground(Color(hex: "#1e293b"))
     }
 }
 
@@ -353,9 +361,7 @@ struct StationSystemMediumView: View {
             .frame(maxWidth: .infinity)
         }
         .padding(14)
-        .containerBackground(for: .widget) {
-            Color(hex: "#1e293b")
-        }
+        .widgetBackground(Color(hex: "#1e293b"))
     }
 }
 
@@ -587,9 +593,7 @@ struct StationWidgetBundle: WidgetBundle {
     var body: some Widget {
         StationWidget()
         #if canImport(ActivityKit)
-        if #available(iOSApplicationExtension 16.1, *) {
-            StationLiveActivityWidget()
-        }
+        StationLiveActivityWidget()
         #endif
     }
 }

@@ -4224,6 +4224,7 @@ gQIDAQAB
                         this.toggleMapLegend();
                     }
                 }
+                this.updateModalLockState();
 
                 // Trigger view specific rendering
                 if (viewName === 'home') {
@@ -5110,44 +5111,57 @@ gQIDAQAB
                 }
             },
 
-            lockBackgroundScreen() {
-                this._modalLockCount = (this._modalLockCount || 0) + 1;
-                document.body.classList.add('modal-backdrop-locked');
-                document.documentElement.classList.add('modal-backdrop-locked');
-                if (document.body) document.body.style.overflow = 'hidden';
-                if (this.geoMap && this.geoMap.dragging) {
-                    try { this.geoMap.dragging.disable(); } catch (e) {}
-                }
-            },
-
-            unlockBackgroundScreen(force = false) {
-                if (force) {
-                    this._modalLockCount = 0;
-                } else {
-                    this._modalLockCount = Math.max(0, (this._modalLockCount || 1) - 1);
-                }
+            updateModalLockState() {
                 const legendSheet = document.getElementById('mapLegendSheet');
+                const isLegendOpen = !!legendSheet && legendSheet.classList.contains('active');
+
                 const nearestPopup = document.getElementById('nearestStationPopup');
+                const isNearestOpen = !!nearestPopup && nearestPopup.style.display !== 'none' && nearestPopup.style.display !== '';
+
                 const interchangeModal = document.getElementById('interchangeModal');
+                const isInterchangeOpen = !!interchangeModal && interchangeModal.style.display !== 'none' && interchangeModal.style.display !== '';
+
                 const pickerOverlay = document.getElementById('pickerOverlay');
+                const isPickerOpen = !!pickerOverlay && !pickerOverlay.hidden && pickerOverlay.style.display !== 'none';
+
                 const trafficPopup = document.getElementById('trafficDisruptionPopup');
+                const isTrafficOpen = !!trafficPopup && trafficPopup.style.display === 'flex';
 
-                const hasOtherActiveModal = (this._modalLockCount > 0) ||
-                    (legendSheet && legendSheet.classList.contains('active')) ||
-                    (nearestPopup && nearestPopup.style.display !== 'none' && nearestPopup.style.display !== '') ||
-                    (interchangeModal && interchangeModal.style.display !== 'none' && interchangeModal.style.display !== '') ||
-                    (pickerOverlay && !pickerOverlay.hidden) ||
-                    (trafficPopup && trafficPopup.style.display === 'flex');
+                const shouldLock = isLegendOpen || isNearestOpen || isInterchangeOpen || isPickerOpen || isTrafficOpen;
 
-                if (!hasOtherActiveModal || force) {
-                    this._modalLockCount = 0;
+                if (shouldLock) {
+                    document.body.classList.add('modal-backdrop-locked');
+                    if (document.body) document.body.style.overflow = 'hidden';
+                    if (this.geoMap && this.geoMap.dragging) {
+                        try { this.geoMap.dragging.disable(); } catch (e) {}
+                    }
+                } else {
                     document.body.classList.remove('modal-backdrop-locked');
                     document.documentElement.classList.remove('modal-backdrop-locked');
                     if (document.body) document.body.style.overflow = '';
+                    if (document.documentElement) document.documentElement.style.overflow = '';
                     if (this.geoMap && this.geoMap.dragging) {
                         try { this.geoMap.dragging.enable(); } catch (e) {}
                     }
                 }
+            },
+
+            lockBackgroundScreen() {
+                this.updateModalLockState();
+            },
+
+            unlockBackgroundScreen(force = false) {
+                if (force) {
+                    const nearestPopup = document.getElementById('nearestStationPopup');
+                    if (nearestPopup) nearestPopup.style.display = 'none';
+                    const interchangeModal = document.getElementById('interchangeModal');
+                    if (interchangeModal) interchangeModal.style.display = 'none';
+                    const pickerOverlay = document.getElementById('pickerOverlay');
+                    if (pickerOverlay) { pickerOverlay.hidden = true; pickerOverlay.innerHTML = ''; }
+                    const legendSheet = document.getElementById('mapLegendSheet');
+                    if (legendSheet) legendSheet.classList.remove('active');
+                }
+                this.updateModalLockState();
             },
 
             toggleMapLegend() {
@@ -7883,6 +7897,7 @@ setOriginFromActionSheet() {
                 this.refreshTimer = setInterval(() => this.refreshAll(), REFRESH_MS);
                 setInterval(() => this.loadTraffic(), TRAFFIC_REFRESH_MS);
                 setInterval(() => this.tickCountdowns(), TICK_MS);
+                this.updateModalLockState();
             },
 
             triggerReload() {

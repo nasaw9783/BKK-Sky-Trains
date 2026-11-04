@@ -10872,6 +10872,89 @@ setOriginFromActionSheet() {
                 const s = this.findStation(stationKey);
                 if (!s) return;
 
+                const getInterchangeOperatorEntities = (c, catLine, line, lang) => {
+                    const lineId = Number(c.lineId);
+                    if (lineId === 101 || lineId === 102 || lineId === 106) {
+                        // MRT สายสีน้ำเงิน, ม่วง, ส้ม (BEM & MRTA)
+                        if (lang === 'zh') {
+                            return [
+                                { code: 'BEM', full: '曼谷高速与地铁' },
+                                { code: 'MRTA', full: '泰国大众捷运局' }
+                            ];
+                        }
+                        if (lang === 'en') {
+                            return [
+                                { code: 'BEM', full: 'Bangkok Expressway and Metro' },
+                                { code: 'MRTA', full: 'Mass Rapid Transit Authority of Thailand' }
+                            ];
+                        }
+                        return [
+                            { code: 'BEM', full: 'ทางด่วนและรถไฟฟ้ากรุงเทพ' },
+                            { code: 'MRTA', full: 'การรถไฟฟ้าขนส่งมวลชนแห่งประเทศไทย' }
+                        ];
+                    }
+                    if (lineId === 1 || lineId === 2) {
+                        return [{
+                            code: 'BTSC',
+                            full: lang === 'zh' ? '曼谷大众运输系统公司' : (lang === 'en' ? 'Bangkok Mass Transit System' : 'ระบบรถไฟฟ้าบีทีเอส')
+                        }];
+                    }
+                    if (lineId === 3) {
+                        return [
+                            { code: 'KT', full: lang === 'zh' ? '曼谷塔纳空' : (lang === 'en' ? 'Krungthep Thanakom' : 'กรุงเทพธนาคม') },
+                            { code: 'BTSC', full: lang === 'zh' ? '曼谷大众运输系统公司' : (lang === 'en' ? 'Bangkok Mass Transit System' : 'ระบบรถไฟฟ้าบีทีเอส') }
+                        ];
+                    }
+                    if (lineId === 4) {
+                        return [{
+                            code: 'EBM',
+                            full: lang === 'zh' ? '曼谷东部单轨铁路' : (lang === 'en' ? 'Eastern Bangkok Monorail' : 'Eastern Bangkok Monorail')
+                        }];
+                    }
+                    if (lineId === 5) {
+                        return [{
+                            code: 'NBM',
+                            full: lang === 'zh' ? '曼谷北部单轨铁路' : (lang === 'en' ? 'Northern Bangkok Monorail' : 'Northern Bangkok Monorail')
+                        }];
+                    }
+                    if (lineId === 103 || lineId === 105) {
+                        return [{
+                            code: 'SRTET',
+                            full: lang === 'zh' ? '泰国国家铁路电气化列车' : (lang === 'en' ? 'State Railway of Thailand Electrified Train' : 'รถไฟฟ้า ร.ฟ.ท. (การรถไฟแห่งประเทศไทย)')
+                        }];
+                    }
+                    if (lineId === 104) {
+                        return [
+                            { code: 'SRTET', full: lang === 'zh' ? '泰国国家铁路电气化列车' : (lang === 'en' ? 'State Railway of Thailand Electrified Train' : 'รถไฟฟ้า ร.ฟ.ท.') },
+                            { code: 'Asia Era One', full: lang === 'zh' ? '亚洲第一快铁' : (lang === 'en' ? 'Asia Era One' : 'เอเชีย เอรา วัน') }
+                        ];
+                    }
+                    if (lineId === 201) {
+                        return [
+                            { code: 'BMA', full: lang === 'zh' ? '曼谷市政府' : (lang === 'en' ? 'Bangkok Metropolitan Administration' : 'กรุงเทพมหานคร') },
+                            { code: 'BRT', full: lang === 'zh' ? '快速公交系统' : (lang === 'en' ? 'Bangkok Bus Rapid Transit' : 'ระบบรถโดยสารด่วนพิเศษ') }
+                        ];
+                    }
+
+                    // Fallback dynamic parsing for any other lines
+                    const rawOp = lang === 'zh' ? (catLine?.operatorZH || catLine?.operatorEN || line?.operatorZH) : (lang === 'en' ? (catLine?.operatorEN || line?.operatorEN) : (catLine?.operatorTH || line?.operatorTH));
+                    if (!rawOp) return [];
+                    let cleanOp = String(rawOp).replace(/\(.*?\b(ยังไม่เปิดให้บริการ|Not in Service|尚未开通运营)\b.*?\)/gi, '').trim();
+                    const parts = cleanOp.split('/').map(p => p.trim()).filter(Boolean);
+                    return parts.map(p => {
+                        const m = p.match(/^(.*?)\s*[\(\[]\s*(.*?)\s*[\)\]]$/);
+                        if (m) {
+                            let first = m[1].trim();
+                            let second = m[2].trim();
+                            if (second.length <= 6 && /^[A-Zก-๙\.\s]+$/.test(second)) {
+                                return { code: second.replace(/[()]/g, ''), full: first.replace(/[()]/g, '') };
+                            }
+                            return { code: first.replace(/[()]/g, ''), full: second.replace(/[()]/g, '') };
+                        }
+                        return { code: 'OP', full: p.replace(/[()]/g, '') };
+                    });
+                };
+
                 const curLineId = ctxLineId || s.StationLineId;
                 const curCatLine = TRANSIT_LINES_CATALOG.find(l => l.id === curLineId);
                 const curLine = this.lineById[curLineId] || MRT_LINE_BY_ID[curLineId];
@@ -10941,11 +11024,23 @@ setOriginFromActionSheet() {
 
                         if (catLine) {
                             lineFullName = lang === 'zh' ? (catLine.nameZH || catLine.nameEN) : (lang === 'en' ? catLine.nameEN : catLine.nameTH);
-                            lineOperator = lang === 'zh' ? (catLine.operatorZH || catLine.operatorEN) : (lang === 'en' ? catLine.operatorEN : catLine.operatorTH);
                         } else if (line) {
                             lineFullName = lang === 'zh' ? (LINE_NAMES_ZH[line.LineId] || line.LineName_EN) : (lang === 'en' ? line.LineName_EN : line.LineName_TH);
-                            lineOperator = line ? (lang === 'zh' ? (line.operatorZH || line.OperatorZH || '') : (lang === 'en' ? (line.operatorEN || line.OperatorEN || '') : (line.operatorTH || line.OperatorTH || line.OperatorName || ''))) : '';
                         }
+
+                        const opEntities = getInterchangeOperatorEntities(c, catLine, line, lang);
+                        const isOrangeNotOperating = (Number(c.lineId) === 106);
+                        const notOperatingNote = isOrangeNotOperating ? (lang === 'zh' ? ' (尚未开通运营)' : (lang === 'en' ? ' (Not in Service)' : ' (ยังไม่เปิดให้บริการ)')) : '';
+                        const opBadgesHtml = opEntities.length ? `
+                            <div class="interchange-operator-list">
+                                ${opEntities.map(e => `
+                                    <div class="interchange-op-item">
+                                        <span class="interchange-op-badge" style="background:${c.color}22;color:${c.color};border-color:${c.color}50;">${esc(e.code)}</span>
+                                        <span class="interchange-op-name">${esc(e.full)}${notOperatingNote ? `<span style="color:#f58220;font-weight:700;">${esc(notOperatingNote)}</span>` : ''}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        ` : '';
 
                         const cleanLineName = lineFullName.split('|')[0].trim();
                         const connSt = this.findStation(c.key);
@@ -10963,13 +11058,12 @@ setOriginFromActionSheet() {
                                         <div class="interchange-icon-box" style="background:${c.color}25;">
                                             ${getLineIconSvg(c.lineId, c.color, 16)}
                                         </div>
-                                        <div>
-                                            <div class="interchange-name-bold">${formatLineTitleWithTag(lineFullName, c.color, 'card')}</div>
-                                            ${lineOperator ? `<div class="interchange-operator-sub">${esc(lineOperator)}</div>` : ''}
-                                        </div>
+                                        <div class="interchange-name-bold">${formatLineTitleWithTag(lineFullName, c.color, 'card')}</div>
                                     </div>
                                     <span class="interchange-st-code" style="background:${c.color};">${esc(c.key)}</span>
                                 </div>
+
+                                ${opBadgesHtml}
 
                                 ${connStName ? `<div class="interchange-conn-st-row"><span>${lang === 'zh' ? '换乘车站:' : (lang === 'en' ? 'Connecting Station:' : 'สถานีเชื่อมต่อ:')}</span><span class="interchange-conn-st-badge${isBrt ? ' st-key-brt' : ''}" style="${badgeStyle}">${esc(c.key)}</span><span style="color:${c.color}">${esc(connStName)}</span></div>` : ''}
 

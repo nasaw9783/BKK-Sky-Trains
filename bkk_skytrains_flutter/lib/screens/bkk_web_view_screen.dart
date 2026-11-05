@@ -56,13 +56,21 @@ class _BkkWebViewScreenState extends State<BkkWebViewScreen> {
         NavigationDelegate(
           onNavigationRequest: (NavigationRequest request) {
             final uri = Uri.tryParse(request.url);
-            if (request.url.startsWith('about:') ||
-                request.url.startsWith('data:') ||
-                request.url.contains('assets/www') ||
-                uri?.host == 'nasaw9783.github.io' ||
-                uri?.host == 'bkkskytrain.online' ||
-                uri?.host == 'localhost' ||
-                uri?.host == '127.0.0.1') {
+            final scheme = uri?.scheme.toLowerCase() ?? '';
+            final host = uri?.host.toLowerCase() ?? '';
+
+            if (scheme == 'about' || scheme == 'data') {
+              return NavigationDecision.navigate;
+            }
+            if (scheme == 'file' && request.url.contains('assets/www')) {
+              return NavigationDecision.navigate;
+            }
+            if ((scheme == 'http' || scheme == 'https') &&
+                (host == 'nasaw9783.github.io' ||
+                 host == 'bkkskytrain.online' ||
+                 host == 'localhost' ||
+                 host == '127.0.0.1' ||
+                 host == 'appassets.androidplatform.net')) {
               return NavigationDecision.navigate;
             }
             debugPrint('[WebView Security] Blocked external navigation to: ${request.url}');
@@ -232,6 +240,7 @@ class _BkkWebViewScreenState extends State<BkkWebViewScreen> {
         locationSettings: streamSettings,
       ).listen(
         (Position livePos) {
+          if (!mounted) return;
           final now = DateTime.now();
           final isBetter = _bestAccuracy == null || livePos.accuracy <= _bestAccuracy!;
           final timeElapsed = _lastDispatchedTime == null || now.difference(_lastDispatchedTime!).inMilliseconds >= 1500;
@@ -266,6 +275,7 @@ class _BkkWebViewScreenState extends State<BkkWebViewScreen> {
           );
         }
         final singlePos = await Geolocator.getCurrentPosition(locationSettings: locationSettings);
+        if (!mounted) return;
         final now = DateTime.now();
         if (_bestAccuracy == null || singlePos.accuracy <= _bestAccuracy!) {
           _bestAccuracy = singlePos.accuracy;
@@ -280,8 +290,9 @@ class _BkkWebViewScreenState extends State<BkkWebViewScreen> {
       }
     } catch (e) {
       debugPrint('Geolocator outer failed: $e');
+      final safeErr = jsonEncode(e.toString());
       _controller.runJavaScript(
-        "if (window.App && App.onNativeLocationError) { App.onNativeLocationError('$e'); }",
+        "if (window.App && App.onNativeLocationError) { App.onNativeLocationError($safeErr); }",
       );
     }
   }

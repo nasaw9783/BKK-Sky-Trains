@@ -2296,7 +2296,7 @@ gQIDAQAB
                 const res = await postJSON(STATION_LIST_URL('en'), null, {}, 5000);
                 if (res.status === 200 && res.data?.ErrMessage === 'Success' && Array.isArray(res.data.data)) {
                     const sanitized = sanitizeStationData(res.data.data);
-                    localStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), data: sanitized }));
+                    try { localStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), data: sanitized })); } catch (e) { }
                     return sanitized;
                 }
             } catch (e) {
@@ -2313,7 +2313,7 @@ gQIDAQAB
                 const res = await postJSON(STATION_LIST_URL('en'), null, {}, 5000);
                 if (res.status === 200 && res.data?.ErrMessage === 'Success') {
                     const sanitized = sanitizeStationData(res.data.data);
-                    localStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), data: sanitized }));
+                    try { localStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), data: sanitized })); } catch (e) { }
                     applyCrowdedUpdate(sanitized);
                 }
             } catch (e) { }
@@ -8991,7 +8991,7 @@ setOriginFromActionSheet() {
                             this.renderNearest();
                             this.renderNearestExit();
                             if (interactive && !this.userPos) {
-                                this.showToast(`${getUiIcon('alert', 16, '#f59e0b')} ค้นหาตำแหน่งนานเกินกำหนด โปรดลองใหม่อีกครั้ง`);
+                                this.showToast(`${getUiIcon('alert', 16, '#f59e0b')} ค้นหาตำแหน่งนานเกินกำหนด โปรดลองใหม่อีกครั้ง`, true);
                             }
                         }
                     }, 18000);
@@ -9028,7 +9028,7 @@ setOriginFromActionSheet() {
                         this.renderNearest();
                         this.renderNearestExit();
                         if (interactive && !this.userPos) {
-                            this.showToast(`${getUiIcon('alert', 16, '#f59e0b')} ค้นหาตำแหน่งนานเกินกำหนด โปรดลองใหม่อีกครั้ง`);
+                            this.showToast(`${getUiIcon('alert', 16, '#f59e0b')} ค้นหาตำแหน่งนานเกินกำหนด โปรดลองใหม่อีกครั้ง`, true);
                         }
                     }
                 }, 9000);
@@ -9198,7 +9198,11 @@ setOriginFromActionSheet() {
             showToast(msg, isCustomHtml = false) {
                 const el = document.getElementById('appToast');
                 if (!el) return;
-                el.innerHTML = msg;
+                if (isCustomHtml) {
+                    el.innerHTML = msg;
+                } else {
+                    el.textContent = msg;
+                }
                 el.classList.toggle('toast-custom', Boolean(isCustomHtml));
                 el.style.display = 'inline-flex';
                 requestAnimationFrame(() => el.classList.add('visible'));

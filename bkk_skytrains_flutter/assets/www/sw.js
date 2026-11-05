@@ -5,7 +5,7 @@
  * - ไฟล์ static อื่นๆ (CDN): stale-while-revalidate ให้โหลดซ้ำเร็วขึ้น
  * - คำขอ API ขบวนรถ (POST ข้ามโดเมน) ปล่อยผ่าน ไม่แตะ — ข้อมูลสดต้องมาจากเน็ตเสมอ
  */
-const VERSION = 'bts-v82';
+const VERSION = 'bts-v83';
 const SHELL_CACHE = 'bts-shell-' + VERSION;
 const RUNTIME_CACHE = 'bts-runtime-' + VERSION;
 
@@ -68,6 +68,9 @@ self.addEventListener('fetch', event => {
     }
 
     const url = new URL(req.url);
+
+    // ข้ามคำขอที่ไม่ใช่โปรโตคอล http/https (เช่น chrome-extension://) ป้องกัน Cache API error
+    if (!url.protocol.startsWith('http')) return;
 
     // สคริปต์หลักและสไตล์ชีตของแอป (same-origin app.js, leaflet.css) → network-first เพื่อรับเวอร์ชันล่าสุดเมื่อออนไลน์
     if (url.origin === self.location.origin && (url.pathname.endsWith('app.js') || url.pathname.endsWith('.css'))) {

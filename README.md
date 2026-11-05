@@ -13,7 +13,7 @@
 2. <img src="icons/ui/pin.svg" width="18" height="18" alt="GPS" style="vertical-align:middle;"> **ระบบค้นหาสถานีและทางออกใกล้คุณที่สุด (Nearest Station & Exit by GPS)**
    - คำนวณพิกัดด้วยสูตร Haversine ระบุสถานีที่ใกล้ที่สุดและระยะทางกิโลเมตรแบบเรียลไทม์
    - ชิปสถานีใกล้เคียงสำรอง (Nearest Alternate Chips) รองรับการแสดงชื่อสถานีเต็มตัวอักษร ไม่หลุดขอบ พร้อมระบบเลื่อนแนวนอนแบบนุ่มนวล (Smooth Horizontal Scroll) บนหน้าจอมือถือทุกขนาด
-   - ระบบกรองขบวนรถศูนย์ซ่อมบำรุงและขบวนรถเปล่า (Depot & Empty Trains Filtering เช่น `YL00`, `PK00`) และระบบตรวจสอบเวลาเปิดให้บริการ (Operating Hours Validation: 05:30/06:00 - 24:00 น.)
+   - ระบบกรองขบวนรถศูนย์ซ่อมบำรุงและขบวนรถเปล่า (Depot & Empty Trains Filtering เช่น `YL00`, `PK00`) และระบบตรวจสอบเวลาเปิดให้บริการ (Operating Hours Validation: 05:00–06:00 ถึง 24:00 น.)
    - ค้นหาประตูทางออกที่ใกล้ตำแหน่งที่คุณยืนอยู่มากที่สุด
    - รองรับ Native GPS Bridge บน Android และ iOS ผ่าน Flutter Geolocator
 3. <img src="icons/lines/line-1.svg" width="18" height="18" alt="Train" style="vertical-align:middle;"> **มาตรฐานไอคอนรูปรถไฟประจำสายสี (Project Train Icon Standard)**

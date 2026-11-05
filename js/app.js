@@ -374,14 +374,14 @@
 
         const MONORAIL_FREQ = {
             weekday: [
-                [6, 0, 7, 0, '10.00', 10],
+                [5, 30, 7, 0, '10.00', 10],
                 [7, 0, 9, 0, '5.00', 5],
                 [9, 0, 17, 0, '10.00', 10],
                 [17, 0, 20, 0, '5.00', 5],
                 [20, 0, 24, 0, '10.00', 10]
             ],
             weekend: [
-                [6, 0, 24, 0, '10.00', 10]
+                [5, 30, 24, 0, '10.00', 10]
             ]
         };
 
@@ -390,6 +390,7 @@
            สายสุขุมวิทช่วง peak มี 2 ค่า: * หมอชิต–สำโรง  ** สำโรง–เคหะฯ และ หมอชิต–คูคต */
         const BTS_SUKHUMVIT_FREQ = {
             weekday: [
+                [5, 15, 6, 0, '5.00'],
                 [6, 0, 7, 0, '5.00'],
                 [7, 0, 9, 0, '2.30* / 5.00**'],
                 [9, 0, 9, 30, '5.00'],
@@ -401,6 +402,7 @@
                 [22, 0, 24, 0, '8.00']
             ],
             weekend: [
+                [5, 15, 6, 0, '7.00'],
                 [6, 0, 8, 0, '7.00'],
                 [8, 0, 11, 0, '5.55'],
                 [11, 0, 21, 0, '4.30* / 6.00**'],
@@ -411,6 +413,7 @@
 
         const BTS_SILOM_FREQ = {
             weekday: [
+                [5, 30, 6, 0, '6.00'],
                 [6, 0, 7, 0, '6.00'],
                 [7, 0, 9, 0, '3.45'],
                 [9, 0, 17, 0, '6.00'],
@@ -419,6 +422,7 @@
                 [22, 0, 24, 0, '8.00']
             ],
             weekend: [
+                [5, 30, 6, 0, '7.00'],
                 [6, 0, 9, 0, '7.00'],
                 [9, 0, 21, 0, '6.00'],
                 [21, 0, 22, 0, '7.00'],
@@ -428,6 +432,7 @@
 
         const BRT_FREQ = {
             weekday: [
+                [5, 30, 6, 0, '7.00', 7],
                 [6, 0, 9, 0, '5.00–7.00', 6],
                 [9, 0, 16, 30, '10.00–12.00', 10],
                 [16, 30, 20, 0, '5.00–7.00', 6],
@@ -3403,9 +3408,9 @@ gQIDAQAB
                 ticketsTH: 'บัตร Rabbit, บัตร EMV Contactless, บัตรเที่ยวเดียว (ผู้สูงอายุลด 50%)',
                 ticketsEN: 'Rabbit Card, EMV Contactless, Single Journey (Senior 50% off)',
                 ticketsZH: '兔子卡, EMV Contactless, 单程票 (长者5折)',
-                firstTrainTH: '06:00 นาที',
-                firstTrainEN: '06:00',
-                firstTrainZH: '06:00',
+                firstTrainTH: '05:30 นาที',
+                firstTrainEN: '05:30',
+                firstTrainZH: '05:30',
                 lastTrainTH: '24:00 นาที',
                 lastTrainEN: '24:00',
                 lastTrainZH: '24:00',
@@ -3415,8 +3420,8 @@ gQIDAQAB
                 offPeakFreqTH: '10.00 นาที',
                 offPeakFreqEN: '10.00 min',
                 offPeakFreqZH: '10.00 分钟',
-                dir1: { code: 'YL01', toTH: 'ลาดพร้าว', toEN: 'Lat Phrao', toZH: '拉抛', first: '06:00', last: '24:00' },
-                dir2: { code: 'YL23', toTH: 'สำโรง', toEN: 'Samrong', toZH: '三隆', first: '06:00', last: '24:00' }
+                dir1: { code: 'YL01', toTH: 'ลาดพร้าว', toEN: 'Lat Phrao', toZH: '拉抛', first: '05:30', last: '24:00' },
+                dir2: { code: 'YL23', toTH: 'สำโรง', toEN: 'Samrong', toZH: '三隆', first: '05:30', last: '24:00' }
             },
             {
                 id: 5,
@@ -3437,9 +3442,9 @@ gQIDAQAB
                 ticketsTH: 'บัตร Rabbit, บัตร EMV Contactless, บัตรเที่ยวเดียว (ผู้สูงอายุลด 50%)',
                 ticketsEN: 'Rabbit Card, EMV Contactless, Single Journey (Senior 50% off)',
                 ticketsZH: '兔子卡, EMV Contactless, 单程票 (长者5折)',
-                firstTrainTH: '06:00 นาที',
-                firstTrainEN: '06:00',
-                firstTrainZH: '06:00',
+                firstTrainTH: '05:30 นาที',
+                firstTrainEN: '05:30',
+                firstTrainZH: '05:30',
                 lastTrainTH: '24:00 นาที',
                 lastTrainEN: '24:00',
                 lastTrainZH: '24:00',
@@ -3449,8 +3454,8 @@ gQIDAQAB
                 offPeakFreqTH: '10.00 นาที',
                 offPeakFreqEN: '10.00 min',
                 offPeakFreqZH: '10.00 分钟',
-                dir1: { code: 'PK01', toTH: 'ศูนย์ราชการนนทบุรี', toEN: 'Nonthaburi Civic Center', toZH: '暖武里政务中心', first: '06:00', last: '24:00' },
-                dir2: { code: 'PK30', toTH: 'มีนบุรี', toEN: 'Min Buri', toZH: '敏武里', first: '06:00', last: '24:00' }
+                dir1: { code: 'PK01', toTH: 'ศูนย์ราชการนนทบุรี', toEN: 'Nonthaburi Civic Center', toZH: '暖武里政务中心', first: '05:30', last: '24:00' },
+                dir2: { code: 'PK30', toTH: 'มีนบุรี', toEN: 'Min Buri', toZH: '敏武里', first: '05:30', last: '24:00' }
             },
             {
                 id: 101,
@@ -4329,6 +4334,19 @@ gQIDAQAB
                         advice: lang === 'zh' ? '客流量很大，可能需要多等 1-2 趟列车' : (lang === 'th' ? 'ผู้โดยสารหนาแน่น อาจต้องรอขบวนถัดไป 1-2 ขบวน' : 'High passenger volume. Expect a 1-2 train wait.')
                     };
                 }
+
+                // ตรวจสอบสถานะการเปิดให้บริการจริงของสายรถไฟ (หากปิดให้บริการ ให้แสดง 0% ปิดให้บริการ)
+                const isOperating = station ? isTransitOperatingHours(station.StationLineId, station.StationKey) : true;
+                if (!isOperating) {
+                    return {
+                        level: 'closed',
+                        percent: 0,
+                        badge: lang === 'zh' ? '已收车 / 停止运营' : (lang === 'en' ? 'Closed' : 'ปิดให้บริการ'),
+                        color: '#64748b',
+                        advice: lang === 'zh' ? '当前处于非运营时段，暂无列车服务' : (lang === 'en' ? 'Currently outside operating hours. No train service.' : 'ขณะนี้นอกเวลาให้บริการ รถไฟฟ้าปิดให้บริการ')
+                    };
+                }
+
                 const now = new Date();
                 const day = now.getDay();
                 const isWeekend = (day === 0 || day === 6);
@@ -4356,9 +4374,6 @@ gQIDAQAB
                              (timeVal >= 16.5 && timeVal < 17.0) || (timeVal > 19.75 && timeVal <= 20.5)) {
                         percent = isInterchange ? 64 : 52;
                         level = 'moderate';
-                    } else if (timeVal < 5.5 || timeVal > 24) {
-                        percent = 12;
-                        level = 'low';
                     } else {
                         percent = isInterchange ? 46 : 34;
                         level = isInterchange ? 'moderate' : 'low';
@@ -12145,9 +12160,12 @@ setOriginFromActionSheet() {
             } else if (id === 103 || id === 105) {
                 // รถไฟฟ้าชานเมืองสายสีแดง (103, 105): ให้บริการ 05:00 - 24:00 น. (ปิด 00:30 - 04:55 น.)
                 if (nowMin >= 30 && nowMin < 295) return false;
+            } else if (id === 1) {
+                // BTS สายสุขุมวิท: ให้บริการ 05:15 - 24:00 น. (ปิด 00:45 - 05:10 น.)
+                if (nowMin >= 45 && nowMin < 310) return false;
             } else {
-                // สายอื่นๆ ในกรุงเทพฯ (BTS/MRT/ARL/BRT): ให้บริการ 05:30 - 24:00 น. (ปิด 00:45 - 05:15 น.)
-                if (nowMin >= 45 && nowMin < 315) return false;
+                // สายอื่นๆ ในกรุงเทพฯ (BTS สายสีลม / MRT / ARL / BRT): ให้บริการ 05:30 - 24:00 น. (ปิด 00:45 - 05:25 น.)
+                if (nowMin >= 45 && nowMin < 325) return false;
             }
             return true;
         }

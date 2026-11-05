@@ -172,6 +172,15 @@ module.exports = async function handler(req, res) {
   upstreamReq.on('timeout', () => {
     upstreamReq.destroy();
     if (!res.headersSent) {
+      if (endpoint === 'tta' || endpoint === 'arrivals') {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json; charset=utf-8');
+        return res.end(JSON.stringify({
+          ErrCode: 0,
+          ErrMessage: 'Fallback to Timetable',
+          data: { time: null, fetchedAt: Date.now(), platform_list: [] }
+        }));
+      }
       res.statusCode = 504;
       res.setHeader('Content-Type', 'application/json; charset=utf-8');
       res.end(JSON.stringify({ ErrCode: 504, ErrMessage: 'Gateway timeout from upstream transit server' }));
@@ -180,6 +189,15 @@ module.exports = async function handler(req, res) {
 
   upstreamReq.on('error', err => {
     if (!res.headersSent) {
+      if (endpoint === 'tta' || endpoint === 'arrivals') {
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json; charset=utf-8');
+        return res.end(JSON.stringify({
+          ErrCode: 0,
+          ErrMessage: 'Fallback to Timetable',
+          data: { time: null, fetchedAt: Date.now(), platform_list: [] }
+        }));
+      }
       res.statusCode = 502;
       res.setHeader('Content-Type', 'application/json; charset=utf-8');
       res.end(JSON.stringify({ ErrCode: 502, ErrMessage: 'Proxy gateway error: ' + err.message }));

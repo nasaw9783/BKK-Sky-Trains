@@ -20,7 +20,7 @@ To eliminate rule duplication and ensure consistency across all AI tools, all wo
 3. **Mandatory Prohibitions (ข้อห้ามเด็ดขาด)**:
    - 🎯 **Strict Scope Adherence**: ห้ามแก้ไขในสิ่งที่ไม่ได้ร้องขอโดยเด็ดขาด
    - ⛔ **Strict Isolation Rule**: ห้ามกระทำการใดๆ ข้าม Workspace หรือแตะต้อง `D:\Exclusions\Programs` และ `C:\Users\Administrator\Downloads\Programs`
-   - 🛡️ **Strict Live Transit Gateway Protection**: ห้ามแตะต้องเกตเวย์รับส่งสัญญาณสด BTS/EBM (`https://bkkskytrain.online/api/bts-proxy`)
+   - 🛡️ **Strict Prohibition of bkkskytrain.online**: Project นี้จะไม่เกี่ยวข้องกับ bkkskytrain.online และ `https://bkkskytrain.online/api/bts-proxy` โดยเด็ดขาด
 
 > [!IMPORTANT]
 > All AI Agents operating in this workspace must strictly follow the comprehensive guidelines defined in [AGENTS.md](AGENTS.md).

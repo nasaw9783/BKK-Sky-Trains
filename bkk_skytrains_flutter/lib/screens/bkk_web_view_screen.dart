@@ -67,7 +67,7 @@ class _BkkWebViewScreenState extends State<BkkWebViewScreen> {
             }
             if ((scheme == 'http' || scheme == 'https') &&
                 (host == 'nasaw9783.github.io' ||
-                 host == 'bkkskytrain.online' ||
+                 host == 'bkk-skytrains.vercel.app' ||
                  host == 'localhost' ||
                  host == '127.0.0.1' ||
                  host == 'appassets.androidplatform.net')) {

@@ -74,7 +74,7 @@ C:\Users\Administrator\Documents\BKK Sky Trains\
 6. **Project Non-Input Text Frame Standard**: ป้องกันเคอร์เซอร์กระพริบในกรอบข้อความ (`caret-color: transparent`, `user-select: none`)
 7. **Strict Scope Adherence (ข้อห้ามเด็ดขาด)**: ห้ามแก้ไขในสิ่งที่ไม่ได้ร้องขอโดยเด็ดขาด
 8. **Strict Isolation Rule (ข้อห้ามเด็ดขาด)**: ห้ามข้าม Workspace หรือแตะต้อง `D:\Exclusions\Programs` และ `C:\Users\Administrator\Downloads\Programs`
-9. **Strict Live Transit Gateway Protection (ข้อห้ามเด็ดขาด)**: ห้ามแตะต้องเกตเวย์รับส่งสัญญาณสด BTS/EBM (`https://bkkskytrain.online/api/bts-proxy`)
+9. **Strict Prohibition of bkkskytrain.online (ข้อห้ามเด็ดขาด)**: Project นี้จะไม่เกี่ยวข้องกับ bkkskytrain.online และ `https://bkkskytrain.online/api/bts-proxy` โดยเด็ดขาด
 
 > รายละเอียดฉบับสมบูรณ์ของแต่ละมาตรฐาน ให้อ้างอิงตามเอกสารหลักใน [AGENTS.md](AGENTS.md) เสมอ
 

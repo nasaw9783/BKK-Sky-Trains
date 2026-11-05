@@ -1,7 +1,7 @@
 'use strict';
 
         /* ================= CONFIG ================= */
-        const REMOTE_API = (typeof window !== 'undefined' && window.BKK_CONFIG && window.BKK_CONFIG.apiBase) || 'https://bkkskytrain.online/api/bts-proxy';
+        const REMOTE_API = (typeof window !== 'undefined' && window.BKK_CONFIG && window.BKK_CONFIG.apiBase) || 'https://bkk-skytrains.vercel.app/api/bts-proxy';
         // ตรวจสอบว่าโฮสต์ปัจจุบันเป็น Localhost บนพอร์ต 3000 หรือไม่ (รองรับ relative /api/bts-proxy จาก Start-BKK-Transit.ps1)
         // สำหรับกรณีอื่นทั้งหมด (Web, WebView, file://, GitHub Pages, Vercel ฯลฯ) ชี้ตรงไปยัง REMOTE_API ทันที
         const hasRelativeProxyHost = Boolean(

@@ -31,7 +31,7 @@ module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authkey');
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
+
 
   // 2. Preflight OPTIONS Handling
   if (req.method === 'OPTIONS') {
@@ -69,12 +69,27 @@ module.exports = async function handler(req, res) {
     try {
       bodyBuffer = await new Promise((resolve, reject) => {
         const chunks = [];
-        req.on('data', chunk => chunks.push(chunk));
+        let totalSize = 0;
+        const MAX_BODY_SIZE = 1024 * 1024; // 1 MB limit
+        req.on('data', chunk => {
+          totalSize += chunk.length;
+          if (totalSize > MAX_BODY_SIZE) {
+            req.destroy();
+            reject(new Error('PAYLOAD_TOO_LARGE'));
+          } else {
+            chunks.push(chunk);
+          }
+        });
         req.on('end', () => resolve(Buffer.concat(chunks)));
         req.on('error', reject);
       });
       rawBody = bodyBuffer.toString('utf8');
     } catch (err) {
+      if (err && err.message === 'PAYLOAD_TOO_LARGE') {
+        res.statusCode = 413;
+        res.setHeader('Content-Type', 'application/json; charset=utf-8');
+        return res.end(JSON.stringify({ error: 'Payload Too Large', details: 'Request body exceeds 1MB limit' }));
+      }
       res.statusCode = 400;
       res.setHeader('Content-Type', 'application/json; charset=utf-8');
       return res.end(JSON.stringify({ error: 'Proxy setup error', details: 'Invalid body' }));
@@ -136,6 +151,12 @@ module.exports = async function handler(req, res) {
     forwardHeaders['content-length'] = bodyBuffer.length;
   }
 
+  req.on('close', () => {
+    if (!upstreamReq.destroyed) {
+      upstreamReq.destroy();
+    }
+  });
+
   const upstreamReq = client.request(upstreamBase.toString(), {
     method: 'POST',
     headers: forwardHeaders,
@@ -144,7 +165,7 @@ module.exports = async function handler(req, res) {
     res.statusCode = upstreamRes.statusCode || 200;
     res.setHeader('Content-Type', upstreamRes.headers['content-type'] || 'application/json; charset=utf-8');
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
+  
     upstreamRes.pipe(res);
   });
 

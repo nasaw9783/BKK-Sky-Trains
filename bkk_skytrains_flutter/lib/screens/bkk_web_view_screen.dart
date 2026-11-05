@@ -21,6 +21,7 @@ class _BkkWebViewScreenState extends State<BkkWebViewScreen> {
   StreamSubscription<Position>? _positionStreamSub;
   double? _bestAccuracy;
   DateTime? _lastDispatchedTime;
+  int _mainFrameReloadCount = 0;
 
   @override
   void initState() {
@@ -77,12 +78,15 @@ class _BkkWebViewScreenState extends State<BkkWebViewScreen> {
             return NavigationDecision.prevent;
           },
           onPageFinished: (url) {
+            _mainFrameReloadCount = 0;
             _injectBridgeHelpers();
             _requestNativeLocation(interactive: false);
           },
           onWebResourceError: (error) {
             debugPrint('Web resource error: ${error.description} (code: ${error.errorCode})');
-            if (error.isForMainFrame ?? false) {
+            if ((error.isForMainFrame ?? false) && _mainFrameReloadCount < 3) {
+              _mainFrameReloadCount++;
+              debugPrint('Retrying main frame load (attempt $_mainFrameReloadCount/3)...');
               Future.delayed(const Duration(milliseconds: 500), () {
                 if (mounted) {
                   controller.loadFlutterAsset('assets/www/index.html');

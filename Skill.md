@@ -64,83 +64,19 @@ C:\Users\Administrator\Documents\BKK Sky Trains\
 
 ## 3. กฎเหล็กและข้อกำหนดบังคับ (Mandatory Protocols)
 
-### 🔄 กฎข้อที่ 1: Dual-Asset Synchronization (ซิงค์ไฟล์อัตโนมัติ)
-ทุกครั้งที่มีการแก้ไขไฟล์ `index.html` หรือ `js/app.js` ที่โฟลเดอร์ Root จะต้องคัดลอกไฟล์ไปยัง `bkk_skytrains_flutter/assets/www/` ให้ตรงกัน 100% ทันที:
-```powershell
-# ซิงค์ไฟล์ Web Root ไปยัง Flutter Embedded Assets
-Copy-Item -Path "index.html" -Destination "bkk_skytrains_flutter\assets\www\index.html" -Force
-Copy-Item -Path "js\app.js" -Destination "bkk_skytrains_flutter\assets\www\js\app.js" -Force
-if (Test-Path "js\jsencrypt.min.js") { Copy-Item -Path "js\jsencrypt.min.js" -Destination "bkk_skytrains_flutter\assets\www\js\jsencrypt.min.js" -Force }
-```
+กฎระเบียบ ข้อห้าม และมาตรฐานการทำงานทั้งหมดของโปรเจกต์นี้ได้รับการรวมศูนย์ไว้ที่ **[AGENTS.md](AGENTS.md)**:
 
-### ✅ กฎข้อที่ 2: Code Validation & Quality Gates (การตรวจสอบคุณภาพ)
-1. **JavaScript Syntax Check:**
-   ```powershell
-   node --check js/app.js
-   node --check bkk_skytrains_flutter\assets\www\js\app.js
-   ```
-2. **Flutter / Dart Static Analysis (ต้อง 0 issues เสมอ):**
-   ```powershell
-   cd bkk_skytrains_flutter
-   flutter analyze
-   cd ..
-   ```
-3. **PowerShell Encoding:** บันทึกไฟล์ `.ps1` ทุกไฟล์ด้วยรูปแบบ **UTF-8 with BOM** เพื่อให้ทำงานได้ทั้ง PowerShell 5.1 และ pwsh 7+
+1. **Dual-Asset Synchronization**: ซิงค์โค้ด Root (`index.html`, `js/app.js`, `leaflet.css`, `sw.js`, `images/`, `icons/`) ไปยัง `bkk_skytrains_flutter/assets/www/` ให้ตรงกัน 100% เสมอ
+2. **Code Validation**: ตรวจสอบ `node --check js/app.js`, `flutter analyze` (0 issues), `flutter test`, และ PowerShell `UTF-8 with BOM`
+3. **Zero-Waste Pruning**: ลบไฟล์ขยะและแคชบิลด์ (`build/`, `.dart_tool/`, `android/.gradle/`, `android/.kotlin/`) ทันที
+4. **Project Train Icon Standard**: ใช้ไอคอนรถไฟเฉพาะสายจาก `getLineIconSvg(lineId)` เสมอ (ห้ามใช้จุดกลม ●)
+5. **Project Element Centering Standard**: จัดกึ่งกลางกรอบข้อความและสัญลักษณ์เสมอ (`inline-flex`/`flex`, `align-items: center`, `justify-content: center`)
+6. **Project Non-Input Text Frame Standard**: ป้องกันเคอร์เซอร์กระพริบในกรอบข้อความ (`caret-color: transparent`, `user-select: none`)
+7. **Strict Scope Adherence (ข้อห้ามเด็ดขาด)**: ห้ามแก้ไขในสิ่งที่ไม่ได้ร้องขอโดยเด็ดขาด
+8. **Strict Isolation Rule (ข้อห้ามเด็ดขาด)**: ห้ามข้าม Workspace หรือแตะต้อง `D:\Exclusions\Programs` และ `C:\Users\Administrator\Downloads\Programs`
+9. **Strict Live Transit Gateway Protection (ข้อห้ามเด็ดขาด)**: ห้ามแตะต้องเกตเวย์รับส่งสัญญาณสด BTS/EBM (`https://bkkskytrain.online/api/bts-proxy`)
 
-### 🚊 กฎข้อที่ 3: Project Train Icon Standard (มาตรฐานไอคอนรถไฟประจำสาย & สัญลักษณ์โครงข่าย)
-- สัญลักษณ์ระบุสายสี/ไลน์รถไฟฟ้าทั้งหมดในโปรเจกต์นี้ **จะต้องใช้ไอคอน SVG รูปรถไฟเฉพาะตามสายสีจากฟังก์ชัน `getLineIconSvg(lineId)` เสมอ**
-- **ห้าม** ใช้จุดกลม (●) หรือไอคอนรถไฟทั่วไปที่ไม่ตรงกับสายโดยเด็ดขาด:
-  - Line 1: BTS สายสุขุมวิท (`#7AB420`) — <img src="icons/lines/line-1.svg" width="16" height="16" alt="BTS Sukhumvit" style="vertical-align:middle;"> Heavy Rail EMU บนทางยกระดับ
-  - Line 2: BTS สายสีลม (`#00807D`) — <img src="icons/lines/line-2.svg" width="16" height="16" alt="BTS Silom" style="vertical-align:middle;"> Heavy Rail EMU บนทางยกระดับ
-  - Line 3: BTS สายสีทอง (`#C9A038`) — <img src="icons/lines/line-3.svg" width="16" height="16" alt="APM Gold" style="vertical-align:middle;"> APM People Mover ไร้คนขับ
-  - Line 4: MRT สายสีเหลือง (`#FFD100`) — <img src="icons/lines/line-4.svg" width="16" height="16" alt="MRT Yellow" style="vertical-align:middle;"> Straddle Monorail คอนกรีตเดี่ยว
-  - Line 5: MRT สายสีชมพู (`#EC4899`) — <img src="icons/lines/line-5.svg" width="16" height="16" alt="MRT Pink" style="vertical-align:middle;"> Straddle Monorail คอนกรีตเดี่ยว (พร้อมสายแยกเมืองทอง MT01-MT02)
-  - Line 101: MRT สายสีน้ำเงิน (`#0284C7`) — <img src="icons/lines/line-101.svg" width="16" height="16" alt="MRT Blue" style="vertical-align:middle;"> Underground Tunnel Metro อุโมงค์ใต้ดิน
-  - Line 102: MRT สายสีม่วง (`#8A2C9B`) — <img src="icons/lines/line-102.svg" width="16" height="16" alt="MRT Purple" style="vertical-align:middle;"> Sustina Heavy Rail Metro ยกระดับ
-  - Line 103: SRTET สายสีแดงเข้ม (`#B91C1C`) — <img src="icons/lines/line-103.svg" width="16" height="16" alt="SRT Dark Red" style="vertical-align:middle;"> Commuter EMU เสารับไฟ Overhead Pantograph
-  - Line 105: SRTET สายสีแดงอ่อน (`#F87171`) — <img src="icons/lines/line-105.svg" width="16" height="16" alt="SRT Light Red" style="vertical-align:middle;"> Light Commuter EMU แขนรับไฟ Single-arm Pantograph
-  - Line 104: ARL แอร์พอร์ตลิงก์ (`#8A1538`) — <img src="icons/lines/line-104.svg" width="16" height="16" alt="ARL" style="vertical-align:middle;"> Airport Express Bullet Train
-  - Line 201: BRT รถโดยสารด่วน (`#82C341`) — <img src="icons/lines/line-201.svg" width="16" height="16" alt="BRT" style="vertical-align:middle;"> Bus Rapid Transit ช่องทางเฉพาะ
-  - Line 106: MRT สายสีส้ม (`#F58220`) — <img src="icons/lines/line-106.svg" width="16" height="16" alt="MRT Orange" style="vertical-align:middle;"> Orange Tunnel Metro
-- สัญลักษณ์โครงข่ายและการเชื่อมต่อ (Transit Network Legend):
-  - <img src="icons/legend/interchange.svg" width="30" height="15" alt="Interchange" style="vertical-align:middle;"> **จุดเชื่อมต่อข้ามสาย (Interchange)**: โหนดสถานีร่วมวงกลมคู่เชื่อมโยงกัน (`.legend-inter-node`)
-  - <img src="icons/legend/airport.svg" width="18" height="18" alt="Airport" style="vertical-align:middle;"> **เชื่อมต่อท่าอากาศยาน (Airport)**: ท่าอากาศยานสุวรรณภูมิ หรือดอนเมือง
-  - <img src="icons/legend/boat.svg" width="18" height="18" alt="Boat" style="vertical-align:middle;"> **ท่าเรือเชื่อมต่อ (Pier / Boat)**: เรือด่วนเจ้าพระยา หรือเรือคลองแสนแสบ
-  - <img src="icons/legend/train.svg" width="18" height="18" alt="Train" style="vertical-align:middle;"> **เชื่อมต่อรถไฟทางไกล (SRT)**: สถานีกลางกรุงเทพอภิวัฒน์ / หัวลำโพง
-  - <img src="icons/legend/bus.svg" width="18" height="18" alt="Bus" style="vertical-align:middle;"> **สถานีขนส่งผู้โดยสาร (Bus Terminal)**: สถานีขนส่งหมอชิต 2, เอกมัย, สายใต้
-  - <img src="icons/legend/parking.svg" width="18" height="18" alt="Parking" style="vertical-align:middle;"> **อาคารจอดแล้วจร (Park & Ride)**: ลานและอาคารจอดรถ
-  - <img src="icons/legend/branch.svg" width="90" height="16" alt="Branch" style="vertical-align:middle;"> **สายแยกเมืองทองธานี (Branch Line)**: ชานชาลาสายแยกอิมแพ็ค (PK10 ⇄ MT01, MT02)
-
-### 🧹 กฎข้อที่ 4: Zero-Waste Pruning (ลบไฟล์และแอพที่ไม่สำคัญทิ้งทันที)
-- **จัดระเบียบไฟล์ `C:\Users\Administrator\Documents\BKK Sky Trains` จากเครื่องให้เป็นระเบียบ พร้อมจัดหมวดหมู่/Folder ถ้าไฟล์หรือแอพไหนไม่สำคัญต่อระบบแล้ว และไม่ทำลายระบบให้เสียหาย ให้ลบทิ้งได้ทันที หลังมีการแก้ไขไฟล์**
-- การจัดหมวดหมู่ 4 ส่วนหลัก: [1] Web App & PWA (Root), [2] Mobile Flutter App (`bkk_skytrains_flutter/`), [3] Releases & CI/CD (`releases/`, `.github/workflows/`), [4] Documentation & Specifications (`*.md`)
-- ไฟล์ตัวติดตั้งหรือแอพเวอร์ชันเก่าที่ไม่ได้ใช้งานแล้ว (เช่น APK/AAB/IPA รุ่นเก่าที่ซ้ำซ้อนใน `releases/` ให้ลบทิ้งทันที เก็บเฉพาะรุ่นล่าสุด `*_latest.*` หรือรุ่นที่ใช้งานจริงเท่านั้น)
-- โฟลเดอร์แคชบิลด์: `bkk_skytrains_flutter\build\`, `bkk_skytrains_flutter\.dart_tool\` (รัน `flutter clean` เสมอเมื่อทดสอบเสร็จ)
-- โฟลเดอร์แคช Android & Compiler: `bkk_skytrains_flutter\android\.gradle\`, `bkk_skytrains_flutter\android\.kotlin\`
-- โฟลเดอร์แคช IDE & OS: `.idea\`, `*.iml`, `Thumbs.db`, `Desktop.ini`, `.DS_Store`
-- ไฟล์ขยะชั่วคราว: `.tmp`, `.bak`, `.old`, `.log`, `.swp`, `*~`
-- ไฟล์ assets ซ้ำซ้อนหรือไม่จำเป็น ที่ไม่ได้ถูกอ้างอิงในระบบ
-- ไฟล์ตัวติดตั้งที่เสร็จสมบูรณ์ให้จัดเก็บไว้ใน `releases/` (แบ่งแยกเป็น `Android/APK`, `Android/AAB` และ `Apple/IPA`) เท่านั้น
-
-### ⛔ กฎข้อที่ 5: Strict Isolation Rule (การแยกโปรเจกต์โดยเด็ดขาด)
-- ห้ามกระทำการใดๆ ข้าม Workspace หรือแตะต้อง `D:\Exclusions\Programs` และ `C:\Users\Administrator\Downloads\Programs` โดยเด็ดขาด
-
-### 🎯 กฎข้อที่ 6: Project Element Centering Standard (มาตรฐานการจัดองค์ประกอบกึ่งกลาง)
-- ทุกกรอบข้อความ รหัสสถานี (Station Code เช่น `YL20`, `CEN`), ไอคอนสัญลักษณ์ (Icons / Symbols เช่น Theme Button, Line Icons, Badges), และปุ่มควบคุมแบบ Pill/Box ทั้งหมดในโปรเจกต์นี้ จะต้องถูกจัดให้อยู่ "กึ่งกลาง" (Centered ทั้งแนวนอนและแนวตั้ง) ของกรอบเสมอ
-- ใช้ `display: inline-flex` หรือ `display: flex` พร้อมด้วย `align-items: center; justify-content: center; text-align: center; line-height: 1; box-sizing: border-box;` และ `letter-spacing: 0;`
-- สำหรับไอคอน SVG ภายในปุ่มหรือกรอบ ให้กำหนด `display: block; margin: auto; flex-shrink: 0;`
-
-### 🎯 กฎข้อที่ 7: Strict Scope Adherence (ข้อห้ามเด็ดขาด: ห้ามแก้ไขในสิ่งที่ไม่ได้ร้องขอ)
-- ต่อจากนี้ไปห้ามแก้ไขในสิ่งที่ไม่ได้ร้องขอโดยเด็ดขาด เพื่อป้องกันการแก้ไขไม่ตรงจุดประสงค์
-- ปฏิบัติตามขอบเขตงานที่ผู้ใช้ระบุอย่างเคร่งครัด แก้ไขเฉพาะจุด ฟังก์ชัน หรือไฟล์ที่เกี่ยวข้องโดยตรงกับคำร้องขอเท่านั้น
-- ห้ามแก้ไข ดัดแปลง ลบ หรือ Refactor โค้ด สไตล์ ข้อความ หรือฟังก์ชันส่วนอื่นๆ ที่ผู้ใช้ไม่ได้ร้องขอให้แก้ไขโดยเด็ดขาด
-
-### 🚫 กฎข้อที่ 8: Project Non-Input Text Frame Standard (มาตรฐานการแสดงผลข้อความในกรอบและป้องกันเคอร์เซอร์กระพริบ)
-- ข้อความ รหัสสถานี และตัวเลขที่อยู่ในกรอบทั้งหมด (เช่น รหัสสถานี `YL20`, กล่องเวลานับถอยหลังรถเข้า ขบวนแรก ขบวนที่สอง ขบวนที่สาม, การ์ดสถานี, ป้ายชานชาลา) จะต้องไม่มีเคอร์เซอร์เม้าส์กระพริบ (Blinking Text Caret) หรือเปลี่ยนเป็นเคอร์เซอร์พิมพ์ข้อความ (I-beam cursor) เมื่อคลิกหรือแตะ เว้นแต่จะเป็นช่องที่สามารถพิมพ์เพื่อกรอกข้อมูลได้จริงเท่านั้น (`<input>`, `<textarea>`, `[contenteditable="true"]`)
-- ทุกองค์ประกอบที่ไม่ใช่ช่องกรอกข้อมูลจะต้องมี `caret-color: transparent !important;`, `user-select: none !important;`, และ `cursor: default !important;` (หรือ `cursor: pointer` หากเป็นปุ่มกดหรือลิงก์)
-
-### 🛡️ กฎข้อที่ 9: Strict Live Transit Gateway Protection (ข้อห้ามเด็ดขาด: ห้ามแตะต้องเกตเวย์รับส่งสัญญาณสด BTS/EBM)
-- ต่อจากนี้ไปเมื่อมีการแก้ไขเรื่องเวลา เวลานับถอยหลังรถเข้า ขบวนแรก ขบวนที่สอง ขบวนที่สาม จะไม่ไปกระทำการใดๆ กับส่วนที่ใช้ เกตเวย์รับส่งสัญญาณสดของ BTS/EBM (https://bkkskytrain.online/api/bts-proxy) โดยตรง โดยเด็ดขาด
+> รายละเอียดฉบับสมบูรณ์ของแต่ละมาตรฐาน ให้อ้างอิงตามเอกสารหลักใน [AGENTS.md](AGENTS.md) เสมอ
 
 ---
 

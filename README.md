@@ -50,8 +50,8 @@
     - <img src="images/bkk_skytrains_disruption_preview.svg" alt="Traffic Disruption Dialog Preview" width="100%" style="max-width:720px;border-radius:12px;margin:10px 0;box-shadow:0 4px 16px rgba(0,0,0,0.15);display:block;">
 11. <img src="icons/ui/star.svg" width="18" height="18" alt="Security" style="vertical-align:middle;"> **ความปลอดภัยการสื่อสารระดับสูง (JSEncrypt API Security)**
     - ผสานการทำงานร่วมกับไลบรารี `JSEncrypt` เพื่อเข้ารหัสข้อมูล (RSA Encryption) ในการส่งคำขอข้อมูลไปยัง API ป้องกันการดักจับข้อมูลและเพิ่มเสถียรภาพในการสื่อสาร
-12. <img src="icons/ui/moon.svg" width="18" height="18" alt="Theme" style="vertical-align:middle;"> **รองรับ 2 ภาษา & โหมดถนอมสายตา (Bilingual & Dark/Light Theme)**
-    - รองรับภาษาไทย (TH) และภาษาอังกฤษ (EN) เต็มรูปแบบ
+12. <img src="icons/ui/moon.svg" width="18" height="18" alt="Theme" style="vertical-align:middle;"> **รองรับ 3 ภาษา & โหมดถนอมสายตา (Trilingual & Dark/Light Theme)**
+    - รองรับภาษาไทย (TH), ภาษาอังกฤษ (EN) และภาษาจีน (ZH) เต็มรูปแบบทุกหน้าจอ
     - สลับโหมดมืด (Dark Mode <img src="icons/ui/moon.svg" width="14" height="14" alt="moon" style="vertical-align:middle;">) และโหมดสว่าง (Light Mode <img src="icons/ui/sun.svg" width="14" height="14" alt="sun" style="vertical-align:middle;">) ได้อย่างราบรื่น
 13. <img src="icons/nav/home.svg" width="18" height="18" alt="App" style="vertical-align:middle;"> **ติดตั้งได้ทั้ง PWA และ แอปมือถือเนทีฟ (PWA & Flutter App)**
     - ติดตั้งเป็น Progressive Web App บนหน้าจอมือถือได้ทันที (Add to Home Screen)
@@ -62,6 +62,11 @@
 15. <img src="icons/ui/timer.svg" width="18" height="18" alt="Widget" style="vertical-align:middle;"> **วิดเจ็ตหน้าจอโฮมและการแจ้งเตือนสดบนหน้าจอล็อก (Home Screen Widget & Lock Screen Live Notification)**
     - **หน้าจอล็อก (Lock Screen):** แสดงการ์ดสถานีใกล้ตัวคุณ รหัสสถานี ชานชาลา 1 และชานชาลา 2 พร้อมเวลานับถอยหลังสด ผ่าน Ongoing Persistent Notification (`VISIBILITY_PUBLIC`) บน Android และระบบ Live Activities บน iOS 16.1+
     - **หน้าจอโฮม (Home Screen Widget):** แอปวิดเจ็ตบนหน้าจอหลักแสดงสถานีที่ใกล้ที่สุด ระยะทาง ชานชาลา 1 & 2 และเวลารถเข้าเทียบชานชาลาแบบเรียลไทม์ พร้อมแตะเปิดแอปตรงสู่สถานีได้ทันที
+16. <img src="icons/ui/timer.svg" width="18" height="18" alt="Performance" style="vertical-align:middle;"> **ความเร็วสูงสุดและมาตรฐานระบบแจ้งเตือน (High-Performance Loading & Notifications)**
+    - ปรับปรุงการโหลดด้วย Resource Hints: `preload` สำหรับสคริปต์หลัก (`leaflet.js`, `app.js`) และ `defer` สำหรับไลบรารีความปลอดภัย
+    - สถาปัตยกรรม Lazy-rendering สำหรับหน้าที่ไม่ได้เปิด (Exits, Map, Fares, Timetables) ผ่าน `requestIdleCallback` ทำให้เปิดหน้าแรกได้เร็วที่สุด
+    - สถาปัตยกรรม Service Worker แคช `bts-v84` แยก Critical App Shell ออกจากไฟล์เวกเตอร์ขนาดใหญ่ เพื่อติดตั้ง PWA ได้ทันที
+    - รองรับสิทธิ์แจ้งเตือน Runtime Notification บน Android 13+ (API 33+) และมาตรฐาน W3C Web Notification
 
 ---
 

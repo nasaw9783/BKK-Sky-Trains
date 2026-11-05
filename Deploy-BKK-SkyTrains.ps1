@@ -232,9 +232,9 @@ Write-Host "   ✓ จัดระเบียบและซิงค์ไฟ�
 # [2/8] Update .yml ทั้งหมด
 # ==============================================================================
 Write-Host "`n[Step 2/8] ⚙️ ตรวจสอบและ Update .yml ทั้งหมด..." -ForegroundColor Cyan
-$WorkflowFile = Join-Path $Workspace ".github\workflows\build_ios.yml"
+$WorkflowFile = Join-Path $Workspace ".github\workflows\Build iOS & Android Apps.yml"
 if (Test-Path $WorkflowFile) {
-    Write-Host "   -> อัปเดต .github\workflows\build_ios.yml ให้ตรงกับ v$Version..." -ForegroundColor Gray
+    Write-Host "   -> อัปเดต .github\workflows\Build iOS & Android Apps.yml ให้ตรงกับ v$Version..." -ForegroundColor Gray
     $wfContent = Get-Content -LiteralPath $WorkflowFile -Raw -Encoding UTF8
 
     # ตรวจสอบและอัปเดต custom_tag default
@@ -243,7 +243,7 @@ if (Test-Path $WorkflowFile) {
     # บันทึกไฟล์ UTF-8 without BOM (ป้องกันไม่ให้ GitHub Actions YAML Parser พังจาก BOM)
     $utf8NoBom = [System.Text.UTF8Encoding]::new($false)
     [System.IO.File]::WriteAllText($WorkflowFile, $wfContent, $utf8NoBom)
-    Write-Host "   ✓ build_ios.yml ได้รับการอัปเดตและพร้อมใช้งาน (Trigger: tags: v*, workflow_dispatch)" -ForegroundColor Green
+    Write-Host "   ✓ Build iOS & Android Apps.yml ได้รับการอัปเดตและพร้อมใช้งาน (Trigger: tags: v*, workflow_dispatch)" -ForegroundColor Green
 } else {
     Write-Warning "   ! ไม่พบไฟล์ $WorkflowFile"
 }
@@ -332,10 +332,10 @@ if ($BuildAndroid) {
         Write-Error "JavaScript Syntax Error ใน flutter assets\www\js\app.js"
         exit $LASTEXITCODE
     }
-    if (Test-Path "api\bts-proxy.js") {
-        node --check "api\bts-proxy.js"
+    if (Test-Path "api\bkk-proxy.js") {
+        node --check "api\bkk-proxy.js"
         if ($LASTEXITCODE -ne 0) {
-            Write-Error "JavaScript Syntax Error ใน api\bts-proxy.js"
+            Write-Error "JavaScript Syntax Error ใน api\bkk-proxy.js"
             exit $LASTEXITCODE
         }
     }
@@ -533,7 +533,7 @@ if ($PurgeRemoteReleases -or $GitHubToken) {
             Write-Warning "ไม่สามารถลบ Release ผ่าน GitHub API ได้: $($_.Exception.Message)"
         }
     } else {
-        Write-Host "   (ระบบ GitHub Actions Workflow .github/workflows/build_ios.yml มีระบบล้าง Release เก่าอัตโนมัติในตัว)" -ForegroundColor Gray
+        Write-Host "   (ระบบ GitHub Actions Workflow .github/workflows/Build iOS & Android Apps.yml มีระบบล้าง Release เก่าอัตโนมัติในตัว)" -ForegroundColor Gray
     }
 }
 
@@ -574,7 +574,7 @@ if ($PushToGitHub) {
     Write-Host ""
     Write-Host "=================================================================" -ForegroundColor Green
     Write-Host "   🎉 อัปโหลดขึ้น GitHub เรียบร้อยแล้ว!" -ForegroundColor Green
-    Write-Host "   ระบบ GitHub Actions (.github/workflows/build_ios.yml)" -ForegroundColor Yellow
+    Write-Host "   ระบบ GitHub Actions (.github/workflows/Build iOS & Android Apps.yml)" -ForegroundColor Yellow
     Write-Host "   กำลังเริ่มบิลด์แอพ iOS & Android เวอร์ชั่นใหม่ล่าสุดบน macOS Runner" -ForegroundColor Yellow
     Write-Host "   (บิลด์เพียง 1 ตัวสำหรับ $tagName พร้อมล้างเวอร์ชันเก่าอัตโนมัติ)" -ForegroundColor Yellow
     Write-Host "   ติดตามสถานะการบิลด์ได้ที่:" -ForegroundColor Cyan

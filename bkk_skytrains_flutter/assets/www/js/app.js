@@ -1,7 +1,7 @@
 'use strict';
 
         /* ================= CONFIG ================= */
-        const REMOTE_API = (typeof window !== 'undefined' && window.BKK_CONFIG && window.BKK_CONFIG.apiBase) || 'https://bkk-skytrains.vercel.app/api/bts-proxy';
+        const REMOTE_API = (typeof window !== 'undefined' && window.BKK_CONFIG && window.BKK_CONFIG.apiBase) || 'https://bkk-skytrains.vercel.app/api/bkk-proxy';
         // ตรวจสอบว่าโฮสต์ปัจจุบันเป็น Localhost บนพอร์ต 3000 หรือไม่ (รองรับ relative /api/bts-proxy จาก Start-BKK-Transit.ps1)
         // สำหรับกรณีอื่นทั้งหมด (Web, WebView, file://, GitHub Pages, Vercel ฯลฯ) ชี้ตรงไปยัง REMOTE_API ทันที
         const hasRelativeProxyHost = Boolean(
@@ -9,7 +9,7 @@
             ((location.hostname === 'localhost' || location.hostname === '127.0.0.1') && location.port === '3000')
         );
 
-        let activeProxyBase = hasRelativeProxyHost ? '/api/bts-proxy' : REMOTE_API;
+        let activeProxyBase = hasRelativeProxyHost ? '/api/bkk-proxy' : REMOTE_API;
 
         const proxyUrl = (endpoint, params = {}) => {
             const q = new URLSearchParams({ endpoint, ...params });
@@ -2184,7 +2184,7 @@ gQIDAQAB
                 // หากต่อ local proxy ได้ 404, 502, 504 ให้ failover ไปยัง REMOTE_API ทันที
                 if ((res.status === 404 || res.status === 502 || res.status === 504) && !url.startsWith(REMOTE_API)) {
                     switchPermanentlyToRemote();
-                    const fallbackUrl = url.replace(/^(?:https?:\/\/[^\/]+)?\/api\/bts-proxy/, REMOTE_API);
+                    const fallbackUrl = url.replace(/^(?:https?:\/\/[^\/]+)?\/api\/(?:bkk|bts)-proxy/, REMOTE_API);
                     if (fallbackUrl !== url) {
                         res = await doFetch(fallbackUrl, timeoutMs);
                     }
@@ -2194,7 +2194,7 @@ gQIDAQAB
                 // หาก network ต่อ local proxy ไม่ได้ ให้ลอง REMOTE_API
                 if (!url.startsWith(REMOTE_API)) {
                     switchPermanentlyToRemote();
-                    const fallbackUrl = url.replace(/^(?:https?:\/\/[^\/]+)?\/api\/bts-proxy/, REMOTE_API);
+                    const fallbackUrl = url.replace(/^(?:https?:\/\/[^\/]+)?\/api\/(?:bkk|bts)-proxy/, REMOTE_API);
                     if (fallbackUrl !== url) {
                         try {
                             const res = await doFetch(fallbackUrl, timeoutMs);

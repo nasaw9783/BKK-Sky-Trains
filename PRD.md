@@ -84,7 +84,7 @@ flowchart TD
 
     subgraph ServerProxyLayer["⚙️ Server & Network Layer"]
         PSLocal["Start-BKK-Transit.ps1 (Local Server & Reverse Proxy :3000)"]
-        RemoteProxy["Cloudflare / Production Reverse Proxy (/api/bts-proxy)"]
+        RemoteProxy["Cloudflare / Production Reverse Proxy (/api/bkk-proxy)"]
     end
 
     subgraph DataSources["🚊 Upstream & Static Data Engines"]
@@ -109,8 +109,8 @@ flowchart TD
 - **Core Web Frontend:** Vanilla JavaScript (ES2022+), Semantic HTML5, CSS Variables, Responsive Grid & Flexbox (No React/Vue overhead).
 - **Offline & PWA:** Service Worker (`sw.js`), Web App Manifest (`manifest.json`), LocalStorage Cache Engine.
 - **Mobile Platform:** Flutter 3.x Multi-platform (Dart), `webview_flutter`, `geolocator`, Android SDK 34+, iOS Xcode 15+.
-- **Backend / Reverse Proxy:** Vercel Serverless Function (`api/bts-proxy.js`) & Local Node.js Server (`Start-BKK-Transit.ps1`) สำหรับรับส่งข้อมูลและปลดล็อก CORS กับเซิร์ฟเวอร์ระบบ BTS / EBM ได้อย่างปลอดภัย.
-- **CI/CD & Cloud Build:** GitHub Actions (`.github/workflows/build_ios.yml`) บน macOS-14 Runner สร้างไฟล์ `.ipa` อัตโนมัติ (สำหรับ Private Repository ต้องตั้งค่า Spending Limit บน GitHub Actions ให้มากกว่า $0).
+- **Backend / Reverse Proxy:** Vercel Serverless Function (`api/bkk-proxy.js`) & Local Node.js Server (`Start-BKK-Transit.ps1`) สำหรับรับส่งข้อมูลและปลดล็อก CORS กับเซิร์ฟเวอร์ระบบ BTS / EBM ได้อย่างปลอดภัย.
+- **CI/CD & Cloud Build:** GitHub Actions (`.github/workflows/Build iOS & Android Apps.yml`) บน macOS-14 Runner สร้างไฟล์ `.ipa` อัตโนมัติ (สำหรับ Private Repository ต้องตั้งค่า Spending Limit บน GitHub Actions ให้มากกว่า $0).
 
 ---
 
@@ -366,29 +366,29 @@ flowchart LR
   - แผนผังโครงข่ายรถไฟฟ้าความละเอียดสูงแบบเวกเตอร์พิมพ์เขียว (Transit Blueprint Vector Map) ครอบคลุม 10 สายรถไฟฟ้า กทม. และปริมณฑล รองรับการสลับโหมดมืด/สว่างอัตโนมัติ (`bkk_transit_map.svg`, `bkk_transit_map_dark.svg`)
   - จุดฮอตสปอตสถานีแบบโต้ตอบบนแผนที่ (`MAP_STATION_HOTSPOTS`) แตะเลือกสถานีต้นทาง, ปลายทาง หรือเปิดดูข้อมูลประตูทางออกได้ทันที
   - หน้าต่างคำอธิบายสัญลักษณ์โครงข่ายและจุดเชื่อมต่อ (Transit Network Legend: Airport, Pier/Boat, SRT, Bus, Park & Ride)
-  - อัปเกรด Service Worker แคชออฟไลน์ขั้นสูงเป็นเวอร์ชัน `bts-v84` พร้อมพรีแคชไฟล์เวกเตอร์แผนผังความละเอียดสูง
+  - อัปเกรด Service Worker แคชออฟไลน์ขั้นสูงเป็นเวอร์ชัน `bkk-v84` พร้อมพรีแคชไฟล์เวกเตอร์แผนผังความละเอียดสูง
   - สคริปต์รวมกระบวนการดีพลอยและบิลด์อัตโนมัติ (`Deploy-BKK-SkyTrains.ps1`) รองรับการทำงาน 8 ขั้นตอน: จัดระเบียบไฟล์, Update .yml ทั้งหมด, Update .md ทั้งหมดให้ตรงตามเว็บ/แอพ เท่านั้น, Update .ps1 ทั้งหมดให้ตรงตามเว็บ/แอพ เท่านั้น, ทำแอพ Android (Release APK), ต้องการให้ทำเป็น App Bundle (.aab), ทำแอพ IOS, และลบข้อมูลเวอร์เก่า บน Github ออก และ Upload ขึ้น Github Build iOS & Android Apps เวอร์ชั่นที่ทำใหม่ล่าสุดเสมอ
   - ปรับปรุงมาตรฐานการตั้งชื่อตัวติดตั้งและจัดระเบียบโฟลเดอร์ `releases/` แบ่งแยกเป็นโฟลเดอร์ `Android/APK`, `Android/AAB` และ `Apple/IPA` เป็นระบบเดียวกันทุกแพลตฟอร์ม: Android Universal APK (`releases/Android/APK/BKK_SkyTrains_V.1.3.6.apk`), Android Split APKs (`BKK_SkyTrains_V.1.3.6_arm64-v8a.apk`, `_armeabi-v7a.apk`, `_x86_64.apk`), Android App Bundle (`releases/Android/AAB/BKK_SkyTrains_V.1.3.6.aab`) และ iOS IPA (`releases/Apple/IPA/BKK_SkyTrains_V.1.3.6.ipa`) พร้อมสร้าง SHA-256 Checksum ครบถ้วน
   - ปรับปรุงประสิทธิภาพการโหลด (Web & App Performance): Preload สคริปต์หลัก, Defer ไลบรารีความปลอดภัย และ Lazy-render หน้าที่ไม่ใช่หน้าแรกผ่าน `requestIdleCallback` ทำให้หน้าแรกเปิดทันทีแบบ 0ms
-  - ยกระดับ Service Worker แคชเป็นเวอร์ชัน `bts-v84`: แยกชุดแคช `SHELL_URLS` ออกจากไฟล์เวกเตอร์ขนาดใหญ่ เพื่อให้ติดตั้ง PWA ได้เร็วที่สุด พร้อมระบบแคชพื้นหลังและ Universal Notification Scope Navigation
+  - ยกระดับ Service Worker แคชเป็นเวอร์ชัน `bkk-v84`: แยกชุดแคช `SHELL_URLS` ออกจากไฟล์เวกเตอร์ขนาดใหญ่ เพื่อให้ติดตั้ง PWA ได้เร็วที่สุด พร้อมระบบแคชพื้นหลังและ Universal Notification Scope Navigation
   - ยกระดับมาตรฐานการแจ้งเตือน (Notification Standards): รองรับ Runtime Permission (`POST_NOTIFICATIONS`) บน Android 13+ (API 33+) และระบบการสั่นเตือนมาตรฐานสากลบน Web Notification
   - ปรับปรุงความเรียบร้อยของ UI หน้าเวลาเดินรถ: ลบเส้นประคั่นส่วนหัวการ์ดเส้นทาง (`.line-hero-meta-item.is-route`) เพื่อความสะอาดตาและเป็นระเบียบ
 - **v1.3.5 (Completed):**
   - คอมไพล์และบิลด์ตัวติดตั้ง Android APK รุ่นสมบูรณ์ (`BKK_SkyTrains_Android_latest.apk`, `BKK_SkyTrains_Android_v1.3.5.apk`) พร้อมสร้าง SHA-256 Checksum (`FBACEE348015...`)
-  - อัปเกรดระบบ CI/CD Workflow (`.github/workflows/build_ios.yml` - `Build iOS & Android Apps`) ให้คอมไพล์และสร้างแพ็กเกจทั้ง iOS IPA และ Android APK พร้อมสร้าง SHA-256 และเผยแพร่ลง GitHub Releases อัตโนมัติในครั้งเดียว
+  - อัปเกรดระบบ CI/CD Workflow (`.github/workflows/Build iOS & Android Apps.yml` - `Build iOS & Android Apps`) ให้คอมไพล์และสร้างแพ็กเกจทั้ง iOS IPA และ Android APK พร้อมสร้าง SHA-256 และเผยแพร่ลง GitHub Releases อัตโนมัติในครั้งเดียว
   - ทำความสะอาดระบบ Releases & Artifacts บน GitHub กำจัดข้อมูลเก่าที่ไม่จำเป็นออกทั้งหมดตามนโยบาย Zero-Waste Pruning
 - **v1.3.4 (Completed):**
   - กรองขบวนรถศูนย์ซ่อมบำรุงและขบวนรถทดสอบเปล่า (Depot / Empty Trains Filtering เช่น `YL00`, `PK00`) ออกจากการแสดงผล Live TTA
   - ตรวจสอบช่วงเวลาเปิดให้บริการจริงของสายรถไฟฟ้า (Transit Operating Hours: 05:30/06:00 - 24:00 น.) เพื่อป้องกันไม่ให้นำข้อมูลทดสอบเวลากลางคืนมาแสดงเป็นขบวนรถจริง
   - ปรับปรุงการแสดงผลชิปสถานีใกล้เคียง (Nearest Station Alt Chips) บนจอมือถือขนาดเล็ก (`< 480px`) ให้แสดงชื่อเต็มทุกตัวอักษรไม่หลุดกรอบ และปัดเลื่อนแนวนอนได้อย่างนุ่มนวล (`scroll-snap-type`)
   - อัปเกรด Service Worker แคชเป็นเวอร์ชัน `bts-v49`
-  - ปรับปรุง GitHub Actions CI/CD Workflow (`.github/workflows/build_ios.yml`) พร้อมสร้าง Release Notes สมบูรณ์แบบและแพ็กเกจ iOS IPA เวอร์ชัน `v1.3.4`
+  - ปรับปรุง GitHub Actions CI/CD Workflow (`.github/workflows/Build iOS & Android Apps.yml`) พร้อมสร้าง Release Notes สมบูรณ์แบบและแพ็กเกจ iOS IPA เวอร์ชัน `v1.3.4`
 - **v1.3.3 (Completed):**
   - มาตรฐานการจัดองค์ประกอบกึ่งกลางกรอบข้อความและสัญลักษณ์ (Project Element Centering Standard) ทั้ง Station Code, Theme Button, Line Icons, Badges
   - แยกข้อมูลการแสดงผลสายสีแดงเข้ม (SRT Dark Red 103) และสายสีแดงอ่อน (SRT Light Red 105) ในโมเดลและหน้าจอแอป Flutter
   - อัปเกรด Service Worker แคชเป็นเวอร์ชัน `bts-v48`
   - อัปเดตตัวติดตั้ง Android APK รุ่นล่าสุดและ SHA-256 Checksum (`563D2F67...`)
-  - ระบบ Automated iOS & Android CI/CD Workflow (`.github/workflows/build_ios.yml`) คอมไพล์และสร้างตัวติดตั้ง `.ipa` ทั้ง `BKK_SkyTrains_iOS_latest.ipa` และ `BKK_SkyTrains_iOS_v1.3.3.ipa` พร้อม SHA-256 Checksum และเผยแพร่อัตโนมัติบน GitHub Releases
+  - ระบบ Automated iOS & Android CI/CD Workflow (`.github/workflows/Build iOS & Android Apps.yml`) คอมไพล์และสร้างตัวติดตั้ง `.ipa` ทั้ง `BKK_SkyTrains_iOS_latest.ipa` และ `BKK_SkyTrains_iOS_v1.3.3.ipa` พร้อม SHA-256 Checksum และเผยแพร่อัตโนมัติบน GitHub Releases
 - **v1.4.0 (Future Roadmap):**
   - ระบบแจ้งเตือนแบบพุช (Push Notifications) แจ้งเตือนเมื่อใกล้ถึงสถานีปลายทาง
   - แผนที่สามมิติ (3D Station Concourse & Platform Map) สำหรับสถานีขนาดใหญ่ (เช่น สยาม, อโศก, บางซื่อ)

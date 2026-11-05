@@ -22,7 +22,7 @@
    - รองรับมาตรฐานการจัดกึ่งกลางของกรอบข้อความและสัญลักษณ์ (Station Codes, Line Badges, Control Buttons)
    - ผสานการทำงานร่วมกับไลบรารี `JSEncrypt` (`assets/www/js/jsencrypt.min.js`) สำหรับความปลอดภัยของข้อมูล
    - ระบบกรองขบวนรถศูนย์ซ่อมบำรุง/รถเปล่า (`YL00`, `PK00`) และตรวจสอบเวลาเปิดให้บริการ (Operating Hours Validation)
-   - หน้าต่างคำอธิบายสัญลักษณ์สายและจุดเชื่อมต่อ (Transit Legend) และแคช Service Worker `bts-v84`
+   - หน้าต่างคำอธิบายสัญลักษณ์สายและจุดเชื่อมต่อ (Transit Legend) และแคช Service Worker `bkk-v84`
    - ระบบแจ้งเตือนเหตุขัดข้องสด (`TrafficTrainDialogView`) พร้อมแถบประกาศ Broadcast Banner และการ์ดยืนยันสถานะปกติ (`icon_traffic_information.png`)
 4. **Clean Platform Footprint**:
    - รองรับเฉพาะ **Android** และ **iOS**
@@ -44,7 +44,7 @@ bkk_skytrains_flutter/
 │       ├── js/
 │       │   ├── app.js
 │       │   └── jsencrypt.min.js
-│       ├── sw.js               # Service Worker (bts-v84)
+│       ├── sw.js               # Service Worker (bkk-v84)
 │       ├── leaflet.css         # Leaflet CSS
 │       ├── icons/              # ไอคอนประจำสายและ UI
 │       ├── images/             # แอสเซทและไอคอนแจ้งเตือนเหตุขัดข้อง
@@ -133,7 +133,7 @@ flutter build appbundle --release
 ```bash
 flutter build ipa --no-codesign
 ```
-*หรือใช้ระบบ **Automated iOS & Android CI/CD** ผ่าน GitHub Actions ใน `.github/workflows/build_ios.yml` เพื่อให้ GitHub macOS Runner บิลด์ทั้งไฟล์ `.ipa`, `.apk` และ `.aab` ให้อัตโนมัติในระบบคลาวด์ พร้อมแพ็กเกจ `releases/Apple/IPA/BKK_SkyTrains_V.*.ipa`, `releases/Android/APK/BKK_SkyTrains_V.*.apk`, `releases/Android/AAB/BKK_SkyTrains_V.*.aab` พร้อมไฟล์ตรวจสอบ SHA-256 Checksum และอัปโหลดขึ้น GitHub Releases โดยตรง*
+*หรือใช้ระบบ **Automated iOS & Android CI/CD** ผ่าน GitHub Actions ใน `.github/workflows/Build iOS & Android Apps.yml` เพื่อให้ GitHub macOS Runner บิลด์ทั้งไฟล์ `.ipa`, `.apk` และ `.aab` ให้อัตโนมัติในระบบคลาวด์ พร้อมแพ็กเกจ `releases/Apple/IPA/BKK_SkyTrains_V.*.ipa`, `releases/Android/APK/BKK_SkyTrains_V.*.apk`, `releases/Android/AAB/BKK_SkyTrains_V.*.aab` พร้อมไฟล์ตรวจสอบ SHA-256 Checksum และอัปโหลดขึ้น GitHub Releases โดยตรง*
 
 ---
 

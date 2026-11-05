@@ -11,7 +11,7 @@ Directives and mandatory standards for AI Agents working within `C:\Users\Admini
    - `js/app.js`: Core client-side logic, routing, stations data, real-time countdown, and UI rendering.
    - `js/jsencrypt.min.js`: RSA cryptographic client library for secure transit API communications.
    - `js/leaflet.js`, `leaflet.css`: Leaflet map engine and stylesheets.
-   - `api/bts-proxy.js`: Universal serverless reverse proxy & CORS bypass handler for BTS live transit APIs.
+   - `api/bkk-proxy.js`: Universal serverless reverse proxy & CORS bypass handler for BTS live transit APIs.
    - `vercel.json`: Deployment configuration for Vercel serverless functions and universal CORS routing.
    - `sw.js`: Service worker for offline caching and PWA support.
    - `icons/`: Train line icons (`lines/`), transit legend symbols (`legend/`), bottom navigation icons (`nav/`), and UI icons (`ui/`).
@@ -35,7 +35,7 @@ Directives and mandatory standards for AI Agents working within `C:\Users\Admini
      - `Android/APK/`: `BKK_SkyTrains_V.xxxx.apk`, `BKK_SkyTrains_V.xxxx.apk.sha256`
      - `Android/AAB/`: `BKK_SkyTrains_V.xxxx.aab`, `BKK_SkyTrains_V.xxxx.aab.sha256`
      - `Apple/IPA/`: `BKK_SkyTrains_V.xxxx.ipa`, `BKK_SkyTrains_V.xxxx.ipa.sha256`
-   - `.github/workflows/build_ios.yml`: Automated Cloud CI/CD workflow for building, packaging, verifying SHA-256 checksums, and releasing both iOS `.ipa` and Android `.apk` versions on GitHub macOS runners.
+   - `.github/workflows/Build iOS & Android Apps.yml`: Automated Cloud CI/CD workflow for building, packaging, verifying SHA-256 checksums, and releasing both iOS `.ipa` and Android `.apk` versions on GitHub macOS runners.
 
 4. **Documentation & Specifications**:
    - `README.md`: Workspace overview and documentation.
@@ -69,7 +69,7 @@ Directives and mandatory standards for AI Agents working within `C:\Users\Admini
 4. **Automated Release & Deployment Sequence (ลำดับขั้นตอนสคริปต์ Deploy-BKK-SkyTrains.ps1)**:
    - สคริปต์ `Deploy-BKK-SkyTrains.ps1` และ Agent จะต้องทำงานตามลำดับ 8 ขั้นตอนดังนี้อย่างเคร่งครัด:
      1. **จัดระเบียบไฟล์:** ทำความสะอาด Workspace และลบไฟล์/แคชขยะชั่วคราวทิ้งทันที
-     2. **Update .yml ทั้งหมด:** ตรวจสอบและอัปเดตไฟล์คอนฟิก CI/CD (`.github/workflows/build_ios.yml`, `pubspec.yaml`) ให้สอดคล้องกับเวอร์ชันปัจจุบัน
+     2. **Update .yml ทั้งหมด:** ตรวจสอบและอัปเดตไฟล์คอนฟิก CI/CD (`.github/workflows/Build iOS & Android Apps.yml`, `pubspec.yaml`) ให้สอดคล้องกับเวอร์ชันปัจจุบัน
      3. **Update .md ทั้งหมด:** ตรวจสอบและอัปเดตเอกสารทุกไฟล์ (`README.md`, `PRD.md`, `AGENTS.md`, `GEMINI.md`, `Skill.md`) ให้ตรงตามเว็บ/แอพ 100%
      4. **Update .ps1 ทั้งหมด:** ตรวจสอบและบันทึกสคริปต์ PowerShell ทั้งหมด (`Deploy-BKK-SkyTrains.ps1`, `Start-BKK-Transit.ps1`) ด้วย UTF-8 with BOM
      5. **ทำแอพ Android:** รันการตรวจสอบคุณภาพโค้ด และคอมไพล์ Android Release APK พร้อมคำนวณ SHA-256 Checksum

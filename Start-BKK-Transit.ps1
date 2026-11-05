@@ -114,9 +114,9 @@ const server = http.createServer((req, res) => {
 
   const reqUrl = new URL(req.url, 'http://localhost:' + port);
 
-  // Reverse Proxy for BTS Live API endpoints (/api/bts-proxy)
-  if (reqUrl.pathname === '/api/bts-proxy') {
-    const proxyHandlerPath = path.resolve(rootDir, 'api/bts-proxy.js');
+  // Reverse Proxy for BTS Live API endpoints (/api/bkk-proxy)
+  if (reqUrl.pathname === '/api/bkk-proxy' || reqUrl.pathname === '/api/bts-proxy') {
+    const proxyHandlerPath = path.resolve(rootDir, 'api/bkk-proxy.js');
     if (fs.existsSync(proxyHandlerPath)) {
       try {
         const btsHandler = require(proxyHandlerPath);

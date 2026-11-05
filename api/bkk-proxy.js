@@ -1,4 +1,4 @@
-// api/bts-proxy.js
+// api/bkk-proxy.js
 // BKK SkyTrains - Universal Reverse Proxy & CORS Bypass for BTS Live Real-Time Transit APIs
 // Production Serverless Handler for BKK SkyTrains Transit API
 

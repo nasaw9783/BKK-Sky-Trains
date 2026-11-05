@@ -23,9 +23,9 @@ C:\Users\Administrator\Documents\BKK Sky Trains\
 │   │   ├── app.js                  # Client Logic, Live TTA, Router, GPS, Fares, Hotspots
 │   │   └── jsencrypt.min.js        # RSA cryptographic client library สำหรับ API Security
 │   ├── api/
-│   │   └── bts-proxy.js            # Universal Serverless Reverse Proxy & CORS Bypass สำหรับ BTS Live Transit API
+│   │   └── bkk-proxy.js            # Universal Serverless Reverse Proxy & CORS Bypass สำหรับ BTS Live Transit API
 │   ├── vercel.json                 # การตั้งค่า Deployment และ Universal CORS Routing บน Vercel
-│   ├── sw.js                       # Service Worker แคช PWA สำหรับ Offline Support (bts-v84)
+│   ├── sw.js                       # Service Worker แคช PWA สำหรับ Offline Support (bkk-v84)
 │   ├── leaflet.css                 # Leaflet Map CSS
 │   ├── icons/                      # ไอคอนเวกเตอร์ประจำสายสีและระบบนำทาง
 │   ├── images/                     # แอสเซทและไอคอนแจ้งเหตุขัดข้อง (ic_traffic_alert, icon_traffic_information)
@@ -50,7 +50,7 @@ C:\Users\Administrator\Documents\BKK Sky Trains\
 │   ├── releases/                   # แหล่งเก็บตัวติดตั้ง (แบ่งแยก Android และ Apple)
 │   │   ├── Android/                # APK/, AAB/ (BKK_SkyTrains_V.xxxx.apk, .aab, .sha256)
 │   │   └── Apple/                  # IPA/ (BKK_SkyTrains_V.xxxx.ipa, .sha256)
-│   └── .github/workflows/          # CI/CD Workflows (build_ios.yml สำหรับบิลด์ iOS .ipa และ Android .apk อัตโนมัติ)
+│   └── .github/workflows/          # CI/CD Workflows (Build iOS & Android Apps.yml สำหรับบิลด์ iOS .ipa และ Android .apk อัตโนมัติ)
 │
 └── [4. Documentation & Specifications]
     ├── README.md                   # คู่มือระบบและภาพรวมโปรเจกต์
@@ -74,7 +74,7 @@ C:\Users\Administrator\Documents\BKK Sky Trains\
 6. **Project Non-Input Text Frame Standard**: ป้องกันเคอร์เซอร์กระพริบในกรอบข้อความ (`caret-color: transparent`, `user-select: none`)
 7. **Strict Scope Adherence (ข้อห้ามเด็ดขาด)**: ห้ามแก้ไขในสิ่งที่ไม่ได้ร้องขอโดยเด็ดขาด
 8. **Strict Isolation Rule (ข้อห้ามเด็ดขาด)**: ห้ามข้าม Workspace หรือแตะต้อง `D:\Exclusions\Programs` และ `C:\Users\Administrator\Downloads\Programs`
-9. **Strict Prohibition of bkkskytrain.online (ข้อห้ามเด็ดขาด)**: Project นี้จะไม่เกี่ยวข้องกับ bkkskytrain.online และ `https://bkkskytrain.online/api/bts-proxy` โดยเด็ดขาด
+9. **Strict Prohibition of bkkskytrain.online (ข้อห้ามเด็ดขาด)**: Project นี้จะไม่เกี่ยวข้องกับ bkkskytrain.online และ `https://bkkskytrain.online/api/bkk-proxy` โดยเด็ดขาด
 
 > รายละเอียดฉบับสมบูรณ์ของแต่ละมาตรฐาน ให้อ้างอิงตามเอกสารหลักใน [AGENTS.md](AGENTS.md) เสมอ
 
@@ -110,7 +110,7 @@ cd ..
 ```
 
 ### SOP-4: การบิลด์ตัวติดตั้ง iOS & Android (iOS IPA, Android APK & App Bundle Automated Build)
-- ไฟล์ Workflow: `.github/workflows/build_ios.yml` ("Build iOS & Android Apps")
+- ไฟล์ Workflow: `.github/workflows/Build iOS & Android Apps.yml` ("Build iOS & Android Apps")
 - รันบน GitHub Runner `macos-14` อัตโนมัติเมื่อมีการ Push ไปยัง branch `main` หรือ Tag `v*`
 - สคริปต์ Workflow จะดึงเวอร์ชันจาก `pubspec.yaml` อัตโนมัติ และสร้างไฟล์แพ็กเกจ:
   - iOS IPA: `BKK_SkyTrains_V.${VERSION_BASE}.ipa` + `.sha256`

@@ -39,7 +39,9 @@ class _BkkWebViewScreenState extends State<BkkWebViewScreen> {
       ..setBackgroundColor(const Color(0xFF10213A))
       ..setUserAgent('BKKSkyTrains/App')
       ..setOnConsoleMessage((JavaScriptConsoleMessage message) {
-        debugPrint('[JS ${message.level.name}] ${message.message}');
+        if (kDebugMode) {
+          debugPrint('[JS ${message.level.name}] ${message.message}');
+        }
       })
       ..addJavaScriptChannel(
         'FlutterLocation',

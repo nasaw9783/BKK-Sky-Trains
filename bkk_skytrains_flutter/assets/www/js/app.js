@@ -7808,9 +7808,6 @@ setOriginFromActionSheet() {
                 this.updateOnlineStatus();
                 this.renderFavoritesBar();
 
-                document.addEventListener('visibilitychange', () => {
-                    if (!document.hidden) this.refreshAll();
-                });
                 document.addEventListener('click', (e) => {
                     const container = document.getElementById('exitDropdownContainer');
                     if (container && !container.contains(e.target) && this.exitDropdownOpen) {
@@ -9338,6 +9335,7 @@ setOriginFromActionSheet() {
 
             onAppResume() {
                 this.isAppFolded = false;
+                this.refreshAll();
                 this.onAppForegrounded();
             },
 

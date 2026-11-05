@@ -151,12 +151,6 @@ module.exports = async function handler(req, res) {
     forwardHeaders['content-length'] = bodyBuffer.length;
   }
 
-  req.on('close', () => {
-    if (!upstreamReq.destroyed) {
-      upstreamReq.destroy();
-    }
-  });
-
   const upstreamReq = client.request(upstreamBase.toString(), {
     method: 'POST',
     headers: forwardHeaders,
@@ -167,6 +161,12 @@ module.exports = async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
   
     upstreamRes.pipe(res);
+  });
+
+  req.on('close', () => {
+    if (!upstreamReq.destroyed) {
+      upstreamReq.destroy();
+    }
   });
 
   upstreamReq.on('timeout', () => {

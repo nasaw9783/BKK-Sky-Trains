@@ -40,14 +40,14 @@
 9. <img src="icons/ui/clock.svg" width="18" height="18" alt="Timetables" style="vertical-align:middle;"> **ตารางเวลาเดินรถ & ความถี่ (Timetables & Train Frequency)**
    - ตารางเวลาเดินรถเที่ยวแรก (First Train) และเที่ยวสุดท้าย (Last Train) ของแต่ละสาย
    - ความถี่ในการปล่อยขบวนรถ (<img src="icons/ui/timer.svg" width="14" height="14" alt="timer" style="vertical-align:middle;"> Headway) ทั้งในช่วงเวลาเร่งด่วน (Peak) และช่วงเวลาปกติ (Off-Peak) แยกวันทำงาน (<img src="icons/ui/briefcase.svg" width="14" height="14" alt="briefcase" style="vertical-align:middle;">) และวันหยุด (<img src="icons/ui/beach.svg" width="14" height="14" alt="beach" style="vertical-align:middle;">)
-10. <img src="images/ic_traffic_alert.png" width="18" height="18" alt="Alert" style="vertical-align:middle;"> **สถานะการเดินรถสด & ประกาศเหตุขัดข้อง (Traffic Disruption & Incident Dialog)**
+10. <img src="images/ic_traffic_alert.svg" width="18" height="18" alt="Alert" style="vertical-align:middle;"> **สถานะการเดินรถสด & ประกาศเหตุขัดข้อง (Traffic Disruption & Incident Dialog)**
     - นำเข้าโมดูลประกาศเหตุขัดข้องและสถาปัตยกรรม UI (`TrafficTrainDialogView`) จาก `th.btsc.theskytrains`
     - แถบประกาศแจ้งเตือนด่วน (Broadcast Disruption Banner) บนหน้าหลักเมื่อพบความล่าช้าหรือเหตุขัดข้อง
     - ปุ่มสถานะแบบเรียลไทม์บนแถบหัว (Header Pill Status) แสดงสถานะ "ปกติ" / "ขัดข้อง" พร้อมเอฟเฟกต์ไฟกระพริบเตือน
     - ป๊อปอัปแจ้งเหตุขัดข้องฉบับเต็ม แสดงเวลาข่าวสาร (`AlertTime`), หัวข้อเหตุขัดข้อง (`PlanName` / `TypeName`), รายละเอียด (`Detail`), ไอคอนรถไฟประจำสาย (`getLineIconSvg`), และตารางแสดงสถานะ 5 เส้นทางหลัก (BTS สุขุมวิท, สีลม, สีทอง, MRT สีเหลือง, สีชมพู)
-    - การ์ดยืนยันการเดินรถปกติ (Reassurance Card) พร้อมไอคอน `icon_traffic_information.png` เมื่อโครงข่ายเดินรถปกติ
+    - การ์ดยืนยันการเดินรถปกติ (Reassurance Card) พร้อมไอคอน `icon_traffic_information.svg` เมื่อโครงข่ายเดินรถปกติ
     - โหมดทดสอบจำลองเหตุขัดข้อง (Disruption Simulation Toggle) สำหรับทดสอบการแสดงผลประกาศได้ทุกเวลา
-    - <img src="images/bkk_skytrains_disruption_preview.jpg" alt="Traffic Disruption Dialog Preview" width="100%" style="max-width:720px;border-radius:12px;margin:10px 0;box-shadow:0 4px 16px rgba(0,0,0,0.15);display:block;">
+    - <img src="images/bkk_skytrains_disruption_preview.svg" alt="Traffic Disruption Dialog Preview" width="100%" style="max-width:720px;border-radius:12px;margin:10px 0;box-shadow:0 4px 16px rgba(0,0,0,0.15);display:block;">
 11. <img src="icons/ui/star.svg" width="18" height="18" alt="Security" style="vertical-align:middle;"> **ความปลอดภัยการสื่อสารระดับสูง (JSEncrypt API Security)**
     - ผสานการทำงานร่วมกับไลบรารี `JSEncrypt` เพื่อเข้ารหัสข้อมูล (RSA Encryption) ในการส่งคำขอข้อมูลไปยัง API ป้องกันการดักจับข้อมูลและเพิ่มเสถียรภาพในการสื่อสาร
 12. <img src="icons/ui/moon.svg" width="18" height="18" alt="Theme" style="vertical-align:middle;"> **รองรับ 2 ภาษา & โหมดถนอมสายตา (Bilingual & Dark/Light Theme)**

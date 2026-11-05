@@ -5,7 +5,7 @@
  * - ไฟล์ static อื่นๆ (CDN): stale-while-revalidate ให้โหลดซ้ำเร็วขึ้น
  * - คำขอ API ขบวนรถ (POST ข้ามโดเมน) ปล่อยผ่าน ไม่แตะ — ข้อมูลสดต้องมาจากเน็ตเสมอ
  */
-const VERSION = 'bts-v80';
+const VERSION = 'bts-v81';
 const SHELL_CACHE = 'bts-shell-' + VERSION;
 const RUNTIME_CACHE = 'bts-runtime-' + VERSION;
 
@@ -22,9 +22,11 @@ const SHELL_URLS = [
     './bkk_transit_map.svg',
     './bkk_transit_map_dark.svg',
     './bkk_transit_map.jpg',
-    './images/ic_traffic_alert.png',
-    './images/icon_traffic_information.png',
-    './images/bkk_skytrains_disruption_preview.jpg',
+    './images/ic_traffic_alert.svg',
+    './images/icon_traffic_information.svg',
+    './images/bkk_skytrains_disruption_preview.svg',
+    './images/layers.svg',
+    './images/marker-icon.svg',
 ];
 
 self.addEventListener('install', event => {

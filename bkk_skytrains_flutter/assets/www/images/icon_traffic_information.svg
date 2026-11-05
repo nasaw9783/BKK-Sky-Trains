@@ -1,0 +1,28 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 114 114" width="114" height="114" fill="none">
+  <defs>
+    <linearGradient id="infoGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FDE047"/>
+      <stop offset="50%" stop-color="#EAB308"/>
+      <stop offset="100%" stop-color="#CA8A04"/>
+    </linearGradient>
+    <linearGradient id="rimGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="100%" stop-color="#E2E8F0"/>
+    </linearGradient>
+    <filter id="infoShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#CA8A04" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+  <circle cx="57" cy="57" r="53" fill="url(#rimGrad)" stroke="#CBD5E1" stroke-width="2" filter="url(#infoShadow)"/>
+  <circle cx="57" cy="57" r="44" fill="url(#infoGold)" stroke="#B45309" stroke-width="1.5"/>
+  <rect x="36" y="30" width="42" height="42" rx="10" fill="#FFFFFF" stroke="#1E293B" stroke-width="2.5"/>
+  <rect x="41" y="35" width="32" height="18" rx="4" fill="#0EA5E9" stroke="#1E293B" stroke-width="1.5"/>
+  <path d="M43 37L54 37L48 51L43 51Z" fill="#FFFFFF" fill-opacity="0.35"/>
+  <circle cx="43" cy="62" r="3" fill="#F59E0B" stroke="#1E293B" stroke-width="1.5"/>
+  <circle cx="71" cy="62" r="3" fill="#F59E0B" stroke="#1E293B" stroke-width="1.5"/>
+  <line x1="33" y1="78" x2="81" y2="78" stroke="#1E293B" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="43" y1="78" x2="39" y2="85" stroke="#64748B" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="71" y1="78" x2="75" y2="85" stroke="#64748B" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="78" cy="74" r="13" fill="#10B981" stroke="#FFFFFF" stroke-width="2.5"/>
+  <path d="M72 74L76 78L84 70" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

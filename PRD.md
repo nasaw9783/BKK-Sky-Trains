@@ -184,7 +184,7 @@ flowchart TD
   - การ์ดรับรองสถานะการเดินรถปกติ (Reassurance Card พร้อมไอคอน `icon_traffic_information.png`) เมื่อทุกสายเปิดให้บริการตามปกติ
   - ตารางสรุปสถานะการเดินรถ 5 เส้นทางหลัก (BTS สายสุขุมวิท, BTS สายสีลม, BTS สายสีทอง, MRT สายสีเหลือง, MRT สายสีชมพู)
   - โหมดจำลองเหตุขัดข้อง (Simulation Toggle) เพื่อทดสอบการแจ้งเตือนและการทำงานของระบบได้อย่างครบถ้วนทุกสถานการณ์
-  - <img src="images/bkk_skytrains_disruption_preview.jpg" alt="Traffic Train Dialog View Preview" width="100%" style="max-width:680px;border-radius:12px;margin:10px 0;box-shadow:0 4px 16px rgba(0,0,0,0.15);display:block;">
+  - <img src="images/bkk_skytrains_disruption_preview.svg" alt="Traffic Train Dialog View Preview" width="100%" style="max-width:680px;border-radius:12px;margin:10px 0;box-shadow:0 4px 16px rgba(0,0,0,0.15);display:block;">
 
 ### FR-9: รองรับ 2 ภาษาและการปรับแต่งรูปลักษณ์ (Bilingual & Theming)
 - **FR-9.1:** สลับภาษาระหว่างภาษาไทย (TH) และภาษาอังกฤษ (EN) ได้แบบทันที 0ms ทั่วทั้งแอป

@@ -15,7 +15,7 @@ Directives and mandatory standards for AI Agents working within `C:\Users\Admini
    - `sw.js`: Service worker for offline caching and PWA support (bts-v76).
    - `leaflet.css`: Leaflet map CSS stylesheets.
    - `icons/`: Train line icons (`lines/`), transit legend symbols (`legend/`), bottom navigation icons (`nav/`), and UI icons (`ui/`).
-   - `images/`: Leaflet map markers/tiles, traffic disruption alert icons (`ic_traffic_alert.png`, `icon_traffic_information.png`), and disruption dialog preview.
+   - `images/`: Leaflet map markers/tiles, traffic disruption alert icons (`ic_traffic_alert.svg`, `icon_traffic_information.svg`), and disruption dialog preview.
    - `manifest.json`: Web App Manifest for mobile installation.
    - `icon-192.png`, `icon-512.png`, `icon.svg`, `favicon.*`, `apple-touch-icon.png`: Application branding and icons.
    - `robots.txt`, `sitemap.xml`: Web SEO metadata.

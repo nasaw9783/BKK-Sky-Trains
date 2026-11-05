@@ -10137,7 +10137,7 @@ setOriginFromActionSheet() {
                     // Normal Reassurance Card
                     html += `
                     <div class="traffic-normal-card">
-                        <img src="images/icon_traffic_information.png" alt="Normal Operation" class="traffic-normal-icon" width="60" height="60" style="display:block;margin:auto;">
+                        <img src="images/icon_traffic_information.svg" alt="Normal Operation" class="traffic-normal-icon" width="60" height="60" style="display:block;margin:auto;">
                         <div class="traffic-normal-title">${T('trafficAllNormal')}</div>
                         <div class="traffic-normal-desc">${T('trafficAllNormalDesc')}</div>
                     </div>`;

@@ -10082,7 +10082,7 @@ setOriginFromActionSheet() {
                 const body = document.getElementById('trafficDialogBody');
                 if (!body) return;
 
-                const esc = str => String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
 
                 const alerts = (this.traffic?.alerts || []).slice();
                 if (this._simulatedDisruption) {

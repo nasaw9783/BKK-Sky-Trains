@@ -54,6 +54,20 @@ class _BkkWebViewScreenState extends State<BkkWebViewScreen> {
       )
       ..setNavigationDelegate(
         NavigationDelegate(
+          onNavigationRequest: (NavigationRequest request) {
+            final uri = Uri.tryParse(request.url);
+            if (request.url.startsWith('about:') ||
+                request.url.startsWith('data:') ||
+                request.url.contains('assets/www') ||
+                uri?.host == 'nasaw9783.github.io' ||
+                uri?.host == 'bkkskytrain.online' ||
+                uri?.host == 'localhost' ||
+                uri?.host == '127.0.0.1') {
+              return NavigationDecision.navigate;
+            }
+            debugPrint('[WebView Security] Blocked external navigation to: ${request.url}');
+            return NavigationDecision.prevent;
+          },
           onPageFinished: (url) {
             _injectBridgeHelpers();
             _requestNativeLocation(interactive: false);

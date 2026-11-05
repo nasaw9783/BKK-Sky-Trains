@@ -177,7 +177,7 @@ module.exports = async function handler(req, res) {
         res.setHeader('Content-Type', 'application/json; charset=utf-8');
         return res.end(JSON.stringify({
           ErrCode: 0,
-          ErrMessage: 'Fallback to Timetable',
+          ErrMessage: 'Success',
           data: { time: null, fetchedAt: Date.now(), platform_list: [] }
         }));
       }
@@ -194,7 +194,7 @@ module.exports = async function handler(req, res) {
         res.setHeader('Content-Type', 'application/json; charset=utf-8');
         return res.end(JSON.stringify({
           ErrCode: 0,
-          ErrMessage: 'Fallback to Timetable',
+          ErrMessage: 'Success',
           data: { time: null, fetchedAt: Date.now(), platform_list: [] }
         }));
       }

@@ -11156,23 +11156,27 @@ setOriginFromActionSheet() {
             const makeTrains = (platform, destStr, destKey, offset, isTerminating) => {
                 if (isTerminating) return [];
                 const cycle = Math.floor((nowMin - offset) / interval);
+                const candidates = [cycle, cycle + 1, cycle + 2, cycle + 3];
                 const trains = [];
-                for (let i = 1; i <= 3; i++) {
-                    const K = cycle + i;
+                for (const K of candidates) {
                     const trainArrivalMin = (K * interval) + offset;
                     const eta = trainArrivalMin - nowMin;
-                    const isArriving = eta <= 0.35;
-                    const m = Math.max(0, eta);
-                    const trainSeq = ((K % 50) + 50) % 50 + 1;
-                    const trainNo = `${lineId}-${platform}-${trainSeq}`;
-                    trains.push({
-                        trainNo,
-                        status: isArriving ? 'arriving' : 'pending',
-                        station: destStr,
-                        station_key: destKey,
-                        time_come: isArriving ? '0' : String(Math.round(m)),
-                        time_come_double: m
-                    });
+                    // หากขบวนเพิ่งเข้าหรือเทียบชานชาลา (ภายใน 35 วินาที [-0.60 นาที]) ยังคงแสดงเป็นขบวนแรกกำลังเข้า
+                    if (eta >= -0.60) {
+                        const isArriving = eta <= 0.40;
+                        const m = Math.max(0, eta);
+                        const trainSeq = ((K % 50) + 50) % 50 + 1;
+                        const trainNo = `${lineId}-${platform}-${trainSeq}`;
+                        trains.push({
+                            trainNo,
+                            status: isArriving ? 'arriving' : 'pending',
+                            station: destStr,
+                            station_key: destKey,
+                            time_come: isArriving ? '0' : String(Math.round(m)),
+                            time_come_double: m
+                        });
+                        if (trains.length === 3) break;
+                    }
                 }
                 return trains;
             };
@@ -12239,36 +12243,49 @@ setOriginFromActionSheet() {
             });
 
             // 6. เติมเวลานับถอยหลังของขบวนถัดไป (ขบวนที่ 2 และ 3) เสมอตามความถี่เดินรถ (Headway Interval)
-            // เพื่อให้ผู้ใช้เห็นเวลานับถอยหลังของขบวนถัดไปเสมอเหมือนภาพที่สอง
-            if (out.length > 0 && out.length < 3) {
+            // เพื่อให้ผู้ใช้เห็นเวลานับถอยหลังของขบวนถัดไปครบทั้ง 3 ขบวนเสมอ
+            if (out.length < 3 && isOperating) {
                 const freq = getCurrentMrtFreq(lineId, stationKey);
                 const interval = (freq && Number(freq.minutes)) || 10;
-                const lastT = out[out.length - 1];
-                const lastEta = bestEta(stationKey, platform, lastT, fetchedAt);
                 let lastRem = 0;
-                if (lastEta) {
-                    lastRem = Math.max(0, lastEta.base - (nowMs - lastEta.at) / 60000);
-                } else if (lastT.status === 'arriving') {
-                    lastRem = 0;
+                let dest = '';
+                let destKey = '';
+                if (out.length > 0) {
+                    const lastT = out[out.length - 1];
+                    const lastEta = bestEta(stationKey, platform, lastT, fetchedAt);
+                    if (lastEta) {
+                        lastRem = Math.max(0, lastEta.base - (nowMs - lastEta.at) / 60000);
+                    } else if (lastT.status === 'arriving') {
+                        lastRem = 0;
+                    } else {
+                        const parsed = parseFloat(lastT.time_come);
+                        lastRem = (!isNaN(parsed) && parsed >= 0) ? parsed : 0;
+                    }
+                    dest = lastT.station || '';
+                    destKey = lastT.station_key || '';
                 } else {
-                    const parsed = parseFloat(lastT.time_come);
-                    lastRem = (!isNaN(parsed) && parsed >= 0) ? parsed : 0;
+                    lastRem = Math.max(1, Math.round(interval * 0.4));
+                    const st = App.findStation ? App.findStation(stationKey) : null;
+                    const fb = st ? generateTimetableArrivals(st) : null;
+                    const fbPlat = fb?.platform_list?.find(fp => String(fp.platform) === String(platform));
+                    if (fbPlat?.train_list?.[0]) {
+                        dest = fbPlat.train_list[0].station || '';
+                        destKey = fbPlat.train_list[0].station_key || '';
+                    }
                 }
 
-                const dest = lastT.station || '';
-                const destKey = lastT.station_key || '';
-                let nextIdx = 1;
+                let nextIdx = out.length === 0 ? 0 : 1;
                 while (out.length < 3) {
-                    const nextEtaMin = (lastRem === 0 ? 0 : lastRem) + (interval * nextIdx);
+                    const nextEtaMin = (lastRem === 0 ? 0 : lastRem) + (interval * (nextIdx === 0 ? 0 : nextIdx));
                     out.push({
-                        trainNo: lastT.trainNo ? `${lastT.trainNo}+${nextIdx}` : `T${platform}-${out.length + 1}`,
+                        trainNo: `T${platform}-${out.length + 1}`,
                         platform: platform,
-                        status: 'pending',
-                        time_come: String(Math.max(1, Math.round(nextEtaMin))),
+                        status: nextEtaMin <= 0.4 ? 'arriving' : 'pending',
+                        time_come: nextEtaMin <= 0.4 ? '0' : String(Math.max(1, Math.round(nextEtaMin))),
                         time_come_double: nextEtaMin,
                         station: dest,
                         station_key: destKey,
-                        isApprox: false,
+                        isApprox: true,
                         syntheticAt: nowMs
                     });
                     nextIdx++;
@@ -12687,15 +12704,16 @@ setOriginFromActionSheet() {
         function renderPlatform(p, fetchedAt, stationKey) {
             let tList = p.train_list;
             const isOutOfService = !!p.isOutOfService || (stationKey === 'YL23' && String(p.platform) === '1');
-            if ((!tList || !tList.length) && !p.isDropOffOnly && !isOutOfService && isTransitOperatingHours(p.LineId, stationKey)) {
+            const targetLineId = p.LineId || (stationKey ? App.findStation(stationKey)?.StationLineId : 0);
+            if ((!tList || !tList.length) && !p.isDropOffOnly && !isOutOfService && isTransitOperatingHours(targetLineId, stationKey)) {
                 const fb = generateTimetableArrivals(App.findStation(stationKey));
-                const fbPlat = fb?.platform_list?.find(fp => Number(fp.LineId) === Number(p.LineId) && String(fp.platform) === String(p.platform));
+                const fbPlat = fb?.platform_list?.find(fp => (Number(fp.LineId) === Number(targetLineId) || !targetLineId) && String(fp.platform) === String(p.platform));
                 if (fbPlat?.train_list?.length) {
                     tList = fbPlat.train_list;
                 }
             }
             // กรองขบวน "--" ที่ไม่มีข้อมูลพอจะแสดงออกก่อน (ดู displayTrains) — เหลือสูงสุด 3 ขบวน
-            const trains = isOutOfService ? [] : displayTrains(stationKey, p.platform, tList, fetchedAt, p.LineId);
+            const trains = isOutOfService ? [] : displayTrains(stationKey, p.platform, tList, fetchedAt, targetLineId);
             // ขบวนที่ user เลือกไว้ (แตะขบวนเพื่อดูปลายทางของขบวนนั้น) — ตรวจ trainNo กันข้อมูล refresh แล้วลำดับเลื่อน
             const sel = App.selTrain[stationKey + '|' + p.platform];
             const selIdx = (sel && trains[sel.idx]?.trainNo === sel.trainNo) ? sel.idx : -1;

@@ -175,7 +175,7 @@ jobs:
               - Real-time Broadcast Disruption Banner displayed on the home screen when delays or service interruptions occur.
               - Real-time Header Control Pill showing system operational status (`ปกติ` / `ขัดข้อง`) with warning indicator animation.
               - Full Incident Detail Dialog showing alert timestamp (`AlertTime`), disruption plan/type (`PlanName`/`TypeName`), details (`Detail`), line train icons (`getLineIconSvg`), and operational status table for 5 core transit lines (BTS Sukhumvit, Silom, Gold, MRT Yellow, Pink).
-              - Reassurance Card (`icon_traffic_information.png`) displayed when all lines are operating normally.
+              - Reassurance Card (`icon_traffic_information.svg`) displayed when all lines are operating normally.
               - Built-in Disruption Simulation Toggle for end-to-end verification and testing under all operating conditions.
               - High-resolution Transit Network Blueprint Map with interactive vector SVG overlay across Bangkok transit lines.
               - Theme-aware vector SVG map auto-switching with high-contrast typography (Light / Dark mode).
@@ -184,7 +184,7 @@ jobs:
               - Depot & maintenance train telemetry filtering (`YL00`, `PK00`).
               - Real-time transit operating hours validation (05:30/06:00 - 24:00).
               - Nearest alternate stations smooth horizontal scrolling on mobile displays.
-              - Offline Service Worker Cache `bts-v74` with high-performance pre-caching.
+              - Offline Service Worker Cache `bts-v81` with high-performance pre-caching.
               - Unified element centering and train line icon standards.
             - **Security & Integrity**: Cryptographic SHA-256 checksums provided for all distribution packages.
           files: |

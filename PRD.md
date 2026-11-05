@@ -181,7 +181,7 @@ flowchart TD
 - **FR-8.4:** ปุ่มสถานะบนแถบหัว (Header Control Pill) แสดงสถานะปัจจุบัน (`ปกติ` / `ขัดข้อง`) และเรียกหน้าต่างโมดอลได้ทันที
 - **FR-8.5:** หน้าต่างป๊อปอัปแจ้งเหตุขัดข้อง (`TrafficTrainDialogView` ถอดแบบจาก `th.btsc.theskytrains`):
   - แสดงรายละเอียดประกาศเหตุขัดข้อง: รหัสสาย, ชื่อสาย, ไอคอนรถไฟประจำสาย (`getLineIconSvg`), เวลาข่าวสาร (`AlertTime`), หัวข้อเหตุการณ์ (`PlanName`/`TypeName`), และข้อความรายละเอียด (`Detail`)
-  - การ์ดรับรองสถานะการเดินรถปกติ (Reassurance Card พร้อมไอคอน `icon_traffic_information.png`) เมื่อทุกสายเปิดให้บริการตามปกติ
+  - การ์ดรับรองสถานะการเดินรถปกติ (Reassurance Card พร้อมไอคอน `icon_traffic_information.svg`) เมื่อทุกสายเปิดให้บริการตามปกติ
   - ตารางสรุปสถานะการเดินรถ 5 เส้นทางหลัก (BTS สายสุขุมวิท, BTS สายสีลม, BTS สายสีทอง, MRT สายสีเหลือง, MRT สายสีชมพู)
   - โหมดจำลองเหตุขัดข้อง (Simulation Toggle) เพื่อทดสอบการแจ้งเตือนและการทำงานของระบบได้อย่างครบถ้วนทุกสถานการณ์
   - <img src="images/bkk_skytrains_disruption_preview.svg" alt="Traffic Train Dialog View Preview" width="100%" style="max-width:680px;border-radius:12px;margin:10px 0;box-shadow:0 4px 16px rgba(0,0,0,0.15);display:block;">
@@ -357,7 +357,7 @@ flowchart LR
     - แถบประกาศแจ้งเตือนด่วน (Broadcast Disruption Banner) บนหน้าหลักเมื่อพบความล่าช้าหรือเหตุขัดข้อง
     - ปุ่มสถานะเรียลไทม์บนแถบหัว (Header Pill Status) แสดงสถานะ "ปกติ" / "ขัดข้อง" พร้อมไฟกระพริบเตือน
     - โมดอลแจ้งเหตุขัดข้องฉบับเต็ม แสดงเวลาข่าวสาร (`AlertTime`), หัวข้อเหตุการณ์ (`PlanName`/`TypeName`), รายละเอียด (`Detail`), ไอคอนรถไฟประจำสาย (`getLineIconSvg`), และตารางแสดงสถานะ 5 เส้นทางหลัก
-    - การ์ดยืนยันการเดินรถปกติ (Reassurance Card) พร้อมไอคอน `icon_traffic_information.png`
+    - การ์ดยืนยันการเดินรถปกติ (Reassurance Card) พร้อมไอคอน `icon_traffic_information.svg`
     - สวิตช์ทดสอบจำลองเหตุขัดข้อง (Disruption Simulation Toggle)
   - ระบบแสดงผลสถานีใกล้ตัวและเวลารถเข้าบนหน้าจอล็อก & หน้าจอโฮม (Lock Screen Live Notification & Home Screen Widget):
     - Ongoing Persistent Notification (`VISIBILITY_PUBLIC`) บน Android แสดงการ์ดสถานี รหัสสถานี ชานชาลา 1 & 2 และเวลานับถอยหลังสดบน Lock Screen
@@ -366,7 +366,7 @@ flowchart LR
   - แผนผังโครงข่ายรถไฟฟ้าความละเอียดสูงแบบเวกเตอร์พิมพ์เขียว (Transit Blueprint Vector Map) ครอบคลุม 10 สายรถไฟฟ้า กทม. และปริมณฑล รองรับการสลับโหมดมืด/สว่างอัตโนมัติ (`bkk_transit_map.svg`, `bkk_transit_map_dark.svg`)
   - จุดฮอตสปอตสถานีแบบโต้ตอบบนแผนที่ (`MAP_STATION_HOTSPOTS`) แตะเลือกสถานีต้นทาง, ปลายทาง หรือเปิดดูข้อมูลประตูทางออกได้ทันที
   - หน้าต่างคำอธิบายสัญลักษณ์โครงข่ายและจุดเชื่อมต่อ (Transit Network Legend: Airport, Pier/Boat, SRT, Bus, Park & Ride)
-  - อัปเกรด Service Worker แคชออฟไลน์ขั้นสูงเป็นเวอร์ชัน `bts-v76` พร้อมพรีแคชไฟล์เวกเตอร์แผนผังความละเอียดสูง
+  - อัปเกรด Service Worker แคชออฟไลน์ขั้นสูงเป็นเวอร์ชัน `bts-v81` พร้อมพรีแคชไฟล์เวกเตอร์แผนผังความละเอียดสูง
   - สคริปต์รวมกระบวนการดีพลอยและบิลด์อัตโนมัติ (`Deploy-BKK-SkyTrains.ps1`) รองรับการทำงาน 8 ขั้นตอน: จัดระเบียบไฟล์, Update .yml ทั้งหมด, Update .md ทั้งหมดให้ตรงตามเว็บ/แอพ เท่านั้น, Update .ps1 ทั้งหมดให้ตรงตามเว็บ/แอพ เท่านั้น, ทำแอพ Android (Release APK), ต้องการให้ทำเป็น App Bundle (.aab), ทำแอพ IOS, และลบข้อมูลเวอร์เก่า บน Github ออก และ Upload ขึ้น Github Build iOS & Android Apps เวอร์ชั่นที่ทำใหม่ล่าสุดเสมอ
   - ปรับปรุงมาตรฐานการตั้งชื่อตัวติดตั้งและจัดระเบียบโฟลเดอร์ `releases/` แบ่งแยกเป็นโฟลเดอร์ `Android/APK`, `Android/AAB` และ `Apple/IPA` เป็นระบบเดียวกันทุกแพลตฟอร์ม: Android Universal APK (`releases/Android/APK/BKK_SkyTrains_V.1.3.6.apk`), Android Split APKs (`BKK_SkyTrains_V.1.3.6_arm64-v8a.apk`, `_armeabi-v7a.apk`, `_x86_64.apk`), Android App Bundle (`releases/Android/AAB/BKK_SkyTrains_V.1.3.6.aab`) และ iOS IPA (`releases/Apple/IPA/BKK_SkyTrains_V.1.3.6.ipa`) พร้อมสร้าง SHA-256 Checksum ครบถ้วน
 - **v1.3.5 (Completed):**

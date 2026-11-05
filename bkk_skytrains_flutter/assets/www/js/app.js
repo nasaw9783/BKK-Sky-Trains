@@ -1,7 +1,7 @@
 'use strict';
 
         /* ================= CONFIG ================= */
-        const REMOTE_API = (typeof window !== 'undefined' && window.BKK_CONFIG && window.BKK_CONFIG.apiBase) || 'https://bkk-skytrains.vercel.app/api/bkk-proxy';
+        const REMOTE_API = (typeof window !== 'undefined' && window.BKK_CONFIG && window.BKK_CONFIG.apiBase) || 'https://www.ebm.co.th/mobapi-routemap/api';
         // ตรวจสอบว่าโฮสต์ปัจจุบันเป็น Localhost บนพอร์ต 3000 หรือไม่ (รองรับ relative /api/bts-proxy จาก Start-BKK-Transit.ps1)
         // สำหรับกรณีอื่นทั้งหมด (Web, WebView, file://, GitHub Pages, Vercel ฯลฯ) ชี้ตรงไปยัง REMOTE_API ทันที
         const hasRelativeProxyHost = Boolean(
@@ -11686,11 +11686,11 @@ setOriginFromActionSheet() {
                 const yellowColor = station.StationLineColor || LINE_BRAND_COLORS[4] || '#FAD53D';
                 const num = parseInt(key.replace(/\D/g, ''), 10) || 1;
                 const idx = Math.max(0, Math.min(22, num - 1));
-                const travelPerStation = 1.95;
 
                 // Platform 1: ไปสำโรง (YL23) — หากเป็น YL23 ชานชาลา 1 ไม่ให้บริการ
+                // อิงตารางเวลาเดินรถทางการ: ขบวนแรกเริ่ม 05:30 น. (330 นาที) จาก YL01 ถึง YL20 เวลา 05:54 น. (354 นาที)
                 const isTerm1 = (key === 'YL23');
-                const offset1 = idx * travelPerStation;
+                const offset1 = 330 + (idx * (24 / 19));
                 const dest1 = isTerm1
                     ? ((typeof lang !== 'undefined' && lang === 'en') ? 'Out of Service' : ((typeof lang !== 'undefined' && lang === 'zh') ? '暂不营运' : 'ไม่ให้บริการ'))
                     : getDestPair('YL23', 'สำโรง', 'Samrong');
@@ -11705,9 +11705,12 @@ setOriginFromActionSheet() {
                     train_list: isTerm1 ? [] : makeTrains(1, dest1, 'YL23', offset1, false)
                 });
 
-                // Platform 2: ไปลาดพร้าว (YL01)
+                // Platform 2: ไปลาดพร้าว (YL01) — หากเป็น YL01 ชานชาลา 2 ส่งผู้โดยสารเท่านั้น
+                // อิงตารางเวลาเดินรถทางการ: ขบวนแรกเริ่ม 05:30 น. (330 นาที) จาก YL23 ถึง YL20 เวลา 05:36 น. (336 นาที)
                 const isTerm2 = (key === 'YL01');
-                const offset2 = (22 - idx) * travelPerStation + (interval * 0.5);
+                const offset2 = (idx >= 19)
+                    ? 330 + ((22 - idx) * 2.0)
+                    : 330 + 6 + ((19 - idx) * 1.263);
                 const dest2 = getDestPair('YL01', 'ลาดพร้าว', 'Lat Phrao');
                 platforms.push({
                     platform: 2,
@@ -12114,17 +12117,17 @@ setOriginFromActionSheet() {
         function bestEta(stationKey, platform, t, fetchedAt) {
             const nowMs = Date.now();
             const at = t?.syntheticAt || fetchedAt || nowMs;
+            if (t.time_come_double != null && !isNaN(t.time_come_double) && t.time_come_double >= 0) {
+                const rem = t.time_come_double - (nowMs - at) / 60000;
+                if (rem > -0.75) return { base: t.time_come_double, at, approx: !!t.isApprox };
+            }
             if (t.time_come !== '--' && t.time_come != null) {
                 const num = parseFloat(t.time_come);
-                const base = (!isNaN(num) && num >= 0) ? num : (t.time_come_double != null ? t.time_come_double : null);
+                const base = (!isNaN(num) && num >= 0) ? num : null;
                 if (base != null) {
                     const rem = base - (nowMs - at) / 60000;
                     if (rem > -0.75) return { base, at, approx: !!t.isApprox };
                 }
-            }
-            if (t.time_come_double != null) {
-                const rem = t.time_come_double - (nowMs - at) / 60000;
-                if (rem > -0.75) return { base: t.time_come_double, at, approx: !!t.isApprox };
             }
             if (t.status === 'arriving') {
                 const rem = 0 - (nowMs - at) / 60000;

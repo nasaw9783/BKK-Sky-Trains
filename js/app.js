@@ -7838,13 +7838,16 @@ setOriginFromActionSheet() {
                 this.applyUrl();      // deep link: เปิดสาย/สถานี/เส้นทางตาม hash ที่แชร์มา
                 this.renderJourney();
                 this.renderTabs();
-                this.renderExitsView();
-                this.renderInteractiveMap();
-                this.renderFaresView();
-                this.renderTimetablesView();
                 this.renderStrip();
                 const initialView = new URLSearchParams(location.search).get('view');
                 if (initialView) this.switchView(initialView);
+                const deferIdle = window.requestIdleCallback || (cb => setTimeout(cb, 400));
+                deferIdle(() => {
+                    if (this.currentView !== 'exits') this.renderExitsView();
+                    if (this.currentView !== 'fares') this.renderFaresView();
+                    if (this.currentView !== 'timetables') this.renderTimetablesView();
+                    if (this.currentView !== 'map' && this.mapMode !== 'hybrid') this.renderInteractiveMap();
+                });
                 if (window.addEventListener) window.addEventListener('hashchange', () => this.onHashChange());
                 if (this.expandedKey) {
                     const deepSt = this.findStation(this.expandedKey);
@@ -9464,7 +9467,8 @@ setOriginFromActionSheet() {
                             ? `距您 ${distText} · 点击查看时刻表与站台`
                             : `ห่าง ${distText} · แตะเพื่อดูเวลาขบวนรถและชานชาลา`));
 
-                    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                    const hasGrantedNotif = typeof Notification !== 'undefined' && Notification.permission === 'granted';
+                    if (hasGrantedNotif && 'serviceWorker' in navigator && navigator.serviceWorker.controller) {
                         try {
                             navigator.serviceWorker.ready.then(reg => {
                                 if (reg && reg.showNotification) {
@@ -9473,24 +9477,24 @@ setOriginFromActionSheet() {
                                         icon: 'icon.svg',
                                         badge: 'icon.svg',
                                         tag: 'nearest-station',
+                                        vibrate: [200, 100, 200],
                                         data: { stationKey: key }
                                     });
                                 }
                             });
                         } catch(e){}
-                    } else if (typeof Notification !== 'undefined') {
-                        if (Notification.permission === 'granted') {
-                            try {
-                                new Notification(notifTitle, {
-                                    body: notifBody,
-                                    icon: 'icon.svg',
-                                    badge: 'icon.svg',
-                                    tag: 'nearest-station'
-                                });
-                            } catch(e){}
-                        } else if (Notification.permission === 'default') {
-                            try { Notification.requestPermission(); } catch(e){}
-                        }
+                    } else if (hasGrantedNotif) {
+                        try {
+                            new Notification(notifTitle, {
+                                body: notifBody,
+                                icon: 'icon.svg',
+                                badge: 'icon.svg',
+                                tag: 'nearest-station',
+                                vibrate: [200, 100, 200]
+                            });
+                        } catch(e){}
+                    } else if (typeof Notification !== 'undefined' && Notification.permission === 'default') {
+                        try { Notification.requestPermission(); } catch(e){}
                     }
 
                     // 6. แจ้งเตือน Native Android Notification พร้อม ข้อมูลสถานี / แพลตฟอร์ม / เวลา

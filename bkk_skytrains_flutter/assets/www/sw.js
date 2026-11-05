@@ -5,11 +5,12 @@
  * - ไฟล์ static อื่นๆ (CDN): stale-while-revalidate ให้โหลดซ้ำเร็วขึ้น
  * - คำขอ API ขบวนรถ (POST ข้ามโดเมน) ปล่อยผ่าน ไม่แตะ — ข้อมูลสดต้องมาจากเน็ตเสมอ
  */
-const VERSION = 'bts-v83';
+const VERSION = 'bts-v84';
 const SHELL_CACHE = 'bts-shell-' + VERSION;
 const RUNTIME_CACHE = 'bts-runtime-' + VERSION;
 
 // ไฟล์หลักของแอป (same-origin)
+// ไฟล์หลักของแอป (Critical App Shell) - โหลดเร็ว ติดตั้งทันที
 const SHELL_URLS = [
     './',
     './index.html',
@@ -19,9 +20,6 @@ const SHELL_URLS = [
     './leaflet.css',
     './manifest.json',
     './icon.svg',
-    './bkk_transit_map.svg',
-    './bkk_transit_map_dark.svg',
-    './bkk_transit_map.jpg',
     './images/ic_traffic_alert.svg',
     './images/icon_traffic_information.svg',
     './images/bkk_skytrains_disruption_preview.svg',
@@ -29,6 +27,13 @@ const SHELL_URLS = [
     './images/layers-2x.svg',
     './images/marker-icon.svg',
     './images/marker-shadow.svg',
+];
+
+// ไฟล์เวกเตอร์แผนผังขนาดใหญ่ (~6MB) - แคชในพื้นหลังช่วง activate ไม่บล็อกการติดตั้ง
+const LARGE_MEDIA_URLS = [
+    './bkk_transit_map.svg',
+    './bkk_transit_map_dark.svg',
+    './bkk_transit_map.jpg',
 ];
 
 self.addEventListener('install', event => {
@@ -45,7 +50,10 @@ self.addEventListener('activate', event => {
         caches.keys().then(keys => Promise.all(
             keys.filter(k => k !== SHELL_CACHE && k !== RUNTIME_CACHE)
                 .map(k => caches.delete(k))
-        )).then(() => self.clients.claim())
+        )).then(() => {
+            caches.open(SHELL_CACHE).then(cache => cache.addAll(LARGE_MEDIA_URLS)).catch(() => {});
+            return self.clients.claim();
+        })
     );
 });
 
@@ -116,7 +124,8 @@ self.addEventListener('notificationclick', event => {
                 }
             }
             if (self.clients.openWindow) {
-                const targetUrl = stationKey ? '/#st=' + encodeURIComponent(stationKey) : '/';
+                const baseUrl = self.registration.scope || './';
+                const targetUrl = stationKey ? (baseUrl + '#st=' + encodeURIComponent(stationKey)) : baseUrl;
                 return self.clients.openWindow(targetUrl);
             }
         })

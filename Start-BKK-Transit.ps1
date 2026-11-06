@@ -26,7 +26,7 @@ if ($existingConns) {
     foreach ($conn in $existingConns) {
         $p = Get-Process -Id $conn.OwningProcess -ErrorAction SilentlyContinue
         if ($p -and $p.ProcessName -eq 'node') {
-            Write-Host "🔄 กำลังรีเซ็ตเซิร์ฟเวอร์เดิมบนพอร์ต $Port (PID: $($p.Id))..." -ForegroundColor Yellow
+            Write-Host "ðŸ”„ à¸à¸³à¸¥à¸±à¸‡à¸£à¸µà¹€à¸‹à¹‡à¸•à¹€à¸‹à¸´à¸£à¹Œà¸Ÿà¹€à¸§à¸­à¸£à¹Œà¹€à¸”à¸´à¸¡à¸šà¸™à¸žà¸­à¸£à¹Œà¸• $Port (PID: $($p.Id))..." -ForegroundColor Yellow
             Stop-Process -Id $p.Id -Force -ErrorAction SilentlyContinue
             Start-Sleep -Milliseconds 600
         }
@@ -53,16 +53,16 @@ $ActualPort = Get-AvailablePort -startPort $Port
 $AppUrl = "http://localhost:$ActualPort"
 
 Write-Host "==========================================================" -ForegroundColor Cyan
-Write-Host " 🚆 กำลังเริ่มต้น BKK SkyTrains - Real-Time Transit Platform" -ForegroundColor Green
+Write-Host " ðŸš† à¸à¸³à¸¥à¸±à¸‡à¹€à¸£à¸´à¹ˆà¸¡à¸•à¹‰à¸™ BKK SkyTrains - Real-Time Transit Platform" -ForegroundColor Green
 Write-Host "==========================================================" -ForegroundColor Cyan
-Write-Host "📂 ไดเรกทอรีโปรเจกต์ : $Workspace" -ForegroundColor Gray
-Write-Host "🌐 พอร์ตที่ใช้งาน   : $ActualPort" -ForegroundColor Gray
-Write-Host "กำลังตรวจสอบ Web Server และ Reverse Proxy..." -ForegroundColor Yellow
+Write-Host "ðŸ“‚ à¹„à¸”à¹€à¸£à¸à¸—à¸­à¸£à¸µà¹‚à¸›à¸£à¹€à¸ˆà¸à¸•à¹Œ : $Workspace" -ForegroundColor Gray
+Write-Host "ðŸŒ à¸žà¸­à¸£à¹Œà¸•à¸—à¸µà¹ˆà¹ƒà¸Šà¹‰à¸‡à¸²à¸™   : $ActualPort" -ForegroundColor Gray
+Write-Host "à¸à¸³à¸¥à¸±à¸‡à¸•à¸£à¸§à¸ˆà¸ªà¸­à¸š Web Server à¹à¸¥à¸° Reverse Proxy..." -ForegroundColor Yellow
 
 $nodeCmd = Get-Command node -ErrorAction SilentlyContinue
 
 if ($nodeCmd) {
-    Write-Host "✓ ตรวจพบ Node.js: กำลังเริ่ม Local Server พร้อม BTS Live API Proxy..." -ForegroundColor Green
+    Write-Host "âœ“ à¸•à¸£à¸§à¸ˆà¸žà¸š Node.js: à¸à¸³à¸¥à¸±à¸‡à¹€à¸£à¸´à¹ˆà¸¡ Local Server à¸žà¸£à¹‰à¸­à¸¡ BTS Live API Proxy..." -ForegroundColor Green
 
     # Launch browser after brief delay once server starts
     Start-Job -ScriptBlock {
@@ -114,7 +114,7 @@ const server = http.createServer((req, res) => {
 
   const reqUrl = new URL(req.url, 'http://localhost:' + port);
 
-  // Reverse Proxy for BTS Live API endpoints (/api/bkk-proxy)
+  // Reverse Proxy for BTS Live API endpoints (/api/bts-proxy)
   if (reqUrl.pathname === '/api/bkk-proxy' || reqUrl.pathname === '/api/bts-proxy') {
     const proxyHandlerPath = path.resolve(rootDir, 'api/bkk-proxy.js');
     if (fs.existsSync(proxyHandlerPath)) {
@@ -187,23 +187,23 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(port, () => {
-  console.log('✓ BTS Live Map พร้อมใช้งานแล้วที่: http://localhost:' + port);
-  console.log('✓ ระบบ BTS Live Real-Time API Proxy พร้อมทำงาน');
-  console.log('  (กด Ctrl+C เพื่อหยุดการทำงานของเซิร์ฟเวอร์)');
+  console.log('âœ“ BTS Live Map à¸žà¸£à¹‰à¸­à¸¡à¹ƒà¸Šà¹‰à¸‡à¸²à¸™à¹à¸¥à¹‰à¸§à¸—à¸µà¹ˆ: http://localhost:' + port);
+  console.log('âœ“ à¸£à¸°à¸šà¸š BTS Live Real-Time API Proxy à¸žà¸£à¹‰à¸­à¸¡à¸—à¸³à¸‡à¸²à¸™');
+  console.log('  (à¸à¸” Ctrl+C à¹€à¸žà¸·à¹ˆà¸­à¸«à¸¢à¸¸à¸”à¸à¸²à¸£à¸—à¸³à¸‡à¸²à¸™à¸‚à¸­à¸‡à¹€à¸‹à¸´à¸£à¹Œà¸Ÿà¹€à¸§à¸­à¸£à¹Œ)');
 });
 '@
 
     $env:APP_PORT = "$ActualPort"
     node -e $nodeScript
 } else {
-    Write-Host "✓ ตรวจไม่พบ Node.js: กำลังเริ่มเซิร์ฟเวอร์ด้วย Windows PowerShell .NET HttpListener..." -ForegroundColor Green
+    Write-Host "âœ“ à¸•à¸£à¸§à¸ˆà¹„à¸¡à¹ˆà¸žà¸š Node.js: à¸à¸³à¸¥à¸±à¸‡à¹€à¸£à¸´à¹ˆà¸¡à¹€à¸‹à¸´à¸£à¹Œà¸Ÿà¹€à¸§à¸­à¸£à¹Œà¸”à¹‰à¸§à¸¢ Windows PowerShell .NET HttpListener..." -ForegroundColor Green
     Start-Process $AppUrl
 
     $listener = New-Object System.Net.HttpListener
     $listener.Prefixes.Add("http://localhost:$ActualPort/")
     $listener.Start()
-    Write-Host "✓ BTS Live Map พร้อมใช้งานที่: $AppUrl" -ForegroundColor Green
-    Write-Host "  (กด Ctrl+C เพื่อหยุดการทำงานของเซิร์ฟเวอร์)" -ForegroundColor Gray
+    Write-Host "âœ“ BTS Live Map à¸žà¸£à¹‰à¸­à¸¡à¹ƒà¸Šà¹‰à¸‡à¸²à¸™à¸—à¸µà¹ˆ: $AppUrl" -ForegroundColor Green
+    Write-Host "  (à¸à¸” Ctrl+C à¹€à¸žà¸·à¹ˆà¸­à¸«à¸¢à¸¸à¸”à¸à¸²à¸£à¸—à¸³à¸‡à¸²à¸™à¸‚à¸­à¸‡à¹€à¸‹à¸´à¸£à¹Œà¸Ÿà¹€à¸§à¸­à¸£à¹Œ)" -ForegroundColor Gray
 
     try {
         while ($listener.IsListening) {

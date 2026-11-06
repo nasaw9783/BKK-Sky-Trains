@@ -1,12 +1,14 @@
 'use strict';
 
         /* ================= CONFIG ================= */
-        const REMOTE_API = (typeof window !== 'undefined' && window.BKK_CONFIG && window.BKK_CONFIG.apiBase) || 'https://www.ebm.co.th/mobapi-routemap/api';
-        // ตรวจสอบว่าโฮสต์ปัจจุบันเป็น Localhost บนพอร์ต 3000 หรือไม่ (รองรับ relative /api/bts-proxy จาก Start-BKK-Transit.ps1)
-        // สำหรับกรณีอื่นทั้งหมด (Web, WebView, file://, GitHub Pages, Vercel ฯลฯ) ชี้ตรงไปยัง REMOTE_API ทันที
+        const REMOTE_API = (typeof window !== 'undefined' && window.BKK_CONFIG && window.BKK_CONFIG.apiBase) || 'https://bkk-skytrains.vercel.app/api/bkk-proxy';
+        // ตรวจสอบว่าโฮสต์ปัจจุบันรองรับ relative /api/bkk-proxy หรือไม่ (Localhost บนพอร์ต 3000 หรือ Vercel *.vercel.app)
+        // สำหรับกรณีอื่น (WebView, file://, GitHub Pages ฯลฯ) ชี้ตรงไปยัง REMOTE_API ทันที
         const hasRelativeProxyHost = Boolean(
-            (typeof location !== 'undefined') &&
-            ((location.hostname === 'localhost' || location.hostname === '127.0.0.1') && location.port === '3000')
+            (typeof location !== 'undefined') && (
+                ((location.hostname === 'localhost' || location.hostname === '127.0.0.1') && location.port === '3000') ||
+                (location.protocol && location.protocol.startsWith('http') && location.hostname.endsWith('.vercel.app'))
+            )
         );
 
         let activeProxyBase = hasRelativeProxyHost ? '/api/bkk-proxy' : REMOTE_API;
@@ -374,14 +376,14 @@
 
         const MONORAIL_FREQ = {
             weekday: [
-                [5, 30, 7, 0, '10.00', 10],
+                [6, 0, 7, 0, '10.00', 10],
                 [7, 0, 9, 0, '5.00', 5],
                 [9, 0, 17, 0, '10.00', 10],
                 [17, 0, 20, 0, '5.00', 5],
                 [20, 0, 24, 0, '10.00', 10]
             ],
             weekend: [
-                [5, 30, 24, 0, '10.00', 10]
+                [6, 0, 24, 0, '10.00', 10]
             ]
         };
 
@@ -390,7 +392,6 @@
            สายสุขุมวิทช่วง peak มี 2 ค่า: * หมอชิต–สำโรง  ** สำโรง–เคหะฯ และ หมอชิต–คูคต */
         const BTS_SUKHUMVIT_FREQ = {
             weekday: [
-                [5, 15, 6, 0, '5.00'],
                 [6, 0, 7, 0, '5.00'],
                 [7, 0, 9, 0, '2.30* / 5.00**'],
                 [9, 0, 9, 30, '5.00'],
@@ -402,7 +403,6 @@
                 [22, 0, 24, 0, '8.00']
             ],
             weekend: [
-                [5, 15, 6, 0, '7.00'],
                 [6, 0, 8, 0, '7.00'],
                 [8, 0, 11, 0, '5.55'],
                 [11, 0, 21, 0, '4.30* / 6.00**'],
@@ -413,7 +413,6 @@
 
         const BTS_SILOM_FREQ = {
             weekday: [
-                [5, 30, 6, 0, '6.00'],
                 [6, 0, 7, 0, '6.00'],
                 [7, 0, 9, 0, '3.45'],
                 [9, 0, 17, 0, '6.00'],
@@ -422,7 +421,6 @@
                 [22, 0, 24, 0, '8.00']
             ],
             weekend: [
-                [5, 30, 6, 0, '7.00'],
                 [6, 0, 9, 0, '7.00'],
                 [9, 0, 21, 0, '6.00'],
                 [21, 0, 22, 0, '7.00'],
@@ -432,7 +430,6 @@
 
         const BRT_FREQ = {
             weekday: [
-                [5, 30, 6, 0, '7.00', 7],
                 [6, 0, 9, 0, '5.00–7.00', 6],
                 [9, 0, 16, 30, '10.00–12.00', 10],
                 [16, 30, 20, 0, '5.00–7.00', 6],
@@ -2189,7 +2186,7 @@ gQIDAQAB
                 // หากต่อ local proxy ได้ 404, 502, 504 ให้ failover ไปยัง REMOTE_API ทันที
                 if ((res.status === 404 || res.status === 502 || res.status === 504) && !url.startsWith(REMOTE_API)) {
                     switchPermanentlyToRemote();
-                    const fallbackUrl = url.replace(/^(?:https?:\/\/[^\/]+)?\/api\/(?:bkk|bts)-proxy/, REMOTE_API);
+                    const fallbackUrl = url.replace(/^(?:https?:\/\/[^\/]+)?\/api\/bkk-proxy/, REMOTE_API);
                     if (fallbackUrl !== url) {
                         res = await doFetch(fallbackUrl, timeoutMs);
                     }
@@ -2199,7 +2196,7 @@ gQIDAQAB
                 // หาก network ต่อ local proxy ไม่ได้ ให้ลอง REMOTE_API
                 if (!url.startsWith(REMOTE_API)) {
                     switchPermanentlyToRemote();
-                    const fallbackUrl = url.replace(/^(?:https?:\/\/[^\/]+)?\/api\/(?:bkk|bts)-proxy/, REMOTE_API);
+                    const fallbackUrl = url.replace(/^(?:https?:\/\/[^\/]+)?\/api\/bkk-proxy/, REMOTE_API);
                     if (fallbackUrl !== url) {
                         try {
                             const res = await doFetch(fallbackUrl, timeoutMs);
@@ -2301,7 +2298,7 @@ gQIDAQAB
                 const res = await postJSON(STATION_LIST_URL('en'), null, {}, 5000);
                 if (res.status === 200 && res.data?.ErrMessage === 'Success' && Array.isArray(res.data.data)) {
                     const sanitized = sanitizeStationData(res.data.data);
-                    try { localStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), data: sanitized })); } catch (e) { }
+                    localStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), data: sanitized }));
                     return sanitized;
                 }
             } catch (e) {
@@ -2318,7 +2315,7 @@ gQIDAQAB
                 const res = await postJSON(STATION_LIST_URL('en'), null, {}, 5000);
                 if (res.status === 200 && res.data?.ErrMessage === 'Success') {
                     const sanitized = sanitizeStationData(res.data.data);
-                    try { localStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), data: sanitized })); } catch (e) { }
+                    localStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), data: sanitized }));
                     applyCrowdedUpdate(sanitized);
                 }
             } catch (e) { }
@@ -3408,9 +3405,9 @@ gQIDAQAB
                 ticketsTH: 'บัตร Rabbit, บัตร EMV Contactless, บัตรเที่ยวเดียว (ผู้สูงอายุลด 50%)',
                 ticketsEN: 'Rabbit Card, EMV Contactless, Single Journey (Senior 50% off)',
                 ticketsZH: '兔子卡, EMV Contactless, 单程票 (长者5折)',
-                firstTrainTH: '05:30 นาที',
-                firstTrainEN: '05:30',
-                firstTrainZH: '05:30',
+                firstTrainTH: '06:00 นาที',
+                firstTrainEN: '06:00',
+                firstTrainZH: '06:00',
                 lastTrainTH: '24:00 นาที',
                 lastTrainEN: '24:00',
                 lastTrainZH: '24:00',
@@ -3420,8 +3417,8 @@ gQIDAQAB
                 offPeakFreqTH: '10.00 นาที',
                 offPeakFreqEN: '10.00 min',
                 offPeakFreqZH: '10.00 分钟',
-                dir1: { code: 'YL01', toTH: 'ลาดพร้าว', toEN: 'Lat Phrao', toZH: '拉抛', first: '05:30', last: '24:00' },
-                dir2: { code: 'YL23', toTH: 'สำโรง', toEN: 'Samrong', toZH: '三隆', first: '05:30', last: '24:00' }
+                dir1: { code: 'YL01', toTH: 'ลาดพร้าว', toEN: 'Lat Phrao', toZH: '拉抛', first: '06:00', last: '24:00' },
+                dir2: { code: 'YL23', toTH: 'สำโรง', toEN: 'Samrong', toZH: '三隆', first: '06:00', last: '24:00' }
             },
             {
                 id: 5,
@@ -3442,9 +3439,9 @@ gQIDAQAB
                 ticketsTH: 'บัตร Rabbit, บัตร EMV Contactless, บัตรเที่ยวเดียว (ผู้สูงอายุลด 50%)',
                 ticketsEN: 'Rabbit Card, EMV Contactless, Single Journey (Senior 50% off)',
                 ticketsZH: '兔子卡, EMV Contactless, 单程票 (长者5折)',
-                firstTrainTH: '05:30 นาที',
-                firstTrainEN: '05:30',
-                firstTrainZH: '05:30',
+                firstTrainTH: '06:00 นาที',
+                firstTrainEN: '06:00',
+                firstTrainZH: '06:00',
                 lastTrainTH: '24:00 นาที',
                 lastTrainEN: '24:00',
                 lastTrainZH: '24:00',
@@ -3454,8 +3451,8 @@ gQIDAQAB
                 offPeakFreqTH: '10.00 นาที',
                 offPeakFreqEN: '10.00 min',
                 offPeakFreqZH: '10.00 分钟',
-                dir1: { code: 'PK01', toTH: 'ศูนย์ราชการนนทบุรี', toEN: 'Nonthaburi Civic Center', toZH: '暖武里政务中心', first: '05:30', last: '24:00' },
-                dir2: { code: 'PK30', toTH: 'มีนบุรี', toEN: 'Min Buri', toZH: '敏武里', first: '05:30', last: '24:00' }
+                dir1: { code: 'PK01', toTH: 'ศูนย์ราชการนนทบุรี', toEN: 'Nonthaburi Civic Center', toZH: '暖武里政务中心', first: '06:00', last: '24:00' },
+                dir2: { code: 'PK30', toTH: 'มีนบุรี', toEN: 'Min Buri', toZH: '敏武里', first: '06:00', last: '24:00' }
             },
             {
                 id: 101,
@@ -4334,19 +4331,6 @@ gQIDAQAB
                         advice: lang === 'zh' ? '客流量很大，可能需要多等 1-2 趟列车' : (lang === 'th' ? 'ผู้โดยสารหนาแน่น อาจต้องรอขบวนถัดไป 1-2 ขบวน' : 'High passenger volume. Expect a 1-2 train wait.')
                     };
                 }
-
-                // ตรวจสอบสถานะการเปิดให้บริการจริงของสายรถไฟ (หากปิดให้บริการ ให้แสดง 0% ปิดให้บริการ)
-                const isOperating = station ? isTransitOperatingHours(station.StationLineId, station.StationKey) : true;
-                if (!isOperating) {
-                    return {
-                        level: 'closed',
-                        percent: 0,
-                        badge: lang === 'zh' ? '已收车 / 停止运营' : (lang === 'en' ? 'Closed' : 'ปิดให้บริการ'),
-                        color: '#64748b',
-                        advice: lang === 'zh' ? '当前处于非运营时段，暂无列车服务' : (lang === 'en' ? 'Currently outside operating hours. No train service.' : 'ขณะนี้นอกเวลาให้บริการ รถไฟฟ้าปิดให้บริการ')
-                    };
-                }
-
                 const now = new Date();
                 const day = now.getDay();
                 const isWeekend = (day === 0 || day === 6);
@@ -4374,6 +4358,9 @@ gQIDAQAB
                              (timeVal >= 16.5 && timeVal < 17.0) || (timeVal > 19.75 && timeVal <= 20.5)) {
                         percent = isInterchange ? 64 : 52;
                         level = 'moderate';
+                    } else if (timeVal < 5.5 || timeVal > 24) {
+                        percent = 12;
+                        level = 'low';
                     } else {
                         percent = isInterchange ? 46 : 34;
                         level = isInterchange ? 'moderate' : 'low';
@@ -7823,6 +7810,9 @@ setOriginFromActionSheet() {
                 this.updateOnlineStatus();
                 this.renderFavoritesBar();
 
+                document.addEventListener('visibilitychange', () => {
+                    if (!document.hidden) this.refreshAll();
+                });
                 document.addEventListener('click', (e) => {
                     const container = document.getElementById('exitDropdownContainer');
                     if (container && !container.contains(e.target) && this.exitDropdownOpen) {
@@ -7853,16 +7843,13 @@ setOriginFromActionSheet() {
                 this.applyUrl();      // deep link: เปิดสาย/สถานี/เส้นทางตาม hash ที่แชร์มา
                 this.renderJourney();
                 this.renderTabs();
+                this.renderExitsView();
+                this.renderInteractiveMap();
+                this.renderFaresView();
+                this.renderTimetablesView();
                 this.renderStrip();
                 const initialView = new URLSearchParams(location.search).get('view');
                 if (initialView) this.switchView(initialView);
-                const deferIdle = window.requestIdleCallback || (cb => setTimeout(cb, 400));
-                deferIdle(() => {
-                    if (this.currentView !== 'exits') this.renderExitsView();
-                    if (this.currentView !== 'fares') this.renderFaresView();
-                    if (this.currentView !== 'timetables') this.renderTimetablesView();
-                    if (this.currentView !== 'map' && this.mapMode !== 'hybrid') this.renderInteractiveMap();
-                });
                 if (window.addEventListener) window.addEventListener('hashchange', () => this.onHashChange());
                 if (this.expandedKey) {
                     const deepSt = this.findStation(this.expandedKey);
@@ -9006,7 +8993,7 @@ setOriginFromActionSheet() {
                             this.renderNearest();
                             this.renderNearestExit();
                             if (interactive && !this.userPos) {
-                                this.showToast(`${getUiIcon('alert', 16, '#f59e0b')} ค้นหาตำแหน่งนานเกินกำหนด โปรดลองใหม่อีกครั้ง`, true);
+                                this.showToast(`${getUiIcon('alert', 16, '#f59e0b')} ค้นหาตำแหน่งนานเกินกำหนด โปรดลองใหม่อีกครั้ง`);
                             }
                         }
                     }, 18000);
@@ -9043,7 +9030,7 @@ setOriginFromActionSheet() {
                         this.renderNearest();
                         this.renderNearestExit();
                         if (interactive && !this.userPos) {
-                            this.showToast(`${getUiIcon('alert', 16, '#f59e0b')} ค้นหาตำแหน่งนานเกินกำหนด โปรดลองใหม่อีกครั้ง`, true);
+                            this.showToast(`${getUiIcon('alert', 16, '#f59e0b')} ค้นหาตำแหน่งนานเกินกำหนด โปรดลองใหม่อีกครั้ง`);
                         }
                     }
                 }, 9000);
@@ -9213,11 +9200,7 @@ setOriginFromActionSheet() {
             showToast(msg, isCustomHtml = false) {
                 const el = document.getElementById('appToast');
                 if (!el) return;
-                if (isCustomHtml) {
-                    el.innerHTML = msg;
-                } else {
-                    el.textContent = msg;
-                }
+                el.innerHTML = msg;
                 el.classList.toggle('toast-custom', Boolean(isCustomHtml));
                 el.style.display = 'inline-flex';
                 requestAnimationFrame(() => el.classList.add('visible'));
@@ -9353,7 +9336,6 @@ setOriginFromActionSheet() {
 
             onAppResume() {
                 this.isAppFolded = false;
-                this.refreshAll();
                 this.onAppForegrounded();
             },
 
@@ -9399,6 +9381,20 @@ setOriginFromActionSheet() {
                     let timeStr = '';
                     if (isOutOfService) {
                         timeStr = '';
+                    } else if (isTerminating) {
+                        let incomingText = '';
+                        if (trains.length) {
+                            const eta = bestEta(station.StationKey, p.platform, trains[0], arr.fetchedAt);
+                            if (trains[0].status === 'arriving') {
+                                incomingText = T('arrived');
+                            } else if (eta) {
+                                const m = Math.round(eta.base - (Date.now() - eta.at) / 60000);
+                                incomingText = m <= 0 ? T('arrived') : `${m} ${lang === 'en' ? 'min' : (lang === 'zh' ? '分钟' : 'นาที')}`;
+                            }
+                        }
+                        timeStr = incomingText
+                            ? `${lang === 'en' ? 'Drop-off · Arriving' : (lang === 'zh' ? '仅供下车 · 列车进站' : 'ส่ง ผดส. · รถเข้า')}: ${incomingText}`
+                            : (lang === 'en' ? 'No boarding train' : (lang === 'zh' ? '非载客列车' : 'ขบวนไม่รับผู้โดยสาร'));
                     } else if (trains.length) {
                         const eta = bestEta(station.StationKey, p.platform, trains[0], arr.fetchedAt);
                         if (trains[0].status === 'arriving') {
@@ -9407,8 +9403,6 @@ setOriginFromActionSheet() {
                             const m = Math.round(eta.base - (Date.now() - eta.at) / 60000);
                             timeStr = m <= 0 ? T('arrived') : `${m} ${lang === 'en' ? 'min' : (lang === 'zh' ? '分钟' : 'นาที')}`;
                         }
-                    } else if (isTerminating) {
-                        timeStr = lang === 'en' ? 'No boarding train' : (lang === 'zh' ? '非载客列车' : 'ขบวนไม่รับผู้โดยสาร');
                     }
                     const prefix = isOutOfService ? '' : (lang === 'en' ? 'To ' : (lang === 'zh' ? '开往 ' : 'ไป'));
                     return `${lang === 'en' ? 'Platform' : (lang === 'zh' ? '站台' : 'ชานชาลา')} ${p.platform}: ${prefix}${dest} ${timeStr ? `(${timeStr})` : ''}`.trim();
@@ -9482,8 +9476,7 @@ setOriginFromActionSheet() {
                             ? `距您 ${distText} · 点击查看时刻表与站台`
                             : `ห่าง ${distText} · แตะเพื่อดูเวลาขบวนรถและชานชาลา`));
 
-                    const hasGrantedNotif = typeof Notification !== 'undefined' && Notification.permission === 'granted';
-                    if (hasGrantedNotif && 'serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
                         try {
                             navigator.serviceWorker.ready.then(reg => {
                                 if (reg && reg.showNotification) {
@@ -9492,24 +9485,24 @@ setOriginFromActionSheet() {
                                         icon: 'icon.svg',
                                         badge: 'icon.svg',
                                         tag: 'nearest-station',
-                                        vibrate: [200, 100, 200],
                                         data: { stationKey: key }
                                     });
                                 }
                             });
                         } catch(e){}
-                    } else if (hasGrantedNotif) {
-                        try {
-                            new Notification(notifTitle, {
-                                body: notifBody,
-                                icon: 'icon.svg',
-                                badge: 'icon.svg',
-                                tag: 'nearest-station',
-                                vibrate: [200, 100, 200]
-                            });
-                        } catch(e){}
-                    } else if (typeof Notification !== 'undefined' && Notification.permission === 'default') {
-                        try { Notification.requestPermission(); } catch(e){}
+                    } else if (typeof Notification !== 'undefined') {
+                        if (Notification.permission === 'granted') {
+                            try {
+                                new Notification(notifTitle, {
+                                    body: notifBody,
+                                    icon: 'icon.svg',
+                                    badge: 'icon.svg',
+                                    tag: 'nearest-station'
+                                });
+                            } catch(e){}
+                        } else if (Notification.permission === 'default') {
+                            try { Notification.requestPermission(); } catch(e){}
+                        }
                     }
 
                     // 6. แจ้งเตือน Native Android Notification พร้อม ข้อมูลสถานี / แพลตฟอร์ม / เวลา
@@ -9857,6 +9850,20 @@ setOriginFromActionSheet() {
                         p.train_list = [];
                     }
                 }
+                // ช่วงเวลาให้บริการ: หากชานชาลาใดไม่มีข้อมูลขบวนรถจาก API (เช่น ชานชาลาปลายทางส่ง ผดส. เท่านั้น หรือ API ส่งมาไม่ครบ)
+                // ให้เติมข้อมูลขบวนรถจากตารางเวลาเดินรถ (Timetable Fallback) เพื่อให้มีเวลานับถอยหลังและตำแหน่งบนรางเสมอ
+                if (isOperating && Array.isArray(platList) && st) {
+                    const fb = generateTimetableArrivals(st);
+                    for (const p of platList) {
+                        const isOos = !!p.isOutOfService || (key === 'YL23' && String(p.platform) === '1');
+                        if ((!p.train_list || !p.train_list.length) && !isOos) {
+                            const fbPlat = fb?.platform_list?.find(fp => String(fp.platform) === String(p.platform) && (!fp.LineId || !p.LineId || Number(fp.LineId) === Number(p.LineId)));
+                            if (fbPlat?.train_list?.length) {
+                                p.train_list = [...fbPlat.train_list];
+                            }
+                        }
+                    }
+                }
                 // พิเศษสำหรับ YL23: ขบวนรถวิ่งไป-กลับแค่ P2 ไม่เข้า P1 (P1 ชานชาลา 1 ไม่ให้บริการ)
                 if (key === 'YL23' && Array.isArray(platList)) {
                     for (const p of platList) {
@@ -10103,7 +10110,7 @@ setOriginFromActionSheet() {
                 const body = document.getElementById('trafficDialogBody');
                 if (!body) return;
 
-
+                const esc = str => String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
                 const alerts = (this.traffic?.alerts || []).slice();
                 if (this._simulatedDisruption) {
@@ -10158,7 +10165,7 @@ setOriginFromActionSheet() {
                     // Normal Reassurance Card
                     html += `
                     <div class="traffic-normal-card">
-                        <img src="images/icon_traffic_information.svg" alt="Normal Operation" class="traffic-normal-icon" width="60" height="60" style="display:block;margin:auto;">
+                        <img src="images/icon_traffic_information.png" alt="Normal Operation" class="traffic-normal-icon" width="60" height="60" style="display:block;margin:auto;">
                         <div class="traffic-normal-title">${T('trafficAllNormal')}</div>
                         <div class="traffic-normal-desc">${T('trafficAllNormalDesc')}</div>
                     </div>`;
@@ -11154,29 +11161,24 @@ setOriginFromActionSheet() {
 
             // Helper สร้าง 3 ขบวนสำหรับแต่ละชานชาลา พร้อมความต่อเนื่องของรหัสขบวน
             const makeTrains = (platform, destStr, destKey, offset, isTerminating) => {
-                if (isTerminating) return [];
                 const cycle = Math.floor((nowMin - offset) / interval);
-                const candidates = [cycle, cycle + 1, cycle + 2, cycle + 3];
                 const trains = [];
-                for (const K of candidates) {
+                for (let i = 1; i <= 3; i++) {
+                    const K = cycle + i;
                     const trainArrivalMin = (K * interval) + offset;
                     const eta = trainArrivalMin - nowMin;
-                    // หากขบวนเพิ่งเข้าหรือเทียบชานชาลา (ภายใน 35 วินาที [-0.60 นาที]) ยังคงแสดงเป็นขบวนแรกกำลังเข้า
-                    if (eta >= -0.60) {
-                        const isArriving = eta <= 0.40;
-                        const m = Math.max(0, eta);
-                        const trainSeq = ((K % 50) + 50) % 50 + 1;
-                        const trainNo = `${lineId}-${platform}-${trainSeq}`;
-                        trains.push({
-                            trainNo,
-                            status: isArriving ? 'arriving' : 'pending',
-                            station: destStr,
-                            station_key: destKey,
-                            time_come: isArriving ? '0' : String(Math.round(m)),
-                            time_come_double: m
-                        });
-                        if (trains.length === 3) break;
-                    }
+                    const isArriving = eta <= 0.35;
+                    const m = Math.max(0, eta);
+                    const trainSeq = ((K % 50) + 50) % 50 + 1;
+                    const trainNo = `${lineId}-${platform}-${trainSeq}`;
+                    trains.push({
+                        trainNo,
+                        status: isArriving ? 'arriving' : 'pending',
+                        station: destStr,
+                        station_key: destKey,
+                        time_come: isArriving ? '0' : String(Math.round(m)),
+                        time_come_double: m
+                    });
                 }
                 return trains;
             };
@@ -11686,11 +11688,11 @@ setOriginFromActionSheet() {
                 const yellowColor = station.StationLineColor || LINE_BRAND_COLORS[4] || '#FAD53D';
                 const num = parseInt(key.replace(/\D/g, ''), 10) || 1;
                 const idx = Math.max(0, Math.min(22, num - 1));
+                const travelPerStation = 1.95;
 
                 // Platform 1: ไปสำโรง (YL23) — หากเป็น YL23 ชานชาลา 1 ไม่ให้บริการ
-                // อิงตารางเวลาเดินรถทางการ: ขบวนแรกเริ่ม 05:30 น. (330 นาที) จาก YL01 ถึง YL20 เวลา 05:54 น. (354 นาที)
                 const isTerm1 = (key === 'YL23');
-                const offset1 = 330 + (idx * (24 / 19));
+                const offset1 = idx * travelPerStation;
                 const dest1 = isTerm1
                     ? ((typeof lang !== 'undefined' && lang === 'en') ? 'Out of Service' : ((typeof lang !== 'undefined' && lang === 'zh') ? '暂不营运' : 'ไม่ให้บริการ'))
                     : getDestPair('YL23', 'สำโรง', 'Samrong');
@@ -11705,12 +11707,9 @@ setOriginFromActionSheet() {
                     train_list: isTerm1 ? [] : makeTrains(1, dest1, 'YL23', offset1, false)
                 });
 
-                // Platform 2: ไปลาดพร้าว (YL01) — หากเป็น YL01 ชานชาลา 2 ส่งผู้โดยสารเท่านั้น
-                // อิงตารางเวลาเดินรถทางการ: ขบวนแรกเริ่ม 05:30 น. (330 นาที) จาก YL23 ถึง YL20 เวลา 05:36 น. (336 นาที)
+                // Platform 2: ไปลาดพร้าว (YL01)
                 const isTerm2 = (key === 'YL01');
-                const offset2 = (idx >= 19)
-                    ? 330 + ((22 - idx) * 2.0)
-                    : 330 + 6 + ((19 - idx) * 1.263);
+                const offset2 = (22 - idx) * travelPerStation + (interval * 0.5);
                 const dest2 = getDestPair('YL01', 'ลาดพร้าว', 'Lat Phrao');
                 platforms.push({
                     platform: 2,
@@ -12117,17 +12116,17 @@ setOriginFromActionSheet() {
         function bestEta(stationKey, platform, t, fetchedAt) {
             const nowMs = Date.now();
             const at = t?.syntheticAt || fetchedAt || nowMs;
-            if (t.time_come_double != null && !isNaN(t.time_come_double) && t.time_come_double >= 0) {
-                const rem = t.time_come_double - (nowMs - at) / 60000;
-                if (rem > -0.75) return { base: t.time_come_double, at, approx: !!t.isApprox };
-            }
             if (t.time_come !== '--' && t.time_come != null) {
                 const num = parseFloat(t.time_come);
-                const base = (!isNaN(num) && num >= 0) ? num : null;
+                const base = (!isNaN(num) && num >= 0) ? num : (t.time_come_double != null ? t.time_come_double : null);
                 if (base != null) {
                     const rem = base - (nowMs - at) / 60000;
                     if (rem > -0.75) return { base, at, approx: !!t.isApprox };
                 }
+            }
+            if (t.time_come_double != null) {
+                const rem = t.time_come_double - (nowMs - at) / 60000;
+                if (rem > -0.75) return { base: t.time_come_double, at, approx: !!t.isApprox };
             }
             if (t.status === 'arriving') {
                 const rem = 0 - (nowMs - at) / 60000;
@@ -12167,12 +12166,9 @@ setOriginFromActionSheet() {
             } else if (id === 103 || id === 105) {
                 // รถไฟฟ้าชานเมืองสายสีแดง (103, 105): ให้บริการ 05:00 - 24:00 น. (ปิด 00:30 - 04:55 น.)
                 if (nowMin >= 30 && nowMin < 295) return false;
-            } else if (id === 1) {
-                // BTS สายสุขุมวิท: ให้บริการ 05:15 - 24:00 น. (ปิด 00:45 - 05:10 น.)
-                if (nowMin >= 45 && nowMin < 310) return false;
             } else {
-                // สายอื่นๆ ในกรุงเทพฯ (BTS สายสีลม / MRT / ARL / BRT): ให้บริการ 05:30 - 24:00 น. (ปิด 00:45 - 05:25 น.)
-                if (nowMin >= 45 && nowMin < 325) return false;
+                // สายอื่นๆ ในกรุงเทพฯ (BTS/MRT/ARL/BRT): ให้บริการ 05:30 - 24:00 น. (ปิด 00:45 - 05:15 น.)
+                if (nowMin >= 45 && nowMin < 315) return false;
             }
             return true;
         }
@@ -12246,49 +12242,36 @@ setOriginFromActionSheet() {
             });
 
             // 6. เติมเวลานับถอยหลังของขบวนถัดไป (ขบวนที่ 2 และ 3) เสมอตามความถี่เดินรถ (Headway Interval)
-            // เพื่อให้ผู้ใช้เห็นเวลานับถอยหลังของขบวนถัดไปครบทั้ง 3 ขบวนเสมอ
-            if (out.length < 3 && isOperating) {
+            // เพื่อให้ผู้ใช้เห็นเวลานับถอยหลังของขบวนถัดไปเสมอเหมือนภาพที่สอง
+            if (out.length > 0 && out.length < 3) {
                 const freq = getCurrentMrtFreq(lineId, stationKey);
                 const interval = (freq && Number(freq.minutes)) || 10;
+                const lastT = out[out.length - 1];
+                const lastEta = bestEta(stationKey, platform, lastT, fetchedAt);
                 let lastRem = 0;
-                let dest = '';
-                let destKey = '';
-                if (out.length > 0) {
-                    const lastT = out[out.length - 1];
-                    const lastEta = bestEta(stationKey, platform, lastT, fetchedAt);
-                    if (lastEta) {
-                        lastRem = Math.max(0, lastEta.base - (nowMs - lastEta.at) / 60000);
-                    } else if (lastT.status === 'arriving') {
-                        lastRem = 0;
-                    } else {
-                        const parsed = parseFloat(lastT.time_come);
-                        lastRem = (!isNaN(parsed) && parsed >= 0) ? parsed : 0;
-                    }
-                    dest = lastT.station || '';
-                    destKey = lastT.station_key || '';
+                if (lastEta) {
+                    lastRem = Math.max(0, lastEta.base - (nowMs - lastEta.at) / 60000);
+                } else if (lastT.status === 'arriving') {
+                    lastRem = 0;
                 } else {
-                    lastRem = Math.max(1, Math.round(interval * 0.4));
-                    const st = App.findStation ? App.findStation(stationKey) : null;
-                    const fb = st ? generateTimetableArrivals(st) : null;
-                    const fbPlat = fb?.platform_list?.find(fp => String(fp.platform) === String(platform));
-                    if (fbPlat?.train_list?.[0]) {
-                        dest = fbPlat.train_list[0].station || '';
-                        destKey = fbPlat.train_list[0].station_key || '';
-                    }
+                    const parsed = parseFloat(lastT.time_come);
+                    lastRem = (!isNaN(parsed) && parsed >= 0) ? parsed : 0;
                 }
 
-                let nextIdx = out.length === 0 ? 0 : 1;
+                const dest = lastT.station || '';
+                const destKey = lastT.station_key || '';
+                let nextIdx = 1;
                 while (out.length < 3) {
-                    const nextEtaMin = (lastRem === 0 ? 0 : lastRem) + (interval * (nextIdx === 0 ? 0 : nextIdx));
+                    const nextEtaMin = (lastRem === 0 ? 0 : lastRem) + (interval * nextIdx);
                     out.push({
-                        trainNo: `T${platform}-${out.length + 1}`,
+                        trainNo: lastT.trainNo ? `${lastT.trainNo}+${nextIdx}` : `T${platform}-${out.length + 1}`,
                         platform: platform,
-                        status: nextEtaMin <= 0.4 ? 'arriving' : 'pending',
-                        time_come: nextEtaMin <= 0.4 ? '0' : String(Math.max(1, Math.round(nextEtaMin))),
+                        status: 'pending',
+                        time_come: String(Math.max(1, Math.round(nextEtaMin))),
                         time_come_double: nextEtaMin,
                         station: dest,
                         station_key: destKey,
-                        isApprox: true,
+                        isApprox: false,
                         syntheticAt: nowMs
                     });
                     nextIdx++;
@@ -12708,9 +12691,9 @@ setOriginFromActionSheet() {
             let tList = p.train_list;
             const isOutOfService = !!p.isOutOfService || (stationKey === 'YL23' && String(p.platform) === '1');
             const targetLineId = p.LineId || (stationKey ? App.findStation(stationKey)?.StationLineId : 0);
-            if ((!tList || !tList.length) && !p.isDropOffOnly && !isOutOfService && isTransitOperatingHours(targetLineId, stationKey)) {
+            if ((!tList || !tList.length) && !isOutOfService && isTransitOperatingHours(targetLineId, stationKey)) {
                 const fb = generateTimetableArrivals(App.findStation(stationKey));
-                const fbPlat = fb?.platform_list?.find(fp => (Number(fp.LineId) === Number(targetLineId) || !targetLineId) && String(fp.platform) === String(p.platform));
+                const fbPlat = fb?.platform_list?.find(fp => (Number(fp.LineId) === Number(targetLineId) || !targetLineId || !fp.LineId) && String(fp.platform) === String(p.platform));
                 if (fbPlat?.train_list?.length) {
                     tList = fbPlat.train_list;
                 }

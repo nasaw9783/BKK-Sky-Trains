@@ -9384,24 +9384,30 @@ setOriginFromActionSheet() {
                     } else if (isTerminating) {
                         let incomingText = '';
                         if (trains.length) {
-                            const eta = bestEta(station.StationKey, p.platform, trains[0], arr.fetchedAt);
-                            if (trains[0].status === 'arriving') {
+                            const isNoTime = (trains[0].time_come === '--' || trains[0].time_come === '-');
+                            const eta = isNoTime ? null : bestEta(station.StationKey, p.platform, trains[0], arr.fetchedAt);
+                            if (!isNoTime && trains[0].status === 'arriving') {
                                 incomingText = T('arrived');
                             } else if (eta) {
                                 const m = Math.round(eta.base - (Date.now() - eta.at) / 60000);
                                 incomingText = m <= 0 ? T('arrived') : `${m} ${lang === 'en' ? 'min' : (lang === 'zh' ? '分钟' : 'นาที')}`;
+                            } else if (isNoTime) {
+                                incomingText = `- ${lang === 'en' ? 'min' : (lang === 'zh' ? '分钟' : 'นาที')}`;
                             }
                         }
                         timeStr = incomingText
                             ? `${lang === 'en' ? 'Drop-off · Arriving' : (lang === 'zh' ? '仅供下车 · 列车进站' : 'ส่ง ผดส. · รถเข้า')}: ${incomingText}`
                             : (lang === 'en' ? 'No boarding train' : (lang === 'zh' ? '非载客列车' : 'ขบวนไม่รับผู้โดยสาร'));
                     } else if (trains.length) {
-                        const eta = bestEta(station.StationKey, p.platform, trains[0], arr.fetchedAt);
-                        if (trains[0].status === 'arriving') {
+                        const isNoTime = (trains[0].time_come === '--' || trains[0].time_come === '-');
+                        const eta = isNoTime ? null : bestEta(station.StationKey, p.platform, trains[0], arr.fetchedAt);
+                        if (!isNoTime && trains[0].status === 'arriving') {
                             timeStr = T('arrived');
                         } else if (eta) {
                             const m = Math.round(eta.base - (Date.now() - eta.at) / 60000);
                             timeStr = m <= 0 ? T('arrived') : `${m} ${lang === 'en' ? 'min' : (lang === 'zh' ? '分钟' : 'นาที')}`;
+                        } else if (isNoTime) {
+                            timeStr = `- ${lang === 'en' ? 'min' : (lang === 'zh' ? '分钟' : 'นาที')}`;
                         }
                     }
                     const prefix = isOutOfService ? '' : (lang === 'en' ? 'To ' : (lang === 'zh' ? '开往 ' : 'ไป'));
@@ -9536,11 +9542,14 @@ setOriginFromActionSheet() {
                     p1Dest = `1 ไป${dest1}`;
                     const trains1 = (arr && arr.fetchedAt) ? displayTrains(key, p1.platform, p1.train_list, arr.fetchedAt) : [];
                     if (trains1.length) {
-                        const eta1 = bestEta(key, p1.platform, trains1[0], arr.fetchedAt);
-                        if (trains1[0].status === 'arriving') p1Time = T('arrived');
+                        const isNoTime1 = (trains1[0].time_come === '--' || trains1[0].time_come === '-');
+                        const eta1 = isNoTime1 ? null : bestEta(key, p1.platform, trains1[0], arr.fetchedAt);
+                        if (!isNoTime1 && (trains1[0].status === 'arriving' || trains1[0].time_come === '0')) p1Time = T('arrived');
                         else if (eta1) {
                             const m = Math.round(eta1.base - (Date.now() - eta1.at) / 60000);
                             p1Time = m <= 0 ? T('arrived') : `${m} นาที`;
+                        } else if (isNoTime1) {
+                            p1Time = `- นาที`;
                         }
                     }
                 }
@@ -9551,11 +9560,14 @@ setOriginFromActionSheet() {
                     p2Dest = `2 ไป${dest2}`;
                     const trains2 = (arr && arr.fetchedAt) ? displayTrains(key, p2.platform, p2.train_list, arr.fetchedAt) : [];
                     if (trains2.length) {
-                        const eta2 = bestEta(key, p2.platform, trains2[0], arr.fetchedAt);
-                        if (trains2[0].status === 'arriving') p2Time = T('arrived');
+                        const isNoTime2 = (trains2[0].time_come === '--' || trains2[0].time_come === '-');
+                        const eta2 = isNoTime2 ? null : bestEta(key, p2.platform, trains2[0], arr.fetchedAt);
+                        if (!isNoTime2 && (trains2[0].status === 'arriving' || trains2[0].time_come === '0')) p2Time = T('arrived');
                         else if (eta2) {
                             const m = Math.round(eta2.base - (Date.now() - eta2.at) / 60000);
                             p2Time = m <= 0 ? T('arrived') : `${m} นาที`;
+                        } else if (isNoTime2) {
+                            p2Time = `- นาที`;
                         }
                     }
                 }
@@ -9893,11 +9905,15 @@ setOriginFromActionSheet() {
                     }
                     if (isOperating) {
                         for (const t of p.train_list || []) {
-                            const num = (t.time_come !== '--' && t.time_come != null) ? parseFloat(t.time_come) : NaN;
-                            const base = (!isNaN(num) && num >= 0) ? num : (t.time_come_double != null ? t.time_come_double : null);
-                            if (base != null)
+                            const isNoTime = (t.time_come === '--' || t.time_come === '-' || t.time_come == null);
+                            const num = !isNoTime ? parseFloat(t.time_come) : NaN;
+                            const base = (!isNaN(num) && num >= 0) ? num : null;
+                            if (base != null) {
                                 this.etaMem[key + '|' + p.platform + '|' + t.trainNo] =
                                     { base, at: fetchedAt };
+                            } else {
+                                delete this.etaMem[key + '|' + p.platform + '|' + t.trainNo];
+                            }
                         }
                     }
                 }
@@ -12105,36 +12121,48 @@ setOriginFromActionSheet() {
 
         // คืน {text, now} สำหรับ ETA (นาทีคงเหลือ ณ ตอนนี้) — approx = ค่าจากความจำ ใส่ ~ นำหน้า
         function etaText(mins, approx) {
-            if (isNaN(mins)) return { text: '<small>--</small>', now: false };
-            if (mins < -0.75) return { text: '<small>--</small>', now: false }; // ขบวนออกไปแล้ว
+            if (isNaN(mins)) return { text: `-<small>${T('minUnit')}</small>`, now: false };
+            if (mins < -0.75) return { text: `-<small>${T('minUnit')}</small>`, now: false }; // ขบวนออกไปแล้ว / ไม่มีเวลา
             if (mins <= 0.5) return { text: T('arrived'), now: true };
             return { text: (approx ? '~' : '') + Math.round(mins) + `<small>${T('minUnit')}</small>`, now: false };
         }
 
-        // เวลา "ที่ดีที่สุดที่รู้" ของขบวน: ใช้ค่าจาก API ถ้ามี — ถ้าตอบ "--" ใช้ค่าเลขรอบก่อน
-        // จาก etaMem (นับถอยหลังต่อเนื่อง) จนกว่าจะได้เลขใหม่ ผู้ใช้จะไม่เห็นเวลาวูบหาย
+        // เวลา "ที่ดีที่สุดที่รู้" ของขบวน: ใช้ค่าจาก API ถ้ามี — ถ้าตอบ "--" หรือ "-" แสดงเป็น - นาที
+        // จะไม่นำ time_come_double หรือเวลาจำหลอกมาแสดงเป็นเวลารถเข้าเด็ดขาด
         function bestEta(stationKey, platform, t, fetchedAt) {
+            if (!t) return null;
             const nowMs = Date.now();
             const at = t?.syntheticAt || fetchedAt || nowMs;
-            if (t.time_come !== '--' && t.time_come != null) {
-                const num = parseFloat(t.time_come);
-                const base = (!isNaN(num) && num >= 0) ? num : (t.time_come_double != null ? t.time_come_double : null);
-                if (base != null) {
-                    const rem = base - (nowMs - at) / 60000;
-                    if (rem > -0.75) return { base, at, approx: !!t.isApprox };
-                }
+
+            // หากขบวนรถระบุ time_come = '--' หรือ '-' (เช่น ขบวนที่ 3 ใน th.btsc.theskytrains)
+            // ให้ถือว่าไม่มีเวลานับถอยหลัง คืนค่า null เพื่อให้แสดงเป็น "- นาที"
+            if (t.time_come === '--' || t.time_come === '-') {
+                return null;
             }
-            if (t.time_come_double != null) {
-                const rem = t.time_come_double - (nowMs - at) / 60000;
-                if (rem > -0.75) return { base: t.time_come_double, at, approx: !!t.isApprox };
-            }
-            if (t.status === 'arriving') {
+
+            if (t.status === 'arriving' || t.time_come === '0') {
                 const rem = 0 - (nowMs - at) / 60000;
                 if (rem > -0.75) return { base: 0, at, approx: false };
             }
+
+            if (t.time_come != null && t.time_come !== '') {
+                const num = parseFloat(t.time_come);
+                if (!isNaN(num) && num >= 0) {
+                    const rem = num - (nowMs - at) / 60000;
+                    if (rem > -0.75) return { base: num, at, approx: !!t.isApprox };
+                }
+            }
+
             const m = App.etaMem[stationKey + '|' + platform + '|' + t.trainNo];
             if (m && (m.base - (nowMs - m.at) / 60000) > -0.75)
                 return { base: m.base, at: m.at, approx: true };
+
+            // กรณีขบวนรถจำลองจากตารางเวลาเดินรถ (Timetable Fallback) ที่ไม่มี time_come string
+            if (t.time_come_double != null && !isNaN(t.time_come_double) && t.time_come_double >= 0) {
+                const rem = t.time_come_double - (nowMs - at) / 60000;
+                if (rem > -0.75) return { base: t.time_come_double, at, approx: !!t.isApprox };
+            }
+
             return null;
         }
 
@@ -12205,8 +12233,9 @@ setOriginFromActionSheet() {
                     || (t.trainNo && /depot|test|empty/i.test(t.trainNo));
                 if (isDepotTrain) continue;
 
-                // 3. คำนวณเวลา ETA ที่ดีที่สุด
-                const eta = bestEta(stationKey, platform, t, fetchedAt);
+                // 3. ตรวจสอบสถานะขบวน
+                const isNoTime = (t.time_come === '--' || t.time_come === '-');
+                const eta = isNoTime ? null : bestEta(stationKey, platform, t, fetchedAt);
 
                 // 4. ตรวจสอบว่าขบวนออกไปแล้วหรือไม่ (หากเวลาติดลบเกิน 45 วินาที [-0.75 นาที] ขบวนออกไปแล้ว ตัดทิ้ง)
                 if (eta) {
@@ -12215,25 +12244,19 @@ setOriginFromActionSheet() {
                 } else if (t.status === 'arriving') {
                     // status arriving แต่ไม่มี eta: ตรวจสอบ fetchedAt หากข้อมูลเก่าเกิน 3 นาที แสดงว่าค้าง
                     if (fetchedAt && (nowMs - fetchedAt) > 180000) continue;
-                } else if (t.time_come === '--' && (t.time_come_double == null || isNaN(t.time_come_double))) {
-                    // ขบวน "--" ที่ไม่มีเวลาและไม่มีประวัติเดิม ตัดทิ้ง
-                    continue;
-                }
-
-                // 5. ตรวจสอบเฉพาะขบวนที่เป็นค่าประมาณ (~approx จาก etaMem) หากมีขบวนจริงที่มาถึงก่อนและเวลาขัดแย้ง
-                if (t.time_come === '--' && eta && eta.approx) {
-                    const remaining = eta.base - (nowMs - eta.at) / 60000;
-                    const overtaken = (list || []).some(o => o !== t
-                        && o.time_come !== '--' && o.time_come_double != null
-                        && (o.time_come_double - (nowMs - fetchedAt) / 60000) < remaining);
-                    if (overtaken) continue;
                 }
 
                 out.push(t);
             }
 
-            // จัดเรียงตามเวลานับถอยหลังคงเหลือจริง (จากน้อยไปมาก)
+            // จัดเรียงตามเวลานับถอยหลังคงเหลือจริง:
+            // ขบวนที่มีเวลาเป็นตัวเลข เรียงจากน้อยไปมาก
+            // ขบวนที่ time_come = '--' หรือ '-' (เช่น ขบวนที่ 3 ของ E19) เรียงต่อท้ายตามลำดับจริง
             out.sort((a, b) => {
+                const isNoTimeA = (a.time_come === '--' || a.time_come === '-');
+                const isNoTimeB = (b.time_come === '--' || b.time_come === '-');
+                if (isNoTimeA && !isNoTimeB) return 1;
+                if (!isNoTimeA && isNoTimeB) return -1;
                 const etaA = bestEta(stationKey, platform, a, fetchedAt);
                 const etaB = bestEta(stationKey, platform, b, fetchedAt);
                 const remA = etaA ? (etaA.base - (nowMs - etaA.at) / 60000) : (a.status === 'arriving' ? 0 : 999);
@@ -12241,34 +12264,19 @@ setOriginFromActionSheet() {
                 return remA - remB;
             });
 
-            // 6. เติมเวลานับถอยหลังของขบวนถัดไป (ขบวนที่ 2 และ 3) เสมอตามความถี่เดินรถ (Headway Interval)
-            // เพื่อให้ผู้ใช้เห็นเวลานับถอยหลังของขบวนถัดไปเสมอเหมือนภาพที่สอง
+            // เติมขบวนว่างที่มี time_come = '--' (แสดงเป็น "- นาที") ให้ครบ 3 ขบวน
+            // ตามมาตรฐานการแสดงผล 3 ขบวน (ขบวนแรก, ขบวนที่สอง, ขบวนที่สาม) โดยไม่สร้างเวลาตัวเลขหลอก
             if (out.length > 0 && out.length < 3) {
-                const freq = getCurrentMrtFreq(lineId, stationKey);
-                const interval = (freq && Number(freq.minutes)) || 10;
                 const lastT = out[out.length - 1];
-                const lastEta = bestEta(stationKey, platform, lastT, fetchedAt);
-                let lastRem = 0;
-                if (lastEta) {
-                    lastRem = Math.max(0, lastEta.base - (nowMs - lastEta.at) / 60000);
-                } else if (lastT.status === 'arriving') {
-                    lastRem = 0;
-                } else {
-                    const parsed = parseFloat(lastT.time_come);
-                    lastRem = (!isNaN(parsed) && parsed >= 0) ? parsed : 0;
-                }
-
                 const dest = lastT.station || '';
                 const destKey = lastT.station_key || '';
                 let nextIdx = 1;
                 while (out.length < 3) {
-                    const nextEtaMin = (lastRem === 0 ? 0 : lastRem) + (interval * nextIdx);
                     out.push({
-                        trainNo: lastT.trainNo ? `${lastT.trainNo}+${nextIdx}` : `T${platform}-${out.length + 1}`,
+                        trainNo: `T${platform}-${out.length + 1}`,
                         platform: platform,
                         status: 'pending',
-                        time_come: String(Math.max(1, Math.round(nextEtaMin))),
-                        time_come_double: nextEtaMin,
+                        time_come: '--',
                         station: dest,
                         station_key: destKey,
                         isApprox: false,
@@ -12722,20 +12730,23 @@ setOriginFromActionSheet() {
             const isEvenPlat = false;
 
             const trainBtn = (t, i) => {
-                const eta = bestEta(stationKey, p.platform, t, fetchedAt);
+                const isNoTime = (t.time_come === '--' || t.time_come === '-' || t.time_come == null);
+                const eta = isNoTime ? null : bestEta(stationKey, p.platform, t, fetchedAt);
                 const rem = eta ? (eta.base - (Date.now() - eta.at) / 60000) : NaN;
-                const isArriving = t.status === 'arriving' && (isNaN(rem) || (rem >= -0.75 && rem <= 0.5));
+                const isArriving = !isNoTime && (t.status === 'arriving' || t.time_come === '0') && (isNaN(rem) || (rem >= -0.75 && rem <= 0.5));
                 const init = isArriving
                     ? { text: T('arrived'), now: true }
-                    : eta ? etaText(rem, eta.approx) : etaText(NaN);
+                    : (isNoTime || !eta || isNaN(rem))
+                        ? { text: `-<small>${T('minUnit')}</small>`, now: false }
+                        : etaText(rem, eta.approx);
                 // ขบวนนี้ปลายทางต่างจากปลายทางหลักของชานชาลา → ติดป้ายบอก
                 const diffDest = t.station_key && p.DestinationStation_key
                     && t.station_key !== p.DestinationStation_key;
                 const destTag = diffDest
                     ? `<span class="t-dest">→ ${esc(shortDest(destName(t.station)))}</span>` : '';
                 const sizeClass = i === 0 ? 'first' : i === 1 ? 'second' : 'third';
-                const baseVal = eta ? eta.base : (isArriving ? 0 : '');
-                const atVal = eta ? eta.at : (isArriving ? fetchedAt : '');
+                const baseVal = (!isNoTime && eta) ? eta.base : (isArriving ? 0 : '');
+                const atVal = (!isNoTime && eta) ? eta.at : (isArriving ? fetchedAt : '');
                 const hasEtaData = baseVal !== '' && atVal !== '';
                 const firstTrainBorder = (i === 0 && !init.now) ? `border: 2px solid ${p.LineColor};` : '';
                 return `<div class="train ${sizeClass} ${init.now ? 'is-arriving' : ''}" style="color:${trainTextColor};--line-color:${p.LineColor};${firstTrainBorder}">
@@ -13042,11 +13053,15 @@ setOriginFromActionSheet() {
                 for (const p of plats) {
                     const from = fromOf(p);
                     for (const t of displayTrains(station.StationKey, p.platform, p.train_list, arr.fetchedAt, block.lineId)) {
+                        if (t.time_come === '--' || t.time_come === '-') {
+                            // ขบวนที่ไม่ระบุเวลานับถอยหลัง (อยู่ไกลหรือยังไม่ปล่อยขบวน) ไม่นำไปวาดชิปตำแหน่งบนราง
+                            continue;
+                        }
                         if (t.status !== 'pending') {
                             Z[from].push({ t, m: 0, approx: false, eta: null });
                             continue;
                         }
-                        // ใช้เวลาเลขล่าสุดที่รู้ (รวมค่าจำจากรอบก่อนเมื่อ API ตอบ --)
+                        // ใช้เวลาเลขล่าสุดที่รู้
                         // ขบวนที่ไม่รู้เวลาเลย → ไม่วาดบน map (ตำแหน่งระบุไม่ได้)
                         const eta = bestEta(station.StationKey, p.platform, t, arr.fetchedAt);
                         if (!eta) continue;

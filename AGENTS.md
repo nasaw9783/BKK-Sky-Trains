@@ -120,6 +120,3 @@ Directives and mandatory standards for AI Agents working within `C:\Users\Admini
 
 2. **Strict Isolation Rule (ข้อห้ามเด็ดขาด: การแยกโปรเจกต์)**:
    - ห้ามกระทำการใดๆ ข้าม Workspace หรือแตะต้อง `D:\Exclusions\Programs` และ `C:\Users\Administrator\Downloads\Programs` โดยเด็ดขาด
-
-3. **Strict Prohibition of bkkskytrain.online (ข้อห้ามเด็ดขาด: ไม่เกี่ยวข้องกับ bkkskytrain.online)**:
-   - Project นี้จะไม่เกี่ยวข้องกับ `bkkskytrain.online` และ `https://bkkskytrain.online/api/bts-proxy` โดยเด็ดขาด (ห้ามเชื่อมต่อ ห้ามอ้างอิง และห้ามนำไปใช้งานในโปรเจกต์โดยเด็ดขาด)

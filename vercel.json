@@ -50,8 +50,5 @@
         { "key": "Access-Control-Allow-Headers", "value": "Content-Type, Authkey, Authorization, X-Requested-With" }
       ]
     }
-  ],
-  "rewrites": [
-    { "source": "/api/bts-proxy", "destination": "/api/bkk-proxy" }
   ]
 }

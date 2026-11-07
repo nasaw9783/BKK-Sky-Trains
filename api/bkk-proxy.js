@@ -78,15 +78,18 @@ module.exports = async function handler(req, res) {
   const parsedUrl = new URL(req.url, 'http://' + (req.headers.host || 'localhost'));
   let endpoint = parsedUrl.searchParams.get('endpoint');
 
-  // Handle simple root GET health check
+  // Handle simple root GET: redirect browsers to web app root or return minimal health status
   if (req.method === 'GET' && !endpoint) {
+    const acceptHeader = req.headers['accept'] || '';
+    if (acceptHeader.includes('text/html')) {
+      res.statusCode = 302;
+      res.setHeader('Location', '/');
+      return res.end();
+    }
     res.statusCode = 200;
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
     return res.end(JSON.stringify({
-      status: 'active',
-      service: 'BKK SkyTrains Live Transit Gateway',
-      upstream: DEFAULT_UPSTREAM,
-      time: new Date().toISOString()
+      status: 'active'
     }));
   }
 
@@ -259,7 +262,7 @@ module.exports = async function handler(req, res) {
     if (!res.headersSent) {
       res.statusCode = 504;
       res.setHeader('Content-Type', 'application/json; charset=utf-8');
-      res.end(JSON.stringify({ ErrCode: 504, ErrMessage: 'Gateway timeout from upstream transit server' }));
+      res.end(JSON.stringify({ ErrCode: 504, ErrMessage: 'Gateway timeout' }));
     }
   });
 
@@ -267,7 +270,7 @@ module.exports = async function handler(req, res) {
     if (!res.headersSent) {
       res.statusCode = 502;
       res.setHeader('Content-Type', 'application/json; charset=utf-8');
-      res.end(JSON.stringify({ ErrCode: 502, ErrMessage: 'Proxy gateway error: ' + err.message }));
+      res.end(JSON.stringify({ ErrCode: 502, ErrMessage: 'Service temporarily unavailable' }));
     }
   });
 

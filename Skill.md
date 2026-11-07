@@ -94,7 +94,7 @@ C:\Users\Administrator\Documents\BKK Sky Trains\
 .\Start-BKK-Transit.ps1
 ```
 - เซิร์ฟเวอร์จะเปิดที่ `http://localhost:3000`
-- Reverse Proxy จะทำงานที่ `/api/bts-proxy`
+- Reverse Proxy จะทำงานที่ `/api/bkk-proxy`
 
 ### SOP-3: การคอมไพล์และบิลด์ตัวติดตั้ง Android (APK Build)
 ```powershell
@@ -139,7 +139,7 @@ cd ..
 | ปัญหา | สาเหตุ | วิธีแก้ไข |
 | :--- | :--- | :--- |
 | **พอร์ต 3000 ชนกัน** | มีโปรเซสค้างอยู่บนพอร์ต 3000 | สคริปต์ `Start-BKK-Transit.ps1` จะปิดโปรเซส Node เก่าให้อัตโนมัติ หรือเลื่อนหาพอร์ตว่างถัดไป |
-| **CORS Error เมื่อเรียก API ของ BTS** | เรียกตรงโดยไม่ผ่าน Proxy | ตรวจสอบว่าแอปเรียกผ่าน `activeProxyBase` ซึ่งชี้ไปที่ `/api/bts-proxy` หรือ Production Reverse Proxy |
+| **CORS Error เมื่อเรียก API ของ BTS** | เรียกตรงโดยไม่ผ่าน Proxy | ตรวจสอบว่าแอปเรียกผ่าน `activeProxyBase` ซึ่งชี้ไปที่ `/api/bkk-proxy` หรือ Production Reverse Proxy |
 | **Flutter แสดงหน้าเว็บเก่า (Cache ค้าง)** | WebView แคชไฟล์เก่า | ตรวจสอบคำสั่ง `_controller.clearCache()` ใน `bkk_web_view_screen.dart` |
 | **GPS ไม่ระบุตำแหน่งในแอปมือถือ** | ไม่ได้ขอสิทธิ์ Location | ตัวแอป Flutter มี `Geolocator.requestPermission()` ส่งพิกัดผ่าน `FlutterLocation` Javascript Channel |
 | **ภาษาไทยแสดงผลเพี้ยน (Mojibake)** | บันทึกไฟล์ `.ps1` โดยไม่มี BOM | บันทึกไฟล์ `.ps1` ด้วย `UTF-8 with BOM` เสมอ |

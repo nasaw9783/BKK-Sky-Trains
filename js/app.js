@@ -2164,7 +2164,8 @@ gQIDAQAB
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json', ...headers },
                         body: body == null ? undefined : JSON.stringify(body),
-                        signal: ctrl.signal
+                        signal: ctrl.signal,
+                        cache: 'no-store'
                     });
                     let data = null;
                     try { data = await res.json(); } catch (e) { /* non-JSON */ }
@@ -7908,19 +7909,47 @@ setOriginFromActionSheet() {
                 this.updateModalLockState();
             },
 
-            triggerReload() {
+            async triggerReload() {
                 if (this._isReloading) return;
                 this._isReloading = true;
                 const topBar = document.getElementById('pullToRefreshBar');
                 if (topBar) {
                     topBar.classList.add('visible', 'refreshing');
                     const t = topBar.querySelector('.pull-refresh-text');
-                    if (t) t.textContent = lang === 'en' ? 'Reloading...' : (lang === 'zh' ? '正在刷新页面...' : 'กำลังรีโหลดหน้าเว็บ...');
+                    if (t) t.textContent = lang === 'en' ? 'Updating live trains...' : (lang === 'zh' ? '正在更新实时列车…' : 'กำลังอัปเดตเวลาเดินรถสด...');
                 }
                 if (navigator.vibrate) try { navigator.vibrate(25); } catch(e) {}
-                setTimeout(() => {
-                    window.location.reload();
-                }, 220);
+
+                try {
+                    // เคลียร์แคชเวลาเดิม ให้ดึงข้อมูลสด 100% จาก BTS OCC API เสมอ
+                    this.etaMem = {};
+                    this._lastExpireRefresh = 0;
+
+                    const refreshPromises = [];
+                    const p = this.pinnedStation();
+                    if (p) refreshPromises.push(this.loadArrivals(p, true));
+                    if (this.expandedKey && this.expandedKey !== p?.StationKey) {
+                        const st = this.findStation(this.expandedKey);
+                        if (st) refreshPromises.push(this.loadArrivals(st, true));
+                    }
+                    if (this.popupStation && this.popupStation.StationKey !== p?.StationKey && this.popupStation.StationKey !== this.expandedKey) {
+                        refreshPromises.push(this.loadArrivals(this.popupStation, true));
+                    }
+                    refreshPromises.push(this.loadTraffic(true));
+
+                    await Promise.all(refreshPromises);
+                    this.locate(false);
+                } catch (e) {
+                    console.warn('Reload refresh error:', e);
+                } finally {
+                    setTimeout(() => {
+                        if (topBar) {
+                            topBar.style.transform = '';
+                            topBar.classList.remove('visible', 'refreshing');
+                        }
+                        this._isReloading = false;
+                    }, 300);
+                }
             },
 
             device: null,
@@ -9337,6 +9366,7 @@ setOriginFromActionSheet() {
             onAppResume() {
                 this.isAppFolded = false;
                 this.onAppForegrounded();
+                this.refreshAll();
             },
 
             onAppForegrounded() {
@@ -9739,11 +9769,20 @@ setOriginFromActionSheet() {
 
             pinnedStation() {
                 const hit = this.nearestList.find(r => r.station.StationKey === this.pinnedKey);
-                return hit ? hit.station : (this.nearest && this.nearest.station);
+                if (hit) return hit.station;
+                if (this.pinnedKey) {
+                    const st = this.findStation(this.pinnedKey);
+                    if (st) return st;
+                }
+                return this.nearest ? this.nearest.station : null;
             },
 
             pinStation(key) {
                 this.pinnedKey = key;
+                const s = this.findStation(key);
+                if (s && s.Latitude && s.Longitude) {
+                    this.saveUserPosition({ lat: s.Latitude, lon: s.Longitude, accuracy: 10 }, key, true);
+                }
                 this.renderNearest();
                 this.renderTraffic();
                 const pinned = this.pinnedStation();
@@ -9756,7 +9795,7 @@ setOriginFromActionSheet() {
                     }
                 }
                 this.renderStrip();
-                if (pinned) this.loadArrivals(pinned);
+                if (pinned) this.loadArrivals(pinned, true);
             },
 
             /* ---------- arrivals ---------- */
@@ -9808,7 +9847,7 @@ setOriginFromActionSheet() {
                     try {
                         let data = await fetchArrivals(station);
                         const hasTrains = Array.isArray(data?.platform_list) && data.platform_list.some(p => Array.isArray(p.train_list) && p.train_list.length > 0);
-                        if (!hasTrains && isTransitOperatingHours(station.StationLineId, station.StationKey)) {
+                        if (!hasTrains && usesStaticTimetable(station) && isTransitOperatingHours(station.StationLineId, station.StationKey)) {
                             const fallbackData = generateTimetableArrivals(station);
                             if (fallbackData?.platform_list?.length) {
                                 data = fallbackData;
@@ -9817,25 +9856,28 @@ setOriginFromActionSheet() {
                         if (!data) data = { time: null, fetchedAt: Date.now(), platform_list: [] };
                         this.storeArrivals(key, data);
                     } catch (e) {
-                        let fallbackData = generateTimetableArrivals(station);
-                        if (fallbackData?.platform_list?.length) {
-                            this.storeArrivals(key, fallbackData);
-                        } else {
-                            const isOff = isOffServiceError(e.message);
-                            if (isOff) {
-                                const ensuredPlats = visiblePlatformsForStation(station, []);
-                                this.arrivals[key] = {
-                                    ...(cur || {}), loading: false,
-                                    error: null,
-                                    fetchedAt: Date.now(),
-                                    platforms: ensuredPlats
-                                };
-                            } else {
-                                this.arrivals[key] = {
-                                    ...(cur || {}), loading: false,
-                                    error: e.message || T('connectFail', '?')
-                                };
+                        if (usesStaticTimetable(station)) {
+                            let fallbackData = generateTimetableArrivals(station);
+                            if (fallbackData?.platform_list?.length) {
+                                this.storeArrivals(key, fallbackData);
+                                this.renderArrivalTargets(key);
+                                return;
                             }
+                        }
+                        const isOff = isOffServiceError(e.message);
+                        if (isOff) {
+                            const ensuredPlats = visiblePlatformsForStation(station, []);
+                            this.arrivals[key] = {
+                                ...(cur || {}), loading: false,
+                                error: null,
+                                fetchedAt: Date.now(),
+                                platforms: ensuredPlats
+                            };
+                        } else {
+                            this.arrivals[key] = {
+                                ...(cur || {}), loading: false,
+                                error: e.message || T('connectFail', '?')
+                            };
                         }
                     }
                     this.renderArrivalTargets(key);
@@ -9862,9 +9904,9 @@ setOriginFromActionSheet() {
                         p.train_list = [];
                     }
                 }
-                // ช่วงเวลาให้บริการ: หากชานชาลาใดไม่มีข้อมูลขบวนรถจาก API (เช่น ชานชาลาปลายทางส่ง ผดส. เท่านั้น หรือ API ส่งมาไม่ครบ)
-                // ให้เติมข้อมูลขบวนรถจากตารางเวลาเดินรถ (Timetable Fallback) เพื่อให้มีเวลานับถอยหลังและตำแหน่งบนรางเสมอ
-                if (isOperating && Array.isArray(platList) && st) {
+                // ช่วงเวลาให้บริการ: สำหรับสายที่ใช้ตารางเวลาเดินรถคงที่ (MRT Blue/Purple/SRT Red)
+                // หากชานชาลาใดไม่มีข้อมูล ให้เติมข้อมูลจากตารางเวลาเดินรถ (Timetable Fallback)
+                if (isOperating && Array.isArray(platList) && st && usesStaticTimetable(st)) {
                     const fb = generateTimetableArrivals(st);
                     for (const p of platList) {
                         const isOos = !!p.isOutOfService || (key === 'YL23' && String(p.platform) === '1');
@@ -10283,6 +10325,9 @@ setOriginFromActionSheet() {
                 if (this.expandedKey && this.expandedKey !== p?.StationKey) {
                     const st = this.findStation(this.expandedKey);
                     if (st) this.loadArrivals(st, true);
+                }
+                if (this.popupStation && this.popupStation.StationKey !== p?.StationKey && this.popupStation.StationKey !== this.expandedKey) {
+                    this.loadArrivals(this.popupStation, true);
                 }
             },
 
@@ -12266,11 +12311,10 @@ setOriginFromActionSheet() {
 
             // เติมขบวนว่างที่มี time_come = '--' (แสดงเป็น "-- นาที") ให้ครบ 3 ขบวน
             // ตามมาตรฐานการแสดงผล 3 ขบวน (ขบวนแรก, ขบวนที่สอง, ขบวนที่สาม) โดยไม่สร้างเวลาตัวเลขหลอก
-            if (out.length > 0 && out.length < 3) {
-                const lastT = out[out.length - 1];
-                const dest = lastT.station || '';
-                const destKey = lastT.station_key || '';
-                let nextIdx = 1;
+            if (out.length < 3) {
+                const lastT = out.length > 0 ? out[out.length - 1] : null;
+                const dest = lastT?.station || '';
+                const destKey = lastT?.station_key || '';
                 while (out.length < 3) {
                     out.push({
                         trainNo: `T${platform}-${out.length + 1}`,
@@ -12282,7 +12326,6 @@ setOriginFromActionSheet() {
                         isApprox: false,
                         syntheticAt: nowMs
                     });
-                    nextIdx++;
                 }
             }
 
@@ -12699,7 +12742,7 @@ setOriginFromActionSheet() {
             let tList = p.train_list;
             const isOutOfService = !!p.isOutOfService || (stationKey === 'YL23' && String(p.platform) === '1');
             const targetLineId = p.LineId || (stationKey ? App.findStation(stationKey)?.StationLineId : 0);
-            if ((!tList || !tList.length) && !isOutOfService && isTransitOperatingHours(targetLineId, stationKey)) {
+            if ((!tList || !tList.length) && !isOutOfService && usesStaticTimetable(App.findStation(stationKey)) && isTransitOperatingHours(targetLineId, stationKey)) {
                 const fb = generateTimetableArrivals(App.findStation(stationKey));
                 const fbPlat = fb?.platform_list?.find(fp => (Number(fp.LineId) === Number(targetLineId) || !targetLineId || !fp.LineId) && String(fp.platform) === String(p.platform));
                 if (fbPlat?.train_list?.length) {

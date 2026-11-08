@@ -5,7 +5,7 @@
  * - ไฟล์ static อื่นๆ (CDN): stale-while-revalidate ให้โหลดซ้ำเร็วขึ้น
  * - คำขอ API ขบวนรถ (POST ข้ามโดเมน) ปล่อยผ่าน ไม่แตะ — ข้อมูลสดต้องมาจากเน็ตเสมอ
  */
-const VERSION = 'bkk-v91';
+const VERSION = 'bkk-v92';
 const SHELL_CACHE = 'bkk-shell-' + VERSION;
 const RUNTIME_CACHE = 'bkk-runtime-' + VERSION;
 

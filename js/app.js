@@ -4245,6 +4245,8 @@ gQIDAQAB
             activeLine: 1,
             userPickedLineManually: false, // ผู้ใช้เคยกดเลือกสายด้วยตนเองหรือไม่
             lastSyncedStationKey: null,    // สถานีล่าสุดที่ทำการซิงค์แท็บสายอัตโนมัติ
+            _shouldShowNearestPopup: false, // สิทธิ์เปิด Popup แจ้งเตือนสถานีใกล้ฉัน (เปิดเฉพาะเข้าแอพ, resume, pull-to-refresh)
+            _popupTimeout: null,
             expandedKey: null,    // สถานีที่กางดูใน strip
             arrivals: {},         // StationKey -> {fetchedAt, time, platforms, error, loading}
             selTrain: {},         // "StationKey|platform" -> {idx, trainNo} ขบวนที่ user เลือกตามปลายทาง
@@ -7942,6 +7944,9 @@ setOriginFromActionSheet() {
                 this.nearest = null;
                 this.nearestList = [];
                 this.locating = true;
+                this._shouldShowNearestPopup = true;
+                clearTimeout(this._popupTimeout);
+                this._popupTimeout = setTimeout(() => { this._shouldShowNearestPopup = false; }, 8000);
                 const card = document.getElementById('nearestCard');
                 if (card) card.style.display = '';
                 this.renderNearest();
@@ -7973,6 +7978,7 @@ setOriginFromActionSheet() {
             async triggerReload() {
                 if (this._isReloading) return;
                 this._isReloading = true;
+                this._shouldShowNearestPopup = true;
                 const topBar = document.getElementById('pullToRefreshBar');
                 if (topBar) {
                     topBar.classList.add('visible', 'refreshing');
@@ -8015,6 +8021,14 @@ setOriginFromActionSheet() {
                     refreshPromises.push(this.loadTraffic(true));
 
                     await Promise.all(refreshPromises);
+
+                    // แสดง Popup & Toast เมื่อรีโหลดด้วยการเลื่อนหน้าจอลงสุดตามที่ระบุ
+                    if (this._shouldShowNearestPopup && this.nearest && this.nearest.station && this.nearest.km != null && this.nearest.km <= MAX_NEAR_KM) {
+                        this._shouldShowNearestPopup = false;
+                        this.showNearestPopupFor(this.nearest.station, true);
+                        this.showNearestStationToast(this.nearest.station, this.nearest.km, false);
+                    }
+                    this._shouldShowNearestPopup = false;
 
                     if (topBar) {
                         const t = topBar.querySelector('.pull-refresh-text');
@@ -9397,9 +9411,17 @@ setOriginFromActionSheet() {
                 if (pinned) this.loadArrivals(pinned);
                 if (this.currentView === 'exits') this.renderExitsView(this.selectedExitKey);
 
-                // แจ้งเตือน Popup และ Notification ทันทีเมื่อพบสถานีใกล้ฉัน
-                if (this.nearest && this.nearest.km != null) {
-                    this.triggerNearestStationAlert(this.nearest, !!this._lastLocateInteractive);
+                // แจ้งเตือน Popup & Toast เฉพาะตอนเข้าแอพ, สลับกลับเข้าแอพ (Resume), หรือดึงเลื่อนลงสุดเพื่อรีโหลดเท่านั้น
+                if (this._shouldShowNearestPopup && this.nearest && this.nearest.station && this.nearest.km != null && this.nearest.km <= MAX_NEAR_KM) {
+                    this._shouldShowNearestPopup = false;
+                    this.showNearestPopupFor(this.nearest.station, true);
+                    this.showNearestStationToast(this.nearest.station, this.nearest.km, false);
+                } else {
+                    // หาก Popup กำลังเปิดแสดงผลอยู่แล้ว ให้อัปเดตข้อมูลระยะทางในหน้าต่างให้สดใหม่
+                    const modal = document.getElementById('nearestStationPopup');
+                    if (modal && modal.style.display !== 'none' && this.nearest?.station) {
+                        this.updatePopupDistance(this.nearest.station);
+                    }
                 }
             },
 
@@ -9410,8 +9432,12 @@ setOriginFromActionSheet() {
 
             onAppResume() {
                 this.isAppFolded = false;
+                this._shouldShowNearestPopup = true;
                 this.onAppForegrounded();
                 this.refreshAll();
+                this.locate(false);
+                clearTimeout(this._popupTimeout);
+                this._popupTimeout = setTimeout(() => { this._shouldShowNearestPopup = false; }, 8000);
             },
 
             onAppForegrounded() {
@@ -9419,13 +9445,16 @@ setOriginFromActionSheet() {
                 if (this.pendingFoldedAlert) {
                     const { station } = this.pendingFoldedAlert;
                     this.pendingFoldedAlert = null;
-                    this.showNearestPopupFor(station);
+                    this._shouldShowNearestPopup = false;
+                    this.showNearestPopupFor(station, true);
                     return;
                 }
-                if (this.nearest && this.nearest.km != null && this.nearest.km <= 2.5) {
+                if (this._shouldShowNearestPopup && this.nearest && this.nearest.station && this.nearest.km != null && this.nearest.km <= MAX_NEAR_KM) {
+                    this._shouldShowNearestPopup = false;
                     const modal = document.getElementById('nearestStationPopup');
                     if (!modal || modal.style.display === 'none') {
-                        this.showNearestPopupFor(this.nearest.station);
+                        this.showNearestPopupFor(this.nearest.station, true);
+                        this.showNearestStationToast(this.nearest.station, this.nearest.km, false);
                     }
                 }
             },
@@ -9461,10 +9490,10 @@ setOriginFromActionSheet() {
                         if (trains.length) {
                             const isNoTime = (trains[0].time_come === '--' || trains[0].time_come === '-');
                             const eta = isNoTime ? null : bestEta(station.StationKey, p.platform, trains[0], arr.fetchedAt);
-                            if (!isNoTime && trains[0].status === 'arriving') {
+                            if (!isNoTime && (trains[0].status === 'arriving' || trains[0].time_come === '0')) {
                                 incomingText = T('arrived');
                             } else if (eta) {
-                                const m = Math.round(eta.base - (Date.now() - eta.at) / 60000);
+                                const m = eta.exactFromApi ? Math.round(eta.base) : Math.round(eta.base - (Date.now() - eta.at) / 60000);
                                 incomingText = m <= 0 ? T('arrived') : `${m} ${lang === 'en' ? 'min' : (lang === 'zh' ? '分钟' : 'นาที')}`;
                             } else if (isNoTime) {
                                 incomingText = `-- ${lang === 'en' ? 'min' : (lang === 'zh' ? '分钟' : 'นาที')}`;
@@ -9476,10 +9505,10 @@ setOriginFromActionSheet() {
                     } else if (trains.length) {
                         const isNoTime = (trains[0].time_come === '--' || trains[0].time_come === '-');
                         const eta = isNoTime ? null : bestEta(station.StationKey, p.platform, trains[0], arr.fetchedAt);
-                        if (!isNoTime && trains[0].status === 'arriving') {
+                        if (!isNoTime && (trains[0].status === 'arriving' || trains[0].time_come === '0')) {
                             timeStr = T('arrived');
                         } else if (eta) {
-                            const m = Math.round(eta.base - (Date.now() - eta.at) / 60000);
+                            const m = eta.exactFromApi ? Math.round(eta.base) : Math.round(eta.base - (Date.now() - eta.at) / 60000);
                             timeStr = m <= 0 ? T('arrived') : `${m} ${lang === 'en' ? 'min' : (lang === 'zh' ? '分钟' : 'นาที')}`;
                         } else if (isNoTime) {
                             timeStr = `-- ${lang === 'en' ? 'min' : (lang === 'zh' ? '分钟' : 'นาที')}`;
@@ -9497,11 +9526,10 @@ setOriginFromActionSheet() {
                 const key = s.StationKey;
                 const km = nearestItem.km;
 
-                // ตรวจสอบระยะทางที่อยู่ในรัศมีบริการ (ถ้ากดค้นหาเอง forcePopup ให้แสดงเสมอ)
-                if (km > 5.0 && !forcePopup) return;
+                // ตรวจสอบระยะทางที่อยู่ในรัศมีบริการ (MAX_NEAR_KM)
+                if (km > MAX_NEAR_KM && !forcePopup) return;
 
                 const isStationChanged = (this.lastAlertStationKey !== key);
-                const isFirstOpenAlert = !this.hasShownPopupOnOpen;
                 const isInteractive = this._lastLocateInteractive || forcePopup;
                 const modal = document.getElementById('nearestStationPopup');
                 const isPopupOpen = modal && modal.style.display !== 'none';
@@ -9509,10 +9537,17 @@ setOriginFromActionSheet() {
                 // หาก Popup กำลังเปิดอยู่ ให้อัปเดตสถานีและข้อมูลให้ตรงกันเสมอทันที
                 if (isPopupOpen) {
                     this.showNearestPopupFor(s, true);
+                } else if (this._shouldShowNearestPopup || forcePopup) {
+                    this._shouldShowNearestPopup = false;
+                    if (this.isAppFolded) {
+                        this.pendingFoldedAlert = { station: s };
+                    } else {
+                        this.showNearestPopupFor(s, true);
+                    }
                 }
 
-                // ถ้าไม่ใช่เปิดครั้งแรก และไม่ใช่สถานีเปลี่ยน และไม่ใช่ interactive และแอปไม่ได้กำลังพับอยู่ และป๊อปอัปยังไม่ได้เปิด
-                if (!isInteractive && !isStationChanged && !isFirstOpenAlert && !this.isAppFolded && !isPopupOpen) {
+                // ถ้าไม่ใช่ interactive และไม่ใช่สถานีเปลี่ยน และแอปไม่ได้กำลังพับอยู่ และป๊อปอัปยังไม่ได้เปิด
+                if (!isInteractive && !isStationChanged && !this.isAppFolded && !isPopupOpen) {
                     this.updatePopupDistance(s);
                     return;
                 }
@@ -9536,12 +9571,10 @@ setOriginFromActionSheet() {
                 }
                 const platSummary = this.getPlatformsSummaryText(s, this.arrivals[key]);
 
-                // 4. จัดการ Popup: แสดงหรืออัปเดตพร้อมกันกับการ์ดสถานีใกล้ฉันที่สุดทันที
-                if (this.isAppFolded) {
+                // 4. จัดการ Popup: ตรวจสอบสิทธิ์ว่าได้รับอนุญาตให้แสดงหรือไม่
+                if (this.isAppFolded && (this._shouldShowNearestPopup || forcePopup)) {
                     this.pendingFoldedAlert = { station: s };
-                } else {
-                    // หากเปิดอยู่ แสดง Popup แจ้งเตือนสถานี/แพลตฟอร์ม/เวลา ทันที
-                    this.showNearestPopupFor(s, true);
+                    this._shouldShowNearestPopup = false;
                 }
 
                 // 5. แจ้งเตือน Web / Native Notification (True Background Geofencing) เมื่อเปิดใช้งาน
@@ -9621,7 +9654,7 @@ setOriginFromActionSheet() {
                         const eta1 = isNoTime1 ? null : bestEta(key, p1.platform, trains1[0], arr.fetchedAt);
                         if (!isNoTime1 && (trains1[0].status === 'arriving' || trains1[0].time_come === '0')) p1Time = T('arrived');
                         else if (eta1) {
-                            const m = Math.round(eta1.base - (Date.now() - eta1.at) / 60000);
+                            const m = eta1.exactFromApi ? Math.round(eta1.base) : Math.round(eta1.base - (Date.now() - eta1.at) / 60000);
                             p1Time = m <= 0 ? T('arrived') : `${m} นาที`;
                         } else if (isNoTime1) {
                             p1Time = `-- นาที`;
@@ -9639,7 +9672,7 @@ setOriginFromActionSheet() {
                         const eta2 = isNoTime2 ? null : bestEta(key, p2.platform, trains2[0], arr.fetchedAt);
                         if (!isNoTime2 && (trains2[0].status === 'arriving' || trains2[0].time_come === '0')) p2Time = T('arrived');
                         else if (eta2) {
-                            const m = Math.round(eta2.base - (Date.now() - eta2.at) / 60000);
+                            const m = eta2.exactFromApi ? Math.round(eta2.base) : Math.round(eta2.base - (Date.now() - eta2.at) / 60000);
                             p2Time = m <= 0 ? T('arrived') : `${m} นาที`;
                         } else if (isNoTime2) {
                             p2Time = `-- นาที`;
@@ -9787,6 +9820,7 @@ setOriginFromActionSheet() {
                 if (modal) {
                     modal.style.display = 'none';
                 }
+                this._shouldShowNearestPopup = false;
                 this.popupStation = null;
                 this.nearestPopupRouteOpen = false;
                 const trigger = document.getElementById('nearestPopupRouteTrigger');
@@ -10442,9 +10476,10 @@ setOriginFromActionSheet() {
                         }
                     }
                 });
-                if (hasExpired && (!this._lastExpireRefresh || Date.now() - this._lastExpireRefresh > 8000)) {
+                // ป้องกันการรีโหลดหน้า/ข้อมูลซ้ำซ้อนเกินความจำเป็น โดยจำกัดการรีเฟรชเมื่อขบวนรถหมดอายุไม่เกิน 1 ครั้งต่อ 20 วินาที
+                if (hasExpired && (!this._lastExpireRefresh || Date.now() - this._lastExpireRefresh > 20000)) {
                     this._lastExpireRefresh = Date.now();
-                    setTimeout(() => this.refreshAll(), 1000);
+                    this.refreshAll();
                 }
             },
 
@@ -12228,8 +12263,8 @@ setOriginFromActionSheet() {
             return { text: (approx ? '~' : '') + Math.round(mins) + `<small>${T('minUnit')}</small>`, now: false };
         }
 
-        // เวลา "ที่ดีที่สุดที่รู้" ของขบวน: ใช้ค่าจาก API ถ้ามี — ถ้าตอบ "--" หรือ "-" แสดงเป็น -- นาที
-        // จะไม่นำ time_come_double หรือเวลาจำหลอกมาแสดงเป็นเวลารถเข้าเด็ดขาด
+        // เวลา "ที่ดีที่สุดที่รู้" ของขบวน: ใช้ค่าจาก API ตรงตามทางการ 100% — ถ้าตอบ "--" หรือ "-" แสดงเป็น -- นาที
+        // จะไม่นำเวลาจำลองมานับถอยหลังหลอกล่วงหน้าสำหรับรถที่มีข้อมูลสดจาก API
         function bestEta(stationKey, platform, t, fetchedAt) {
             if (!t) return null;
             const nowMs = Date.now();
@@ -12242,26 +12277,24 @@ setOriginFromActionSheet() {
             }
 
             if (t.status === 'arriving' || t.time_come === '0') {
-                const rem = 0 - (nowMs - at) / 60000;
-                if (rem > -0.75) return { base: 0, at, approx: false };
+                return { base: 0, at, approx: false, exactFromApi: true };
             }
 
             if (t.time_come != null && t.time_come !== '') {
                 const num = parseFloat(t.time_come);
                 if (!isNaN(num) && num >= 0) {
-                    const rem = num - (nowMs - at) / 60000;
-                    if (rem > -0.75) return { base: num, at, approx: !!t.isApprox };
+                    return { base: num, at, approx: !!t.isApprox, exactFromApi: true };
                 }
             }
 
             const m = App.etaMem[stationKey + '|' + platform + '|' + t.trainNo];
             if (m && (m.base - (nowMs - m.at) / 60000) > -0.75)
-                return { base: m.base, at: m.at, approx: true };
+                return { base: m.base, at: m.at, approx: true, exactFromApi: false };
 
             // กรณีขบวนรถจำลองจากตารางเวลาเดินรถ (Timetable Fallback) ที่ไม่มี time_come string
             if (t.time_come_double != null && !isNaN(t.time_come_double) && t.time_come_double >= 0) {
                 const rem = t.time_come_double - (nowMs - at) / 60000;
-                if (rem > -0.75) return { base: t.time_come_double, at, approx: !!t.isApprox };
+                if (rem > -0.75) return { base: t.time_come_double, at, approx: !!t.isApprox, exactFromApi: false };
             }
 
             return null;
@@ -12831,11 +12864,11 @@ setOriginFromActionSheet() {
             const trainBtn = (t, i) => {
                 const isNoTime = (t.time_come === '--' || t.time_come === '-' || t.time_come == null);
                 const eta = isNoTime ? null : bestEta(stationKey, p.platform, t, fetchedAt);
-                const rem = eta ? (eta.base - (Date.now() - eta.at) / 60000) : NaN;
-                const isArriving = !isNoTime && (t.status === 'arriving' || t.time_come === '0') && (isNaN(rem) || (rem >= -0.75 && rem <= 0.5));
+                const rem = eta ? (eta.exactFromApi ? eta.base : (eta.base - (Date.now() - eta.at) / 60000)) : NaN;
+                const isArriving = !isNoTime && (t.status === 'arriving' || t.time_come === '0' || (!isNaN(rem) && rem <= 0.5));
                 const init = isArriving
                     ? { text: T('arrived'), now: true }
-                    : (isNoTime || !eta || isNaN(rem))
+                    : (isNoTime || !eta || isNaN(rem) || rem < -0.75)
                         ? { text: `--<small>${T('minUnit')}</small>`, now: false }
                         : etaText(rem, eta.approx);
                 // ขบวนนี้ปลายทางต่างจากปลายทางหลักของชานชาลา → ติดป้ายบอก
@@ -12844,9 +12877,11 @@ setOriginFromActionSheet() {
                 const destTag = diffDest
                     ? `<span class="t-dest">→ ${esc(shortDest(destName(t.station)))}</span>` : '';
                 const sizeClass = i === 0 ? 'first' : i === 1 ? 'second' : 'third';
+                const isLiveApi = !!eta?.exactFromApi;
                 const baseVal = (!isNoTime && eta) ? eta.base : (isArriving ? 0 : '');
                 const atVal = (!isNoTime && eta) ? eta.at : (isArriving ? fetchedAt : '');
-                const hasEtaData = baseVal !== '' && atVal !== '';
+                // ไม่นับถอยหลังจำลองสำหรับรถที่มีข้อมูลเวลาจริงจาก API เพื่อให้ตัวเลขตรงกับทางการ 100%
+                const hasEtaData = !isLiveApi && baseVal !== '' && atVal !== '';
                 const firstTrainBorder = (i === 0 && !init.now) ? `border: 2px solid ${p.LineColor};` : '';
                 return `<div class="train ${sizeClass} ${init.now ? 'is-arriving' : ''}" style="color:${trainTextColor};--line-color:${p.LineColor};${firstTrainBorder}">
                     <span class="no">${destTag}</span>
@@ -13168,7 +13203,7 @@ setOriginFromActionSheet() {
                         // ขบวนที่ไม่รู้เวลาเลย → ไม่วาดบน map (ตำแหน่งระบุไม่ได้)
                         const eta = bestEta(station.StationKey, p.platform, t, arr.fetchedAt);
                         if (!eta) continue;
-                        const m = eta.base - (Date.now() - eta.at) / 60000;
+                        const m = eta.exactFromApi ? eta.base : (eta.base - (Date.now() - eta.at) / 60000);
                         if (m < -0.75 || m > 200) continue;
                         Z[from].push({ t, m, approx: eta.approx, eta });
                     }
@@ -13183,7 +13218,8 @@ setOriginFromActionSheet() {
                 const isAt = at || e.m <= 0.5 || (e.t && e.t.status === 'arriving');
                 const dispM = isAt ? 0 : Math.max(0, Math.round(e.m));
                 const approx = e.approx ? '~' : '';
-                const etaAttr = (!isAt && e.eta)
+                const isLiveApi = !!e.eta?.exactFromApi;
+                const etaAttr = (!isAt && e.eta && !isLiveApi)
                     ? ` data-eta-base="${e.eta.base}" data-eta-at="${e.eta.at}" data-eta-approx="${e.approx ? '1' : ''}" data-eta-format="chip"`
                     : '';
                 return `<span class="rt-chip ${isAt ? 'at' : ''}" style="border-color:${color};color:${color}"><i${etaAttr}>${isAt ? '0' : `${approx}${dispM}`}m</i></span>`;

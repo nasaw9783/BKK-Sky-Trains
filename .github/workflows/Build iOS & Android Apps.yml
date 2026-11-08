@@ -30,7 +30,7 @@ permissions:
 jobs:
   build-release:
     name: Build iOS IPA & Android APK (Automated Release)
-    runs-on: macos-14
+    runs-on: macos-latest
     timeout-minutes: 45
 
     steps:

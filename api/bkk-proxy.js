@@ -22,23 +22,65 @@ const ALLOWED_ENDPOINTS = [
   'traffic'
 ];
 
-// Station Key to StationId mapping for Official BTS/EBM Routing Engine
+// Station Key to StationId mapping for Official BTS/EBM Routing Engine (Matched to BTS OCC RouteMap)
 const STATION_KEY_TO_ID = {
-  'CEN': 1, 'E1': 2, 'E2': 3, 'E3': 4, 'E4': 5, 'E5': 6, 'E6': 7, 'E7': 8, 'E8': 9, 'E9': 10,
-  'E10': 11, 'E11': 12, 'E12': 13, 'E13': 14, 'E14': 15, 'E15': 16, 'E16': 17, 'E17': 18, 'E18': 19,
-  'E19': 20, 'E20': 21, 'E21': 22, 'E22': 23, 'E23': 24, 'N1': 25, 'N2': 26, 'N3': 27, 'N4': 28,
-  'N5': 29, 'N7': 30, 'N8': 31, 'N9': 64, 'N10': 65, 'N11': 66, 'N12': 67, 'N13': 68, 'N14': 69,
-  'N15': 70, 'N16': 71, 'N17': 72, 'N18': 73, 'N19': 74, 'N20': 75, 'N21': 76, 'N22': 77, 'N23': 78,
-  'N24': 79, 'W1': 32, 'S1': 33, 'S2': 34, 'S3': 35, 'S5': 36, 'S6': 37, 'S7': 38, 'S8': 39,
-  'S9': 40, 'S10': 41, 'S11': 42, 'S12': 43, 'G1': 44, 'G2': 45, 'G3': 46,
-  'YL01': 80, 'YL02': 81, 'YL03': 82, 'YL04': 83, 'YL05': 84, 'YL06': 85, 'YL07': 86, 'YL08': 87,
-  'YL09': 88, 'YL10': 89, 'YL11': 90, 'YL12': 91, 'YL13': 92, 'YL14': 93, 'YL15': 94, 'YL16': 95,
-  'YL17': 96, 'YL18': 97, 'YL19': 98, 'YL20': 99, 'YL21': 100, 'YL22': 101, 'YL23': 102,
-  'PK01': 103, 'PK02': 104, 'PK03': 105, 'PK04': 106, 'PK05': 107, 'PK06': 108, 'PK07': 109, 'PK08': 110,
-  'PK09': 111, 'PK10': 112, 'PK11': 113, 'PK12': 114, 'PK13': 115, 'PK14': 116, 'PK15': 117, 'PK16': 118,
-  'PK17': 119, 'PK18': 120, 'PK19': 121, 'PK20': 122, 'PK21': 123, 'PK22': 124, 'PK23': 125, 'PK24': 126,
-  'PK25': 127, 'PK26': 128, 'PK27': 129, 'PK28': 130, 'PK29': 131, 'PK30': 132, 'MT01': 133, 'MT02': 134
+  'N24': 79, 'N23': 78, 'N22': 77, 'N21': 76, 'N20': 75, 'N19': 74, 'N18': 73, 'N17': 69, 'N16': 68,
+  'N15': 67, 'N14': 66, 'N13': 62, 'N12': 61, 'N11': 60, 'N10': 59, 'N9': 54, 'N8': 1, 'N7': 2,
+  'N5': 3, 'N4': 4, 'N3': 5, 'N2': 6, 'N1': 7, 'CEN': 8, 'E1': 9, 'E2': 10, 'E3': 11,
+  'E4': 12, 'E5': 13, 'E6': 14, 'E7': 15, 'E8': 16, 'E9': 17, 'E10': 18, 'E11': 19, 'E12': 20,
+  'E13': 21, 'E14': 22, 'E15': 23, 'E16': 46, 'E17': 47, 'E18': 48, 'E19': 49, 'E20': 50,
+  'E21': 51, 'E22': 52, 'E23': 53, 'W1': 26, 'S1': 28, 'S2': 29, 'S3': 30, 'S4': 80,
+  'S5': 31, 'S6': 32, 'S7': 33, 'S8': 34, 'S9': 35, 'S10': 36, 'S11': 37, 'S12': 38,
+  'G1': 70, 'G2': 71, 'G3': 72,
+  'YL01': 81, 'YL02': 82, 'YL03': 83, 'YL04': 84, 'YL05': 85, 'YL06': 87, 'YL07': 86, 'YL08': 88,
+  'YL09': 89, 'YL10': 90, 'YL11': 91, 'YL12': 92, 'YL13': 93, 'YL14': 94, 'YL15': 95, 'YL16': 96,
+  'YL17': 97, 'YL18': 98, 'YL19': 99, 'YL20': 100, 'YL21': 101, 'YL22': 102, 'YL23': 103,
+  'PK01': 134, 'PK02': 135, 'PK03': 136, 'PK04': 137, 'PK05': 138, 'PK06': 139, 'PK07': 140, 'PK08': 141,
+  'PK09': 142, 'PK10': 143, 'MT01': 164, 'MT02': 165, 'PK11': 144, 'PK12': 145, 'PK13': 146, 'PK14': 147,
+  'PK15': 148, 'PK16': 149, 'PK17': 150, 'PK18': 151, 'PK19': 152, 'PK20': 153, 'PK21': 154, 'PK22': 155,
+  'PK23': 156, 'PK24': 157, 'PK25': 158, 'PK26': 159, 'PK27': 160, 'PK28': 161, 'PK29': 162, 'PK30': 163
 };
+
+function flattenRoutesJorneyGroup(groupList) {
+  if (!Array.isArray(groupList)) return [];
+  const steps = [];
+  for (const g of groupList) {
+    const lineId = g.LineId;
+    const origin = g.Origin ? {
+      StationCode: g.Origin.StationCode,
+      Title: g.Origin.Title || g.Origin.Detail || g.Origin.Station?.StationName || '',
+      TimeRoute: g.Origin.TimeRoute || '',
+      LineId: lineId
+    } : null;
+
+    const bypass = (g.ByPass || []).map(b => ({
+      StationCode: b.StationCode,
+      Title: b.Title || b.Detail || b.Station?.StationName || '',
+      TimeRoute: b.TimeRoute || '',
+      LineId: lineId
+    }));
+
+    const dest = g.Destination ? {
+      StationCode: g.Destination.StationCode,
+      Title: g.Destination.Title || g.Destination.Detail || g.Destination.Station?.StationName || '',
+      TimeRoute: g.Destination.TimeRoute || '',
+      LineId: lineId
+    } : null;
+
+    if (origin) {
+      if (!steps.length || steps[steps.length - 1].StationCode !== origin.StationCode) {
+        steps.push(origin);
+      }
+    }
+    for (const bp of bypass) {
+      steps.push(bp);
+    }
+    if (dest) {
+      steps.push(dest);
+    }
+  }
+  return steps;
+}
 
 function resolveStationId(keyOrId) {
   if (typeof keyOrId === 'number') return keyOrId;
@@ -249,6 +291,21 @@ module.exports = async function handler(req, res) {
               TrafficAlerList: []
             };
             return res.end(JSON.stringify(normalized));
+          }
+        } catch (_) {}
+      }
+
+      // Post-process journey endpoint response to guarantee RoutesJorney is populated
+      if (endpoint === 'journey' || endpoint === 'route') {
+        try {
+          const journeyData = JSON.parse(fullBuffer.toString('utf8'));
+          if (journeyData && journeyData.data && Array.isArray(journeyData.data.RoutesMap)) {
+            for (const rm of journeyData.data.RoutesMap) {
+              if ((!rm.RoutesJorney || !rm.RoutesJorney.length) && Array.isArray(rm.RoutesJorneyGroup)) {
+                rm.RoutesJorney = flattenRoutesJorneyGroup(rm.RoutesJorneyGroup);
+              }
+            }
+            return res.end(JSON.stringify(journeyData));
           }
         } catch (_) {}
       }

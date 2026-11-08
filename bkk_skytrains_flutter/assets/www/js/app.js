@@ -2260,16 +2260,69 @@ gQIDAQAB
             }
         }
 
+        function flattenRoutesJorneyGroup(groupList) {
+            if (!Array.isArray(groupList)) return [];
+            const steps = [];
+            for (const g of groupList) {
+                const lineId = g.LineId;
+                const origin = g.Origin ? {
+                    StationCode: g.Origin.StationCode,
+                    Title: g.Origin.Title || g.Origin.Detail || g.Origin.Station?.StationName || '',
+                    TimeRoute: g.Origin.TimeRoute || '',
+                    LineId: lineId
+                } : null;
+
+                const bypass = (g.ByPass || []).map(b => ({
+                    StationCode: b.StationCode,
+                    Title: b.Title || b.Detail || b.Station?.StationName || '',
+                    TimeRoute: b.TimeRoute || '',
+                    LineId: lineId
+                }));
+
+                const dest = g.Destination ? {
+                    StationCode: g.Destination.StationCode,
+                    Title: g.Destination.Title || g.Destination.Detail || g.Destination.Station?.StationName || '',
+                    TimeRoute: g.Destination.TimeRoute || '',
+                    LineId: lineId
+                } : null;
+
+                if (origin) {
+                    if (!steps.length || steps[steps.length - 1].StationCode !== origin.StationCode) {
+                        steps.push(origin);
+                    }
+                }
+                for (const bp of bypass) {
+                    steps.push(bp);
+                }
+                if (dest) {
+                    steps.push(dest);
+                }
+            }
+            return steps;
+        }
+
         // เส้นทาง from→to: คืน data.RoutesMap = [{RoutesJorney, TotalTime, TotalKm,
         // Count_Station, Count_InterChange, FareRate_Total, FareRateInfo, ...}, ...]
         async function fetchJourney(originKey, destKey) {
+            const origStation = App.findStation(originKey);
+            const destStation = App.findStation(destKey);
+            const origId = origStation?.StationId || originKey;
+            const destId = destStation?.StationId || destKey;
             const res = await postJSON(JOURNEY_URL(lang), {
-                Origin: originKey, Destination: destKey,
+                Origin: origId, Destination: destId,
                 Origin_Location: 0, Destination_Location: 0
             }, {}, 7000);
             if (res.status !== 200 || res.data?.ErrMessage !== 'Success' || !res.data.data)
                 throw new Error(T('jFail'));
-            return res.data.data;
+            const data = res.data.data;
+            if (Array.isArray(data.RoutesMap)) {
+                for (const rm of data.RoutesMap) {
+                    if ((!rm.RoutesJorney || !rm.RoutesJorney.length) && Array.isArray(rm.RoutesJorneyGroup)) {
+                        rm.RoutesJorney = flattenRoutesJorneyGroup(rm.RoutesJorneyGroup);
+                    }
+                }
+            }
+            return data;
         }
 
         async function fetchTraffic() {
@@ -2694,6 +2747,19 @@ gQIDAQAB
             }
         }
 
+        function estimateBtsFare(startKey, endKey, stops) {
+            if (!stops || stops <= 0) return 0;
+            const startSt = App.findStation(startKey);
+            const lineId = startSt?.StationLineId;
+            if (lineId === 3) return 16;
+            if (lineId === 4 || lineId === 5) {
+                return Math.min(45, 15 + Math.max(0, stops - 1) * 3);
+            }
+            const btsTable = [0, 17, 25, 28, 32, 35, 40, 43, 47];
+            if (stops < btsTable.length) return btsTable[stops];
+            return Math.min(62, 47 + (stops - 8) * 3);
+        }
+
         async function calculatePathFare(path) {
             const fareRows = [];
             let totalFare = 0;
@@ -2728,6 +2794,9 @@ gQIDAQAB
                     labelEn = `${I18N.en.jArlFare} (${segment.stops} stations)`;
                 } else {
                     fare = await liveSegmentFare(segment.start, segment.end);
+                    if (!fare || fare <= 0) {
+                        fare = estimateBtsFare(segment.start, segment.end, segment.stops);
+                    }
                     labelTh = I18N.th.jLiveFare;
                     labelEn = I18N.en.jLiveFare;
                 }
@@ -4259,6 +4328,9 @@ gQIDAQAB
                 } else if (viewName === 'planner') {
                     this.journey.open = true;
                     this.renderJourney();
+                    if (this.journey.from && this.journey.to && !this.journey.result && !this.journey.loading) {
+                        this.findRoute();
+                    }
                 } else if (viewName === 'fares') {
                     this.renderFaresView();
                     requestAnimationFrame(() => {
@@ -8470,15 +8542,26 @@ setOriginFromActionSheet() {
                 try {
                     if (j.from === j.to) {
                         j.result = await buildSameStationJourney(j.from);
+                    } else if (isMrtStationKey(j.from) || isMrtStationKey(j.to)) {
+                        j.result = await buildHybridJourney(j.from, j.to);
                     } else {
-                        j.result = (isMrtStationKey(j.from) || isMrtStationKey(j.to))
-                            ? await buildHybridJourney(j.from, j.to)
-                            : await fetchJourney(j.from, j.to);
+                        try {
+                            j.result = await fetchJourney(j.from, j.to);
+                        } catch (apiErr) {
+                            console.warn('Live BTS journey API unavailable, falling back to hybrid planner:', apiErr);
+                            j.result = await buildHybridJourney(j.from, j.to);
+                        }
                     }
                     j.openRoute = 0;
                 } catch (e) {
-                    j.result = null;
-                    j.error = (e.message && e.message !== 'Failed to fetch') ? e.message : T('jFail');
+                    try {
+                        j.result = await buildHybridJourney(j.from, j.to);
+                        j.openRoute = 0;
+                        j.error = null;
+                    } catch (fallbackErr) {
+                        j.result = null;
+                        j.error = (e.message && e.message !== 'Failed to fetch') ? e.message : T('jFail');
+                    }
                 }
                 j.loading = false;
                 this.renderJourney();
@@ -12898,7 +12981,11 @@ setOriginFromActionSheet() {
 
         /* ================= JOURNEY (from → to) ================= */
         function renderJourneyRoute(rm, i, open) {
-            const steps = rm.RoutesJorney || [];
+            let steps = rm.RoutesJorney || [];
+            if (!steps.length && Array.isArray(rm.RoutesJorneyGroup)) {
+                steps = flattenRoutesJorneyGroup(rm.RoutesJorneyGroup);
+                rm.RoutesJorney = steps;
+            }
             if (!steps.length) return '';
 
             // 1. ไล่สีตามสายอย่างต่อเนื่องสำหรับทุกสถานี

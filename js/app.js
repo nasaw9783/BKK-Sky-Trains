@@ -9392,7 +9392,7 @@ setOriginFromActionSheet() {
                                 const m = Math.round(eta.base - (Date.now() - eta.at) / 60000);
                                 incomingText = m <= 0 ? T('arrived') : `${m} ${lang === 'en' ? 'min' : (lang === 'zh' ? '分钟' : 'นาที')}`;
                             } else if (isNoTime) {
-                                incomingText = `- ${lang === 'en' ? 'min' : (lang === 'zh' ? '分钟' : 'นาที')}`;
+                                incomingText = `-- ${lang === 'en' ? 'min' : (lang === 'zh' ? '分钟' : 'นาที')}`;
                             }
                         }
                         timeStr = incomingText
@@ -9407,7 +9407,7 @@ setOriginFromActionSheet() {
                             const m = Math.round(eta.base - (Date.now() - eta.at) / 60000);
                             timeStr = m <= 0 ? T('arrived') : `${m} ${lang === 'en' ? 'min' : (lang === 'zh' ? '分钟' : 'นาที')}`;
                         } else if (isNoTime) {
-                            timeStr = `- ${lang === 'en' ? 'min' : (lang === 'zh' ? '分钟' : 'นาที')}`;
+                            timeStr = `-- ${lang === 'en' ? 'min' : (lang === 'zh' ? '分钟' : 'นาที')}`;
                         }
                     }
                     const prefix = isOutOfService ? '' : (lang === 'en' ? 'To ' : (lang === 'zh' ? '开往 ' : 'ไป'));
@@ -9549,7 +9549,7 @@ setOriginFromActionSheet() {
                             const m = Math.round(eta1.base - (Date.now() - eta1.at) / 60000);
                             p1Time = m <= 0 ? T('arrived') : `${m} นาที`;
                         } else if (isNoTime1) {
-                            p1Time = `- นาที`;
+                            p1Time = `-- นาที`;
                         }
                     }
                 }
@@ -9567,7 +9567,7 @@ setOriginFromActionSheet() {
                             const m = Math.round(eta2.base - (Date.now() - eta2.at) / 60000);
                             p2Time = m <= 0 ? T('arrived') : `${m} นาที`;
                         } else if (isNoTime2) {
-                            p2Time = `- นาที`;
+                            p2Time = `-- นาที`;
                         }
                     }
                 }
@@ -9893,6 +9893,17 @@ setOriginFromActionSheet() {
                 // MT02 มี 2 ชานชาลา (3 และ 4)
                 if ((key === 'MT01' || key === 'MT02') && Array.isArray(platList)) {
                     platList = platList.filter(p => String(p.platform) === '3' || String(p.platform) === '4');
+                    // สายแยกเมืองทองธานี (MT01, MT02) มีรถวิ่งชัตเทิลให้บริการจริงเพียงขบวนเดียว
+                    // ในแอพทางการ BTS (th.btsc.theskytrains) จะไม่แสดงเวลาของขบวนที่ 2 และ 3
+                    // จึงกำหนด time_come = '--' และ time_come_double = null สำหรับขบวนที่ 2 และ 3 เสมอ
+                    for (const p of platList) {
+                        if (Array.isArray(p.train_list) && p.train_list.length > 1) {
+                            for (let i = 1; i < p.train_list.length; i++) {
+                                p.train_list[i].time_come = '--';
+                                p.train_list[i].time_come_double = null;
+                            }
+                        }
+                    }
                 }
                 for (const p of platList) {
                     // กรองขบวนรถศูนย์ซ่อมบำรุง / ขบวนรถเปล่า (เช่น YL00, PK00) ออกตั้งแต่ต้น
@@ -11179,6 +11190,7 @@ setOriginFromActionSheet() {
             const makeTrains = (platform, destStr, destKey, offset, isTerminating) => {
                 const cycle = Math.floor((nowMin - offset) / interval);
                 const trains = [];
+                const isSingleShuttleBranch = (key === 'MT01' || key === 'MT02');
                 for (let i = 1; i <= 3; i++) {
                     const K = cycle + i;
                     const trainArrivalMin = (K * interval) + offset;
@@ -11187,13 +11199,14 @@ setOriginFromActionSheet() {
                     const m = Math.max(0, eta);
                     const trainSeq = ((K % 50) + 50) % 50 + 1;
                     const trainNo = `${lineId}-${platform}-${trainSeq}`;
+                    const isBranchSuppressed = isSingleShuttleBranch && i > 1;
                     trains.push({
                         trainNo,
-                        status: isArriving ? 'arriving' : 'pending',
+                        status: isBranchSuppressed ? 'pending' : (isArriving ? 'arriving' : 'pending'),
                         station: destStr,
                         station_key: destKey,
-                        time_come: isArriving ? '0' : String(Math.round(m)),
-                        time_come_double: m
+                        time_come: isBranchSuppressed ? '--' : (isArriving ? '0' : String(Math.round(m))),
+                        time_come_double: isBranchSuppressed ? null : m
                     });
                 }
                 return trains;
@@ -12121,13 +12134,13 @@ setOriginFromActionSheet() {
 
         // คืน {text, now} สำหรับ ETA (นาทีคงเหลือ ณ ตอนนี้) — approx = ค่าจากความจำ ใส่ ~ นำหน้า
         function etaText(mins, approx) {
-            if (isNaN(mins)) return { text: `-<small>${T('minUnit')}</small>`, now: false };
-            if (mins < -0.75) return { text: `-<small>${T('minUnit')}</small>`, now: false }; // ขบวนออกไปแล้ว / ไม่มีเวลา
+            if (isNaN(mins)) return { text: `--<small>${T('minUnit')}</small>`, now: false };
+            if (mins < -0.75) return { text: `--<small>${T('minUnit')}</small>`, now: false }; // ขบวนออกไปแล้ว / ไม่มีเวลา
             if (mins <= 0.5) return { text: T('arrived'), now: true };
             return { text: (approx ? '~' : '') + Math.round(mins) + `<small>${T('minUnit')}</small>`, now: false };
         }
 
-        // เวลา "ที่ดีที่สุดที่รู้" ของขบวน: ใช้ค่าจาก API ถ้ามี — ถ้าตอบ "--" หรือ "-" แสดงเป็น - นาที
+        // เวลา "ที่ดีที่สุดที่รู้" ของขบวน: ใช้ค่าจาก API ถ้ามี — ถ้าตอบ "--" หรือ "-" แสดงเป็น -- นาที
         // จะไม่นำ time_come_double หรือเวลาจำหลอกมาแสดงเป็นเวลารถเข้าเด็ดขาด
         function bestEta(stationKey, platform, t, fetchedAt) {
             if (!t) return null;
@@ -12135,7 +12148,7 @@ setOriginFromActionSheet() {
             const at = t?.syntheticAt || fetchedAt || nowMs;
 
             // หากขบวนรถระบุ time_come = '--' หรือ '-' (เช่น ขบวนที่ 3 ใน th.btsc.theskytrains)
-            // ให้ถือว่าไม่มีเวลานับถอยหลัง คืนค่า null เพื่อให้แสดงเป็น "- นาที"
+            // ให้ถือว่าไม่มีเวลานับถอยหลัง คืนค่า null เพื่อให้แสดงเป็น "-- นาที"
             if (t.time_come === '--' || t.time_come === '-') {
                 return null;
             }
@@ -12264,7 +12277,17 @@ setOriginFromActionSheet() {
                 return remA - remB;
             });
 
-            // เติมขบวนว่างที่มี time_come = '--' (แสดงเป็น "- นาที") ให้ครบ 3 ขบวน
+            // สายแยกเมืองทองธานี (MT01, MT02) มีรถวิ่งชัตเทิลให้บริการจริงเพียงขบวนเดียว
+            // ในแอพทางการ BTS (th.btsc.theskytrains) จะไม่แสดงเวลาของขบวนที่ 2 และ 3
+            // จึงบังคับให้ขบวนที่ 2 และ 3 แสดงเป็น "-- นาที" เสมอ
+            if (stationKey === 'MT01' || stationKey === 'MT02') {
+                for (let i = 1; i < out.length; i++) {
+                    out[i].time_come = '--';
+                    out[i].time_come_double = null;
+                }
+            }
+
+            // เติมขบวนว่างที่มี time_come = '--' (แสดงเป็น "-- นาที") ให้ครบ 3 ขบวน
             // ตามมาตรฐานการแสดงผล 3 ขบวน (ขบวนแรก, ขบวนที่สอง, ขบวนที่สาม) โดยไม่สร้างเวลาตัวเลขหลอก
             if (out.length > 0 && out.length < 3) {
                 const lastT = out[out.length - 1];
@@ -12737,7 +12760,7 @@ setOriginFromActionSheet() {
                 const init = isArriving
                     ? { text: T('arrived'), now: true }
                     : (isNoTime || !eta || isNaN(rem))
-                        ? { text: `-<small>${T('minUnit')}</small>`, now: false }
+                        ? { text: `--<small>${T('minUnit')}</small>`, now: false }
                         : etaText(rem, eta.approx);
                 // ขบวนนี้ปลายทางต่างจากปลายทางหลักของชานชาลา → ติดป้ายบอก
                 const diffDest = t.station_key && p.DestinationStation_key

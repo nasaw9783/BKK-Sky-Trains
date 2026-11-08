@@ -29,7 +29,8 @@
         const SIAM_KEY = 'CEN';
         // สถานีสำรองเมื่อระบุตำแหน่งผู้ใช้ไม่ได้ (ปฏิเสธสิทธิ์ / รอนาน / อยู่นอกพื้นที่)
         const FALLBACK_STATION_KEY = 'E4';   // อโศก
-        const FALLBACK_MAX_KM = 120;         // ขยายขอบเขตตรวจจับสถานีใกล้เคียงครอบคลุมปริมณฑล (กทม. และจังหวัดใกล้เคียง)
+        const MAX_NEAR_KM = 3.0;              // ระยะห่างสูงสุดที่ถือว่า 'ใกล้สถานี' (3.0 กม.) หากเกินกว่านี้จะไม่ดึงข้อมูลสถานีมาแสดง
+const FALLBACK_MAX_KM = 3.0;
         const GOLD_LINE_ID = 3;
         const MRT_BLUE_FARE_CHANGE_AT = new Date('2026-07-03T00:00:00+07:00').getTime();
         const MRT_LINE_IDS = { BLUE: 101, PURPLE: 102, RED: 103, DARK_RED: 103, LIGHT_RED: 105, ARL: 104, BRT: 201, ORANGE: 106 };
@@ -9243,16 +9244,8 @@ setOriginFromActionSheet() {
             },
 
             useFallbackStation() {
-                if (this.nearest && this.nearest.km != null) return;
-                const s = this.findStation(FALLBACK_STATION_KEY);
-                if (!s) return;
-                this.nearest = { station: s, km: null };
-                this.nearestList = [this.nearest];
-                this.pinnedKey = s.StationKey;
-                this.syncLineToStation(s);
-                this.renderNearest();
-                this.renderStrip();
-                this.loadArrivals(s);
+                // ตามข้อกำหนด: ถ้าไม่อยู่ใกล้สถานีจริง ไม่ดึงข้อมูลสถานีมาแสดง
+                return;
             },
 
             // ปุ่ม "หาใหม่" บนหัวการ์ด: แสดง spin เล็ก ๆ ระหว่างหาตำแหน่ง (ไม่ disabled เพื่อให้กดซ้ำได้ตลอดเวลา)
@@ -9295,13 +9288,23 @@ setOriginFromActionSheet() {
                         }
                         return distDiff;
                     });
-                // ตำแหน่งอยู่ไกลเครือข่ายผิดปกติ (ต่างจังหวัด/GPS เพี้ยน) → ใช้สถานีสำรองแทน
-                if (!ranked.length || ranked[0].km > FALLBACK_MAX_KM) {
-                    this.useFallbackStation();
+                // ตรวจสอบระยะห่าง: ดึงข้อมูลเฉพาะสถานีที่ใกล้ที่สุดในระยะไม่เกิน MAX_NEAR_KM (3.0 กม.) เท่านั้น
+                // หากตำแหน่งผู้ใช้ไม่อยู่ใกล้สถานีใดเลย → ไม่ดึงข้อมูลสถานีและไม่แสดงการ์ดเวลาเดินรถ
+                const nearStations = ranked.filter(r => r.km <= MAX_NEAR_KM);
+                if (!nearStations.length) {
+                    this.nearest = null;
+                    this.nearestList = [];
+                    this.pinnedKey = null;
+                    this.closestFarStation = ranked[0] || null;
+                    this.renderNearest();
+                    this.renderNearestExit();
+                    this.renderStrip();
+                    this.renderTraffic();
                     return;
                 }
-                this.nearest = ranked[0];
-                this.nearestList = ranked.slice(0, 3);
+                this.closestFarStation = null;
+                this.nearest = nearStations[0];
+                this.nearestList = nearStations.slice(0, 3);
                 // ซิงค์สถานีใกล้คุณที่สุด ให้ตรงกันเสมอ 100% ระหว่างการ์ดหน้าแรกและป๊อปอัป
                 this.pinnedKey = this.nearest.station.StationKey;
                 if (!this.userHasPickedExitStation && this.nearest) {
@@ -10422,6 +10425,31 @@ setOriginFromActionSheet() {
                     return;
                 }
                 if (!this.nearest) {
+                    if (this.closestFarStation) {
+                        const farSt = this.closestFarStation.station;
+                        const farKm = this.closestFarStation.km;
+                        const distStr = farKm < 1 ? Math.round(farKm * 1000) + ' ม.' : farKm.toFixed(1) + ' กม.';
+                        const stNm = stName(farSt);
+                        const lineId = farSt.StationLineId || 1;
+
+                        el.innerHTML = `
+                            <div class="not-near-card" style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding:24px 16px; text-align:center; min-height:140px; box-sizing:border-box;">
+                                <div style="width:40px; height:40px; border-radius:50%; background:rgba(239,68,68,0.1); color:#ef4444; display:flex; align-items:center; justify-content:center; margin-bottom:10px; flex-shrink:0;">
+                                    ${getUiIcon('alert', 20, '#ef4444')}
+                                </div>
+                                <div style="font-weight:600; font-size:15px; color:var(--text); margin-bottom:4px;">${lang === 'en' ? 'No train station nearby' : (lang === 'zh' ? '附近无车站' : 'ไม่อยู่ใกล้สถานีรถไฟฟ้า')}</div>
+                                <div style="font-size:12px; color:var(--text-muted); line-height:1.5; margin-bottom:14px; max-width:320px;">
+                                    ${lang === 'en' 
+                                        ? `You are ${distStr} away from the closest station (${stNm}). Live train arrivals are only displayed when you are near a station.` 
+                                        : (lang === 'zh' 
+                                            ? `您距离最近车站 (${stNm}) 约 ${distStr}。仅在靠近车站时显示实时列车。` 
+                                            : `ตำแหน่งของคุณอยู่ห่างจากสถานีที่ใกล้ที่สุด (${stNm}) ประมาณ ${distStr} ระบบจะดึงข้อมูลเวลาเดินรถเมื่ออยู่ใกล้สถานีเท่านั้น`)}
+                                </div>
+                                <button class="btn btn-big" onclick="App.locate(true)">${getUiIcon('compass', 16, '#ffffff')} ${T('relocate')}</button>
+                            </div>`;
+                        return;
+                    }
+
                     el.innerHTML =
                         (this.locError ? `<div class="err-box" style="margin:0 0 10px">${this.locError}</div>` : '') +
                         `<button class="btn btn-big" onclick="App.locate(true)">${getUiIcon('pin', 16, '#ffffff')} ${T('findNearest')}</button>`;

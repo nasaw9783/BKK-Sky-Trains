@@ -9893,17 +9893,6 @@ setOriginFromActionSheet() {
                 // MT02 มี 2 ชานชาลา (3 และ 4)
                 if ((key === 'MT01' || key === 'MT02') && Array.isArray(platList)) {
                     platList = platList.filter(p => String(p.platform) === '3' || String(p.platform) === '4');
-                    // สายแยกเมืองทองธานี (MT01, MT02) มีรถวิ่งชัตเทิลให้บริการจริงเพียงขบวนเดียว
-                    // ในแอพทางการ BTS (th.btsc.theskytrains) จะไม่แสดงเวลาของขบวนที่ 2 และ 3
-                    // จึงกำหนด time_come = '--' และ time_come_double = null สำหรับขบวนที่ 2 และ 3 เสมอ
-                    for (const p of platList) {
-                        if (Array.isArray(p.train_list) && p.train_list.length > 1) {
-                            for (let i = 1; i < p.train_list.length; i++) {
-                                p.train_list[i].time_come = '--';
-                                p.train_list[i].time_come_double = null;
-                            }
-                        }
-                    }
                 }
                 for (const p of platList) {
                     // กรองขบวนรถศูนย์ซ่อมบำรุง / ขบวนรถเปล่า (เช่น YL00, PK00) ออกตั้งแต่ต้น
@@ -11190,7 +11179,6 @@ setOriginFromActionSheet() {
             const makeTrains = (platform, destStr, destKey, offset, isTerminating) => {
                 const cycle = Math.floor((nowMin - offset) / interval);
                 const trains = [];
-                const isSingleShuttleBranch = (key === 'MT01' || key === 'MT02');
                 for (let i = 1; i <= 3; i++) {
                     const K = cycle + i;
                     const trainArrivalMin = (K * interval) + offset;
@@ -11199,14 +11187,13 @@ setOriginFromActionSheet() {
                     const m = Math.max(0, eta);
                     const trainSeq = ((K % 50) + 50) % 50 + 1;
                     const trainNo = `${lineId}-${platform}-${trainSeq}`;
-                    const isBranchSuppressed = isSingleShuttleBranch && i > 1;
                     trains.push({
                         trainNo,
-                        status: isBranchSuppressed ? 'pending' : (isArriving ? 'arriving' : 'pending'),
+                        status: isArriving ? 'arriving' : 'pending',
                         station: destStr,
                         station_key: destKey,
-                        time_come: isBranchSuppressed ? '--' : (isArriving ? '0' : String(Math.round(m))),
-                        time_come_double: isBranchSuppressed ? null : m
+                        time_come: isArriving ? '0' : String(Math.round(m)),
+                        time_come_double: m
                     });
                 }
                 return trains;
@@ -12276,16 +12263,6 @@ setOriginFromActionSheet() {
                 const remB = etaB ? (etaB.base - (nowMs - etaB.at) / 60000) : (b.status === 'arriving' ? 0 : 999);
                 return remA - remB;
             });
-
-            // สายแยกเมืองทองธานี (MT01, MT02) มีรถวิ่งชัตเทิลให้บริการจริงเพียงขบวนเดียว
-            // ในแอพทางการ BTS (th.btsc.theskytrains) จะไม่แสดงเวลาของขบวนที่ 2 และ 3
-            // จึงบังคับให้ขบวนที่ 2 และ 3 แสดงเป็น "-- นาที" เสมอ
-            if (stationKey === 'MT01' || stationKey === 'MT02') {
-                for (let i = 1; i < out.length; i++) {
-                    out[i].time_come = '--';
-                    out[i].time_come_double = null;
-                }
-            }
 
             // เติมขบวนว่างที่มี time_come = '--' (แสดงเป็น "-- นาที") ให้ครบ 3 ขบวน
             // ตามมาตรฐานการแสดงผล 3 ขบวน (ขบวนแรก, ขบวนที่สอง, ขบวนที่สาม) โดยไม่สร้างเวลาตัวเลขหลอก

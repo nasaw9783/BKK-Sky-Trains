@@ -27,7 +27,7 @@
      - โหมดมืด (Dark Theme): `bkk_transit_map_dark.svg`
    - จุดฮอตสปอตสถานีแบบโต้ตอบ (Interactive Station Hotspots): แตะที่สถานีใดๆ บนแผนที่เพื่อเลือกเป็น **สถานีต้นทาง**, **สถานีปลายทาง** หรือเปิดดู **ข้อมูลประตูทางออก** ได้ทันที
    - หน้าต่างคำอธิบายสัญลักษณ์โครงข่าย (Transit Network Legend): แสดงสัญลักษณ์สายสีและจุดเชื่อมต่อสำคัญ เช่น ท่าอากาศยาน (Airport), ท่าเรือ (Pier/Boat), รถไฟทางไกล (SRT), สถานีขนส่งผู้โดยสาร (Bus Terminal), อาคารจอดแล้วจร (Park & Ride), จุดเชื่อมต่อข้ามสาย (Interchange) และสายแยกเมืองทองธานี
-   - แคชออฟไลน์ระดับสูงด้วย Service Worker `bkk-v84` พร้อมใช้งาน 100% แม้ไม่มีอินเทอร์เน็ต
+   - แคชออฟไลน์ระดับสูงด้วย Service Worker `bkk-v85` พร้อมใช้งาน 100% แม้ไม่มีอินเทอร์เน็ต
 6. <img src="icons/ui/compass.svg" width="18" height="18" alt="Planner" style="vertical-align:middle;"> **วางแผนการเดินทางอัจฉริยะ (Smart Journey Planner)**
    - ค้นหาเส้นทางที่ดีที่สุดระหว่างสถานีต้นทางและสถานีปลายทาง
    - คำนวณเวลาเดินทางรวม, จำนวนสถานีที่ผ่าน, จุดเปลี่ยนสาย (Interchanges), และประมาณการค่าโดยสาร
@@ -65,7 +65,7 @@
 16. <img src="icons/ui/timer.svg" width="18" height="18" alt="Performance" style="vertical-align:middle;"> **ความเร็วสูงสุดและมาตรฐานระบบแจ้งเตือน (High-Performance Loading & Notifications)**
     - ปรับปรุงการโหลดด้วย Resource Hints: `preload` สำหรับสคริปต์หลัก (`leaflet.js`, `app.js`) และ `defer` สำหรับไลบรารีความปลอดภัย
     - สถาปัตยกรรม Lazy-rendering สำหรับหน้าที่ไม่ได้เปิด (Exits, Map, Fares, Timetables) ผ่าน `requestIdleCallback` ทำให้เปิดหน้าแรกได้เร็วที่สุด
-    - สถาปัตยกรรม Service Worker แคช `bkk-v84` แยก Critical App Shell ออกจากไฟล์เวกเตอร์ขนาดใหญ่ เพื่อติดตั้ง PWA ได้ทันที
+    - สถาปัตยกรรม Service Worker แคช `bkk-v85` แยก Critical App Shell ออกจากไฟล์เวกเตอร์ขนาดใหญ่ เพื่อติดตั้ง PWA ได้ทันที
     - รองรับสิทธิ์แจ้งเตือน Runtime Notification บน Android 13+ (API 33+) และมาตรฐาน W3C Web Notification
 
 ---
@@ -185,7 +185,7 @@ c:\Users\Administrator\Documents\BKK Sky Trains/
 │   ├── api/
 │   │   └── bkk-proxy.js            # Universal Serverless Reverse Proxy & CORS Bypass สำหรับ BTS Live Transit API
 │   ├── vercel.json                 # การตั้งค่า Deployment และ Universal CORS Routing บน Vercel
-│   ├── sw.js                       # Service Worker สำหรับแคช PWA & Offline Support (bkk-v84)
+│   ├── sw.js                       # Service Worker สำหรับแคช PWA & Offline Support (bkk-v85)
 │   ├── manifest.json               # PWA Web App Manifest สำหรับติดตั้งบนอุปกรณ์
 │   ├── Start-BKK-Transit.ps1       # สคริปต์เปิด Local Server + BTS Live API Reverse Proxy (UTF-8 BOM)
 │   ├── Deploy-BKK-SkyTrains.ps1    # สคริปต์บิลด์ Android APK, ล้างข้อมูลเก่าบน GitHub และ Push อัตโนมัติ (UTF-8 BOM)

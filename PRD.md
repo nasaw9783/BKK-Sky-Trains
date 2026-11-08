@@ -366,11 +366,11 @@ flowchart LR
   - แผนผังโครงข่ายรถไฟฟ้าความละเอียดสูงแบบเวกเตอร์พิมพ์เขียว (Transit Blueprint Vector Map) ครอบคลุม 10 สายรถไฟฟ้า กทม. และปริมณฑล รองรับการสลับโหมดมืด/สว่างอัตโนมัติ (`bkk_transit_map.svg`, `bkk_transit_map_dark.svg`)
   - จุดฮอตสปอตสถานีแบบโต้ตอบบนแผนที่ (`MAP_STATION_HOTSPOTS`) แตะเลือกสถานีต้นทาง, ปลายทาง หรือเปิดดูข้อมูลประตูทางออกได้ทันที
   - หน้าต่างคำอธิบายสัญลักษณ์โครงข่ายและจุดเชื่อมต่อ (Transit Network Legend: Airport, Pier/Boat, SRT, Bus, Park & Ride)
-  - อัปเกรด Service Worker แคชออฟไลน์ขั้นสูงเป็นเวอร์ชัน `bkk-v84` พร้อมพรีแคชไฟล์เวกเตอร์แผนผังความละเอียดสูง
+  - อัปเกรด Service Worker แคชออฟไลน์ขั้นสูงเป็นเวอร์ชัน `bkk-v85` พร้อมพรีแคชไฟล์เวกเตอร์แผนผังความละเอียดสูง
   - สคริปต์รวมกระบวนการดีพลอยและบิลด์อัตโนมัติ (`Deploy-BKK-SkyTrains.ps1`) รองรับการทำงาน 8 ขั้นตอน: จัดระเบียบไฟล์, Update .yml ทั้งหมด, Update .md ทั้งหมดให้ตรงตามเว็บ/แอพ เท่านั้น, Update .ps1 ทั้งหมดให้ตรงตามเว็บ/แอพ เท่านั้น, ทำแอพ Android (Release APK), ต้องการให้ทำเป็น App Bundle (.aab), ทำแอพ IOS, และลบข้อมูลเวอร์เก่า บน Github ออก และ Upload ขึ้น Github Build iOS & Android Apps เวอร์ชั่นที่ทำใหม่ล่าสุดเสมอ
   - ปรับปรุงมาตรฐานการตั้งชื่อตัวติดตั้งและจัดระเบียบโฟลเดอร์ `releases/` แบ่งแยกเป็นโฟลเดอร์ `Android/APK`, `Android/AAB` และ `Apple/IPA` เป็นระบบเดียวกันทุกแพลตฟอร์ม: Android Universal APK (`releases/Android/APK/BKK_SkyTrains_V.1.3.6.apk`), Android Split APKs (`BKK_SkyTrains_V.1.3.6_arm64-v8a.apk`, `_armeabi-v7a.apk`, `_x86_64.apk`), Android App Bundle (`releases/Android/AAB/BKK_SkyTrains_V.1.3.6.aab`) และ iOS IPA (`releases/Apple/IPA/BKK_SkyTrains_V.1.3.6.ipa`) พร้อมสร้าง SHA-256 Checksum ครบถ้วน
   - ปรับปรุงประสิทธิภาพการโหลด (Web & App Performance): Preload สคริปต์หลัก, Defer ไลบรารีความปลอดภัย และ Lazy-render หน้าที่ไม่ใช่หน้าแรกผ่าน `requestIdleCallback` ทำให้หน้าแรกเปิดทันทีแบบ 0ms
-  - ยกระดับ Service Worker แคชเป็นเวอร์ชัน `bkk-v84`: แยกชุดแคช `SHELL_URLS` ออกจากไฟล์เวกเตอร์ขนาดใหญ่ เพื่อให้ติดตั้ง PWA ได้เร็วที่สุด พร้อมระบบแคชพื้นหลังและ Universal Notification Scope Navigation
+  - ยกระดับ Service Worker แคชเป็นเวอร์ชัน `bkk-v85`: แยกชุดแคช `SHELL_URLS` ออกจากไฟล์เวกเตอร์ขนาดใหญ่ เพื่อให้ติดตั้ง PWA ได้เร็วที่สุด พร้อมระบบแคชพื้นหลังและ Universal Notification Scope Navigation
   - ยกระดับมาตรฐานการแจ้งเตือน (Notification Standards): รองรับ Runtime Permission (`POST_NOTIFICATIONS`) บน Android 13+ (API 33+) และระบบการสั่นเตือนมาตรฐานสากลบน Web Notification
   - ปรับปรุงความเรียบร้อยของ UI หน้าเวลาเดินรถ: ลบเส้นประคั่นส่วนหัวการ์ดเส้นทาง (`.line-hero-meta-item.is-route`) เพื่อความสะอาดตาและเป็นระเบียบ
 - **v1.3.5 (Completed):**

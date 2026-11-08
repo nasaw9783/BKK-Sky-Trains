@@ -7862,26 +7862,13 @@ setOriginFromActionSheet() {
                 }
                 if (this.journey.from && this.journey.to) this.findRoute();
 
-                // โหลดพิกัด/สถานีล่าสุดที่เคยบันทึกไว้ (เปิดแอปปุ๊บเจอทันที 0 วินาที ไม่ต้องรอ GPS)
+                // โหลดพิกัดดิบล่าสุด (ไม่ล็อคสถานีเดิมข้าม session เพื่อให้ดึงตามพิกัด GPS จริงเท่านั้น)
+                this.pinnedKey = null;
                 const saved = this.loadSavedPosition();
-                if (saved) {
-                    this.userPos = { lat: saved.lat, lon: saved.lon, calibrated: saved.calibrated };
+                if (saved && saved.lat && saved.lon) {
+                    this.userPos = { lat: saved.lat, lon: saved.lon, accuracy: saved.accuracy, calibrated: false };
                     this.computeNearest();
-                    if (saved.stationKey && this.findStation(saved.stationKey)) {
-                        this.pinnedKey = saved.stationKey;
-                        this.selectedExitKey = saved.stationKey;
-                        const savedSt = this.findStation(saved.stationKey);
-                        if (savedSt) {
-                            this.syncLineToStation(savedSt, true);
-                            this.loadArrivals(savedSt);
-                        }
-                        this.renderNearest();
-                        this.renderNearestExit();
-                    }
-                }
-
-                // แสดงสถานีสำรองทันทีหากยังไม่มีข้อมูลที่บันทึกไว้ (UI พร้อมใช้งานทันที 0ms)
-                if (!saved) {
+                } else {
                     this.useFallbackStation();
                 }
 
@@ -7916,7 +7903,7 @@ setOriginFromActionSheet() {
                 if (topBar) {
                     topBar.classList.add('visible', 'refreshing');
                     const t = topBar.querySelector('.pull-refresh-text');
-                    if (t) t.textContent = lang === 'en' ? 'Updating live trains...' : (lang === 'zh' ? '正在更新实时列车…' : 'กำลังอัปเดตเวลาเดินรถสด...');
+                    if (t) t.textContent = lang === 'en' ? 'Detecting station via GPS...' : (lang === 'zh' ? '正在通过GPS定位车站…' : 'กำลังค้นหาสถานีตามพิกัด GPS...');
                 }
                 if (navigator.vibrate) try { navigator.vibrate(25); } catch(e) {}
 
@@ -7924,7 +7911,27 @@ setOriginFromActionSheet() {
                     // เคลียร์แคชเวลาเดิม ให้ดึงข้อมูลสด 100% จาก BTS OCC API เสมอ
                     this.etaMem = {};
                     this._lastExpireRefresh = 0;
+                    if (this.userPos) {
+                        this.userPos.calibrated = false;
+                    }
+                    this.pinnedKey = null; // ปลดล็อคสถานีเดิม เพื่อให้คำนวณใหม่ตามพิกัด GPS จริงเท่านั้น
 
+                    // ขอพิกัด GPS สดใหม่ทันที และรอผลลัพธ์พิกัด GPS จากดาวเทียม/อุปกรณ์ (Safety timeout 2.5 วินาที)
+                    await new Promise(resolve => {
+                        let done = false;
+                        const onGpsFix = () => {
+                            if (!done) {
+                                done = true;
+                                this._onGpsFixOnce = null;
+                                resolve();
+                            }
+                        };
+                        this._onGpsFixOnce = onGpsFix;
+                        setTimeout(onGpsFix, 2500);
+                        this.locate(true);
+                    });
+
+                    // ดึงเวลาเดินรถสดของสถานีตามพิกัด GPS ล่าสุด
                     const refreshPromises = [];
                     const p = this.pinnedStation();
                     if (p) refreshPromises.push(this.loadArrivals(p, true));
@@ -7938,7 +7945,11 @@ setOriginFromActionSheet() {
                     refreshPromises.push(this.loadTraffic(true));
 
                     await Promise.all(refreshPromises);
-                    this.locate(false);
+
+                    if (topBar) {
+                        const t = topBar.querySelector('.pull-refresh-text');
+                        if (t) t.textContent = lang === 'en' ? 'Updated!' : (lang === 'zh' ? '更新完成!' : 'อัปเดตเรียบร้อย!');
+                    }
                 } catch (e) {
                     console.warn('Reload refresh error:', e);
                 } finally {
@@ -7948,7 +7959,7 @@ setOriginFromActionSheet() {
                             topBar.classList.remove('visible', 'refreshing');
                         }
                         this._isReloading = false;
-                    }, 300);
+                    }, 350);
                 }
             },
 
@@ -8885,16 +8896,14 @@ setOriginFromActionSheet() {
             },
 
             /* ---------- location / nearest ---------- */
-            saveUserPosition(pos, stationKey, isCalibrated = false) {
+            saveUserPosition(pos) {
                 try {
-                    // ไม่บันทึกตำแหน่งหยาบมาก (เช่น IP Geolocation หรือ Cell tower ที่ความแม่นยำต่ำกว่า 1 กม.) ลงหน่วยความจำถาวร
-                    if (pos && pos.accuracy && pos.accuracy >= 1000 && !isCalibrated) return;
+                    if (!pos || !pos.lat || !pos.lon) return;
+                    if (pos.accuracy && pos.accuracy >= 1000) return;
                     localStorage.setItem('bts_user_pos', JSON.stringify({
                         lat: pos.lat,
                         lon: pos.lon,
                         accuracy: pos.accuracy || null,
-                        stationKey: stationKey || (this.nearest?.station?.StationKey) || null,
-                        calibrated: !!isCalibrated,
                         timestamp: Date.now()
                     }));
                 } catch (e) {}
@@ -8905,11 +8914,26 @@ setOriginFromActionSheet() {
                     const raw = localStorage.getItem('bts_user_pos');
                     if (!raw) return null;
                     const data = JSON.parse(raw);
-                    // หากผู้ใช้จงใจเลือกสถานีเอง (calibrated) จำไว้ 14 วัน
-                    // หากเป็นตำแหน่ง GPS อัตโนมัติ จำไว้ไม่เกิน 5 นาที เพื่อป้องกันการแสดงสถานีเก่าข้ามวันข้ามเขต
-                    const maxAge = data.calibrated ? (14 * 24 * 3600 * 1000) : (5 * 60 * 1000);
+                    // หากข้อมูลเดิมมี stationKey หรือ calibrated ติดอยู่ ให้ตัดออกทันทีเพื่อให้ยึดตาม GPS จริงเสมอ
+                    if (data.stationKey || data.calibrated) {
+                        delete data.stationKey;
+                        delete data.calibrated;
+                        localStorage.setItem('bts_user_pos', JSON.stringify({
+                            lat: data.lat,
+                            lon: data.lon,
+                            accuracy: data.accuracy || null,
+                            timestamp: data.timestamp
+                        }));
+                    }
+                    // จำตำแหน่งดิบ GPS ไว้ไม่เกิน 5 นาที สำหรับการเปิดหน้าเว็บทันทีระหว่างรอจับสัญญาณ GPS ใหม่
+                    const maxAge = 5 * 60 * 1000;
                     if (Date.now() - data.timestamp < maxAge && data.lat && data.lon) {
-                        return data;
+                        return {
+                            lat: data.lat,
+                            lon: data.lon,
+                            accuracy: data.accuracy || null,
+                            calibrated: false
+                        };
                     }
                 } catch (e) {}
                 return null;
@@ -8921,7 +8945,6 @@ setOriginFromActionSheet() {
                 this.userPos = { lat: s.Latitude, lon: s.Longitude, calibrated: true };
                 this.pinnedKey = s.StationKey;
                 this.selectedExitKey = s.StationKey;
-                this.saveUserPosition(this.userPos, s.StationKey, true);
                 this.syncLineToStation(s, true);
                 this.computeNearest();
                 this.renderNearest();
@@ -8940,7 +8963,7 @@ setOriginFromActionSheet() {
                 this.locating = false;
                 this.locError = null;
                 this.userPos = { lat, lon, accuracy: accuracy || 10, calibrated: false };
-                this.saveUserPosition(this.userPos, null, false);
+                this.saveUserPosition(this.userPos);
                 this.computeNearest();
                 this.renderNearest();
                 this.renderNearestExit();
@@ -8949,6 +8972,11 @@ setOriginFromActionSheet() {
                 this.renderExitsView(this.selectedExitKey);
                 if (this._lastLocateInteractive && this.nearest?.station) {
                     this.showNearestStationToast(this.nearest.station, this.nearest.km, false);
+                }
+                if (typeof this._onGpsFixOnce === 'function') {
+                    const cb = this._onGpsFixOnce;
+                    this._onGpsFixOnce = null;
+                    cb();
                 }
             },
 
@@ -8991,6 +9019,11 @@ setOriginFromActionSheet() {
                 }
                 this.renderNearest();
                 this.renderNearestExit();
+                if (typeof this._onGpsFixOnce === 'function') {
+                    const cb = this._onGpsFixOnce;
+                    this._onGpsFixOnce = null;
+                    cb();
+                }
             },
 
             locate(interactive) {
@@ -9148,11 +9181,11 @@ setOriginFromActionSheet() {
                     const lat = pos.coords.latitude;
                     const lon = pos.coords.longitude;
 
-                    // ปรับปรุงตำแหน่งเมื่อได้ความแม่นยำดีขึ้น
+                    // ปรับปรุงตำแหน่งเมื่อได้ความแม่นยำดีขึ้น หรือเมื่อถูกเรียกจาก reload
                     const prevAcc = this.userPos?.accuracy || 9999;
-                    if (!this.userPos || acc <= prevAcc || Math.abs(lat - this.userPos.lat) > 0.0005) {
+                    if (!this.userPos || acc <= prevAcc || Math.abs(lat - this.userPos.lat) > 0.0005 || interactive) {
                         this.userPos = { lat, lon, accuracy: acc, calibrated: false };
-                        this.saveUserPosition(this.userPos, null, false);
+                        this.saveUserPosition(this.userPos);
                         this.computeNearest();
                         this.locError = null;
                         this.updateRelocateBtn();
@@ -9163,6 +9196,11 @@ setOriginFromActionSheet() {
                         if (interactive && this.nearest?.station) {
                             this.showNearestStationToast(this.nearest.station, this.nearest.km, false);
                         }
+                    }
+                    if (typeof this._onGpsFixOnce === 'function') {
+                        const cb = this._onGpsFixOnce;
+                        this._onGpsFixOnce = null;
+                        cb();
                     }
                 };
 
@@ -9779,10 +9817,6 @@ setOriginFromActionSheet() {
 
             pinStation(key) {
                 this.pinnedKey = key;
-                const s = this.findStation(key);
-                if (s && s.Latitude && s.Longitude) {
-                    this.saveUserPosition({ lat: s.Latitude, lon: s.Longitude, accuracy: 10 }, key, true);
-                }
                 this.renderNearest();
                 this.renderTraffic();
                 const pinned = this.pinnedStation();

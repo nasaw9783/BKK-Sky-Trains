@@ -110,7 +110,7 @@ cd ..
 
 ### SOP-4: การบิลด์ตัวติดตั้ง iOS & Android (iOS IPA, Android APK & App Bundle Automated Build)
 - ไฟล์ Workflow: `.github/workflows/Build iOS & Android Apps.yml` ("Build iOS & Android Apps")
-- รันบน GitHub Runner `macos-latest` อัตโนมัติเมื่อมีการ Push ไปยัง branch `main` หรือ Tag `v*`
+- รันบน GitHub Runner `macos-15` อัตโนมัติเมื่อมีการ Push ไปยัง branch `main` หรือ Tag `v*`
 - สคริปต์ Workflow จะดึงเวอร์ชันจาก `pubspec.yaml` อัตโนมัติ และสร้างไฟล์แพ็กเกจ:
   - iOS IPA: `BKK_SkyTrains_V.${VERSION_BASE}.ipa` + `.sha256`
   - Android APK: `BKK_SkyTrains_V.${VERSION_BASE}.apk` + `.sha256`

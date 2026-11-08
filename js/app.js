@@ -7862,18 +7862,17 @@ setOriginFromActionSheet() {
                 }
                 if (this.journey.from && this.journey.to) this.findRoute();
 
-                // โหลดพิกัดดิบล่าสุด (ไม่ล็อคสถานีเดิมข้าม session เพื่อให้ดึงตามพิกัด GPS จริงเท่านั้น)
+                // เมื่อมีการ reload app/web ให้ดึงข้อมูลสถานีตามที่ GPS ตรวจจับพิกัดได้เท่านั้น
+                try { localStorage.removeItem('bts_user_pos'); } catch (e) {}
                 this.pinnedKey = null;
-                const saved = this.loadSavedPosition();
-                if (saved && saved.lat && saved.lon) {
-                    this.userPos = { lat: saved.lat, lon: saved.lon, accuracy: saved.accuracy, calibrated: false };
-                    this.computeNearest();
-                } else {
-                    this.useFallbackStation();
-                }
+                this.userPos = null;
+                this.nearest = null;
+                this.nearestList = [];
+                this.locating = true;
+                this.renderNearest();
 
-                // เรียกค้นหาสถานีใกล้คุณที่สุด (GPS) ทันทีเสมอ ทั้งบน Web Browser และ Android APK
-                this.locate(false);
+                // เรียกค้นหาสถานีตามพิกัดดาวเทียม GPS สดทันที ทั้งบน Web Browser และ Android APK
+                this.locate(true);
 
                 this.loadTraffic();   // สถานะการเดินรถ (ฟีเจอร์เสริม — พังก็ไม่กระทบส่วนอื่น)
                 this.initScrollNav(); // ซ่อนปุ่มนำทางเมื่อเลื่อนขึ้น / แสดงเมื่อเลื่อนลง
@@ -7908,15 +7907,18 @@ setOriginFromActionSheet() {
                 if (navigator.vibrate) try { navigator.vibrate(25); } catch(e) {}
 
                 try {
-                    // เคลียร์แคชเวลาเดิม ให้ดึงข้อมูลสด 100% จาก BTS OCC API เสมอ
+                    // เคลียร์แคชและสถานีเดิมทั้งหมด ให้ดึงข้อมูลสถานีตามพิกัด GPS จริงเท่านั้น
                     this.etaMem = {};
                     this._lastExpireRefresh = 0;
-                    if (this.userPos) {
-                        this.userPos.calibrated = false;
-                    }
-                    this.pinnedKey = null; // ปลดล็อคสถานีเดิม เพื่อให้คำนวณใหม่ตามพิกัด GPS จริงเท่านั้น
+                    this.arrivals = {};
+                    this.pinnedKey = null;
+                    this.userPos = null;
+                    this.nearest = null;
+                    this.nearestList = [];
+                    this.locating = true;
+                    this.renderNearest();
 
-                    // ขอพิกัด GPS สดใหม่ทันที และรอผลลัพธ์พิกัด GPS จากดาวเทียม/อุปกรณ์ (Safety timeout 2.5 วินาที)
+                    // ขอพิกัด GPS สดใหม่ทันที และรอผลลัพธ์พิกัด GPS จากดาวเทียม/อุปกรณ์
                     await new Promise(resolve => {
                         let done = false;
                         const onGpsFix = () => {
@@ -7927,21 +7929,14 @@ setOriginFromActionSheet() {
                             }
                         };
                         this._onGpsFixOnce = onGpsFix;
-                        setTimeout(onGpsFix, 2500);
+                        setTimeout(onGpsFix, 4500);
                         this.locate(true);
                     });
 
                     // ดึงเวลาเดินรถสดของสถานีตามพิกัด GPS ล่าสุด
-                    const refreshPromises = [];
                     const p = this.pinnedStation();
+                    const refreshPromises = [];
                     if (p) refreshPromises.push(this.loadArrivals(p, true));
-                    if (this.expandedKey && this.expandedKey !== p?.StationKey) {
-                        const st = this.findStation(this.expandedKey);
-                        if (st) refreshPromises.push(this.loadArrivals(st, true));
-                    }
-                    if (this.popupStation && this.popupStation.StationKey !== p?.StationKey && this.popupStation.StationKey !== this.expandedKey) {
-                        refreshPromises.push(this.loadArrivals(this.popupStation, true));
-                    }
                     refreshPromises.push(this.loadTraffic(true));
 
                     await Promise.all(refreshPromises);
@@ -8990,35 +8985,13 @@ setOriginFromActionSheet() {
 
                 if (reason === 'permission_denied' || reason === 'permission_denied_forever') {
                     this.locError = T('geoDenied');
-                    if (this._lastLocateInteractive) this.showToast(this.locError);
                 } else {
-                    // หากสัญญาณดาวเทียมไม่พร้อมหรือหลุด: ดึง IP Geolocation ชั่วคราว (ไม่บันทึกลงถาวร)
-                    if (typeof fetch === 'function') {
-                        fetchIpLocation(3500)
-                            .then(coords => {
-                                this.userPos = { lat: coords.lat, lon: coords.lon, accuracy: 2000, calibrated: false };
-                                this.computeNearest();
-                                this.locError = null;
-                                this.renderNearest();
-                                this.renderNearestExit();
-                                this.renderStrip();
-                                if (this._lastLocateInteractive && this.nearest?.station) {
-                                    this.showNearestStationToast(this.nearest.station, this.nearest.km, true);
-                                }
-                            })
-                            .catch(() => {
-                                if (this._lastLocateInteractive) this.showToast(T('geoFail'));
-                                if (!this.nearest) this.useFallbackStation();
-                                this.renderNearest();
-                                this.renderNearestExit();
-                            });
-                        return;
-                    }
-                    if (this._lastLocateInteractive) this.showToast(T('geoFail'));
-                    if (!this.nearest) this.useFallbackStation();
+                    this.locError = T('geoFail');
                 }
+                if (this._lastLocateInteractive) this.showToast(this.locError);
                 this.renderNearest();
                 this.renderNearestExit();
+
                 if (typeof this._onGpsFixOnce === 'function') {
                     const cb = this._onGpsFixOnce;
                     this._onGpsFixOnce = null;
@@ -9101,75 +9074,11 @@ setOriginFromActionSheet() {
             },
 
             _locateBrowser(interactive) {
-                if (!this.nearest) {
-                    this.fallbackTimer = setTimeout(() => this.useFallbackStation(), 3500);
-                }
+                clearTimeout(this.fallbackTimer);
+                clearTimeout(this._geoMasterTimer);
+                clearTimeout(this._ipFallbackTimer);
 
                 let resolvedByGps = false;
-                let ipApplied = false;
-
-                const applyIpFallback = (err) => {
-                    if (resolvedByGps || ipApplied) return;
-                    if (typeof fetch !== 'function') {
-                        clearTimeout(this.fallbackTimer);
-                        clearTimeout(this._geoMasterTimer);
-                        this.locating = false;
-                        this.updateRelocateBtn();
-                        if (interactive || (err && err.code !== 1)) {
-                            this.locError = (err && err.code === 1) ? T('geoDenied') : T('geoFail');
-                            if (interactive) this.showToast(this.locError);
-                        }
-                        this.renderNearest();
-                        this.renderNearestExit();
-                        if (!this.nearest) this.useFallbackStation();
-                        return;
-                    }
-
-                    fetchIpLocation(3000)
-                        .then(coords => {
-                            if (resolvedByGps) return;
-                            ipApplied = true;
-                            clearTimeout(this.fallbackTimer);
-                            clearTimeout(this._geoMasterTimer);
-                            this.locating = false;
-                            this.userPos = { lat: coords.lat, lon: coords.lon, accuracy: 2000, calibrated: false };
-                            this.computeNearest();
-                            this.locError = null;
-                            this.updateRelocateBtn();
-                            this.renderNearest();
-                            this.renderNearestExit();
-                            this.renderStrip();
-                            if (interactive && this.nearest?.station) {
-                                this.showNearestStationToast(this.nearest.station, this.nearest.km, true);
-                            }
-                        })
-                        .catch(() => {
-                            if (resolvedByGps) return;
-                            clearTimeout(this.fallbackTimer);
-                            clearTimeout(this._geoMasterTimer);
-                            this.locating = false;
-                            this.updateRelocateBtn();
-                            if (interactive || (err && err.code !== 1)) {
-                                this.locError = (err && err.code === 1) ? T('geoDenied') : T('geoFail');
-                                if (interactive) this.showToast(this.locError);
-                            }
-                            if (!this.nearest) this.useFallbackStation();
-                            this.renderNearest();
-                            this.renderNearestExit();
-                        });
-                };
-
-                if (!navigator.geolocation) {
-                    applyIpFallback({ code: 2 });
-                    return;
-                }
-
-                // บน Desktop PC หรือ file:// ที่ไม่มีฮาร์ดแวร์ GPS ดาวเทียม ให้ดึงตำแหน่งผ่านเครือข่ายควบคู่ไปพร้อมกันหากรอนานเกิน 1.8 วินาที
-                this._ipFallbackTimer = setTimeout(() => {
-                    if (!resolvedByGps) {
-                        applyIpFallback(null);
-                    }
-                }, 1800);
 
                 const onPositionSuccess = (pos) => {
                     resolvedByGps = true;
@@ -9181,22 +9090,19 @@ setOriginFromActionSheet() {
                     const lat = pos.coords.latitude;
                     const lon = pos.coords.longitude;
 
-                    // ปรับปรุงตำแหน่งเมื่อได้ความแม่นยำดีขึ้น หรือเมื่อถูกเรียกจาก reload
-                    const prevAcc = this.userPos?.accuracy || 9999;
-                    if (!this.userPos || acc <= prevAcc || Math.abs(lat - this.userPos.lat) > 0.0005 || interactive) {
-                        this.userPos = { lat, lon, accuracy: acc, calibrated: false };
-                        this.saveUserPosition(this.userPos);
-                        this.computeNearest();
-                        this.locError = null;
-                        this.updateRelocateBtn();
-                        this.renderNearest();
-                        this.renderNearestExit();
-                        this.renderStrip();
+                    this.userPos = { lat, lon, accuracy: acc, calibrated: false };
+                    this.saveUserPosition(this.userPos);
+                    this.computeNearest();
+                    this.locError = null;
+                    this.updateRelocateBtn();
+                    this.renderNearest();
+                    this.renderNearestExit();
+                    this.renderStrip();
 
-                        if (interactive && this.nearest?.station) {
-                            this.showNearestStationToast(this.nearest.station, this.nearest.km, false);
-                        }
+                    if (interactive && this.nearest?.station) {
+                        this.showNearestStationToast(this.nearest.station, this.nearest.km, false);
                     }
+
                     if (typeof this._onGpsFixOnce === 'function') {
                         const cb = this._onGpsFixOnce;
                         this._onGpsFixOnce = null;
@@ -9204,36 +9110,58 @@ setOriginFromActionSheet() {
                     }
                 };
 
-                // ขั้นที่ 1: ลองค้นหาด้วยความแม่นยำสูง (Timeout 8 วินาที, maximumAge 10 วินาที)
+                const onPositionError = (err) => {
+                    if (resolvedByGps) return;
+                    clearTimeout(this.fallbackTimer);
+                    clearTimeout(this._geoMasterTimer);
+                    clearTimeout(this._ipFallbackTimer);
+                    this.locating = false;
+                    this.updateRelocateBtn();
+
+                    if (err && err.code === 1) {
+                        this.locError = T('geoDenied');
+                    } else {
+                        this.locError = T('geoFail');
+                    }
+
+                    if (interactive) this.showToast(this.locError);
+                    this.renderNearest();
+                    this.renderNearestExit();
+
+                    if (typeof this._onGpsFixOnce === 'function') {
+                        const cb = this._onGpsFixOnce;
+                        this._onGpsFixOnce = null;
+                        cb();
+                    }
+                };
+
+                if (!navigator.geolocation) {
+                    onPositionError({ code: 2 });
+                    return;
+                }
+
                 try {
                     navigator.geolocation.getCurrentPosition(
                         onPositionSuccess,
                         (err1) => {
                             if (err1 && err1.code === 1) {
-                                clearTimeout(this._ipFallbackTimer);
-                                applyIpFallback(err1);
+                                onPositionError(err1);
                                 return;
                             }
-                            // ขั้นที่ 2: สลับมาลอง Cellular / Wi-Fi Positioning ทันที (Timeout 4 วินาที, maximumAge 30 วินาที)
                             try {
                                 navigator.geolocation.getCurrentPosition(
                                     onPositionSuccess,
-                                    (err2) => {
-                                        clearTimeout(this._ipFallbackTimer);
-                                        applyIpFallback(err2);
-                                    },
-                                    { enableHighAccuracy: false, maximumAge: 30000, timeout: 4000 }
+                                    onPositionError,
+                                    { enableHighAccuracy: false, maximumAge: 0, timeout: 6000 }
                                 );
                             } catch (e2) {
-                                clearTimeout(this._ipFallbackTimer);
-                                applyIpFallback(err1);
+                                onPositionError(err1);
                             }
                         },
-                        { enableHighAccuracy: true, maximumAge: 10000, timeout: 8000 }
+                        { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 }
                     );
 
-                    // ติดตามสัญญาณดาวเทียมชั่วคราว (15 วินาที) เพื่ออัปเดตความแม่นยำให้สูงขึ้นแบบอัตโนมัติ
-                    if (navigator.geolocation && navigator.geolocation.watchPosition) {
+                    if (navigator.geolocation.watchPosition) {
                         if (this._browserWatchId != null) {
                             navigator.geolocation.clearWatch(this._browserWatchId);
                         }
@@ -9248,7 +9176,7 @@ setOriginFromActionSheet() {
                                 }
                             },
                             null,
-                            { enableHighAccuracy: true, maximumAge: 5000, timeout: 12000 }
+                            { enableHighAccuracy: true, maximumAge: 0, timeout: 12000 }
                         );
                         setTimeout(() => {
                             if (this._browserWatchId != null) {
@@ -9258,8 +9186,7 @@ setOriginFromActionSheet() {
                         }, 15000);
                     }
                 } catch (e) {
-                    clearTimeout(this._ipFallbackTimer);
-                    applyIpFallback({ code: 2 });
+                    onPositionError(e);
                 }
             },
 
@@ -9289,7 +9216,7 @@ setOriginFromActionSheet() {
                 const code = station.StationKey || station.StationId || station.StationCode || '';
                 const name = stName(station);
                 const lineColor = station.StationLineColor || (typeof LINE_BRAND_COLORS !== 'undefined' && LINE_BRAND_COLORS[station.StationLineId || station.LineId]) || '#7AB420';
-                                const header = isApprox
+                const header = isApprox
                     ? (lang === 'en' ? 'Approximate Nearest Station' : (lang === 'zh' ? '大约最近车站' : 'พบสถานีโดยประมาณ'))
                     : (lang === 'en' ? 'Nearest Station Detected' : (lang === 'zh' ? '检测到附近车站' : 'ตรวจพบสถานีใกล้คุณ'));
 
@@ -9315,7 +9242,6 @@ setOriginFromActionSheet() {
                 this.showToast(html, true);
             },
 
-            // แสดงสถานีเริ่มต้นเมื่อยังระบุตำแหน่งไม่ได้ (ไม่ทับสถานีจริงที่เคยหาเจอ)
             useFallbackStation() {
                 if (this.nearest && this.nearest.km != null) return;
                 const s = this.findStation(FALLBACK_STATION_KEY);
@@ -10487,7 +10413,12 @@ setOriginFromActionSheet() {
                 const el = document.getElementById('nearestBody');
                 if (!el) return;
                 if (this.locating && !this.nearest) {
-                    el.innerHTML = `<button class="btn btn-big" onclick="App.locate(true)"><span class="spin"></span> ${T('locating')}</button>`;
+                    el.innerHTML = `
+                        <div class="locating-card" style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding:28px 16px; text-align:center; min-height:140px; box-sizing:border-box;">
+                            <span class="spin dark" style="width:28px; height:28px; margin-bottom:12px; border-width:3px; flex-shrink:0;"></span>
+                            <div style="font-weight:600; font-size:15px; color:var(--text); margin-bottom:4px;">${lang === 'en' ? 'Detecting station via GPS...' : (lang === 'zh' ? '正在通过GPS定位车站…' : 'กำลังค้นหาสถานีตามพิกัด GPS...')}</div>
+                            <div style="font-size:12px; color:var(--text-muted);">${lang === 'en' ? 'Fetching live train arrivals for your nearest station' : (lang === 'zh' ? '正在获取最近车站的实时到站时间' : 'ดึงข้อมูลเวลาเดินรถสดตามตำแหน่งสถานีจริง')}</div>
+                        </div>`;
                     return;
                 }
                 if (!this.nearest) {

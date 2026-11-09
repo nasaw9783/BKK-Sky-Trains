@@ -98,8 +98,9 @@ $ApkDir = Join-Path $AndroidDir "APK"
 $AabDir = Join-Path $AndroidDir "AAB"
 $AppleDir = Join-Path $ReleasesDir "Apple"
 $IpaDir = Join-Path $AppleDir "IPA"
+$PackagesDir = Join-Path $ReleasesDir "Packages"
 
-$relDirs = @($ReleasesDir, $AndroidDir, $ApkDir, $AabDir, $AppleDir, $IpaDir)
+$relDirs = @($ReleasesDir, $AndroidDir, $ApkDir, $AabDir, $AppleDir, $IpaDir, $PackagesDir)
 foreach ($d in $relDirs) {
     if (-not (Test-Path $d)) { New-Item -ItemType Directory -Path $d -Force | Out-Null }
     $gk = Join-Path $d ".gitkeep"
@@ -146,8 +147,9 @@ Get-ChildItem -Path $ReleasesDir -File | Where-Object { $_.Name -like "*.ipa*" }
 $CurrentReleasePrefix = "BKK_SkyTrains_V.$Version"
 
 # ลบไฟล์ตัวติดตั้งเก่าหรือ Split APK ที่ไม่ได้ใช้งานใน Android/APK
+$AllowedApkNames = @("$CurrentReleasePrefix.apk", "$CurrentReleasePrefix.apk.sha256", "BKK_SkyTrains.apk", "BKK_SkyTrains.apk.sha256", ".gitkeep")
 $oldApkFiles = Get-ChildItem -Path $ApkDir -File | Where-Object {
-    $_.Name -ne "$CurrentReleasePrefix.apk" -and $_.Name -ne "$CurrentReleasePrefix.apk.sha256" -and $_.Name -ne ".gitkeep"
+    $_.Name -notin $AllowedApkNames
 }
 foreach ($f in $oldApkFiles) {
     Write-Host "   -> ลบไฟล์ตัวติดตั้งเก่าซ้ำซ้อนใน Android/APK: $($f.Name)" -ForegroundColor Gray
@@ -155,8 +157,9 @@ foreach ($f in $oldApkFiles) {
 }
 
 # ลบไฟล์ตัวติดตั้งเก่าซ้ำซ้อนใน Android/AAB
+$AllowedAabNames = @("$CurrentReleasePrefix.aab", "$CurrentReleasePrefix.aab.sha256", "BKK_SkyTrains.aab", "BKK_SkyTrains.aab.sha256", ".gitkeep")
 $oldAabFiles = Get-ChildItem -Path $AabDir -File | Where-Object {
-    $_.Name -notlike "$CurrentReleasePrefix*" -and $_.Name -ne ".gitkeep"
+    $_.Name -notin $AllowedAabNames
 }
 foreach ($f in $oldAabFiles) {
     Write-Host "   -> ลบไฟล์ตัวติดตั้งเก่าซ้ำซ้อนใน Android/AAB: $($f.Name)" -ForegroundColor Gray
@@ -164,11 +167,22 @@ foreach ($f in $oldAabFiles) {
 }
 
 # ลบไฟล์ตัวติดตั้งเก่าซ้ำซ้อนใน Apple/IPA
+$AllowedIpaNames = @("$CurrentReleasePrefix.ipa", "$CurrentReleasePrefix.ipa.sha256", "BKK_SkyTrains.ipa", "BKK_SkyTrains.ipa.sha256", ".gitkeep")
 $oldIpaFiles = Get-ChildItem -Path $IpaDir -File | Where-Object {
-    $_.Name -notlike "$CurrentReleasePrefix*" -and $_.Name -ne ".gitkeep"
+    $_.Name -notin $AllowedIpaNames
 }
 foreach ($f in $oldIpaFiles) {
     Write-Host "   -> ลบไฟล์ตัวติดตั้งเก่าซ้ำซ้อนใน Apple/IPA: $($f.Name)" -ForegroundColor Gray
+    Remove-Item -LiteralPath $f.FullName -Force -ErrorAction SilentlyContinue
+}
+
+# ลบไฟล์แพ็กเกจรวมเก่าใน Packages/
+$AllowedPkgNames = @("BKK_SkyTrains_Release_Packages.zip", "BKK_SkyTrains_Release_Packages.zip.sha256", ".gitkeep")
+$oldPkgFiles = Get-ChildItem -Path $PackagesDir -File | Where-Object {
+    $_.Name -notin $AllowedPkgNames
+}
+foreach ($f in $oldPkgFiles) {
+    Write-Host "   -> ลบไฟล์แพ็กเกจเก่าซ้ำซ้อนใน Packages: $($f.Name)" -ForegroundColor Gray
     Remove-Item -LiteralPath $f.FullName -Force -ErrorAction SilentlyContinue
 }
 
@@ -395,6 +409,12 @@ if ($BuildAndroid) {
     $hash = (Get-FileHash -LiteralPath $TargetApk -Algorithm SHA256).Hash.ToLower()
     "$hash  $ApkFileName" | Set-Content -LiteralPath $TargetSha -Encoding ASCII
 
+    # สร้างไฟล์ BKK_SkyTrains.apk สำหรับเลือกดาวน์โหลด Standalone APK โดยตรง
+    $DirectApk = Join-Path $ApkDir "BKK_SkyTrains.apk"
+    $DirectApkSha = Join-Path $ApkDir "BKK_SkyTrains.apk.sha256"
+    Copy-Item -LiteralPath $TargetApk -Destination $DirectApk -Force
+    "$hash  BKK_SkyTrains.apk" | Set-Content -LiteralPath $DirectApkSha -Encoding ASCII
+
     Write-Host "   ✓ บิลด์ Android Release APK สำเร็จเรียบร้อย:" -ForegroundColor Green
     Write-Host "     ไฟล์: $TargetApk" -ForegroundColor Gray
     Write-Host "     SHA-256: $hash" -ForegroundColor Yellow
@@ -433,6 +453,12 @@ if ($BuildAppBundle) {
     Copy-Item -LiteralPath $BuiltAab -Destination $TargetAab -Force
     $aabHash = (Get-FileHash -LiteralPath $TargetAab -Algorithm SHA256).Hash.ToLower()
     "$aabHash  $AabFileName" | Set-Content -LiteralPath $TargetAabSha -Encoding ASCII
+
+    # สร้างไฟล์ BKK_SkyTrains.aab สำหรับเลือกดาวน์โหลด Standalone AAB
+    $DirectAab = Join-Path $AabDir "BKK_SkyTrains.aab"
+    $DirectAabSha = Join-Path $AabDir "BKK_SkyTrains.aab.sha256"
+    Copy-Item -LiteralPath $TargetAab -Destination $DirectAab -Force
+    "$aabHash  BKK_SkyTrains.aab" | Set-Content -LiteralPath $DirectAabSha -Encoding ASCII
 
     Write-Host "   ✓ บิลด์ Android App Bundle สำเร็จเรียบร้อย:" -ForegroundColor Green
     Write-Host "     ไฟล์: $TargetAab" -ForegroundColor Gray
@@ -478,6 +504,12 @@ if ($BuildIOS) {
             Copy-Item -LiteralPath $IpaFileName -Destination $TargetIpa -Force
             $ipaHash = (Get-FileHash -LiteralPath $TargetIpa -Algorithm SHA256).Hash.ToLower()
             "$ipaHash  $IpaFileName" | Set-Content -LiteralPath $TargetIpaSha -Encoding ASCII
+
+            # สร้างไฟล์ BKK_SkyTrains.ipa สำหรับเลือกดาวน์โหลด Standalone IPA โดยตรง
+            $DirectIpa = Join-Path $IpaDir "BKK_SkyTrains.ipa"
+            $DirectIpaSha = Join-Path $IpaDir "BKK_SkyTrains.ipa.sha256"
+            Copy-Item -LiteralPath $TargetIpa -Destination $DirectIpa -Force
+            "$ipaHash  BKK_SkyTrains.ipa" | Set-Content -LiteralPath $DirectIpaSha -Encoding ASCII
             rm -rf Payload
             Remove-Item -LiteralPath $IpaFileName -Force -ErrorAction SilentlyContinue
             Write-Host "   ✓ บิลด์ iOS IPA บน macOS สำเร็จ: $TargetIpa" -ForegroundColor Green
@@ -501,6 +533,20 @@ if ($BuildIOS) {
 } else {
     Write-Host "`n[Step 7/8] ⏩ ข้ามการตรวจสอบ iOS ตามคำสั่ง (-BuildIOS:`$false)" -ForegroundColor Yellow
 }
+
+
+# ==============================================================================
+# บรรจุแพ็กเกจรวม BKK_SkyTrains_Release_Packages.zip
+# ==============================================================================
+Write-Host "`n📦 บรรจุแพ็กเกจรวม BKK_SkyTrains_Release_Packages.zip (รวมตัวติดตั้งทุกแพลตฟอร์ม)..." -ForegroundColor Cyan
+$pkgZip = Join-Path $PackagesDir "BKK_SkyTrains_Release_Packages.zip"
+$pkgSha = Join-Path $PackagesDir "BKK_SkyTrains_Release_Packages.zip.sha256"
+if (Test-Path $pkgZip) { Remove-Item -LiteralPath $pkgZip -Force -ErrorAction SilentlyContinue }
+Compress-Archive -Path $AndroidDir, $AppleDir -DestinationPath $pkgZip -Force
+$pkgHash = (Get-FileHash -LiteralPath $pkgZip -Algorithm SHA256).Hash.ToLower()
+"$pkgHash  BKK_SkyTrains_Release_Packages.zip" | Set-Content -LiteralPath $pkgSha -Encoding ASCII
+Write-Host "   ✓ บรรจุแพ็กเกจรวม BKK_SkyTrains_Release_Packages.zip เรียบร้อย: $pkgZip" -ForegroundColor Green
+Write-Host "     SHA-256: $pkgHash" -ForegroundColor Yellow
 
 
 # ==============================================================================

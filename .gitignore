@@ -32,5 +32,6 @@ Desktop.ini
 releases/**/*.apk
 releases/**/*.aab
 releases/**/*.ipa
+releases/**/*.zip
 !releases/**/.gitkeep
 !releases/**/*.sha256

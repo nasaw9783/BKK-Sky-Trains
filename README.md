@@ -207,12 +207,14 @@ c:\Users\Administrator\Documents\BKK Sky Trains/
 │   └── pubspec.yaml                # รายการ Dependencies และการตั้งค่า Assets (Android & iOS)
 │
 ├── [3. Releases & CI/CD]
-│   ├── releases/                   # โฟลเดอร์เก็บไฟล์ตัวติดตั้งแอปพลิเคชัน (แบ่งแยก Android และ Apple)
+│   ├── releases/                   # โฟลเดอร์เก็บไฟล์ตัวติดตั้งแอปพลิเคชัน (แบ่งแยก Android, Apple และ Packages)
 │   │   ├── Android/                # ตัวติดตั้งระบบ Android
-│   │   │   ├── APK/                # BKK_SkyTrains_V.xxxx.apk (.sha256)
-│   │   │   └── AAB/                # BKK_SkyTrains_V.xxxx.aab (.sha256)
-│   │   └── Apple/                  # ตัวติดตั้งระบบ iOS
-│   │       └── IPA/                # BKK_SkyTrains_V.xxxx.ipa (.sha256)
+│   │   │   ├── APK/                # BKK_SkyTrains.apk, BKK_SkyTrains_V.xxxx.apk (.sha256)
+│   │   │   └── AAB/                # BKK_SkyTrains.aab, BKK_SkyTrains_V.xxxx.aab (.sha256)
+│   │   ├── Apple/                  # ตัวติดตั้งระบบ iOS
+│   │   │   └── IPA/                # BKK_SkyTrains.ipa, BKK_SkyTrains_V.xxxx.ipa (.sha256)
+│   │   └── Packages/               # ชุดแพ็กเกจรวมทุกระบบ (All-in-one ZIP Bundle)
+│   │       └── BKK_SkyTrains_Release_Packages.zip (.sha256)
 │   └── .github/workflows/          # GitHub Actions CI/CD (Build iOS & Android Apps.yml สำหรับบิลด์ iOS .ipa, Android .apk และ .aab อัตโนมัติ)
 │
 └── [4. Documentation & Specifications]
@@ -243,14 +245,18 @@ c:\Users\Administrator\Documents\BKK Sky Trains/
 node -e "require('child_process').execSync('powershell ./Start-BKK-Transit.ps1', {stdio: 'inherit'})"
 ```
 
-### วิธีที่ 3: ติดตั้งแอปพลิเคชัน Android (.apk / .aab)
-สามารถนำไฟล์ตัวติดตั้ง Android ล่าสุดจากโฟลเดอร์ `releases/Android/` หรือจากหน้า GitHub Releases ไปติดตั้งหรือใช้งานได้ทันที:
-- `releases/Android/APK/BKK_SkyTrains_V.1.3.6.apk` (Android Release APK พร้อม SHA-256 Checksum)
-- `releases/Android/AAB/BKK_SkyTrains_V.1.3.6.aab` (Android App Bundle สำหรับการแจกจ่ายบน Google Play Store พร้อม SHA-256 Checksum)
-
-### วิธีที่ 4: ติดตั้งแอปพลิเคชัน iOS (.ipa)
-สามารถนำไฟล์ตัวติดตั้ง iOS ล่าสุดจากโฟลเดอร์ `releases/Apple/IPA/` หรือหน้า GitHub Releases ไป Sideload ติดตั้งบน iPhone/iPad:
-- `releases/Apple/IPA/BKK_SkyTrains_V.1.3.6.ipa` (รองรับการติดตั้งผ่าน AltStore, Sideloadly, หรือ TrollStore พร้อมตรวจสอบ SHA-256 Checksum)
+### วิธีที่ 3: เลือกดาวน์โหลดและติดตั้งตัวติดตั้งแอปพลิเคชัน (3 รูปแบบ)
+สามารถเลือกดาวน์โหลดตัวติดตั้งตามความต้องการได้โดยตรงจากหน้า **GitHub Actions Artifacts** หรือ **GitHub Releases**:
+1. 📦 **BKK_SkyTrains_Release_Packages (ZIP)**:
+   - รวมแพ็กเกจตัวติดตั้งครบทุกระบบ (Android APK, AAB, iOS IPA พร้อมไฟล์ตรวจสอบ SHA-256 Checksum)
+   - ไฟล์: `releases/Packages/BKK_SkyTrains_Release_Packages.zip`
+2. 🤖 **BKK_SkyTrains.apk (Android)**:
+   - ตัวติดตั้ง Android Release APK สำหรับติดตั้งบนอุปกรณ์ Android ได้ทันที
+   - ไฟล์: `releases/Android/APK/BKK_SkyTrains.apk` (หรือ `BKK_SkyTrains_V.1.3.6.apk`) พร้อมไฟล์ตรวจสอบ `.sha256`
+   - สำหรับขึ้นสโตร์: `releases/Android/AAB/BKK_SkyTrains.aab`
+3. 🍎 **BKK_SkyTrains.ipa (iOS)**:
+   - ตัวติดตั้ง Apple iOS IPA สำหรับ Sideload ติดตั้งบน iPhone / iPad (ผ่าน AltStore, Sideloadly, หรือ TrollStore)
+   - ไฟล์: `releases/Apple/IPA/BKK_SkyTrains.ipa` (หรือ `BKK_SkyTrains_V.1.3.6.ipa`) พร้อมไฟล์ตรวจสอบ `.sha256`
 
 ### วิธีที่ 5: บิลด์และดีพลอยอัตโนมัติด้วยสคริปต์ `Deploy-BKK-SkyTrains.ps1`
 สคริปต์รวมกระบวนการพัฒนาและปล่อยเวอร์ชันใหม่ ทำงานตามลำดับ 8 ขั้นตอนอย่างเคร่งครัด:

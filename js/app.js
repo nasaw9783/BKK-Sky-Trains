@@ -1182,6 +1182,10 @@ gQIDAQAB
                 guideHeaderLabel: 'คู่มือ',
                 tileGuideTitle: 'คู่มือการใช้งาน',
                 tileGuideSub: 'แนะนำการใช้งานแอปทีละขั้นตอน (12 ขั้นตอน)',
+                settingTileSupportTitle: 'สนับสนุนผู้พัฒนา',
+                settingTileSupportSub: 'ร่วมสนับสนุนโครงการ BKK SkyTrains หรือส่งกำลังใจให้ทีมงาน',
+                settingTileFeedbackTitle: 'แจ้งปัญหา / ข้อเสนอแนะ',
+                settingTileFeedbackSub: 'เปิดแบบฟอร์มในเบราว์เซอร์',
                 stepGuideModalTitle: 'คู่มือการใช้งาน BKK SKYTRAINs',
                 stepGuideModalSub: 'แนะนำการใช้งานแอปทีละขั้นตอน (12 ขั้นตอน)',
                 stepGuidePrevLbl: '‹ ย้อนกลับ',
@@ -1542,6 +1546,10 @@ gQIDAQAB
                 guideHeaderLabel: 'Guide',
                 tileGuideTitle: 'User Guide',
                 tileGuideSub: 'Step-by-step app walkthrough (12 Steps)',
+                settingTileSupportTitle: 'Support Developer',
+                settingTileSupportSub: 'Support the BKK SkyTrains project or send your encouragement',
+                settingTileFeedbackTitle: 'Feedback & Issues',
+                settingTileFeedbackSub: 'Open feedback form in browser',
                 stepGuideModalTitle: 'BKK SKYTRAINs User Guide',
                 stepGuideModalSub: 'Step-by-step app walkthrough (12 Steps)',
                 stepGuidePrevLbl: '‹ Back',
@@ -1902,6 +1910,10 @@ gQIDAQAB
                 guideHeaderLabel: '指南',
                 tileGuideTitle: '使用指南',
                 tileGuideSub: '应用逐步使用导览 (12 个步骤)',
+                settingTileSupportTitle: '支持开发者',
+                settingTileSupportSub: '支持 BKK SkyTrains 项目或向团队发送鼓励',
+                settingTileFeedbackTitle: '问题反馈与建议',
+                settingTileFeedbackSub: '在浏览器中打开表单',
                 stepGuideModalTitle: 'BKK SKYTRAINs 使用指南',
                 stepGuideModalSub: '应用逐步使用导览 (12 个步骤)',
                 stepGuidePrevLbl: '‹ 上一步',
@@ -7917,10 +7929,18 @@ setOriginFromActionSheet() {
                 set('moreGatewayLabel', T('moreGatewayLabel'));
                 set('moreGatewayValue', T('moreGatewayValue'));
                 set('morePlatformLabel', T('morePlatformLabel'));
-                // 12-Step User Guide bindings
+                // 12-Step User Guide & Action Tiles bindings
                 set('userGuideHeaderBtnText', T('guideHeaderLabel'));
                 set('settingsGuideTitle', T('tileGuideTitle'));
                 set('settingsGuideSub', T('tileGuideSub'));
+                set('settingTileUpdateTitle', T('androidUpdateTitle'));
+                set('settingTileUpdateSub', T('androidUpdateSub'));
+                set('settingTileSupportTitle', T('settingTileSupportTitle'));
+                set('settingTileSupportSub', T('settingTileSupportSub'));
+                set('settingTileGuideTitle', T('tileGuideTitle'));
+                set('settingTileGuideSub', T('tileGuideSub'));
+                set('settingTileFeedbackTitle', T('settingTileFeedbackTitle'));
+                set('settingTileFeedbackSub', T('settingTileFeedbackSub'));
                 set('stepGuideModalTitle', T('stepGuideModalTitle'));
                 set('stepGuideModalSub', T('stepGuideModalSub'));
                 set('stepGuidePrevLbl', T('stepGuidePrevLbl'));
@@ -10274,7 +10294,31 @@ setOriginFromActionSheet() {
                 }
             },
 
+            openSupportModal() {
+                const modal = document.getElementById('supportModal');
+                if (modal) {
+                    modal.style.display = 'flex';
+                    document.body.style.overflow = 'hidden';
+                }
+            },
+
+            closeSupportModal() {
+                const modal = document.getElementById('supportModal');
+                if (modal) {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = '';
+                }
+            },
+
+            openFeedbackUrl() {
+                this.openExternalUrl('https://github.com/nasaw9783/BKK-Sky-Trains/issues');
+            },
+
             navStepGuide(delta) {
+                if (this._stepGuideCur === 1 && delta === -1) {
+                    this.closeStepGuide();
+                    return;
+                }
                 const nextStep = this._stepGuideCur + delta;
                 if (nextStep > this._stepGuideTotal) {
                     this.closeStepGuide();
@@ -10301,6 +10345,7 @@ setOriginFromActionSheet() {
                 const percent = document.getElementById('stepGuidePercentText');
                 const dotsRow = document.getElementById('stepGuideDotsRow');
                 const prevBtn = document.getElementById('stepGuidePrevBtn');
+                const prevLbl = document.getElementById('stepGuidePrevLbl');
                 const nextBtn = document.getElementById('stepGuideNextBtn');
                 const nextLbl = document.getElementById('stepGuideNextLbl');
                 if (!body) return;
@@ -10328,13 +10373,18 @@ setOriginFromActionSheet() {
                     dotsRow.innerHTML = dotsHtml;
                 }
 
-                // Update Buttons
-                if (prevBtn) {
-                    prevBtn.disabled = (cur === 1);
+                // Update Buttons (Skip on step 1, Prev on 2-12, Done on 12)
+                if (prevBtn && prevLbl) {
+                    prevBtn.disabled = false;
+                    if (cur === 1) {
+                        prevLbl.textContent = isZh ? '跳过指南' : (isEn ? 'Skip Guide' : 'ข้ามไกด์');
+                    } else {
+                        prevLbl.textContent = isZh ? '‹ 上一步' : (isEn ? '‹ Back' : '‹ ย้อนกลับ');
+                    }
                 }
                 if (nextLbl) {
                     if (cur === total) {
-                        nextLbl.textContent = isZh ? '完成 / 开始使用' : (isEn ? 'Done / Get Started' : 'เสร็จสิ้น / เริ่มใช้งาน');
+                        nextLbl.textContent = isZh ? '明白，立即开始！ ✓' : (isEn ? 'Got it, Let\'s go! ✓' : 'เข้าใจแล้ว เริ่มลุยเลย! ✓');
                     } else {
                         nextLbl.textContent = isZh ? '下一步 ›' : (isEn ? 'Next ›' : 'ถัดไป ›');
                     }

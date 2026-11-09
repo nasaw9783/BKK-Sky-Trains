@@ -10508,6 +10508,129 @@
             filter: brightness(1.1);
         }
 
+        /* Settings Action List Group (com.anonymous.timetrackot Style) */
+        .settings-action-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 14px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .settings-action-tile {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 13px 16px;
+            background: rgba(18, 24, 38, 0.72);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 18px;
+            cursor: pointer !important;
+            text-align: left;
+            width: 100%;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            box-sizing: border-box;
+            text-decoration: none;
+            caret-color: transparent !important;
+            user-select: none !important;
+            font-family: inherit;
+        }
+        [data-theme="light"] .settings-action-tile {
+            background: #ffffff;
+            border-color: rgba(0, 0, 0, 0.08);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+        .settings-action-tile:hover {
+            background: rgba(30, 41, 59, 0.85);
+            border-color: rgba(99, 102, 241, 0.35);
+            transform: translateY(-1px);
+        }
+        [data-theme="light"] .settings-action-tile:hover {
+            background: #f8fafc;
+            border-color: rgba(99, 102, 241, 0.4);
+        }
+        .settings-action-tile:active {
+            transform: scale(0.985);
+        }
+        .settings-tile-icon {
+            width: 44px;
+            height: 44px;
+            min-width: 44px;
+            border-radius: 13px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-sizing: border-box;
+            caret-color: transparent !important;
+            user-select: none !important;
+        }
+        .settings-tile-icon svg {
+            display: block;
+            margin: auto;
+            flex-shrink: 0;
+        }
+        .settings-tile-icon.icon-emerald {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.28);
+        }
+        .settings-tile-icon.icon-pink {
+            background: rgba(236, 72, 153, 0.15);
+            color: #ec4899;
+            border: 1px solid rgba(236, 72, 153, 0.28);
+        }
+        .settings-tile-icon.icon-indigo {
+            background: rgba(99, 102, 241, 0.18);
+            color: #818cf8;
+            border: 1px solid rgba(99, 102, 241, 0.32);
+        }
+        .settings-tile-icon.icon-sky {
+            background: rgba(2, 132, 199, 0.15);
+            color: #38bdf8;
+            border: 1px solid rgba(2, 132, 199, 0.28);
+        }
+        .settings-tile-info {
+            flex: 1;
+            margin-left: 14px;
+            min-width: 0;
+            text-align: left;
+            caret-color: transparent !important;
+            user-select: none !important;
+        }
+        .settings-tile-title {
+            color: var(--ink, #ffffff);
+            font-size: 15px;
+            font-weight: 700;
+            line-height: 1.35;
+            letter-spacing: -0.2px;
+            caret-color: transparent !important;
+            user-select: none !important;
+        }
+        .settings-tile-sub {
+            color: var(--muted, #94a3b8);
+            font-size: 12.5px;
+            margin-top: 2.5px;
+            line-height: 1.38;
+            caret-color: transparent !important;
+            user-select: none !important;
+        }
+        .settings-tile-arrow {
+            color: #64748b;
+            font-size: 20px;
+            font-weight: 400;
+            margin-left: 10px;
+            line-height: 1;
+            flex-shrink: 0;
+            caret-color: transparent !important;
+            user-select: none !important;
+        }
+        .settings-action-tile:hover .settings-tile-arrow {
+            color: var(--brand, #10b981);
+            transform: translateX(2px);
+            transition: all 0.15s ease;
+        }
+
     </style>
     <script>
         /* ========================================================
@@ -11225,7 +11348,7 @@
                             <div class="version-app-name">BKK SKYTRAINs</div>
                             <div class="version-number-tag">
                                 <span class="tag-label" id="moreVersionLabel">เวอร์ชัน</span>
-                                <span class="tag-value">v1.3.6 (Build 13)</span>
+                                <span class="tag-value">v1.3.6 (Build 14)</span>
                             </div>
                         </div>
                     </div>
@@ -11256,31 +11379,67 @@
                         </div>
                     </div>
 
-                    <!-- Android APK Update Action Box (เฉพาะแอพมือถือ Android เท่านั้น) -->
-                    <div id="androidUpdateCard" class="android-update-box" style="display:none;">
-                        <div class="android-update-content">
-                            <div class="android-update-icon-pill" aria-hidden="true">
-                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                                    <polyline points="7 10 12 15 17 10"/>
-                                    <line x1="12" y1="15" x2="12" y2="3"/>
+                    <!-- Action List Tiles (com.anonymous.timetrackot Style) -->
+                    <div class="settings-action-group">
+                        <!-- 1. Check Update -->
+                        <button type="button" class="settings-action-tile tile-update" onclick="App.openAndroidApkUpdate();" title="ตรวจสอบอัปเดตเวอร์ชันใหม่">
+                            <div class="settings-tile-icon icon-emerald">
+                                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
                                 </svg>
                             </div>
-                            <div class="android-update-meta">
-                                <div class="android-update-title" id="androidUpdateTitle">อัปเดตเวอร์ชันใหม่ (Android APK)</div>
-                                <div class="android-update-sub" id="androidUpdateSub">ดาวน์โหลด APK ตัวล่าสุดจาก GitHub Releases</div>
+                            <div class="settings-tile-info">
+                                <div class="settings-tile-title" id="settingTileUpdateTitle">ตรวจสอบอัปเดตเวอร์ชันใหม่</div>
+                                <div class="settings-tile-sub" id="settingTileUpdateSub">เช็คเวอร์ชันล่าสุดจาก GitHub Releases และติดตั้งอัปเดตในแอป</div>
                             </div>
-                        </div>
-                        <div class="android-update-actions">
-                            <button type="button" class="btn-update-version" onclick="App.openAndroidApkUpdate();" title="ดาวน์โหลด APK ตัวล่าสุด" aria-label="Update Version">
-                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                                    <polyline points="7 10 12 15 17 10"/>
-                                    <line x1="12" y1="15" x2="12" y2="3"/>
+                            <div class="settings-tile-arrow">›</div>
+                        </button>
+
+                        <!-- 2. Support Developer -->
+                        <button type="button" class="settings-action-tile tile-support" onclick="App.openSupportModal();" title="สนับสนุนผู้พัฒนา">
+                            <div class="settings-tile-icon icon-pink">
+                                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
                                 </svg>
-                                <span id="btnUpdateVersionLabel">Update Version</span>
-                            </button>
-                        </div>
+                            </div>
+                            <div class="settings-tile-info">
+                                <div class="settings-tile-title" id="settingTileSupportTitle">สนับสนุนผู้พัฒนา</div>
+                                <div class="settings-tile-sub" id="settingTileSupportSub">ร่วมสนับสนุนโครงการ BKK SkyTrains หรือส่งกำลังใจให้ทีมงาน</div>
+                            </div>
+                            <div class="settings-tile-arrow">›</div>
+                        </button>
+
+                        <!-- 3. User Guide (Target Highlighted Item) -->
+                        <button type="button" class="settings-action-tile tile-guide" onclick="App.openStepGuide(1);" title="คู่มือการใช้งาน">
+                            <div class="settings-tile-icon icon-indigo">
+                                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
+                                    <path d="M6 2v20"/>
+                                    <path d="M10 7h6"/>
+                                    <path d="M10 11h6"/>
+                                </svg>
+                            </div>
+                            <div class="settings-tile-info">
+                                <div class="settings-tile-title" id="settingTileGuideTitle">คู่มือการใช้งาน</div>
+                                <div class="settings-tile-sub" id="settingTileGuideSub">แนะนำการใช้งานแอปทีละขั้นตอน (12 ขั้นตอน)</div>
+                            </div>
+                            <div class="settings-tile-arrow">›</div>
+                        </button>
+
+                        <!-- 4. Feedback / Issues -->
+                        <button type="button" class="settings-action-tile tile-feedback" onclick="App.openFeedbackUrl();" title="แจ้งปัญหา / ข้อเสนอแนะ">
+                            <div class="settings-tile-icon icon-sky">
+                                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect width="20" height="16" x="2" y="4" rx="2"/>
+                                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                                </svg>
+                            </div>
+                            <div class="settings-tile-info">
+                                <div class="settings-tile-title" id="settingTileFeedbackTitle">แจ้งปัญหา / ข้อเสนอแนะ</div>
+                                <div class="settings-tile-sub" id="settingTileFeedbackSub">เปิดแบบฟอร์มในเบราว์เซอร์</div>
+                            </div>
+                            <div class="settings-tile-arrow">›</div>
+                        </button>
                     </div>
                 </div>
             </section>
@@ -11808,6 +11967,38 @@
                 <button type="button" class="step-guide-nav-btn step-guide-finish-btn" onclick="App.navStepGuide(1);" id="stepGuideNextBtn">
                     <span id="stepGuideNextLbl">ถัดไป ›</span>
                 </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== Support Developer Modal (สนับสนุนผู้พัฒนา) ===== -->
+    <div id="supportModal" class="nearest-popup-overlay step-guide-modal-overlay" style="display:none;" onclick="if(event.target===this) App.closeSupportModal();">
+        <div class="nearest-popup-card step-guide-modal-card" style="max-width:440px;" role="dialog" aria-modal="true" aria-labelledby="supportModalTitle">
+            <div class="nearest-popup-header step-guide-modal-header" style="background:rgba(236,72,153,0.08);border-bottom:1px solid rgba(236,72,153,0.2);">
+                <div class="nearest-popup-badge-wrap">
+                    <span class="card-icon-pill" style="background:rgba(236,72,153,0.18);border:1px solid rgba(236,72,153,0.3);color:#ec4899;">
+                        <svg class="ui-ic" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:block;margin:auto;">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                        </svg>
+                    </span>
+                    <div>
+                        <div class="nearest-popup-title" id="supportModalTitle" style="caret-color:transparent!important;user-select:none!important;cursor:default!important;color:#fdf2f8;">สนับสนุนผู้พัฒนา</div>
+                        <div style="font-size:11px;color:#f472b6;font-weight:normal;caret-color:transparent!important;user-select:none!important;cursor:default!important;">BKK SkyTrains Open Transit</div>
+                    </div>
+                </div>
+                <button type="button" class="nearest-popup-close" onclick="App.closeSupportModal();" aria-label="ปิด">✕</button>
+            </div>
+            <div class="nearest-popup-body step-guide-modal-body" style="padding:20px 18px;text-align:center;">
+                <div style="font-size:14px;color:var(--ink);line-height:1.6;margin-bottom:14px;caret-color:transparent!important;user-select:none!important;cursor:default!important;">
+                    <strong>BKK SKYTRAINs</strong> พัฒนาขึ้นเพื่อให้ประชาชนและนักท่องเที่ยวทุกคนสามารถตรวจเช็คเวลาเดินรถไฟฟ้า 12 สายในกรุงเทพมหานครได้อย่างแม่นยำ สะดวกรวดเร็ว ปลอดภัย และใช้งานได้แบบ Offline-First 100%
+                </div>
+                <div style="font-size:12.5px;color:var(--muted);line-height:1.5;background:rgba(255,255,255,0.04);border-radius:14px;padding:12px 14px;border:1px solid rgba(255,255,255,0.08);caret-color:transparent!important;user-select:none!important;cursor:default!important;">
+                    หากแอปพลิเคชันนี้มีประโยชน์ต่อการเดินทางของคุณ สามารถร่วมสนับสนุน ให้คะแนน หรือส่งข้อเสนอแนะเพื่อให้เราพัฒนาฟีเจอร์ใหม่ๆ อย่างต่อเนื่อง ❤️
+                </div>
+            </div>
+            <div class="nearest-popup-actions step-guide-modal-actions" style="padding:14px 18px;display:flex;gap:10px;">
+                <button type="button" class="step-guide-nav-btn" onclick="App.closeSupportModal();" style="flex:1;">ปิดหน้าต่าง</button>
+                <button type="button" class="step-guide-nav-btn step-guide-finish-btn" onclick="App.openFeedbackUrl();App.closeSupportModal();" style="flex:1;background:#ec4899!important;">ส่งกำลังใจ / ติชม</button>
             </div>
         </div>
     </div>

@@ -120,44 +120,40 @@ jobs:
           shasum -a 256 "../releases/Apple/IPA/BKK_SkyTrains.ipa" > "../releases/Apple/IPA/BKK_SkyTrains.ipa.sha256"
           rm -rf Payload
 
-      - name: Package Release Bundle (BKK_SkyTrains_Release_Packages)
+      - name: Package Release Bundle (BKK_SkyTrains_V.${{ steps.app_version.outputs.version_base }}_Release_Packages)
         run: |
           mkdir -p releases/Packages
-          zip -r -9 releases/Packages/BKK_SkyTrains_Release_Packages.zip releases/Android releases/Apple
+          VERSION_BASE="${{ steps.app_version.outputs.version_base }}"
+          zip -r -9 "releases/Packages/BKK_SkyTrains_V.${VERSION_BASE}_Release_Packages.zip" releases/Android releases/Apple
+          shasum -a 256 "releases/Packages/BKK_SkyTrains_V.${VERSION_BASE}_Release_Packages.zip" > "releases/Packages/BKK_SkyTrains_V.${VERSION_BASE}_Release_Packages.zip.sha256"
+          cp "releases/Packages/BKK_SkyTrains_V.${VERSION_BASE}_Release_Packages.zip" releases/Packages/BKK_SkyTrains_Release_Packages.zip
           shasum -a 256 releases/Packages/BKK_SkyTrains_Release_Packages.zip > releases/Packages/BKK_SkyTrains_Release_Packages.zip.sha256
 
-      - name: Upload All Release Artifacts (BKK_SkyTrains_Release_Packages)
+      - name: Upload All Release Artifacts (BKK_SkyTrains_V.${{ steps.app_version.outputs.version_base }}_Release_Packages)
         uses: actions/upload-artifact@v4
         with:
-          name: BKK_SkyTrains_Release_Packages
+          name: BKK_SkyTrains_V.${{ steps.app_version.outputs.version_base }}_Release_Packages
           path: |
-            releases/Packages/BKK_SkyTrains_Release_Packages.zip
-            releases/Packages/BKK_SkyTrains_Release_Packages.zip.sha256
+            releases/Packages/BKK_SkyTrains*
             releases/Apple/IPA/BKK_SkyTrains*
             releases/Android/APK/BKK_SkyTrains*
             releases/Android/AAB/BKK_SkyTrains*
           retention-days: 14
 
-      - name: Upload Android APK Artifact (BKK_SkyTrains.apk)
+      - name: Upload Android APK Artifact (BKK_SkyTrains_V.${{ steps.app_version.outputs.version_base }}.apk)
         uses: actions/upload-artifact@v4
         with:
-          name: BKK_SkyTrains.apk
+          name: BKK_SkyTrains_V.${{ steps.app_version.outputs.version_base }}.apk
           path: |
-            releases/Android/APK/BKK_SkyTrains.apk
-            releases/Android/APK/BKK_SkyTrains.apk.sha256
-            releases/Android/APK/BKK_SkyTrains_V.*.apk
-            releases/Android/APK/BKK_SkyTrains_V.*.apk.sha256
+            releases/Android/APK/BKK_SkyTrains*
           retention-days: 14
 
-      - name: Upload iOS IPA Artifact (BKK_SkyTrains.ipa)
+      - name: Upload iOS IPA Artifact (BKK_SkyTrains_V.${{ steps.app_version.outputs.version_base }}.ipa)
         uses: actions/upload-artifact@v4
         with:
-          name: BKK_SkyTrains.ipa
+          name: BKK_SkyTrains_V.${{ steps.app_version.outputs.version_base }}.ipa
           path: |
-            releases/Apple/IPA/BKK_SkyTrains.ipa
-            releases/Apple/IPA/BKK_SkyTrains.ipa.sha256
-            releases/Apple/IPA/BKK_SkyTrains_V.*.ipa
-            releases/Apple/IPA/BKK_SkyTrains_V.*.ipa.sha256
+            releases/Apple/IPA/BKK_SkyTrains*
           retention-days: 14
 
       - name: Clean up older releases on GitHub
@@ -201,9 +197,9 @@ jobs:
           fail_on_unmatched_files: false
           body: |
             ### 🚆 BKK SkyTrains Production Release v${{ steps.app_version.outputs.version_base }}
-            - **📦 All Packages Bundle**: `BKK_SkyTrains_Release_Packages.zip` (รวมตัวติดตั้งทุกระบบ: Android APK, AAB และ iOS IPA)
-            - **🤖 Android Application**: `BKK_SkyTrains.apk` (หรือ `BKK_SkyTrains_V.${{ steps.app_version.outputs.version_base }}.apk`) และ Google Play App Bundle (`BKK_SkyTrains.aab`)
-            - **🍎 iOS Application**: `BKK_SkyTrains.ipa` (หรือ `BKK_SkyTrains_V.${{ steps.app_version.outputs.version_base }}.ipa`)
+            - **📦 All Packages Bundle**: `BKK_SkyTrains_V.${{ steps.app_version.outputs.version_base }}_Release_Packages.zip` (หรือ `BKK_SkyTrains_Release_Packages.zip`)
+            - **🤖 Android Application**: `BKK_SkyTrains_V.${{ steps.app_version.outputs.version_base }}.apk` (หรือ `BKK_SkyTrains.apk`) และ Google Play App Bundle (`BKK_SkyTrains_V.${{ steps.app_version.outputs.version_base }}.aab`)
+            - **🍎 iOS Application**: `BKK_SkyTrains_V.${{ steps.app_version.outputs.version_base }}.ipa` (หรือ `BKK_SkyTrains.ipa`)
             - **Key Features & Enhancements**:
               - Live Traffic Disruption & Incident Dialog system (`TrafficTrainDialogView`) ported from `th.btsc.theskytrains` architecture.
               - Real-time Broadcast Disruption Banner displayed on the home screen when delays or service interruptions occur.

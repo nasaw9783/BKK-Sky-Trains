@@ -1,4 +1,4 @@
-﻿# ==============================================================================
+﻿﻿# ==============================================================================
 #  BKK SkyTrains - Automated Release, Build & GitHub Deployment Script
 #  Encoding: UTF-8 with BOM | Supports: Windows PowerShell 5.1 & pwsh 7+
 #
@@ -177,7 +177,13 @@ foreach ($f in $oldIpaFiles) {
 }
 
 # ลบไฟล์แพ็กเกจรวมเก่าใน Packages/
-$AllowedPkgNames = @("BKK_SkyTrains_Release_Packages.zip", "BKK_SkyTrains_Release_Packages.zip.sha256", ".gitkeep")
+$AllowedPkgNames = @(
+    "BKK_SkyTrains_V.$Version`_Release_Packages.zip",
+    "BKK_SkyTrains_V.$Version`_Release_Packages.zip.sha256",
+    "BKK_SkyTrains_Release_Packages.zip",
+    "BKK_SkyTrains_Release_Packages.zip.sha256",
+    ".gitkeep"
+)
 $oldPkgFiles = Get-ChildItem -Path $PackagesDir -File | Where-Object {
     $_.Name -notin $AllowedPkgNames
 }
@@ -536,16 +542,27 @@ if ($BuildIOS) {
 
 
 # ==============================================================================
-# บรรจุแพ็กเกจรวม BKK_SkyTrains_Release_Packages.zip
+# บรรจุแพ็กเกจรวม BKK_SkyTrains_V.$Version_Release_Packages.zip
 # ==============================================================================
-Write-Host "`n📦 บรรจุแพ็กเกจรวม BKK_SkyTrains_Release_Packages.zip (รวมตัวติดตั้งทุกแพลตฟอร์ม)..." -ForegroundColor Cyan
+Write-Host "`n📦 บรรจุแพ็กเกจรวม BKK_SkyTrains_V.$Version`_Release_Packages.zip (รวมตัวติดตั้งทุกแพลตฟอร์ม)..." -ForegroundColor Cyan
+$pkgVersionZip = Join-Path $PackagesDir "BKK_SkyTrains_V.${Version}_Release_Packages.zip"
+$pkgVersionSha = Join-Path $PackagesDir "BKK_SkyTrains_V.${Version}_Release_Packages.zip.sha256"
 $pkgZip = Join-Path $PackagesDir "BKK_SkyTrains_Release_Packages.zip"
 $pkgSha = Join-Path $PackagesDir "BKK_SkyTrains_Release_Packages.zip.sha256"
+
+if (Test-Path $pkgVersionZip) { Remove-Item -LiteralPath $pkgVersionZip -Force -ErrorAction SilentlyContinue }
 if (Test-Path $pkgZip) { Remove-Item -LiteralPath $pkgZip -Force -ErrorAction SilentlyContinue }
-Compress-Archive -Path $AndroidDir, $AppleDir -DestinationPath $pkgZip -Force
-$pkgHash = (Get-FileHash -LiteralPath $pkgZip -Algorithm SHA256).Hash.ToLower()
+
+Compress-Archive -Path $AndroidDir, $AppleDir -DestinationPath $pkgVersionZip -Force
+$pkgHash = (Get-FileHash -LiteralPath $pkgVersionZip -Algorithm SHA256).Hash.ToLower()
+"$pkgHash  BKK_SkyTrains_V.${Version}_Release_Packages.zip" | Set-Content -LiteralPath $pkgVersionSha -Encoding ASCII
+
+# สร้างสำเนา BKK_SkyTrains_Release_Packages.zip สำหรับดาวน์โหลดแบบทั่วไป
+Copy-Item -LiteralPath $pkgVersionZip -Destination $pkgZip -Force
 "$pkgHash  BKK_SkyTrains_Release_Packages.zip" | Set-Content -LiteralPath $pkgSha -Encoding ASCII
-Write-Host "   ✓ บรรจุแพ็กเกจรวม BKK_SkyTrains_Release_Packages.zip เรียบร้อย: $pkgZip" -ForegroundColor Green
+
+Write-Host "   ✓ บรรจุแพ็กเกจรวม BKK_SkyTrains_V.$Version`_Release_Packages.zip เรียบร้อย:" -ForegroundColor Green
+Write-Host "     ไฟล์หลัก: $pkgVersionZip" -ForegroundColor Gray
 Write-Host "     SHA-256: $pkgHash" -ForegroundColor Yellow
 
 

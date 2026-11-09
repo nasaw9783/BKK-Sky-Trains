@@ -7680,10 +7680,22 @@ setOriginFromActionSheet() {
                 return /android/i.test(navigator.userAgent || '');
             },
 
-            openAndroidApkUpdate() {
-                const apkUrl = 'https://github.com/nasaw9783/BKK-Sky-Trains/releases/latest/download/BKK_SkyTrains.apk';
+            async openAndroidApkUpdate() {
                 this.showToast(T('downloadingLatestApk'), 'success', 3500);
-                this.openExternalUrl(apkUrl);
+                try {
+                    const res = await fetch('https://api.github.com/repos/nasaw9783/BKK-Sky-Trains/releases/latest');
+                    if (res.ok) {
+                        const data = await res.json();
+                        const apkAsset = (data.assets || []).find(a => a.name && a.name.endsWith('.apk') && !a.name.endsWith('.sha256'));
+                        if (apkAsset && apkAsset.browser_download_url) {
+                            this.openExternalUrl(apkAsset.browser_download_url);
+                            return;
+                        }
+                    }
+                } catch (e) {
+                    console.warn('[Update] Could not fetch latest release info from API:', e);
+                }
+                this.openExternalUrl('https://github.com/nasaw9783/BKK-Sky-Trains/releases/latest');
             },
 
             openExternalUrl(url) {

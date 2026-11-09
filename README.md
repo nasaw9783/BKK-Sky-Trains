@@ -69,7 +69,7 @@
     - รองรับสิทธิ์แจ้งเตือน Runtime Notification บน Android 13+ (API 33+) และมาตรฐาน W3C Web Notification
 17. <img src="icons/ui/check.svg" width="18" height="18" alt="Update" style="vertical-align:middle;"> **ปุ่มอัปเดตเวอร์ชันสำหรับแอป Android (Android In-App APK Update)**
     - เฉพาะบนแอปมือถือ Android (ตรวจพบสภาพแวดล้อม Android อัตโนมัติ) ระบบจะแสดงกล่องอัปเดตเวอร์ชันในหน้า "ข้อมูลแอปพลิเคชัน" (แท็บเพิ่มเติม)
-    - ปุ่ม **Update Version** สำหรับดาวน์โหลดไฟล์ `BKK_SkyTrains.apk` ตัวล่าสุดจาก [GitHub Releases](https://github.com/nasaw9783/BKK-Sky-Trains) ได้โดยตรงผ่านตัวจัดการดาวน์โหลดของ Android
+    - ปุ่ม **Update Version** สำหรับดาวน์โหลดไฟล์ APK ตัวล่าสุด (`BKK_SkyTrains_V.*.apk`) จาก [GitHub Releases](https://github.com/nasaw9783/BKK-Sky-Trains) ได้โดยตรงผ่านตัวจัดการดาวน์โหลดของ Android
 
 ---
 
@@ -212,12 +212,12 @@ c:\Users\Administrator\Documents\BKK Sky Trains/
 ├── [3. Releases & CI/CD]
 │   ├── releases/                   # โฟลเดอร์เก็บไฟล์ตัวติดตั้งแอปพลิเคชัน (แบ่งแยก Android, Apple และ Packages)
 │   │   ├── Android/                # ตัวติดตั้งระบบ Android
-│   │   │   ├── APK/                # BKK_SkyTrains.apk, BKK_SkyTrains_V.xxxx.apk (.sha256)
-│   │   │   └── AAB/                # BKK_SkyTrains.aab, BKK_SkyTrains_V.xxxx.aab (.sha256)
+│   │   │   ├── APK/                # BKK_SkyTrains_V.xxxx.apk (.sha256)
+│   │   │   └── AAB/                # BKK_SkyTrains_V.xxxx.aab (.sha256)
 │   │   ├── Apple/                  # ตัวติดตั้งระบบ iOS
-│   │   │   └── IPA/                # BKK_SkyTrains.ipa, BKK_SkyTrains_V.xxxx.ipa (.sha256)
+│   │   │   └── IPA/                # BKK_SkyTrains_V.xxxx.ipa (.sha256)
 │   │   └── Packages/               # ชุดแพ็กเกจรวมทุกระบบ (All-in-one ZIP Bundle)
-│   │       └── BKK_SkyTrains_V.xxxx_Release_Packages.zip, BKK_SkyTrains_Release_Packages.zip (.sha256)
+│   │       └── BKK_SkyTrains_V.xxxx_Release_Packages.zip (.sha256)
 │   └── .github/workflows/          # GitHub Actions CI/CD (Build iOS & Android Apps.yml สำหรับบิลด์ iOS .ipa, Android .apk และ .aab อัตโนมัติ)
 │
 └── [4. Documentation & Specifications]
@@ -248,18 +248,18 @@ c:\Users\Administrator\Documents\BKK Sky Trains/
 node -e "require('child_process').execSync('powershell ./Start-BKK-Transit.ps1', {stdio: 'inherit'})"
 ```
 
-### วิธีที่ 3: เลือกดาวน์โหลดและติดตั้งตัวติดตั้งแอปพลิเคชัน (3 รูปแบบระบุเวอร์ชัน)
+### วิธีที่ 3: เลือกดาวน์โหลดและติดตั้งตัวติดตั้งแอปพลิเคชัน (3 รูปแบบระบุเวอร์ชันเท่านั้น)
 สามารถเลือกดาวน์โหลดตัวติดตั้งตามความต้องการได้โดยตรงจากหน้า **GitHub Actions Artifacts** หรือ **GitHub Releases**:
 1. 📦 **BKK_SkyTrains_V.1.3.6_Release_Packages (ZIP)**:
    - รวมแพ็กเกจตัวติดตั้งครบทุกระบบ (Android APK, AAB, iOS IPA พร้อมไฟล์ตรวจสอบ SHA-256 Checksum)
-   - ไฟล์: `releases/Packages/BKK_SkyTrains_V.1.3.6_Release_Packages.zip` (หรือ `BKK_SkyTrains_Release_Packages.zip`)
+   - ไฟล์: `releases/Packages/BKK_SkyTrains_V.1.3.6_Release_Packages.zip` พร้อมไฟล์ตรวจสอบ `.sha256`
 2. 🤖 **BKK_SkyTrains_V.1.3.6.apk (Android)**:
    - ตัวติดตั้ง Android Release APK สำหรับติดตั้งบนอุปกรณ์ Android ได้ทันที
-   - ไฟล์: `releases/Android/APK/BKK_SkyTrains_V.1.3.6.apk` (หรือ `BKK_SkyTrains.apk`) พร้อมไฟล์ตรวจสอบ `.sha256`
+   - ไฟล์: `releases/Android/APK/BKK_SkyTrains_V.1.3.6.apk` พร้อมไฟล์ตรวจสอบ `.sha256`
    - สำหรับขึ้นสโตร์: `releases/Android/AAB/BKK_SkyTrains_V.1.3.6.aab`
 3. 🍎 **BKK_SkyTrains_V.1.3.6.ipa (iOS)**:
    - ตัวติดตั้ง Apple iOS IPA สำหรับ Sideload ติดตั้งบน iPhone / iPad (ผ่าน AltStore, Sideloadly, หรือ TrollStore)
-   - ไฟล์: `releases/Apple/IPA/BKK_SkyTrains_V.1.3.6.ipa` (หรือ `BKK_SkyTrains.ipa`) พร้อมไฟล์ตรวจสอบ `.sha256`
+   - ไฟล์: `releases/Apple/IPA/BKK_SkyTrains_V.1.3.6.ipa` พร้อมไฟล์ตรวจสอบ `.sha256`
 
 ### วิธีที่ 5: บิลด์และดีพลอยอัตโนมัติด้วยสคริปต์ `Deploy-BKK-SkyTrains.ps1`
 สคริปต์รวมกระบวนการพัฒนาและปล่อยเวอร์ชันใหม่ ทำงานตามลำดับ 8 ขั้นตอนอย่างเคร่งครัด:

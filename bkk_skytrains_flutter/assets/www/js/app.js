@@ -1134,6 +1134,9 @@ gQIDAQAB
                 popupAction: 'ดูรายละเอียดสถานี & ทางออกเต็มจอ',
                 popupDismiss: 'ปิด',
                 navMore: 'เพิ่มเติม',
+                moreGuideSectionTitle: 'คู่มือ & ความช่วยเหลือ',
+                moreGuideTitle: 'คู่มือการใช้งาน',
+                moreGuideSubtitle: 'แนะนำการใช้งานแอปทีละขั้นตอน (12 ขั้นตอน)',
                 moreNotifTitle: 'การแจ้งเตือนเบื้องหลังอัตโนมัติ',
                 moreNotifDesc: 'แจ้งเตือนสถานีใกล้คุณ ขบวนรถถัดไป และเวลานับถอยหลังสดอัตโนมัติเมื่อเข้าใกล้สถานี (ขณะเปิดแอปหรือย่อหน้าจอเบื้องหลัง)',
                 moreNotifActive: 'เปิดใช้งานอยู่ (ตรวจจับสถานีเบื้องหลัง)',
@@ -1486,6 +1489,9 @@ gQIDAQAB
                 popupAction: 'View Full Station & Exit Details',
                 popupDismiss: 'Close',
                 navMore: 'More',
+                moreGuideSectionTitle: 'User Guide & Help',
+                moreGuideTitle: 'User Guide',
+                moreGuideSubtitle: 'Step-by-step interactive app walkthrough (12 steps)',
                 moreNotifTitle: 'Background Notifications',
                 moreNotifDesc: 'Automatic alerts for nearest station, next train, and live countdown when near a station (while app is open or minimized).',
                 moreNotifActive: 'Active (Background Geofencing On)',
@@ -1838,6 +1844,9 @@ gQIDAQAB
                 popupAction: '查看车站详情与全部出入口',
                 popupDismiss: '关闭',
                 navMore: '更多',
+                moreGuideSectionTitle: '使用指南与帮助',
+                moreGuideTitle: '使用指南',
+                moreGuideSubtitle: '应用全功能交互指引（共12步）',
                 moreNotifTitle: '后台自动通知',
                 moreNotifDesc: '接近车站时自动接收最近车站、下一班列车及实时倒计时提醒（在应用打开或后台最小化时）。',
                 moreNotifActive: '已开启（后台地理围栏检测中）',
@@ -7852,6 +7861,9 @@ setOriginFromActionSheet() {
                 setAttr('tab-more', 'title', T('navMore'));
 
                 // More / Settings View
+                set('moreGuideSectionTitle', T('moreGuideSectionTitle'));
+                set('moreGuideTitle', T('moreGuideTitle'));
+                set('moreGuideSubtitle', T('moreGuideSubtitle'));
                 set('moreNotifTitle', T('moreNotifTitle'));
                 set('moreNotifDesc', T('moreNotifDesc'));
                 set('moreLangTitle', T('moreLangTitle'));
@@ -11358,6 +11370,404 @@ setOriginFromActionSheet() {
                 const modal = document.getElementById('interchangeModal');
                 if (modal) modal.style.display = 'none';
                 this.unlockBackgroundScreen();
+            },
+
+            /* ===== Interactive Spotlight Tour Walkthrough (Option 2 - 12 Steps) ===== */
+            _spotlightSteps: [
+                {
+                    view: 'home',
+                    target: '#nearestCard',
+                    title: {
+                        th: '1. สถานีใกล้คุณ & เวลานับถอยหลังสด',
+                        en: '1. Nearest Station & Live Countdown',
+                        zh: '1. 最近车站与实时倒计时'
+                    },
+                    desc: {
+                        th: 'แสดงสถานีรถไฟฟ้าที่ใกล้ตำแหน่งของคุณที่สุด พร้อมเวลารถเข้าชานชาลานับถอยหลังแบบวินาทีต่อวินาที (Live TTA) และเวลา 3 ขบวนถัดไป',
+                        en: 'Displays your closest transit station with real-time second-by-second countdown (Live TTA) and the next 3 trains.',
+                        zh: '显示离您最近的车站，并提供秒级实时进站倒计时（Live TTA）及后续3班列车信息。'
+                    }
+                },
+                {
+                    view: 'home',
+                    target: '#nearestBody',
+                    title: {
+                        th: '2. สลับชานชาลา & ทิศทางปลายทาง',
+                        en: '2. Platform & Destination Selector',
+                        zh: '2. 切换站台与行车方向'
+                    },
+                    desc: {
+                        th: 'แตะสลับชานชาลา 1 หรือ 2 เพื่อดูเวลาขบวนรถตามทิศทางปลายทางที่คุณต้องการเดินทาง พร้อมสถานะความหนาแน่นผู้โดยสาร',
+                        en: 'Tap Platform 1 or 2 to view train departure timings and passenger crowd density in your desired direction.',
+                        zh: '轻点站台1或站台2，查看所需方向的列车时刻及乘客拥挤度。'
+                    }
+                },
+                {
+                    view: 'home',
+                    target: '.quick-planner-banner',
+                    title: {
+                        th: '3. ทางลัดวางแผนการเดินทาง',
+                        en: '3. Quick Trip Planner Shortcut',
+                        zh: '3. 快速行程规划快捷入口'
+                    },
+                    desc: {
+                        th: 'ทางลัดเข้าสู่ระบบค้นหาเส้นทาง คำนวณเวลาเดินทาง และประเมินค่าโดยสารอัตโนมัติสำหรับการเดินทางข้ามสาย',
+                        en: 'Quick shortcut to calculate the fastest transit route, transfer points, and total fares between stations.',
+                        zh: '快速进入路线换乘与票价计算系统，估算最佳出行方案与换乘站点。'
+                    }
+                },
+                {
+                    view: 'home',
+                    target: '#searchInput',
+                    title: {
+                        th: '4. ค้นหาสถานีด่วนทุกสาย',
+                        en: '4. Quick Transit Search',
+                        zh: '4. 快速查找车站'
+                    },
+                    desc: {
+                        th: 'พิมพ์ค้นหาชื่อสถานี รหัสสถานี (เช่น CEN, BL01) หรือสายสี ได้อย่างรวดเร็ว เพื่อดูข้อมูลเส้นทางและเวลาเดินรถทันที',
+                        en: 'Search by station name, code (e.g., CEN, BL01), or line color to instantly preview routes and schedules.',
+                        zh: '输入站名、车站编号（如 CEN、BL01）或线路颜色，即可快速查看路线与时刻信息。'
+                    }
+                },
+                {
+                    view: 'home',
+                    target: '#poiQuickChips',
+                    title: {
+                        th: '5. สถานที่สำคัญยอดนิยม (POI)',
+                        en: '5. Popular Landmarks & POIs',
+                        zh: '5. 热门核心地标与商圈'
+                    },
+                    desc: {
+                        th: 'แตะชิปสถานที่ยอดนิยม เช่น ไอคอนสยาม พารากอน สุวรรณภูมิ ดอนเมือง เพื่อค้นหาสถานีเชื่อมต่อและเส้นทางเดินทางทันที',
+                        en: 'Tap popular landmark chips (e.g. ICONSIAM, Paragon, Suvarnabhumi Airport) to quickly locate nearest stations and routes.',
+                        zh: '轻点热门地标芯片（如暹罗天地、百丽宫、素万那普机场）快速定位接驳车站与出行路线。'
+                    }
+                },
+                {
+                    view: 'home',
+                    target: '#lineTabs',
+                    title: {
+                        th: '6. แถบเลือกสายรถไฟฟ้า 12 สาย',
+                        en: '6. 12 Transit Lines Selector',
+                        zh: '6. 12条轨道交通线路切换'
+                    },
+                    desc: {
+                        th: 'เลือกแตะสายสีเพื่อดูรายชื่อสถานีทั้งหมด พร้อมสัญลักษณ์ไอคอนเฉพาะสายสีและจุดเปลี่ยนขบวน (Interchange) แบบครบวงจร',
+                        en: 'Select transit lines to inspect all stations, line train icons, and interchange connections across Bangkok.',
+                        zh: '选择查看各条轨道交通线路，包含所有车站、线路列车专属图标及全网换乘枢纽。'
+                    }
+                },
+                {
+                    view: 'home',
+                    target: '#tab-map',
+                    title: {
+                        th: '7. แผนผังเส้นทางและแผนที่ไฮบริด',
+                        en: '7. Interactive Transit Map & Hybrid',
+                        zh: '7. 交互式线路图与混合地图'
+                    },
+                    desc: {
+                        th: 'เปิดดูผังโครงข่ายรถไฟฟ้า 12 สายแบบเวกเตอร์ความคมชัดสูง ซูมเข้าออกได้อย่างลื่นไหล หรือสลับดูแผนที่เมืองไฮบริดได้ทันที',
+                        en: 'Explore high-resolution vector transit blueprint map with smooth pinch-zoom and interactive station nodes.',
+                        zh: '查看超高清矢量12线轨道交通图，支持流畅缩放并可无缝切换城市街道混合地图。'
+                    }
+                },
+                {
+                    view: 'home',
+                    target: '#tab-planner',
+                    title: {
+                        th: '8. คำนวณเส้นทางและค่าโดยสารอัจฉริยะ',
+                        en: '8. Smart Journey Planner & Fare',
+                        zh: '8. 智能路线换乘与动态票价'
+                    },
+                    desc: {
+                        th: 'ระบุสถานีต้นทางและปลายทาง ระบบจะค้นหาเส้นทางที่ดีที่สุด จุดเปลี่ยนสาย และสรุปอัตราค่าโดยสารรวมทุกสายอย่างแม่นยำ',
+                        en: 'Choose origin and destination stations; the engine calculates optimal routes, interchange stops, and exact fares.',
+                        zh: '选择起点与终点站，系统将智能计算最优换乘路线、所需时间并精准核算全程联程票价。'
+                    }
+                },
+                {
+                    view: 'home',
+                    target: '#tab-fares',
+                    title: {
+                        th: '9. ตารางอัตราค่าโดยสารทุกสาย',
+                        en: '9. Comprehensive Transit Fare Table',
+                        zh: '9. 全网各线票价阶梯表'
+                    },
+                    desc: {
+                        th: 'ดูตารางอัตราค่าโดยสารตามระยะทางของรถไฟฟ้าแต่ละสาย พร้อมส่วนลดและโปรโมชั่นข้ามสายสีอย่างชัดเจน',
+                        en: 'Review distance-based fare tables for all 12 transit lines, cross-network discounts, and ticketing policies.',
+                        zh: '查阅各线路阶梯里程票价表、跨线换乘优惠及车票政策细则。'
+                    }
+                },
+                {
+                    view: 'home',
+                    target: '#tab-timetables',
+                    title: {
+                        th: '10. ตารางเวลาเดินรถ & ความถี่',
+                        en: '10. Train Timetables & Frequency',
+                        zh: '10. 首末班车时刻与发车频次'
+                    },
+                    desc: {
+                        th: 'เช็คตารางเวลาขบวนรถเที่ยวแรก-เที่ยวสุดท้าย พร้อมความถี่ในการปล่อยขบวนรถช่วงเวลาเร่งด่วนและช่วงปกติ',
+                        en: 'Check first & last train operating timetables, along with peak/off-peak train dispatch frequency intervals.',
+                        zh: '查询各线路首班车、末班车发车时刻及高峰期/平峰期的发车间隔频次。'
+                    }
+                },
+                {
+                    view: 'home',
+                    target: '#tab-more',
+                    title: {
+                        th: '11. การตั้งค่า & แจ้งเตือนเบื้องหลัง',
+                        en: '11. Settings & Geofencing',
+                        zh: '11. 系统设置与后台围栏提醒'
+                    },
+                    desc: {
+                        th: 'เปิดระบบตรวจจับสถานีเบื้องหลังเพื่อแจ้งเตือนเวลารถเข้าเมื่อเดินเข้าใกล้สถานี พร้อมเลือกสไตล์ธีม โหมดเวลา และภาษา',
+                        en: 'Enable background geofence arrival alerts, personalize app themes (Dark/Light/Clear Glass), and switch languages.',
+                        zh: '开启后台地理围栏到站提醒，个性化定制主题（深色/浅色/透明玻璃）与语言设置。'
+                    }
+                },
+                {
+                    view: 'home',
+                    target: '.bottom-nav',
+                    title: {
+                        th: '12. แถบนำทางด่วน 7 หมวดหมู่',
+                        en: '12. Quick Bottom Navigation Bar',
+                        zh: '12. 底部全能快捷导航栏'
+                    },
+                    desc: {
+                        th: 'แถบเมนูด้านล่างช่วยให้คุณสลับไปยังฟังก์ชันการเดินทางทั้งหมดได้อย่างสะดวกรวดเร็วในทุกหน้าจอ พร้อมออกเดินทางได้ทันที!',
+                        en: 'Seamlessly toggle between all transit categories from any screen. You are now ready to commute with Bangkok SkyTrains!',
+                        zh: '底部导航栏让您随时快速切换各项核心出行功能，立即开启轻松便捷的曼谷轻轨出行之旅！'
+                    }
+                }
+            ],
+            _currentSpotlightIndex: 0,
+            _spotlightBoundResize: null,
+            _spotlightBoundKeydown: null,
+
+            startSpotlightTour(stepIndex = 0) {
+                const overlay = document.getElementById('spotlightOverlay');
+                if (!overlay) return;
+
+                this._currentSpotlightIndex = Math.max(0, Math.min(stepIndex, this._spotlightSteps.length - 1));
+                overlay.style.display = 'block';
+                overlay.setAttribute('aria-hidden', 'false');
+
+                // Switch to home view if currently on another view
+                if (this.currentView !== 'home') {
+                    this.switchView('home');
+                }
+
+                // Bind resize and scroll listeners if not already bound
+                if (!this._spotlightBoundResize) {
+                    this._spotlightBoundResize = () => {
+                        if (overlay.style.display !== 'none') {
+                            this._positionSpotlightElements(this._currentSpotlightIndex);
+                        }
+                    };
+                    window.addEventListener('resize', this._spotlightBoundResize);
+                    window.addEventListener('scroll', this._spotlightBoundResize, true);
+                }
+
+                // Bind keyboard shortcuts
+                if (!this._spotlightBoundKeydown) {
+                    this._spotlightBoundKeydown = (e) => {
+                        if (overlay.style.display === 'none') return;
+                        if (e.key === 'Escape') {
+                            this.closeSpotlightTour();
+                        } else if (e.key === 'ArrowRight' || e.key === 'Enter') {
+                            this.nextSpotlightStep();
+                        } else if (e.key === 'ArrowLeft') {
+                            this.prevSpotlightStep();
+                        }
+                    };
+                    window.addEventListener('keydown', this._spotlightBoundKeydown);
+                }
+
+                // Render step after small DOM settle delay
+                setTimeout(() => {
+                    this.renderSpotlightStep(this._currentSpotlightIndex);
+                }, 100);
+            },
+
+            renderSpotlightStep(index) {
+                const overlay = document.getElementById('spotlightOverlay');
+                if (!overlay || overlay.style.display === 'none') return;
+
+                const total = this._spotlightSteps.length;
+                this._currentSpotlightIndex = Math.max(0, Math.min(index, total - 1));
+                const step = this._spotlightSteps[this._currentSpotlightIndex];
+
+                // Switch view if specified
+                if (step.view && this.currentView !== step.view) {
+                    this.switchView(step.view);
+                }
+
+                // Scroll target into view
+                const targetEl = document.querySelector(step.target);
+                if (targetEl) {
+                    targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+
+                setTimeout(() => {
+                    this._positionSpotlightElements(this._currentSpotlightIndex);
+                }, 260);
+            },
+
+            _positionSpotlightElements(index) {
+                const overlay = document.getElementById('spotlightOverlay');
+                if (!overlay || overlay.style.display === 'none') return;
+
+                const total = this._spotlightSteps.length;
+                const step = this._spotlightSteps[index];
+                const targetEl = document.querySelector(step.target);
+                const cutout = document.getElementById('spotlightCutout');
+                const highlightBox = document.getElementById('spotlightHighlightBox');
+                const tooltip = document.getElementById('spotlightTooltip');
+                if (!cutout || !highlightBox || !tooltip) return;
+
+                const pad = 6;
+                let rect;
+                if (targetEl) {
+                    rect = targetEl.getBoundingClientRect();
+                } else {
+                    rect = {
+                        left: window.innerWidth * 0.1,
+                        top: window.innerHeight * 0.25,
+                        width: window.innerWidth * 0.8,
+                        height: 120
+                    };
+                }
+
+                const x = Math.max(0, rect.left - pad);
+                const y = Math.max(0, rect.top - pad);
+                const w = Math.max(20, rect.width + (pad * 2));
+                const h = Math.max(20, rect.height + (pad * 2));
+
+                // Update SVG cutout coordinates
+                cutout.setAttribute('x', x);
+                cutout.setAttribute('y', y);
+                cutout.setAttribute('width', w);
+                cutout.setAttribute('height', h);
+                cutout.setAttribute('rx', 14);
+                cutout.setAttribute('ry', 14);
+
+                // Update glowing highlight box
+                highlightBox.style.left = `${x}px`;
+                highlightBox.style.top = `${y}px`;
+                highlightBox.style.width = `${w}px`;
+                highlightBox.style.height = `${h}px`;
+
+                // Localized text resolution
+                const lang = this.lang || 'th';
+                const titleText = (step.title && step.title[lang]) || (step.title && step.title.th) || '';
+                const descText = (step.desc && step.desc[lang]) || (step.desc && step.desc.th) || '';
+
+                // Update tooltip text
+                const counterEl = document.getElementById('spotlightStepCounter');
+                const titleEl = document.getElementById('spotlightTitle');
+                const descEl = document.getElementById('spotlightDesc');
+                if (counterEl) counterEl.textContent = `${index + 1} / ${total}`;
+                if (titleEl) titleEl.textContent = titleText;
+                if (descEl) descEl.textContent = descText;
+
+                // Render indicator dots
+                const dotsEl = document.getElementById('spotlightDots');
+                if (dotsEl) {
+                    dotsEl.innerHTML = Array.from({ length: total }, (_, i) =>
+                        `<span class="spotlight-dot ${i === index ? 'active' : ''}" onclick="App.renderSpotlightStep(${i})" title="ขั้นตอนที่ ${i + 1}"></span>`
+                    ).join('');
+                }
+
+                // Update Action Buttons
+                const prevBtn = document.getElementById('spotlightPrevBtn');
+                const nextBtn = document.getElementById('spotlightNextBtn');
+                const skipBtn = document.getElementById('spotlightSkipBtn');
+
+                if (skipBtn) {
+                    skipBtn.textContent = lang === 'en' ? 'Skip' : (lang === 'zh' ? '跳过' : 'ข้ามทัวร์');
+                }
+                if (prevBtn) {
+                    prevBtn.disabled = index === 0;
+                    prevBtn.textContent = lang === 'en' ? '‹ Back' : (lang === 'zh' ? '‹ 上一步' : '‹ ก่อนหน้า');
+                }
+                if (nextBtn) {
+                    if (index === total - 1) {
+                        nextBtn.textContent = lang === 'en' ? 'Get Started! ✓' : (lang === 'zh' ? '开始使用！✓' : 'เข้าใจแล้ว เริ่มใช้งานเลย! ✓');
+                        nextBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
+                    } else {
+                        nextBtn.textContent = lang === 'en' ? 'Next ›' : (lang === 'zh' ? '下一步 ›' : 'ถัดไป ›');
+                        nextBtn.style.background = 'linear-gradient(135deg, #0284c7, #38bdf8)';
+                    }
+                }
+
+                // Dynamic Tooltip Placement (Above or Below Target, Clamped)
+                const tooltipH = tooltip.offsetHeight || 190;
+                const tooltipW = tooltip.offsetWidth || Math.min(360, window.innerWidth - 32);
+                const viewH = window.innerHeight;
+                const viewW = window.innerWidth;
+
+                const tooltipLeft = Math.max(16, Math.min(viewW - tooltipW - 16, (viewW - tooltipW) / 2));
+                let tooltipTop;
+
+                const spaceBelow = viewH - (y + h);
+                const spaceAbove = y;
+
+                if (spaceBelow >= tooltipH + 18) {
+                    tooltipTop = y + h + 12;
+                } else if (spaceAbove >= tooltipH + 18) {
+                    tooltipTop = y - tooltipH - 12;
+                } else {
+                    tooltipTop = Math.max(16, Math.min(viewH - tooltipH - 16, (viewH - tooltipH) / 2));
+                }
+
+                tooltip.style.left = `${tooltipLeft}px`;
+                tooltip.style.top = `${tooltipTop}px`;
+            },
+
+            nextSpotlightStep() {
+                if (this._currentSpotlightIndex < this._spotlightSteps.length - 1) {
+                    this.renderSpotlightStep(this._currentSpotlightIndex + 1);
+                } else {
+                    this.closeSpotlightTour();
+                    if (typeof this.showToast === 'function') {
+                        const lang = this.lang || 'th';
+                        const msg = lang === 'en' ? 'Ready to travel! Have a great trip.' : (lang === 'zh' ? '准备就绪，祝您旅途愉快！' : 'พร้อมออกเดินทางแล้ว! ขอให้เดินทางโดยสวัสดิภาพ');
+                        this.showToast(msg);
+                    }
+                }
+            },
+
+            prevSpotlightStep() {
+                if (this._currentSpotlightIndex > 0) {
+                    this.renderSpotlightStep(this._currentSpotlightIndex - 1);
+                }
+            },
+
+            closeSpotlightTour() {
+                const overlay = document.getElementById('spotlightOverlay');
+                if (overlay) {
+                    overlay.style.display = 'none';
+                    overlay.setAttribute('aria-hidden', 'true');
+                }
+                if (this._spotlightBoundResize) {
+                    window.removeEventListener('resize', this._spotlightBoundResize);
+                    window.removeEventListener('scroll', this._spotlightBoundResize, true);
+                    this._spotlightBoundResize = null;
+                }
+                if (this._spotlightBoundKeydown) {
+                    window.removeEventListener('keydown', this._spotlightBoundKeydown);
+                    this._spotlightBoundKeydown = null;
+                }
+                try {
+                    localStorage.setItem('bkk_skytrains_spotlight_done', 'true');
+                } catch (e) { /* ignore */ }
+            },
+
+            handleSpotlightBackdropClick() {
+                this.nextSpotlightStep();
             }
         };
 

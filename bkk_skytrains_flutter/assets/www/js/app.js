@@ -4256,7 +4256,7 @@ gQIDAQAB
         /* ================= APP ================= */
         const App = {
             version: '1.3.6',
-            build: 17,
+            build: 18,
             _hasApkUpdate: undefined,
             _isCheckingApkUpdate: false,
             _latestApkDownloadUrl: null,
@@ -7740,7 +7740,7 @@ setOriginFromActionSheet() {
                 };
 
                 const currentVerStr = this.version || '1.3.6';
-                const currentBuildNum = this.build || 17;
+                const currentBuildNum = this.build || 18;
 
                 const remoteVer = parseVersion(releaseData.tag_name || releaseData.name);
                 const localVer = parseVersion(currentVerStr);
@@ -7752,6 +7752,30 @@ setOriginFromActionSheet() {
                     if ((remoteVer[i] || 0) < (localVer[i] || 0)) return false;
                 }
                 return remoteBuild > localBuild;
+            },
+
+            getPreferredApkAsset(assets) {
+                if (!Array.isArray(assets)) return null;
+                const apks = assets.filter(a => a && a.name && a.name.endsWith('.apk') && !a.name.endsWith('.sha256'));
+                if (apks.length === 0) return null;
+
+                const parseBuild = (name) => {
+                    if (!name) return 0;
+                    const m = name.match(/Build[._\s]+(\d+)/i) || name.match(/\+(\d+)$/);
+                    return m ? parseInt(m[1], 10) || 0 : 0;
+                };
+
+                apks.sort((a, b) => {
+                    const buildB = parseBuild(b.name);
+                    const buildA = parseBuild(a.name);
+                    if (buildB !== buildA) return buildB - buildA;
+                    const isBuildB = /Build/i.test(b.name) ? 1 : 0;
+                    const isBuildA = /Build/i.test(a.name) ? 1 : 0;
+                    if (isBuildB !== isBuildA) return isBuildB - isBuildA;
+                    return (b.id || 0) - (a.id || 0);
+                });
+
+                return apks[0];
             },
 
             async checkAndroidApkUpdate(force = false) {
@@ -7781,10 +7805,9 @@ setOriginFromActionSheet() {
 
                     if (res.ok) {
                         const data = await res.json();
-                        const apkAssets = (data.assets || []).filter(a => a.name && a.name.endsWith('.apk') && !a.name.endsWith('.sha256'));
-                        if (apkAssets.length > 0) {
-                            const preferredApk = apkAssets.find(a => /Build/i.test(a.name)) || apkAssets.find(a => /_V\./i.test(a.name)) || apkAssets[0];
-                            if (preferredApk && preferredApk.browser_download_url) {
+                        const preferredApk = this.getPreferredApkAsset(data.assets);
+                        if (preferredApk) {
+                            if (preferredApk.browser_download_url) {
                                 this._latestApkDownloadUrl = preferredApk.browser_download_url;
                             }
                             const isNewer = this.isReleaseNewerThanInstalled(data);
@@ -7816,8 +7839,7 @@ setOriginFromActionSheet() {
                     const res = await fetch('https://api.github.com/repos/nasaw9783/BKK-Sky-Trains/releases/latest');
                     if (res.ok) {
                         const data = await res.json();
-                        const apkAssets = (data.assets || []).filter(a => a.name && a.name.endsWith('.apk') && !a.name.endsWith('.sha256'));
-                        const preferredApk = apkAssets.find(a => /Build/i.test(a.name)) || apkAssets.find(a => /_V\./i.test(a.name)) || apkAssets[0];
+                        const preferredApk = this.getPreferredApkAsset(data.assets);
                         if (preferredApk && preferredApk.browser_download_url) {
                             this._latestApkDownloadUrl = preferredApk.browser_download_url;
                             this.openExternalUrl(preferredApk.browser_download_url);

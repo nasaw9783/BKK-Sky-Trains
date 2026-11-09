@@ -1179,6 +1179,14 @@ gQIDAQAB
                 androidUpdateSub: 'ดาวน์โหลด APK ตัวล่าสุดจาก GitHub Releases',
                 btnUpdateVersion: 'Update Version',
                 downloadingLatestApk: 'กำลังเปิดดาวน์โหลด APK ตัวล่าสุดจาก GitHub Releases...',
+                guideHeaderLabel: 'คู่มือ',
+                tileGuideTitle: 'คู่มือการใช้งาน',
+                tileGuideSub: 'แนะนำการใช้งานแอปทีละขั้นตอน (12 ขั้นตอน)',
+                stepGuideModalTitle: 'คู่มือการใช้งาน BKK SKYTRAINs',
+                stepGuideModalSub: 'แนะนำการใช้งานแอปทีละขั้นตอน (12 ขั้นตอน)',
+                stepGuidePrevLbl: '‹ ย้อนกลับ',
+                stepGuideNextLbl: 'ถัดไป ›',
+                stepGuideFinishLbl: 'เสร็จสิ้น / เริ่มใช้งาน',
             },
             en: {
                 appName: 'BKK SKYTRAINs',
@@ -1531,6 +1539,14 @@ gQIDAQAB
                 androidUpdateSub: 'Download latest APK release from GitHub',
                 btnUpdateVersion: 'Update Version',
                 downloadingLatestApk: 'Opening latest APK download from GitHub Releases...',
+                guideHeaderLabel: 'Guide',
+                tileGuideTitle: 'User Guide',
+                tileGuideSub: 'Step-by-step app walkthrough (12 Steps)',
+                stepGuideModalTitle: 'BKK SKYTRAINs User Guide',
+                stepGuideModalSub: 'Step-by-step app walkthrough (12 Steps)',
+                stepGuidePrevLbl: '‹ Back',
+                stepGuideNextLbl: 'Next ›',
+                stepGuideFinishLbl: 'Done / Get Started',
             },
             zh: {
                 appName: 'BKK SKYTRAINs',
@@ -1883,6 +1899,14 @@ gQIDAQAB
                 androidUpdateSub: '从 GitHub Releases 下载最新 APK 安装包',
                 btnUpdateVersion: 'Update Version',
                 downloadingLatestApk: '正在从 GitHub Releases 打开最新 APK 下载...',
+                guideHeaderLabel: '指南',
+                tileGuideTitle: '使用指南',
+                tileGuideSub: '应用逐步使用导览 (12 个步骤)',
+                stepGuideModalTitle: 'BKK SKYTRAINs 使用指南',
+                stepGuideModalSub: '应用逐步使用导览 (12 个步骤)',
+                stepGuidePrevLbl: '‹ 上一步',
+                stepGuideNextLbl: '下一步 ›',
+                stepGuideFinishLbl: '完成 / 开始使用',
             }
         };
 
@@ -7893,6 +7917,16 @@ setOriginFromActionSheet() {
                 set('moreGatewayLabel', T('moreGatewayLabel'));
                 set('moreGatewayValue', T('moreGatewayValue'));
                 set('morePlatformLabel', T('morePlatformLabel'));
+                // 12-Step User Guide bindings
+                set('userGuideHeaderBtnText', T('guideHeaderLabel'));
+                set('settingsGuideTitle', T('tileGuideTitle'));
+                set('settingsGuideSub', T('tileGuideSub'));
+                set('stepGuideModalTitle', T('stepGuideModalTitle'));
+                set('stepGuideModalSub', T('stepGuideModalSub'));
+                set('stepGuidePrevLbl', T('stepGuidePrevLbl'));
+                if (document.getElementById('stepGuideModal')?.style?.display === 'flex') {
+                    this.renderStepGuide();
+                }
                 set('androidUpdateTitle', T('androidUpdateTitle'));
                 set('androidUpdateSub', T('androidUpdateSub'));
                 set('btnUpdateVersionLabel', T('btnUpdateVersion'));
@@ -10216,6 +10250,515 @@ setOriginFromActionSheet() {
                 if (modal && modal.style.display === 'flex') {
                     this.renderTrafficDialog();
                 }
+            },
+
+            
+            // ===== 12-Step User Guide Controller (com.anonymous.timetrackot style) =====
+            _stepGuideCur: 1,
+            _stepGuideTotal: 12,
+
+            openStepGuide(step) {
+                const modal = document.getElementById('stepGuideModal');
+                if (!modal) return;
+                this._stepGuideCur = (typeof step === 'number' && step >= 1 && step <= this._stepGuideTotal) ? step : 1;
+                this.renderStepGuide();
+                modal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            },
+
+            closeStepGuide() {
+                const modal = document.getElementById('stepGuideModal');
+                if (modal) {
+                    modal.style.display = 'none';
+                    document.body.style.overflow = '';
+                }
+            },
+
+            navStepGuide(delta) {
+                const nextStep = this._stepGuideCur + delta;
+                if (nextStep > this._stepGuideTotal) {
+                    this.closeStepGuide();
+                    return;
+                }
+                if (nextStep >= 1) {
+                    this._stepGuideCur = nextStep;
+                    this.renderStepGuide();
+                }
+            },
+
+            goToStepGuide(step) {
+                if (step >= 1 && step <= this._stepGuideTotal) {
+                    this._stepGuideCur = step;
+                    this.renderStepGuide();
+                }
+            },
+
+            renderStepGuide() {
+                const cur = this._stepGuideCur;
+                const total = this._stepGuideTotal;
+                const body = document.getElementById('stepGuideModalBody');
+                const pill = document.getElementById('stepGuideStepPill');
+                const percent = document.getElementById('stepGuidePercentText');
+                const dotsRow = document.getElementById('stepGuideDotsRow');
+                const prevBtn = document.getElementById('stepGuidePrevBtn');
+                const nextBtn = document.getElementById('stepGuideNextBtn');
+                const nextLbl = document.getElementById('stepGuideNextLbl');
+                if (!body) return;
+
+                const isEn = (lang === 'en');
+                const isZh = (lang === 'zh');
+
+                // Update Progress Meta
+                if (pill) {
+                    pill.textContent = isZh ? `第 ${cur} / ${total} 步` : (isEn ? `Step ${cur} of ${total}` : `ขั้นตอนที่ ${cur} จาก ${total}`);
+                }
+                if (percent) {
+                    percent.textContent = Math.round((cur / total) * 100) + '%';
+                }
+
+                // Render Progress Dots
+                if (dotsRow) {
+                    let dotsHtml = '';
+                    for (let i = 1; i <= total; i++) {
+                        let cls = 'step-guide-dot';
+                        if (i === cur) cls += ' active';
+                        else if (i < cur) cls += ' completed';
+                        dotsHtml += `<div class="${cls}" onclick="App.goToStepGuide(${i})" title="${isZh ? '第 ' + i + ' 步' : (isEn ? 'Step ' + i : 'ขั้นตอนที่ ' + i)}"></div>`;
+                    }
+                    dotsRow.innerHTML = dotsHtml;
+                }
+
+                // Update Buttons
+                if (prevBtn) {
+                    prevBtn.disabled = (cur === 1);
+                }
+                if (nextLbl) {
+                    if (cur === total) {
+                        nextLbl.textContent = isZh ? '完成 / 开始使用' : (isEn ? 'Done / Get Started' : 'เสร็จสิ้น / เริ่มใช้งาน');
+                    } else {
+                        nextLbl.textContent = isZh ? '下一步 ›' : (isEn ? 'Next ›' : 'ถัดไป ›');
+                    }
+                }
+
+                // 12 Steps Data Matrix
+                const stepsData = [
+                    {
+                        icon: '⏱️',
+                        tagTh: 'ขั้นตอนที่ 1 · เวลานับถอยหลังสด',
+                        tagEn: 'STEP 1 · LIVE COUNTDOWN',
+                        tagZh: '步骤 1 · 实时倒计时',
+                        titleTh: 'ตรวจเช็คเวลารถไฟฟ้าแบบวินาทีต่อวินาที',
+                        titleEn: 'Second-by-Second Live Train Countdown',
+                        titleZh: '秒级实时列车到站倒计时',
+                        descTh: 'ระบบเชื่อมต่อข้อมูลตรงจากศูนย์ควบคุมการเดินรถ ดึงข้อมูลสดทุก 20 วินาที และนับถอยหลังทุก 1 วินาทีแบบเรียลไทม์',
+                        descEn: 'Direct connection to transit operation centers, polling live data every 20s and ticking clock every 1s.',
+                        descZh: '系统直连轨道运营调度中心，每 20 秒刷新实时数据，每秒精准倒计时。',
+                        pointsTh: [
+                            'แสดงเวลานับถอยหลังชัดเจนในแต่ละชานชาลา',
+                            'เวลาขบวนรถเดินตรงกับตารางเวลาจริง 100%',
+                            'มีระบบนาฬิกาดิจิทัลหัวจออัปเดตวินาทีต่อวินาที'
+                        ],
+                        pointsEn: [
+                            'Clear countdown displayed for each platform',
+                            '100% matched with actual transit schedules',
+                            'Precision digital clock in header with live seconds'
+                        ],
+                        pointsZh: [
+                            '清晰展示各站台列车进站倒计时',
+                            '与调度实际运营时刻 100% 同步',
+                            '顶部状态栏配备秒级数字时钟'
+                        ],
+                        actionTh: 'เช็คเวลารถสดตอนนี้ ➔',
+                        actionEn: 'Check Live Now ➔',
+                        actionZh: '查看实时时刻 ➔',
+                        onAction: "App.closeStepGuide(); App.switchView('home');"
+                    },
+                    {
+                        icon: '🚆',
+                        tagTh: 'ขั้นตอนที่ 2 · ลำดับขบวนรถ',
+                        tagEn: 'STEP 2 · 3 UPCOMING TRAINS',
+                        tagZh: '步骤 2 · 连续 3 趟列车',
+                        titleTh: 'แสดงลำดับขบวนรถ 3 ขบวนต่อเนื่อง',
+                        titleEn: 'Upcoming 3 Trains in Sequence',
+                        titleZh: '连续显示后续 3 趟到站列车',
+                        descTh: 'ไม่พลาดทุกการเดินทาง ด้วยการแสดงเวลารถขบวนแรก ขบวนที่สอง และขบวนที่สามล่วงหน้าในทุกชานชาลา',
+                        descEn: 'Plan your trip with ease by checking Next Train, 2nd Train, and 3rd Train arrival times ahead.',
+                        descZh: '全站台提前获知首趟、第 2 趟和第 3 趟列车的到达时间，告别匆忙。',
+                        pointsTh: [
+                            'ขบวนแรก: เวลานับถอยหลังเด่นชัดระดับวินาที',
+                            'ขบวนที่สองและสาม: ทราบเวลาขบวนถัดไปเพื่อกะเวลาเดินขึ้นชานชาลา',
+                            'สถานะเตือนสีแดงกะพริบ "มาแล้ว / Arrived" เมื่อรถเข้าเทียบ'
+                        ],
+                        pointsEn: [
+                            'Next Train: Prominent countdown down to the second',
+                            '2nd & 3rd Trains: Time estimates to pace your walk',
+                            'Blinking red "Arrived" alert when train pulls into station'
+                        ],
+                        pointsZh: [
+                            '首趟列车：秒级显眼倒计时',
+                            '第 2 及第 3 趟：预估到达时间，合理安排候车',
+                            '列车进站时红色闪烁“已到达 / Arrived”'
+                        ],
+                        actionTh: 'ดูตัวอย่างขบวนรถ ➔',
+                        actionEn: 'View Trains ➔',
+                        actionZh: '查看列车 ➔',
+                        onAction: "App.closeStepGuide(); App.switchView('home');"
+                    },
+                    {
+                        icon: '⇄',
+                        tagTh: 'ขั้นตอนที่ 3 · การเลือกชานชาลา',
+                        tagEn: 'STEP 3 · PLATFORM SWITCHING',
+                        tagZh: '步骤 3 · 站台切换',
+                        titleTh: 'สลับชานชาลา 1 & 2 และดูปลายทาง',
+                        titleEn: 'Switch Platforms & Final Destinations',
+                        titleZh: '切换 1 与 2 号站台及终点站',
+                        descTh: 'แตะสลับดูเวลารถได้ตามทิศทางที่คุณต้องการเดินทาง พร้อมระบุสถานีปลายทางอย่างชัดเจน',
+                        descEn: 'Tap between Platform 1 and 2 to view train countdowns for your specific destination direction.',
+                        descZh: '轻触即可切换 1 号或 2 号站台，清晰辨别各方向列车终点站。',
+                        pointsTh: [
+                            'แยกเวลาเดินรถของแต่ละชานชาลาเป็นอิสระ',
+                            'ระบุชื่อสถานีปลายทาง เช่น "ปลายทาง: เคหะฯ" หรือ "ปลายทาง: คูคต"',
+                            'มีแถบสถานะความหนาแน่นของผู้โดยสารประจำขบวน'
+                        ],
+                        pointsEn: [
+                            'Independent countdown schedules for each platform',
+                            'Clear destination names (e.g. To Kheha / To Khu Khot)',
+                            'Real-time passenger crowd level indicators'
+                        ],
+                        pointsZh: [
+                            '各站台独立倒计时互不干扰',
+                            '标明终点站名称（如开往 Kheha / 开往 Khu Khot）',
+                            '提供实时车厢拥挤度状态参考'
+                        ],
+                        actionTh: 'ลองเลือกชานชาลา ➔',
+                        actionEn: 'Try Platform ➔',
+                        actionZh: '切换站台 ➔',
+                        onAction: "App.closeStepGuide(); App.switchView('home');"
+                    },
+                    {
+                        icon: '🧭',
+                        tagTh: 'ขั้นตอนที่ 4 · ตรวจพบสถานีใกล้ตัว',
+                        tagEn: 'STEP 4 · NEAREST STATION',
+                        tagZh: '步骤 4 · 最近车站检测',
+                        titleTh: 'ตรวจพบสถานีใกล้ตัวคุณอัตโนมัติด้วย GPS',
+                        titleEn: 'Automatic Nearest Station by GPS',
+                        titleZh: 'GPS 自动检测离您最近的车站',
+                        descTh: 'คำนวณระยะห่างด้วยสูตร Haversine บนเครื่องของคุณอย่างแม่นยำ พร้อมแสดงสถานีที่ใกล้ตัวคุณที่สุดทันที',
+                        descEn: 'Accurate on-device Haversine distance formula instantly calculates your nearest transit station.',
+                        descZh: '利用高精度 Haversine 算法在设备本地计算，迅速锁定最近车站。',
+                        pointsTh: [
+                            'ค้นหาสถานีอัตโนมัติพร้อมระยะห่าง เช่น "490 ม. จากตำแหน่งคุณ"',
+                            'หน้าต่างแจ้งเตือนปรากฏเฉพาะตอนเปิดแอป หรือเลื่อนหน้าจอลงสุด (Pull to Refresh)',
+                            'ไม่รบกวนหน้าจอขณะกำลังดูข้อมูลอื่นในระบบ'
+                        ],
+                        pointsEn: [
+                            'Instant detection with distance (e.g. 490 m from you)',
+                            'Popup appears only on app launch, return from background, or pull-to-refresh',
+                            'Zero screen intrusion while browsing other tabs'
+                        ],
+                        pointsZh: [
+                            '自动定位并提示直线距离（如：距离您 490 米）',
+                            '仅在启动、切回或下拉刷新时弹出，不扰日常浏览',
+                            '完全保护隐私，无需向外部上传个人位置'
+                        ],
+                        actionTh: 'ค้นหาตำแหน่งของฉัน ➔',
+                        actionEn: 'Locate Me ➔',
+                        actionZh: '定位最近车站 ➔',
+                        onAction: "App.closeStepGuide(); App.locate(true);"
+                    },
+                    {
+                        icon: '🚪',
+                        tagTh: 'ขั้นตอนที่ 5 · ทางออกและสิ่งอำนวยความสะดวก',
+                        tagEn: 'STEP 5 · EXITS & FACILITIES',
+                        tagZh: '步骤 5 · 车站出口与设施',
+                        titleTh: 'แนะนำประตูทางออกที่ใกล้ที่สุด & ทางเชื่อม',
+                        titleEn: 'Nearest Exit Door & Station Directory',
+                        titleZh: '推荐最近出口与无障碍设施',
+                        descTh: 'แนะนำหมายเลขทางออกที่เดินใกล้ที่สุด พร้อมระบุสถานที่สำคัญ ห้างสรรพสินค้า โรงแรม และสิ่งอำนวยความสะดวก',
+                        descEn: 'Recommends closest exit doors to your GPS coordinates with malls, hotels, and transit links.',
+                        descZh: '依据 GPS 推荐步行距离最近的出口，标明商场、酒店及换乘通道。',
+                        pointsTh: [
+                            'ระบุทางออก 1, 2, 3, 4 พร้อมสถานที่เชื่อมต่อ',
+                            'ระบุลิฟต์คนพิการ/ผู้สูงอายุ และบันไดเลื่อนขึ้น-ลง',
+                            'แสดงทางเชื่อมสกายวอล์ก (Skywalk) เข้าสู่อาคารโดยตรง'
+                        ],
+                        pointsEn: [
+                            'Exit numbers with connecting streets and landmarks',
+                            'Accessible elevators, escalators, and accessible paths',
+                            'Direct skywalk links into major commercial centers'
+                        ],
+                        pointsZh: [
+                            '标明各编号出口及连通的主要地标',
+                            '标注无障碍直梯、自动扶梯与轮椅通道',
+                            '直通大型商业中心的人行天桥 (Skywalk)'
+                        ],
+                        actionTh: 'ดูข้อมูลทางออก ➔',
+                        actionEn: 'View Exits ➔',
+                        actionZh: '查看出口 ➔',
+                        onAction: "App.closeStepGuide(); App.openExitDirectory();"
+                    },
+                    {
+                        icon: '🗺️',
+                        tagTh: 'ขั้นตอนที่ 6 · แผนที่เวกเตอร์ 12 สาย',
+                        tagEn: 'STEP 6 · VECTOR TRANSIT MAP',
+                        tagZh: '步骤 6 · 12 条线矢量轨道图',
+                        titleTh: 'แผนที่โครงข่ายระบบรางเวกเตอร์ความละเอียดสูง',
+                        titleEn: 'Interactive Vector Transit Blueprint Map',
+                        titleZh: '全网 12 条线高清交互式矢量轨道图',
+                        descTh: 'แผนผังเส้นทางเวกเตอร์ครอบคลุมโครงข่ายรถไฟฟ้า 12 สายทั่วกรุงเทพฯ คมชัดทุกระดับการซูม',
+                        descEn: 'High-resolution vector blueprint map covering 12 Bangkok rail lines, sharp at all zoom levels.',
+                        descZh: '涵盖曼谷全城 12 条轨道交通线路的高清矢量图，任意缩放不失真。',
+                        pointsTh: [
+                            'รองรับการใช้นิ้วซูม (Pinch-to-zoom) และเลื่อนดูได้ลื่นไหล',
+                            'สลับธีมแผนที่กลางวันและกลางคืน (Auto Light & Dark) อัตโนมัติ',
+                            'มีปุ่มดึงมุมมองกลับสู่กึ่งกลางโครงข่ายทันที'
+                        ],
+                        pointsEn: [
+                            'Smooth pinch-to-zoom and gesture panning',
+                            'Auto-switching between Light and Dark map themes',
+                            'One-tap recenter button to reset whole network view'
+                        ],
+                        pointsZh: [
+                            '支持双指顺畅缩放与轻扫平移',
+                            '随系统昼夜模式自动切换浅色与深色地图',
+                            '一键重置视角回到轨道全网中心'
+                        ],
+                        actionTh: 'เปิดดูแผนที่โครงข่าย ➔',
+                        actionEn: 'Open Transit Map ➔',
+                        actionZh: '打开轨道地图 ➔',
+                        onAction: "App.closeStepGuide(); App.switchView('map');"
+                    },
+                    {
+                        icon: '📍',
+                        tagTh: 'ขั้นตอนที่ 7 · จุดสัมผัสเลือกสถานี',
+                        tagEn: 'STEP 7 · STATION HOTSPOTS',
+                        tagZh: '步骤 7 · 车站点击交互热点',
+                        titleTh: 'แตะเลือกสถานีบนแผนที่เพื่อวางแผนทันที',
+                        titleEn: 'Tap Any Station Hotspot on the Map',
+                        titleZh: '轻触地图车站直接设定起终点',
+                        descTh: 'ทุกสถานีบนแผนที่มีจุดสัมผัส (Hotspots) แตะเพื่อตั้งเป็นสถานีต้นทาง หรือปลายทางได้ในคลิกเดียว',
+                        descEn: 'Every station has an interactive hotspot — tap to set as Origin or Destination instantly.',
+                        descZh: '地图上每个车站皆支持交互点击，一键快速设为起点或终点。',
+                        pointsTh: [
+                            'แตะตั้งเป็น "สถานีต้นทาง (Set as Origin)" ได้ทันที',
+                            'แตะตั้งเป็น "สถานีปลายทาง (Set as Destination)" ได้ทันที',
+                            'แตะเพื่อดูตารางเวลาและเวลารถเข้านับถอยหลังของสถานีนั้น'
+                        ],
+                        pointsEn: [
+                            'One tap to "Set as Origin"',
+                            'One tap to "Set as Destination"',
+                            'View station live countdown and operating hours'
+                        ],
+                        pointsZh: [
+                            '一键设为“出发站 (Origin)”',
+                            '一键设为“目的地 (Destination)”',
+                            '直接调取该站实时倒计时与首末班车时刻'
+                        ],
+                        actionTh: 'ลองแตะเลือกสถานี ➔',
+                        actionEn: 'Try Hotspots ➔',
+                        actionZh: '体验车站点击 ➔',
+                        onAction: "App.closeStepGuide(); App.switchView('map');"
+                    },
+                    {
+                        icon: 'ℹ️',
+                        tagTh: 'ขั้นตอนที่ 8 · สัญลักษณ์โครงข่าย',
+                        tagEn: 'STEP 8 · TRANSIT LEGEND',
+                        tagZh: '步骤 8 · 网络图例与换乘枢纽',
+                        titleTh: 'เข้าใจสัญลักษณ์โครงข่ายและจุดเชื่อมต่อ',
+                        titleEn: 'Transit Network Legend & Hub Symbols',
+                        titleZh: '熟悉换乘枢纽与综合交通图例',
+                        descTh: 'ตรวจสอบความหมายของสัญลักษณ์จุดเชื่อมต่อไปยังสนามบิน ท่าเรือ รถไฟทางไกล และอาคารจอดแล้วจร',
+                        descEn: 'Learn symbols for interchanges, airports, ferry piers, SRT intercity trains, and Park & Ride.',
+                        descZh: '轻松识别换乘枢纽、机场连通、轮渡码头、长途铁路与 P+R 停车场图例。',
+                        pointsTh: [
+                            'จุดเชื่อมต่อข้ามสาย (Interchange): วงกลมคู่เชื่อมโยงกัน',
+                            'เชื่อมต่อสนามบินสุวรรณภูมิ (ARL) และดอนเมือง (SRT แดง)',
+                            'ท่าเรือต่อเรือด่วนเจ้าพระยาและคลองแสนแสบ',
+                            'อาคารจอดแล้วจร (Park & Ride) และสายแยกเมืองทองธานี'
+                        ],
+                        pointsEn: [
+                            'Interchange nodes: Interlinked dual circles',
+                            'Airport connections: Suvarnabhumi & Don Mueang',
+                            'Pier connections: Chao Phraya & Saen Saep ferries',
+                            'Park & Ride facilities & Muang Thong Thani branch'
+                        ],
+                        pointsZh: [
+                            '换乘枢纽：互锁双圆节点',
+                            '机场换乘：素万那普 (ARL) 与廊曼 (SRT)',
+                            '轮渡码头：昭披耶快船及空盛桑运河船',
+                            'P+R 换乘停车场与通往会展中心的芒通他尼支线'
+                        ],
+                        actionTh: 'เปิดดูคำอธิบายสัญลักษณ์ ➔',
+                        actionEn: 'View Legend ➔',
+                        actionZh: '查看图例 ➔',
+                        onAction: "App.closeStepGuide(); App.openLegendModal();"
+                    },
+                    {
+                        icon: '🎯',
+                        tagTh: 'ขั้นตอนที่ 9 · วางแผนการเดินทาง',
+                        tagEn: 'STEP 9 · JOURNEY PLANNER',
+                        tagZh: '步骤 9 · 智能路线规划',
+                        titleTh: 'วางแผนเส้นทางข้ามสายอัจฉริยะ',
+                        titleEn: 'Smart Cross-Line Route Planner',
+                        titleZh: '跨线网络最佳换乘路线规划',
+                        descTh: 'คำนวณเส้นทางข้ามค่ายที่ดีที่สุด แสดงระยะเวลาเดินทาง จำนวนสถานี และสถานีเปลี่ยนขบวนอย่างละเอียด',
+                        descEn: 'Graph traversal algorithm calculates fastest cross-line routes, duration, and transfers.',
+                        descZh: '图论算法精确计算跨线最优路线，提供旅行用时、站数及换乘步骤。',
+                        pointsTh: [
+                            'ค้นหาและจับคู่สถานีข้ามทุกสายได้อย่างอิสระ',
+                            'บอกจุดเปลี่ยนสาย พร้อมชานชาลาและไอคอนรูปรถไฟเฉพาะสาย',
+                            'แสดงขั้นตอนการเดินทางทีละสเต็ป เข้าใจง่าย'
+                        ],
+                        pointsEn: [
+                            'Freely pair stations across all 12 transit lines',
+                            'Guidance on transfer stations with dedicated train icons',
+                            'Clear step-by-step route cards for seamless commute'
+                        ],
+                        pointsZh: [
+                            '在全部 12 条线路上自由挑选起止点',
+                            '换乘站点详尽指引，配有专属车型图标',
+                            '卡片化逐步行程指南，乘车清晰明了'
+                        ],
+                        actionTh: 'วางแผนการเดินทาง ➔',
+                        actionEn: 'Plan Route ➔',
+                        actionZh: '规划出行路线 ➔',
+                        onAction: "App.closeStepGuide(); App.switchView('planner');"
+                    },
+                    {
+                        icon: '💵',
+                        tagTh: 'ขั้นตอนที่ 10 · คำนวณค่าโดยสาร',
+                        tagEn: 'STEP 10 · FARE CALCULATOR',
+                        tagZh: '步骤 10 · 动态票价计算',
+                        titleTh: 'คำนวณค่าโดยสารอัตโนมัติและเงื่อนไขส่วนลด',
+                        titleEn: 'Dynamic Fares & Discount Calculator',
+                        titleZh: '全网动态票价与多人群折扣计算',
+                        descTh: 'ทราบค่าโดยสารรวมโดยประมาณล่วงหน้า พร้อมตรวจสอบตารางราคาของแต่ละสายและส่วนลดพิเศษ',
+                        descEn: 'Check estimated total fares across lines, plus discount rates for students and seniors.',
+                        descZh: '提前预估跨线全程车资，了解各线阶梯价及学生、长者优惠。',
+                        pointsTh: [
+                            'คำนวณค่าโดยสารระหว่างสถานีต้นทางและปลายทางทันที',
+                            'รองรับราคาบุคคลทั่วไป, นักเรียน/นักศึกษา และผู้สูงอายุ',
+                            'แสดงเงื่อนไขเพดานค่าโดยสารและตั๋วร่วมข้ามสาย'
+                        ],
+                        pointsEn: [
+                            'Instant fare calculation between origin and destination',
+                            'Standard, Student, and Senior citizen fare rates',
+                            'Joint-ticket fare cap and transfer fee waiver policies'
+                        ],
+                        pointsZh: [
+                            '即时计算起终点站间的实际车费',
+                            '支持普通卡、学生卡及长者折扣换算',
+                            '展示联程优惠与换乘起步费减免政策'
+                        ],
+                        actionTh: 'เช็คอัตราค่าโดยสาร ➔',
+                        actionEn: 'Check Fares ➔',
+                        actionZh: '查询票价 ➔',
+                        onAction: "App.closeStepGuide(); App.switchView('fares');"
+                    },
+                    {
+                        icon: '🚨',
+                        tagTh: 'ขั้นตอนที่ 11 · แจ้งเหตุขัดข้องเรียลไทม์',
+                        tagEn: 'STEP 11 · LIVE INCIDENT ALERTS',
+                        tagZh: '步骤 11 · 实时运行状态与通报',
+                        titleTh: 'ติดตามสถานะการเดินรถ & แจ้งเตือนเหตุขัดข้อง',
+                        titleEn: 'Live Transit Status & Incident Alerts',
+                        titleZh: '全网突发延误告警与调度通报',
+                        descTh: 'อัปเดตสถานการณ์สดทุก 3 นาที เมื่อเกิดความล่าช้าจะมีแถบเตือนสีแดงกะพริบและรายงานสถานการณ์ 5 สายหลัก',
+                        descEn: 'Updated every 3 minutes. Disruption banner broadcasts delays and 5 core lines status table.',
+                        descZh: '每 3 分钟自动同步。遇延误首页大横幅告警，5 条核心线状态一览无余。',
+                        pointsTh: [
+                            'แถบสถานะหัวแอปแสดง "ปกติ" หรือไฟกะพริบ "ขัดข้อง"',
+                            'แถบเตือน Broadcast Disruption Banner แสดงที่หน้าแรก',
+                            'หน้าต่าง TrafficTrainDialogView แสดงเวลาเกิดเหตุและรายละเอียด'
+                        ],
+                        pointsEn: [
+                            'Header control pill shows "Normal" or blinking "Disrupted"',
+                            'Broadcast Disruption Banner appears prominently on home',
+                            'Traffic incident dialog shows alert timestamp & full details'
+                        ],
+                        pointsZh: [
+                            '顶部状态胶囊标明“正常”或红色闪烁“延误”',
+                            '突发状况时首页置顶紧急广播横幅',
+                            '调度弹窗详细展示发布时间及受影响区段'
+                        ],
+                        actionTh: 'ดูสถานะเดินรถสด ➔',
+                        actionEn: 'View Status ➔',
+                        actionZh: '查看运行状态 ➔',
+                        onAction: "App.closeStepGuide(); App.openTrafficDialog();"
+                    },
+                    {
+                        icon: '📱',
+                        tagTh: 'ขั้นตอนที่ 12 · การติดตั้งและออฟไลน์',
+                        tagEn: 'STEP 12 · INSTALLATION & OFFLINE',
+                        tagZh: '步骤 12 · 安装应用与离线使用',
+                        titleTh: 'ติดตั้งเป็นแอปบนมือถือ & ทำงานออฟไลน์ 100%',
+                        titleEn: 'Mobile App Installation & 100% Offline Mode',
+                        titleZh: '添加到主屏幕与地铁深处完全离线',
+                        descTh: 'ติดตั้งเป็น Web App (PWA) บนหน้าจอหลัก หรือติดตั้ง Android APK พร้อมปุ่ม Update Version ในแอป',
+                        descEn: 'Install as fullscreen PWA on home screen or native Android APK with In-App Update button.',
+                        descZh: '支持在浏览器中添加至主屏幕（PWA）或安装原生 APK，并提供应用内更新。',
+                        pointsTh: [
+                            'Chrome / Safari: กด "เพิ่มลงในหน้าจอหลัก" (Add to Home Screen)',
+                            'Android APK: ดาวน์โหลดติดตั้ง และมีปุ่ม Update Version ใต้แท็บ "เพิ่มเติม"',
+                            'ใช้งานแผนที่ ผังสถานี ทางออก และตารางเวลาได้แม้ไม่มีอินเทอร์เน็ต'
+                        ],
+                        pointsEn: [
+                            'Chrome/Safari: "Add to Home Screen" for native fullscreen',
+                            'Android APK: In-App "Update Version" button in More tab',
+                            '100% offline access to vector maps, exits, and timetables'
+                        ],
+                        pointsZh: [
+                            'Chrome / Safari：“添加到主屏幕”秒变无框全屏 App',
+                            'Android APK：在“更多”界面一键检测下载最新版本',
+                            '无网络时依然顺畅浏览矢量图、查出口及规划换乘'
+                        ],
+                        actionTh: 'เสร็จสิ้น / เริ่มใช้งานทันที ➔',
+                        actionEn: 'Done / Start Exploring ➔',
+                        actionZh: '完成 / 立即开始使用 ➔',
+                        onAction: "App.closeStepGuide();"
+                    }
+                ];
+
+                const stepItem = stepsData[cur - 1] || stepsData[0];
+                const tag = isZh ? stepItem.tagZh : (isEn ? stepItem.tagEn : stepItem.tagTh);
+                const title = isZh ? stepItem.titleZh : (isEn ? stepItem.titleEn : stepItem.titleTh);
+                const desc = isZh ? stepItem.descZh : (isEn ? stepItem.descEn : stepItem.descTh);
+                const points = isZh ? stepItem.pointsZh : (isEn ? stepItem.pointsEn : stepItem.pointsTh);
+                const actionText = isZh ? stepItem.actionZh : (isEn ? stepItem.actionEn : stepItem.actionTh);
+
+                let pointsHtml = '';
+                points.forEach(p => {
+                    pointsHtml += `
+                        <div class="step-guide-point-row">
+                            <span class="step-guide-point-bullet">✓</span>
+                            <span>${p}</span>
+                        </div>
+                    `;
+                });
+
+                body.innerHTML = `
+                    <div class="step-guide-hero">
+                        <span class="step-guide-icon-circle">${stepItem.icon}</span>
+                        <div class="step-guide-title-wrap">
+                            <div class="step-guide-step-tag">${tag}</div>
+                            <div class="step-guide-title">${title}</div>
+                        </div>
+                    </div>
+
+                    <div class="step-guide-info-card">
+                        <div class="step-guide-desc">${desc}</div>
+                        <div class="step-guide-points">
+                            ${pointsHtml}
+                        </div>
+                    </div>
+
+                    <div class="step-guide-action-card">
+                        <span class="step-guide-action-text">${isZh ? '立即体验本步骤功能：' : (isEn ? 'Try this feature now:' : 'ลองใช้งานฟังก์ชันในขั้นตอนนี้:')}</span>
+                        <button type="button" class="step-guide-cta-btn" onclick="${stepItem.onAction}">
+                            <span>${actionText}</span>
+                        </button>
+                    </div>
+                `;
             },
 
             openTrafficDialog() {

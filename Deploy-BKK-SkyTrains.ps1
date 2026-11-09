@@ -283,6 +283,21 @@ if (Test-Path $PubspecFile) {
         } else {
             Write-Host "   ✓ pubspec.yaml ตรงกับเวอร์ชันเป้าหมาย: $currVer+$buildNum" -ForegroundColor Green
         }
+
+        # อัปเดตหมายเลขเวอร์ชันและ Build ใน index.html และ assets/www/index.html
+        $htmlFiles = @(
+            (Join-Path $Workspace "index.html"),
+            (Join-Path $Workspace "bkk_skytrains_flutter\assets\www\index.html")
+        )
+        foreach ($hf in $htmlFiles) {
+            if (Test-Path $hf) {
+                $hContent = Get-Content -LiteralPath $hf -Raw -Encoding UTF8
+                $hContent = [regex]::Replace($hContent, 'v[0-9]+\.[0-9]+\.[0-9]+\s*\(Build\s*[0-9]+\)', "v$Version (Build $buildNum)")
+                $utf8NoBom = [System.Text.UTF8Encoding]::new($false)
+                [System.IO.File]::WriteAllText($hf, $hContent, $utf8NoBom)
+                Write-Host "   ✓ ซิงค์หมายเลขเวอร์ชันและ Build ใน $hf -> v$Version (Build $buildNum)" -ForegroundColor Gray
+            }
+        }
     }
 }
 

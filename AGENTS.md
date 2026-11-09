@@ -113,6 +113,11 @@ Directives and mandatory standards for AI Agents working within `C:\Users\Admini
    - ข้อความ รหัสสถานี และตัวเลขที่อยู่ในกรอบทั้งหมด (เช่น รหัสสถานี `YL20`, กล่องเวลานับถอยหลังรถเข้า ขบวนแรก ขบวนที่สอง ขบวนที่สาม, การ์ดสถานี, ป้ายชานชาลา) จะต้องไม่มีเคอร์เซอร์เม้าส์กระพริบ (Blinking Text Caret) หรือเปลี่ยนเป็นเคอร์เซอร์พิมพ์ข้อความ (I-beam cursor) เมื่อคลิกหรือแตะ เว้นแต่จะเป็นช่องที่สามารถพิมพ์เพื่อกรอกข้อมูลได้จริงเท่านั้น (`<input>`, `<textarea>`, `[contenteditable="true"]`)
    - ทุกองค์ประกอบที่ไม่ใช่ช่องกรอกข้อมูลจะต้องมี `caret-color: transparent !important;`, `user-select: none !important;`, และ `cursor: default !important;` (หรือ `cursor: pointer` หากเป็นปุ่มกดหรือลิงก์)
 
+8. **Mandatory Build & VersionCode Increment Standard (ข้อกำหนดการอัปเดต Build / VersionCode ทุกครั้งที่เสร็จสิ้นงาน)**:
+   - ทุกครั้งที่มีการแก้ไขโค้ด ปรับแต่งฟีเจอร์ หรือเขียนงานในระบบเสร็จสิ้น จะต้องอัปเดตเพิ่มหมายเลข Build / VersionCode (`+1`) เสมอ:
+     - อัปเดตใน `bkk_skytrains_flutter/pubspec.yaml`: เช่น `version: 1.3.6+10` -> `version: 1.3.6+11` (เพื่อใช้กำหนด `versionCode` ของ Android และ `CFBundleVersion` ของ iOS)
+     - อัปเดตในหน้าต่างข้อมูลแอปพลิเคชัน: แสดงเป็น `v1.3.6 (Build 11)` ใน `<span class="tag-value">` ทั้งใน `index.html` และ `bkk_skytrains_flutter/assets/www/index.html`
+
 ---
 
 ## ⛔ 3. Mandatory Prohibitions (ข้อห้ามเด็ดขาด)

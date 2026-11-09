@@ -1178,7 +1178,6 @@ gQIDAQAB
                 androidUpdateTitle: 'อัปเดตเวอร์ชันใหม่ (Android APK)',
                 androidUpdateSub: 'ดาวน์โหลด APK ตัวล่าสุดจาก GitHub Releases',
                 btnUpdateVersion: 'Update Version',
-                btnGithubReleases: 'GitHub',
                 downloadingLatestApk: 'กำลังเปิดดาวน์โหลด APK ตัวล่าสุดจาก GitHub Releases...',
             },
             en: {
@@ -1531,7 +1530,6 @@ gQIDAQAB
                 androidUpdateTitle: 'Update New Version (Android APK)',
                 androidUpdateSub: 'Download latest APK release from GitHub',
                 btnUpdateVersion: 'Update Version',
-                btnGithubReleases: 'GitHub',
                 downloadingLatestApk: 'Opening latest APK download from GitHub Releases...',
             },
             zh: {
@@ -1884,7 +1882,6 @@ gQIDAQAB
                 androidUpdateTitle: '更新最新版本 (Android APK)',
                 androidUpdateSub: '从 GitHub Releases 下载最新 APK 安装包',
                 btnUpdateVersion: 'Update Version',
-                btnGithubReleases: 'GitHub',
                 downloadingLatestApk: '正在从 GitHub Releases 打开最新 APK 下载...',
             }
         };
@@ -7689,11 +7686,6 @@ setOriginFromActionSheet() {
                 this.openExternalUrl(apkUrl);
             },
 
-            openGithubReleases() {
-                const releasesUrl = 'https://github.com/nasaw9783/BKK-Sky-Trains/releases/latest';
-                this.openExternalUrl(releasesUrl);
-            },
-
             openExternalUrl(url) {
                 if (!url) return;
                 if (window.BKKLiveBridge && typeof window.BKKLiveBridge.postMessage === 'function') {
@@ -7892,7 +7884,6 @@ setOriginFromActionSheet() {
                 set('androidUpdateTitle', T('androidUpdateTitle'));
                 set('androidUpdateSub', T('androidUpdateSub'));
                 set('btnUpdateVersionLabel', T('btnUpdateVersion'));
-                set('btnGithubReleasesLabel', T('btnGithubReleases'));
                 set('moreTrafficTitle', T('moreTrafficTitle'));
                 set('moreTrafficDesc', T('moreTrafficDesc'));
                 set('trafficDialogTitle', T('trafficDisruptionTitle'));

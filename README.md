@@ -69,7 +69,7 @@
     - รองรับสิทธิ์แจ้งเตือน Runtime Notification บน Android 13+ (API 33+) และมาตรฐาน W3C Web Notification
 17. <img src="icons/ui/check.svg" width="18" height="18" alt="Update" style="vertical-align:middle;"> **ปุ่มอัปเดตเวอร์ชันสำหรับแอป Android (Android In-App APK Update)**
     - เฉพาะบนแอปมือถือ Android (ตรวจพบสภาพแวดล้อม Android อัตโนมัติ) ระบบจะแสดงกล่องอัปเดตเวอร์ชันในหน้า "ข้อมูลแอปพลิเคชัน" (แท็บเพิ่มเติม)
-    - ปุ่ม **Update Version** สำหรับดาวน์โหลดไฟล์ `BKK_SkyTrains.apk` ตัวล่าสุดจาก [GitHub Releases](https://github.com/nasaw9783/BKK-Sky-Trains) ได้โดยตรงผ่านตัวจัดการดาวน์โหลดของ Android พร้อมปุ่มลัดไปยังหน้า Release Notes บน GitHub
+    - ปุ่ม **Update Version** สำหรับดาวน์โหลดไฟล์ `BKK_SkyTrains.apk` ตัวล่าสุดจาก [GitHub Releases](https://github.com/nasaw9783/BKK-Sky-Trains) ได้โดยตรงผ่านตัวจัดการดาวน์โหลดของ Android
 
 ---
 

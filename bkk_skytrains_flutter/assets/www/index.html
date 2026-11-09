@@ -9028,6 +9028,144 @@
             line-height: 1;
         }
 
+        /* Android APK Update Section (เฉพาะแอพมือถือ Android) */
+        .android-update-box {
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 12px;
+            padding: 12px;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(6, 95, 70, 0.16));
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            border-radius: var(--radius-md);
+            box-sizing: border-box;
+            caret-color: transparent !important;
+            user-select: none !important;
+        }
+        html.dark .android-update-box {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.14), rgba(6, 95, 70, 0.25));
+            border-color: rgba(52, 211, 153, 0.35);
+        }
+        .android-update-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .android-update-icon-pill {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: rgba(16, 185, 129, 0.18);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+            color: #10b981;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            line-height: 1;
+        }
+        html.dark .android-update-icon-pill {
+            color: #34d399;
+        }
+        .android-update-icon-pill svg {
+            display: block;
+            margin: auto;
+            flex-shrink: 0;
+        }
+        .android-update-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            flex: 1;
+        }
+        .android-update-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1.25;
+        }
+        .android-update-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+            line-height: 1.25;
+        }
+        .android-update-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-top: 2px;
+        }
+        .btn-update-version {
+            flex: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 8px;
+            padding: 9px 16px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: #ffffff;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+            line-height: 1;
+            letter-spacing: 0;
+            user-select: none !important;
+            caret-color: transparent !important;
+        }
+        .btn-update-version:hover {
+            background: linear-gradient(135deg, #34d399, #10b981);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+        }
+        .btn-update-version:active {
+            transform: translateY(0);
+        }
+        .btn-update-version svg {
+            display: block;
+            margin: auto 0;
+            flex-shrink: 0;
+        }
+        .btn-update-notes {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 6px;
+            padding: 9px 12px;
+            background: var(--bg-subtle);
+            color: var(--ink);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+            line-height: 1;
+            letter-spacing: 0;
+            user-select: none !important;
+            caret-color: transparent !important;
+            white-space: nowrap;
+        }
+        .btn-update-notes:hover {
+            background: var(--bg-card);
+            border-color: #10b981;
+            color: #10b981;
+        }
+        .btn-update-notes svg {
+            display: block;
+            margin: auto 0;
+            flex-shrink: 0;
+        }
+
         /* Desktop Auto-Detect Enhancements (Preserving original 560px mobile design) */
         html.device-desktop .bottom-nav .nav-tab:hover {
             background: var(--bg-subtle);
@@ -10793,6 +10931,41 @@
                                 <span id="morePlatformLabel">แพลตฟอร์ม</span>
                             </span>
                             <span class="detail-value" id="morePlatformValue">PWA / Web Mobile</span>
+                        </div>
+                    </div>
+
+                    <!-- Android APK Update Action Box (เฉพาะแอพมือถือ Android เท่านั้น) -->
+                    <div id="androidUpdateCard" class="android-update-box" style="display:none;">
+                        <div class="android-update-content">
+                            <div class="android-update-icon-pill" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                    <polyline points="7 10 12 15 17 10"/>
+                                    <line x1="12" y1="15" x2="12" y2="3"/>
+                                </svg>
+                            </div>
+                            <div class="android-update-meta">
+                                <div class="android-update-title" id="androidUpdateTitle">อัปเดตเวอร์ชันใหม่ (Android APK)</div>
+                                <div class="android-update-sub" id="androidUpdateSub">ดาวน์โหลด APK ตัวล่าสุดจาก GitHub Releases</div>
+                            </div>
+                        </div>
+                        <div class="android-update-actions">
+                            <button type="button" class="btn-update-version" onclick="App.openAndroidApkUpdate();" title="ดาวน์โหลด APK ตัวล่าสุด" aria-label="Update Version">
+                                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                    <polyline points="7 10 12 15 17 10"/>
+                                    <line x1="12" y1="15" x2="12" y2="3"/>
+                                </svg>
+                                <span id="btnUpdateVersionLabel">Update Version</span>
+                            </button>
+                            <button type="button" class="btn-update-notes" onclick="App.openGithubReleases();" title="ดูรายละเอียดบน GitHub" aria-label="View on GitHub">
+                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+                                    <polyline points="15 3 21 3 21 9"/>
+                                    <line x1="10" y1="14" x2="21" y2="3"/>
+                                </svg>
+                                <span id="btnGithubReleasesLabel">GitHub</span>
+                            </button>
                         </div>
                     </div>
                 </div>

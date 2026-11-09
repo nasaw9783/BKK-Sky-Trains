@@ -1175,6 +1175,11 @@ gQIDAQAB
                 moreGatewayLabel: 'สถานะสัญญาณสด',
                 moreGatewayValue: '<span class="live-status-line"><span class="live-dot-sm"></span> เชื่อมต่อ 100%</span><span class="live-status-sub">เรียลไทม์</span>',
                 morePlatformLabel: 'แพลตฟอร์ม',
+                androidUpdateTitle: 'อัปเดตเวอร์ชันใหม่ (Android APK)',
+                androidUpdateSub: 'ดาวน์โหลด APK ตัวล่าสุดจาก GitHub Releases',
+                btnUpdateVersion: 'Update Version',
+                btnGithubReleases: 'GitHub',
+                downloadingLatestApk: 'กำลังเปิดดาวน์โหลด APK ตัวล่าสุดจาก GitHub Releases...',
             },
             en: {
                 appName: 'BKK SKYTRAINs',
@@ -1523,6 +1528,11 @@ gQIDAQAB
                 moreGatewayLabel: 'Live Signal',
                 moreGatewayValue: '<span class="live-status-line"><span class="live-dot-sm"></span> Connected 100%</span><span class="live-status-sub">Real-Time</span>',
                 morePlatformLabel: 'Platform',
+                androidUpdateTitle: 'Update New Version (Android APK)',
+                androidUpdateSub: 'Download latest APK release from GitHub',
+                btnUpdateVersion: 'Update Version',
+                btnGithubReleases: 'GitHub',
+                downloadingLatestApk: 'Opening latest APK download from GitHub Releases...',
             },
             zh: {
                 appName: 'BKK SKYTRAINs',
@@ -1871,6 +1881,11 @@ gQIDAQAB
                 moreGatewayLabel: '实时信号状态',
                 moreGatewayValue: '<span class="live-status-line"><span class="live-dot-sm"></span> 100% 实时</span><span class="live-status-sub">已连接</span>',
                 morePlatformLabel: '运行平台',
+                androidUpdateTitle: '更新最新版本 (Android APK)',
+                androidUpdateSub: '从 GitHub Releases 下载最新 APK 安装包',
+                btnUpdateVersion: 'Update Version',
+                btnGithubReleases: 'GitHub',
+                downloadingLatestApk: '正在从 GitHub Releases 打开最新 APK 下载...',
             }
         };
 
@@ -7607,8 +7622,19 @@ setOriginFromActionSheet() {
 
                 // 6. Platform info
                 const platEl = document.getElementById('morePlatformValue');
+                const isAndroid = this.isAndroidMobile();
                 if (platEl) {
-                    platEl.textContent = (typeof window !== 'undefined' && window.isFlutterApp) ? 'Flutter Hybrid Native' : 'PWA / Web Mobile';
+                    if (typeof window !== 'undefined' && window.isFlutterApp) {
+                        platEl.textContent = isAndroid ? 'Android APK (Flutter Hybrid Native)' : 'iOS IPA (Flutter Hybrid Native)';
+                    } else {
+                        platEl.textContent = isAndroid ? 'Android (PWA / Web Mobile)' : 'PWA / Web Mobile';
+                    }
+                }
+
+                // 7. Android APK Update Action Box (เฉพาะแอพมือถือ Android เท่านั้น)
+                const androidBox = document.getElementById('androidUpdateCard');
+                if (androidBox) {
+                    androidBox.style.display = isAndroid ? 'flex' : 'none';
                 }
 
                 // 6. Traffic Disruption Card (แสดงเมื่อมีประกาศแจ้งเตือนรถไฟขัดข้อง เท่านั้น)
@@ -7650,10 +7676,59 @@ setOriginFromActionSheet() {
                 if (this.journey.picking) this.renderPicker();
             },
 
+            isAndroidMobile() {
+                if (typeof window === 'undefined') return false;
+                if (window.isAndroidApp === true) return true;
+                if (window.isFlutterApp && /android/i.test(navigator.userAgent || '')) return true;
+                return /android/i.test(navigator.userAgent || '');
+            },
+
+            openAndroidApkUpdate() {
+                const apkUrl = 'https://github.com/nasaw9783/BKK-Sky-Trains/releases/latest/download/BKK_SkyTrains.apk';
+                this.showToast(T('downloadingLatestApk'), 'success', 3500);
+                this.openExternalUrl(apkUrl);
+            },
+
+            openGithubReleases() {
+                const releasesUrl = 'https://github.com/nasaw9783/BKK-Sky-Trains/releases/latest';
+                this.openExternalUrl(releasesUrl);
+            },
+
+            openExternalUrl(url) {
+                if (!url) return;
+                if (window.BKKLiveBridge && typeof window.BKKLiveBridge.postMessage === 'function') {
+                    try {
+                        window.BKKLiveBridge.postMessage(JSON.stringify({
+                            action: 'openExternalUrl',
+                            url: url
+                        }));
+                        return;
+                    } catch (e) {
+                        console.warn('[Bridge] Failed to post openExternalUrl:', e);
+                    }
+                }
+                try {
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.target = '_blank';
+                    a.rel = 'noopener noreferrer';
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                } catch (e) {
+                    window.open(url, '_blank');
+                }
+            },
+
             /* ---------- native app bridge hook ---------- */
             onNativeBridgeReady() {
                 try {
                     document.documentElement.classList.add('is-flutter-app');
+                    if (this.isAndroidMobile()) {
+                        document.documentElement.classList.add('is-android-app');
+                        const androidBox = document.getElementById('androidUpdateCard');
+                        if (androidBox) androidBox.style.display = 'flex';
+                    }
                 } catch (e) { }
             },
 
@@ -7814,6 +7889,10 @@ setOriginFromActionSheet() {
                 set('moreGatewayLabel', T('moreGatewayLabel'));
                 set('moreGatewayValue', T('moreGatewayValue'));
                 set('morePlatformLabel', T('morePlatformLabel'));
+                set('androidUpdateTitle', T('androidUpdateTitle'));
+                set('androidUpdateSub', T('androidUpdateSub'));
+                set('btnUpdateVersionLabel', T('btnUpdateVersion'));
+                set('btnGithubReleasesLabel', T('btnGithubReleases'));
                 set('moreTrafficTitle', T('moreTrafficTitle'));
                 set('moreTrafficDesc', T('moreTrafficDesc'));
                 set('trafficDialogTitle', T('trafficDisruptionTitle'));

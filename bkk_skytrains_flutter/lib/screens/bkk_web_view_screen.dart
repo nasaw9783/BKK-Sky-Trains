@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
@@ -76,6 +77,13 @@ class _BkkWebViewScreenState extends State<BkkWebViewScreen> {
                  host == 'appassets.androidplatform.net')) {
               return NavigationDecision.navigate;
             }
+            if (request.url.contains('github.com')) {
+              final launchUri = Uri.tryParse(request.url);
+              if (launchUri != null) {
+                launchUrl(launchUri, mode: LaunchMode.externalApplication);
+              }
+              return NavigationDecision.prevent;
+            }
             debugPrint('[WebView Security] Blocked external navigation to: ${request.url}');
             return NavigationDecision.prevent;
           },
@@ -120,8 +128,10 @@ class _BkkWebViewScreenState extends State<BkkWebViewScreen> {
   }
 
   void _injectBridgeHelpers() {
-    const bridgeScript = '''
+    final isAndroid = defaultTargetPlatform == TargetPlatform.android;
+    final bridgeScript = '''
       window.isFlutterApp = true;
+      window.isAndroidApp = $isAndroid;
       if (window.App && App.onNativeBridgeReady) {
         App.onNativeBridgeReady();
       }
@@ -164,6 +174,14 @@ class _BkkWebViewScreenState extends State<BkkWebViewScreen> {
           );
         } else if (action == 'cancelLiveStation') {
           await LiveTransitService().cancelLiveTransit();
+        } else if (action == 'openExternalUrl') {
+          final urlString = (data['url'] ?? '').toString();
+          if (urlString.isNotEmpty) {
+            final launchUri = Uri.tryParse(urlString);
+            if (launchUri != null) {
+              await launchUrl(launchUri, mode: LaunchMode.externalApplication);
+            }
+          }
         }
       }
     } catch (e) {

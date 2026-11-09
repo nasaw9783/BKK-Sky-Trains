@@ -48,8 +48,8 @@ C:\Users\Administrator\Documents\BKK Sky Trains\
 │
 ├── [3. Releases & CI/CD]
 │   ├── releases/                   # แหล่งเก็บตัวติดตั้ง (แบ่งแยก Android และ Apple)
-│   │   ├── Android/                # APK/, AAB/ (BKK_SkyTrains_V.xxxx.apk, .aab, .sha256)
-│   │   └── Apple/                  # IPA/ (BKK_SkyTrains_V.xxxx.ipa, .sha256)
+│   │   ├── Android/                # APK/, AAB/ (BKK_SkyTrains_V.xxxx_(Build xxxx).apk, .aab, .sha256)
+│   │   └── Apple/                  # IPA/ (BKK_SkyTrains_V.xxxx_(Build xxxx).ipa, .sha256)
 │   └── .github/workflows/          # CI/CD Workflows (Build iOS & Android Apps.yml สำหรับบิลด์ iOS .ipa และ Android .apk อัตโนมัติ)
 │
 └── [4. Documentation & Specifications]
@@ -103,7 +103,7 @@ flutter pub get
 flutter analyze
 flutter build apk --release
 # คัดลอกผลลัพธ์ไปยัง releases/Android/APK/
-Copy-Item -Path "build\app\outputs\flutter-apk\app-release.apk" -Destination "..\releases\Android\APK\BKK_SkyTrains_V.1.3.6.apk" -Force
+Copy-Item -Path "build\app\outputs\flutter-apk\app-release.apk" -Destination "..\releases\Android\APK\BKK_SkyTrains_V.1.3.6_(Build 12).apk" -Force
 flutter clean
 cd ..
 ```
@@ -112,9 +112,9 @@ cd ..
 - ไฟล์ Workflow: `.github/workflows/Build iOS & Android Apps.yml` ("Build iOS & Android Apps")
 - รันบน GitHub Runner `macos-15` อัตโนมัติเมื่อมีการ Push ไปยัง branch `main` หรือ Tag `v*`
 - สคริปต์ Workflow จะดึงเวอร์ชันจาก `pubspec.yaml` อัตโนมัติ และสร้างไฟล์แพ็กเกจ:
-  - iOS IPA: `BKK_SkyTrains_V.${VERSION_BASE}.ipa` + `.sha256`
-  - Android APK: `BKK_SkyTrains_V.${VERSION_BASE}.apk` + `.sha256`
-  - Android App Bundle (AAB): `BKK_SkyTrains_V.${VERSION_BASE}.aab` + `.sha256`
+  - iOS IPA: `BKK_SkyTrains_V.${VERSION_BASE}_(Build ${BUILD_NUMBER}).ipa` + `.sha256`
+  - Android APK: `BKK_SkyTrains_V.${VERSION_BASE}_(Build ${BUILD_NUMBER}).apk` + `.sha256`
+  - Android App Bundle (AAB): `BKK_SkyTrains_V.${VERSION_BASE}_(Build ${BUILD_NUMBER}).aab` + `.sha256`
 - เผยแพร่ขึ้น GitHub Releases (Production / Official) แบบ Unified Release พร้อมแนบไฟล์ตัวติดตั้งและ SHA-256 Checksum ครบถ้วน
 
 ### SOP-5: การใช้งานสคริปต์ Release & Deploy (`Deploy-BKK-SkyTrains.ps1`)

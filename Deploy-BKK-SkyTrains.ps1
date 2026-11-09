@@ -17,6 +17,7 @@
 [CmdletBinding()]
 param(
     [string]$Version = "",
+    [string]$BuildNumber = "",
     [string]$GitHubToken = $env:GITHUB_TOKEN,
     [switch]$PurgeRemoteReleases = $true,
     [switch]$BuildAndroid = $true,
@@ -41,23 +42,29 @@ Write-Host "   🚀 BKK SKYTRAINs - Unified Release & GitHub Deployment" -Foregr
 Write-Host "=================================================================" -ForegroundColor Cyan
 Write-Host ""
 
-# Detect Version from pubspec.yaml
+# Detect Version & Build Number from pubspec.yaml
 $PubspecPath = Join-Path $Workspace "bkk_skytrains_flutter\pubspec.yaml"
 if (Test-Path $PubspecPath) {
     $PubspecContent = Get-Content -LiteralPath $PubspecPath -Raw -Encoding UTF8
-    if ($PubspecContent -match 'version:\s*([0-9]+\.[0-9]+\.[0-9]+)') {
+    if ($PubspecContent -match 'version:\s*([0-9]+\.[0-9]+\.[0-9]+)\+?([0-9]+)?') {
         $DetectedVersion = $matches[1]
+        $DetectedBuild = if ($matches[2]) { $matches[2] } else { "1" }
     } else {
         $DetectedVersion = "1.3.6"
+        $DetectedBuild = "12"
     }
 } else {
     $DetectedVersion = "1.3.6"
+    $DetectedBuild = "12"
 }
 
 if ([string]::IsNullOrWhiteSpace($Version)) {
     $Version = $DetectedVersion
 }
-Write-Host "📦 เวอร์ชันเป้าหมาย: v$Version" -ForegroundColor Yellow
+if ([string]::IsNullOrWhiteSpace($BuildNumber)) {
+    $BuildNumber = $DetectedBuild
+}
+Write-Host "📦 เวอร์ชันเป้าหมาย: v$Version (Build $BuildNumber)" -ForegroundColor Yellow
 
 
 # ==============================================================================
@@ -144,7 +151,7 @@ Get-ChildItem -Path $ReleasesDir -File | Where-Object { $_.Name -like "*.ipa*" }
     Move-Item -LiteralPath $_.FullName -Destination (Join-Path $IpaDir $_.Name) -Force -ErrorAction SilentlyContinue
 }
 
-$CurrentReleasePrefix = "BKK_SkyTrains_V.$Version"
+$CurrentReleasePrefix = "BKK_SkyTrains_V.${Version}_(Build ${BuildNumber})"
 
 # ลบไฟล์ตัวติดตั้งเก่าหรือ Split APK ที่ไม่ได้ใช้งานใน Android/APK
 $AllowedApkNames = @("$CurrentReleasePrefix.apk", "$CurrentReleasePrefix.apk.sha256", ".gitkeep")
@@ -178,8 +185,8 @@ foreach ($f in $oldIpaFiles) {
 
 # ลบไฟล์แพ็กเกจรวมเก่าใน Packages/
 $AllowedPkgNames = @(
-    "BKK_SkyTrains_V.$Version`_Release_Packages.zip",
-    "BKK_SkyTrains_V.$Version`_Release_Packages.zip.sha256",
+    "${CurrentReleasePrefix}_Release_Packages.zip",
+    "${CurrentReleasePrefix}_Release_Packages.zip.sha256",
     ".gitkeep"
 )
 $oldPkgFiles = Get-ChildItem -Path $PackagesDir -File | Where-Object {
@@ -413,7 +420,7 @@ if ($BuildAndroid) {
         exit $buildCode
     }
 
-    $ApkFileName = "BKK_SkyTrains_V.$Version.apk"
+    $ApkFileName = "$CurrentReleasePrefix.apk"
     $BuiltApk = Join-Path $Workspace "bkk_skytrains_flutter\build\app\outputs\flutter-apk\app-release.apk"
     $TargetApk = Join-Path $ApkDir $ApkFileName
     $TargetSha = Join-Path $ApkDir "$ApkFileName.sha256"
@@ -430,7 +437,7 @@ if ($BuildAndroid) {
 
     Copy-Item -LiteralPath $BuiltApk -Destination $TargetApk -Force
     $hash = (Get-FileHash -LiteralPath $TargetApk -Algorithm SHA256).Hash.ToLower()
-    "$hash  $ApkFileName" | Set-Content -LiteralPath $TargetIpaSha -Encoding ASCII
+    "$hash  $ApkFileName" | Set-Content -LiteralPath $TargetSha -Encoding ASCII
 
     Write-Host "   ✓ บิลด์ Android Release APK สำเร็จเรียบร้อย:" -ForegroundColor Green
     Write-Host "     ไฟล์: $TargetApk" -ForegroundColor Gray
@@ -456,7 +463,7 @@ if ($BuildAppBundle) {
         exit $aabCode
     }
 
-    $AabFileName = "BKK_SkyTrains_V.$Version.aab"
+    $AabFileName = "$CurrentReleasePrefix.aab"
     $BuiltAab = Join-Path $Workspace "bkk_skytrains_flutter\build\app\outputs\bundle\release\app-release.aab"
     $TargetAab = Join-Path $AabDir $AabFileName
     $TargetAabSha = Join-Path $AabDir "$AabFileName.sha256"
@@ -505,7 +512,7 @@ if ($BuildIOS) {
         if ($iosCode -eq 0) {
             mkdir -p Payload
             cp -r build/ios/iphoneos/Runner.app Payload/
-            $IpaFileName = "BKK_SkyTrains_V.$Version.ipa"
+            $IpaFileName = "$CurrentReleasePrefix.ipa"
             $TargetIpa = Join-Path $IpaDir $IpaFileName
             $TargetIpaSha = Join-Path $IpaDir "$IpaFileName.sha256"
 
@@ -549,11 +556,10 @@ if ($BuildIOS) {
 
 
 # ==============================================================================
-# บรรจุแพ็กเกจรวม BKK_SkyTrains_V.$Version_Release_Packages.zip
-# ==============================================================================
-Write-Host "`n📦 บรรจุแพ็กเกจรวม BKK_SkyTrains_V.$Version`_Release_Packages.zip (รวมตัวติดตั้งทุกแพลตฟอร์ม)..." -ForegroundColor Cyan
-$pkgVersionZip = Join-Path $PackagesDir "BKK_SkyTrains_V.${Version}_Release_Packages.zip"
-$pkgVersionSha = Join-Path $PackagesDir "BKK_SkyTrains_V.${Version}_Release_Packages.zip.sha256"
+# บรรจุแพ็กเกจรวม ${CurrentReleasePrefix}_Release_Packages.zip
+Write-Host "`n📦 บรรจุแพ็กเกจรวม ${CurrentReleasePrefix}_Release_Packages.zip (รวมตัวติดตั้งทุกแพลตฟอร์ม)..." -ForegroundColor Cyan
+$pkgVersionZip = Join-Path $PackagesDir "${CurrentReleasePrefix}_Release_Packages.zip"
+$pkgVersionSha = Join-Path $PackagesDir "${CurrentReleasePrefix}_Release_Packages.zip.sha256"
 $OldDirectPkgZip = Join-Path $PackagesDir "BKK_SkyTrains_Release_Packages.zip"
 $OldDirectPkgSha = Join-Path $PackagesDir "BKK_SkyTrains_Release_Packages.zip.sha256"
 if (Test-Path $OldDirectPkgZip) { Remove-Item -LiteralPath $OldDirectPkgZip -Force -ErrorAction SilentlyContinue }
@@ -563,9 +569,9 @@ if (Test-Path $pkgVersionZip) { Remove-Item -LiteralPath $pkgVersionZip -Force -
 
 Compress-Archive -Path $AndroidDir, $AppleDir -DestinationPath $pkgVersionZip -Force
 $pkgHash = (Get-FileHash -LiteralPath $pkgVersionZip -Algorithm SHA256).Hash.ToLower()
-"$pkgHash  BKK_SkyTrains_V.${Version}_Release_Packages.zip" | Set-Content -LiteralPath $pkgVersionSha -Encoding ASCII
+"$pkgHash  ${CurrentReleasePrefix}_Release_Packages.zip" | Set-Content -LiteralPath $pkgVersionSha -Encoding ASCII
 
-Write-Host "   ✓ บรรจุแพ็กเกจรวม BKK_SkyTrains_V.$Version`_Release_Packages.zip เรียบร้อย:" -ForegroundColor Green
+Write-Host "   ✓ บรรจุแพ็กเกจรวม ${CurrentReleasePrefix}_Release_Packages.zip เรียบร้อย:" -ForegroundColor Green
 Write-Host "     ไฟล์หลัก: $pkgVersionZip" -ForegroundColor Gray
 Write-Host "     SHA-256: $pkgHash" -ForegroundColor Yellow
 

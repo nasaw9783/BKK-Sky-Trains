@@ -32,14 +32,14 @@ Directives and mandatory standards for AI Agents working within `C:\Users\Admini
 
 3. **Releases & Deployment**:
    - `releases/`: Dedicated directory for built installer packages (แบ่งแยกโฟลเดอร์ `Android/APK`, `Android/AAB`, `Apple/IPA` และ `Packages/`):
-     - `Android/APK/`: `BKK_SkyTrains_V.xxxx.apk`, Checksum (`.sha256`)
-     - `Android/AAB/`: `BKK_SkyTrains_V.xxxx.aab`, Checksum (`.sha256`)
-     - `Apple/IPA/`: `BKK_SkyTrains_V.xxxx.ipa`, Checksum (`.sha256`)
-     - `Packages/`: `BKK_SkyTrains_V.xxxx_Release_Packages.zip`, Checksum (`.sha256`)
-   - `.github/workflows/Build iOS & Android Apps.yml`: Automated Cloud CI/CD workflow for building, packaging, verifying SHA-256 checksums, and releasing on GitHub macOS runners รองรับตัวเลือกดาวน์โหลดเฉพาะ 3 รายการแบบระบุเวอร์ชันเท่านั้น:
-     - `BKK_SkyTrains_V.xxxx_Release_Packages`: รวมแพ็กเกจทุกระบบ (ZIP)
-     - `BKK_SkyTrains_V.xxxx.apk`: ตัวติดตั้ง Android APK
-     - `BKK_SkyTrains_V.xxxx.ipa`: ตัวติดตั้ง Apple iOS IPA
+     - `Android/APK/`: `BKK_SkyTrains_V.xxxx_(Build xxxx).apk`, Checksum (`.sha256`)
+     - `Android/AAB/`: `BKK_SkyTrains_V.xxxx_(Build xxxx).aab`, Checksum (`.sha256`)
+     - `Apple/IPA/`: `BKK_SkyTrains_V.xxxx_(Build xxxx).ipa`, Checksum (`.sha256`)
+     - `Packages/`: `BKK_SkyTrains_V.xxxx_(Build xxxx)_Release_Packages.zip`, Checksum (`.sha256`)
+   - `.github/workflows/Build iOS & Android Apps.yml`: Automated Cloud CI/CD workflow for building, packaging, verifying SHA-256 checksums, and releasing on GitHub macOS runners รองรับตัวเลือกดาวน์โหลดเฉพาะ 3 รายการแบบระบุเวอร์ชันและบิลด์เท่านั้น:
+     - `BKK_SkyTrains_V.xxxx_(Build xxxx)_Release_Packages`: รวมแพ็กเกจทุกระบบ (ZIP)
+     - `BKK_SkyTrains_V.xxxx_(Build xxxx).apk`: ตัวติดตั้ง Android APK
+     - `BKK_SkyTrains_V.xxxx_(Build xxxx).ipa`: ตัวติดตั้ง Apple iOS IPA
 
 4. **Documentation & Specifications**:
    - `README.md`: Workspace overview and documentation.

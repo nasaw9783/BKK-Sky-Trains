@@ -1179,9 +1179,9 @@ gQIDAQAB
                 moreGatewayValue: '<span class="live-status-line"><span class="live-dot-sm"></span> เชื่อมต่อ 100%</span><span class="live-status-sub">เรียลไทม์</span>',
                 morePlatformLabel: 'แพลตฟอร์ม',
                 androidUpdateTitle: 'อัปเดตเวอร์ชันใหม่ (Android APK)',
-                androidUpdateSub: 'ดาวน์โหลด APK ตัวล่าสุดจาก GitHub Releases',
+                androidUpdateSub: 'ดาวน์โหลด APK ตัวล่าสุด',
                 btnUpdateVersion: 'Update Version',
-                downloadingLatestApk: 'กำลังเปิดดาวน์โหลด APK ตัวล่าสุดจาก GitHub Releases...',
+                downloadingLatestApk: 'กำลังเปิดดาวน์โหลด APK ตัวล่าสุด...',
             },
             en: {
                 appName: 'BKK SKYTRAINs',
@@ -1534,9 +1534,9 @@ gQIDAQAB
                 moreGatewayValue: '<span class="live-status-line"><span class="live-dot-sm"></span> Connected 100%</span><span class="live-status-sub">Real-Time</span>',
                 morePlatformLabel: 'Platform',
                 androidUpdateTitle: 'Update New Version (Android APK)',
-                androidUpdateSub: 'Download latest APK release from GitHub',
+                androidUpdateSub: 'Download latest APK',
                 btnUpdateVersion: 'Update Version',
-                downloadingLatestApk: 'Opening latest APK download from GitHub Releases...',
+                downloadingLatestApk: 'Opening latest APK download...',
             },
             zh: {
                 appName: 'BKK SKYTRAINs',
@@ -1889,9 +1889,9 @@ gQIDAQAB
                 moreGatewayValue: '<span class="live-status-line"><span class="live-dot-sm"></span> 100% 实时</span><span class="live-status-sub">已连接</span>',
                 morePlatformLabel: '运行平台',
                 androidUpdateTitle: '更新最新版本 (Android APK)',
-                androidUpdateSub: '从 GitHub Releases 下载最新 APK 安装包',
+                androidUpdateSub: '下载最新 APK 安装包',
                 btnUpdateVersion: 'Update Version',
-                downloadingLatestApk: '正在从 GitHub Releases 打开最新 APK 下载...',
+                downloadingLatestApk: '正在打开最新 APK 下载...',
             }
         };
 
@@ -4255,6 +4255,11 @@ gQIDAQAB
 
         /* ================= APP ================= */
         const App = {
+            version: '1.3.6',
+            build: 17,
+            _hasApkUpdate: undefined,
+            _isCheckingApkUpdate: false,
+            _latestApkDownloadUrl: null,
             mapStationHotspots: MAP_STATION_HOTSPOTS,
             lines: [],            // [{LineId, LineName_TH/EN, LineColor, StationList}]
             uniqueStations: [],   // dedupe ด้วย StationKey (สยามอยู่ 2 สาย) สำหรับหาสถานีใกล้สุด
@@ -7637,14 +7642,25 @@ setOriginFromActionSheet() {
                     }
                 }
 
-                // 7. Android APK Update Action Box (เฉพาะแอพมือถือ Android เท่านั้น)
+                // 7. Android APK Update Action Box (เฉพาะแอพมือถือ Android เท่านั้น: แสดงเมื่อตรวจพบ .apk เวอร์ชันใหม่กว่าเท่านั้น)
                 const androidBox = document.getElementById('androidUpdateCard');
                 if (androidBox) {
-                    androidBox.style.display = isAndroid ? 'flex' : 'none';
+                    if (isAndroid && this._hasApkUpdate === true) {
+                        androidBox.style.display = 'flex';
+                    } else {
+                        androidBox.style.display = 'none';
+                    }
+                }
+                if (isAndroid && this._hasApkUpdate === undefined) {
+                    this.checkAndroidApkUpdate();
                 }
 
                 // 6. Traffic Disruption Card (แสดงเมื่อมีประกาศแจ้งเตือนรถไฟขัดข้อง เท่านั้น)
                 this.renderTraffic();
+            },
+
+            renderSettings() {
+                this.renderMoreView();
             },
 
             /* ---------- language ---------- */
@@ -7689,15 +7705,122 @@ setOriginFromActionSheet() {
                 return /android/i.test(navigator.userAgent || '');
             },
 
+            isReleaseNewerThanInstalled(releaseData) {
+                if (!releaseData) return false;
+                const apkAssets = (releaseData.assets || []).filter(a => a.name && a.name.endsWith('.apk') && !a.name.endsWith('.sha256'));
+                if (apkAssets.length === 0) return false;
+
+                const parseVersion = (str) => {
+                    if (!str || typeof str !== 'string') return [0, 0, 0];
+                    const m = str.match(/v?(\d+)\.(\d+)(?:\.(\d+))?/i);
+                    if (!m) return [0, 0, 0];
+                    return [parseInt(m[1], 10) || 0, parseInt(m[2], 10) || 0, parseInt(m[3], 10) || 0];
+                };
+
+                const parseBuild = (data) => {
+                    let maxBuild = 0;
+                    const checkStr = (s) => {
+                        if (!s) return;
+                        const m = s.match(/Build[._\s]+(\d+)/i) || s.match(/\+(\d+)$/);
+                        if (m) {
+                            const b = parseInt(m[1], 10);
+                            if (!isNaN(b) && b > maxBuild) maxBuild = b;
+                        }
+                    };
+                    checkStr(data.name);
+                    checkStr(data.tag_name);
+                    if (Array.isArray(data.assets)) {
+                        for (const a of data.assets) {
+                            if (a && a.name && a.name.endsWith('.apk') && !a.name.endsWith('.sha256')) {
+                                checkStr(a.name);
+                            }
+                        }
+                    }
+                    return maxBuild;
+                };
+
+                const currentVerStr = this.version || '1.3.6';
+                const currentBuildNum = this.build || 17;
+
+                const remoteVer = parseVersion(releaseData.tag_name || releaseData.name);
+                const localVer = parseVersion(currentVerStr);
+                const remoteBuild = parseBuild(releaseData);
+                const localBuild = currentBuildNum;
+
+                for (let i = 0; i < 3; i++) {
+                    if ((remoteVer[i] || 0) > (localVer[i] || 0)) return true;
+                    if ((remoteVer[i] || 0) < (localVer[i] || 0)) return false;
+                }
+                return remoteBuild > localBuild;
+            },
+
+            async checkAndroidApkUpdate(force = false) {
+                const androidBox = document.getElementById('androidUpdateCard');
+                if (!this.isAndroidMobile()) {
+                    if (androidBox) androidBox.style.display = 'none';
+                    return;
+                }
+
+                if (this._isCheckingApkUpdate) return;
+                if (!force && this._hasApkUpdate !== undefined) {
+                    if (androidBox) {
+                        androidBox.style.display = this._hasApkUpdate ? 'flex' : 'none';
+                    }
+                    return;
+                }
+
+                this._isCheckingApkUpdate = true;
+                try {
+                    const controller = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+                    const timeoutId = controller ? setTimeout(() => controller.abort(), 8000) : null;
+                    const res = await fetch('https://api.github.com/repos/nasaw9783/BKK-Sky-Trains/releases/latest', {
+                        headers: { 'Accept': 'application/vnd.github.v3+json' },
+                        signal: controller ? controller.signal : undefined
+                    });
+                    if (timeoutId) clearTimeout(timeoutId);
+
+                    if (res.ok) {
+                        const data = await res.json();
+                        const apkAssets = (data.assets || []).filter(a => a.name && a.name.endsWith('.apk') && !a.name.endsWith('.sha256'));
+                        if (apkAssets.length > 0) {
+                            const preferredApk = apkAssets.find(a => /Build/i.test(a.name)) || apkAssets.find(a => /_V\./i.test(a.name)) || apkAssets[0];
+                            if (preferredApk && preferredApk.browser_download_url) {
+                                this._latestApkDownloadUrl = preferredApk.browser_download_url;
+                            }
+                            const isNewer = this.isReleaseNewerThanInstalled(data);
+                            this._hasApkUpdate = isNewer;
+                            if (androidBox) {
+                                androidBox.style.display = isNewer ? 'flex' : 'none';
+                            }
+                            return;
+                        }
+                    }
+                    this._hasApkUpdate = false;
+                    if (androidBox) androidBox.style.display = 'none';
+                } catch (e) {
+                    console.warn('[Update] checkAndroidApkUpdate offline or error:', e);
+                    this._hasApkUpdate = false;
+                    if (androidBox) androidBox.style.display = 'none';
+                } finally {
+                    this._isCheckingApkUpdate = false;
+                }
+            },
+
             async openAndroidApkUpdate() {
                 this.showToast(T('downloadingLatestApk'), 'success', 3500);
+                if (this._latestApkDownloadUrl) {
+                    this.openExternalUrl(this._latestApkDownloadUrl);
+                    return;
+                }
                 try {
                     const res = await fetch('https://api.github.com/repos/nasaw9783/BKK-Sky-Trains/releases/latest');
                     if (res.ok) {
                         const data = await res.json();
-                        const apkAsset = (data.assets || []).find(a => a.name && a.name.endsWith('.apk') && !a.name.endsWith('.sha256'));
-                        if (apkAsset && apkAsset.browser_download_url) {
-                            this.openExternalUrl(apkAsset.browser_download_url);
+                        const apkAssets = (data.assets || []).filter(a => a.name && a.name.endsWith('.apk') && !a.name.endsWith('.sha256'));
+                        const preferredApk = apkAssets.find(a => /Build/i.test(a.name)) || apkAssets.find(a => /_V\./i.test(a.name)) || apkAssets[0];
+                        if (preferredApk && preferredApk.browser_download_url) {
+                            this._latestApkDownloadUrl = preferredApk.browser_download_url;
+                            this.openExternalUrl(preferredApk.browser_download_url);
                             return;
                         }
                     }
@@ -7739,8 +7862,7 @@ setOriginFromActionSheet() {
                     document.documentElement.classList.add('is-flutter-app');
                     if (this.isAndroidMobile()) {
                         document.documentElement.classList.add('is-android-app');
-                        const androidBox = document.getElementById('androidUpdateCard');
-                        if (androidBox) androidBox.style.display = 'flex';
+                        this.checkAndroidApkUpdate();
                     }
                 } catch (e) { }
             },
@@ -7960,6 +8082,9 @@ setOriginFromActionSheet() {
                 this.startClock();
                 // Initialize more view and notification state
                 this.renderMoreView();
+                if (this.isAndroidMobile()) {
+                    this.checkAndroidApkUpdate();
+                }
                 if ('serviceWorker' in navigator) {
                     navigator.serviceWorker.addEventListener('message', (event) => {
                         if (event.data && event.data.action === 'openStation' && event.data.stationKey) {

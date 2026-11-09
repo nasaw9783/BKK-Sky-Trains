@@ -44,6 +44,7 @@ Directives and mandatory standards for AI Agents working within `C:\Users\Admini
 4. **Documentation & Specifications**:
    - `README.md`: Workspace overview and documentation.
    - `PRD.md`: Product Requirements Document detailing product vision, personas, features, live TTA, routing, fares, and roadmap.
+   - `USER_GUIDE.md`: Comprehensive end-user commuter handbook & manual for Bangkok SkyTrains system.
    - `Skill.md`: Antigravity / Gemini Agent skill specification.
    - `AGENTS.md`, `GEMINI.md`: Mandatory Agent operating guidelines, post-file-edit protocols, and system standards.
 

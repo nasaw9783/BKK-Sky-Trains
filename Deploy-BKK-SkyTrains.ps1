@@ -316,6 +316,7 @@ Write-Host "`n[Step 3/8] 📝 ตรวจสอบและ Update .md ทั�
 $MdFiles = @(
     "README.md",
     "PRD.md",
+    "USER_GUIDE.md",
     "AGENTS.md",
     "GEMINI.md",
     "Skill.md",

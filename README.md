@@ -222,6 +222,7 @@ c:\Users\Administrator\Documents\BKK Sky Trains/
 │
 └── [4. Documentation & Specifications]
     ├── README.md                   # คู่มือภาพรวมโปรเจกต์และวิธีใช้งาน
+    ├── USER_GUIDE.md               # คู่มือการใช้งานระบบรถไฟฟ้าสำหรับผู้โดยสารทั่วไป (User Guide)
     ├── PRD.md                      # Product Requirements Document
     ├── Skill.md                    # ข้อกำหนด Antigravity / Gemini Agent Skill
     ├── AGENTS.md                   # ข้อกำหนดและมาตรฐาน Agent ใน Workspace

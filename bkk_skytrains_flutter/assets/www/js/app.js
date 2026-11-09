@@ -11677,7 +11677,7 @@ setOriginFromActionSheet() {
                 const dotsEl = document.getElementById('spotlightDots');
                 if (dotsEl) {
                     dotsEl.innerHTML = Array.from({ length: total }, (_, i) =>
-                        `<span class="spotlight-dot ${i === index ? 'active' : ''}" onclick="App.renderSpotlightStep(${i})" title="ขั้นตอนที่ ${i + 1}"></span>`
+                        `<span class="spotlight-dot ${i === index ? 'active' : ''}"></span>`
                     ).join('');
                 }
 
@@ -11767,7 +11767,7 @@ setOriginFromActionSheet() {
             },
 
             handleSpotlightBackdropClick() {
-                this.nextSpotlightStep();
+                // Disabled: Only the 3 explicit buttons (Skip, Prev, Next) are interactive
             }
         };
 

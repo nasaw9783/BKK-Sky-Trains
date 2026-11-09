@@ -10177,6 +10177,17 @@
             cursor: default;
         }
 
+        .spotlight-screen-blocker {
+            position: fixed;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1000000;
+            pointer-events: auto;
+            background: transparent;
+            cursor: default;
+        }
+
         .spotlight-svg {
             position: absolute;
             inset: 0;
@@ -10195,7 +10206,7 @@
             border: 2.5px solid #38bdf8;
             box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.28), 0 0 28px rgba(56, 189, 248, 0.45);
             pointer-events: none;
-            z-index: 1000000;
+            z-index: 1000001;
             transition: top 0.3s cubic-bezier(0.4, 0, 0.2, 1),
                         left 0.3s cubic-bezier(0.4, 0, 0.2, 1),
                         width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
@@ -10216,7 +10227,7 @@
 
         .spotlight-tooltip-card {
             position: fixed;
-            z-index: 1000001;
+            z-index: 1000002;
             max-width: 380px;
             width: calc(100% - 32px);
             background: rgba(15, 23, 42, 0.94);
@@ -10271,33 +10282,7 @@
             color: #0284c7;
         }
 
-        .spotlight-close-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            background: rgba(255, 255, 255, 0.08);
-            color: #94a3b8;
-            cursor: pointer;
-            font-size: 13px;
-            line-height: 1;
-            transition: all 0.2s ease;
-        }
-
-        html:not(.dark) .spotlight-close-btn {
-            border-color: rgba(0, 0, 0, 0.1);
-            background: rgba(0, 0, 0, 0.05);
-            color: #64748b;
-        }
-
-        .spotlight-close-btn:hover {
-            background: rgba(239, 68, 68, 0.2);
-            color: #ef4444;
-            border-color: rgba(239, 68, 68, 0.3);
-        }
+        
 
         .spotlight-title {
             margin: 0 0 6px;
@@ -10334,7 +10319,8 @@
             border-radius: 50%;
             background: rgba(148, 163, 184, 0.3);
             transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
+            cursor: default;
+            pointer-events: none;
         }
 
         .spotlight-dot.active {
@@ -11229,7 +11215,7 @@
                             <div class="version-app-name">BKK SKYTRAINs</div>
                             <div class="version-number-tag">
                                 <span class="tag-label" id="moreVersionLabel">เวอร์ชัน</span>
-                                <span class="tag-value">v1.3.6 (Build 13)</span>
+                                <span class="tag-value">v1.3.6 (Build 14)</span>
                             </div>
                         </div>
                     </div>
@@ -11850,6 +11836,9 @@
     
     <!-- ===== Interactive Spotlight Tour Walkthrough (Option 2) ===== -->
     <div id="spotlightOverlay" class="spotlight-tour-overlay" style="display:none;" aria-hidden="true">
+        <!-- Fullscreen Click Blocker: absorbs all clicks everywhere on the screen except the 3 tooltip buttons -->
+        <div class="spotlight-screen-blocker" aria-hidden="true"></div>
+
         <!-- SVG Mask for transparent cutout -->
         <svg id="spotlightSvg" class="spotlight-svg" width="100%" height="100%" preserveAspectRatio="none">
             <defs>
@@ -11860,8 +11849,8 @@
                     <rect id="spotlightCutout" x="0" y="0" width="0" height="0" rx="14" ry="14" fill="#000000" />
                 </mask>
             </defs>
-            <!-- Dark translucent backdrop with mask cutout -->
-            <rect x="0" y="0" width="100%" height="100%" fill="rgba(3, 7, 18, 0.78)" mask="url(#spotlightMask)" onclick="App.handleSpotlightBackdropClick()" />
+            <!-- Dark translucent backdrop with mask cutout (clicks absorbed by screen blocker) -->
+            <rect x="0" y="0" width="100%" height="100%" fill="rgba(3, 7, 18, 0.78)" mask="url(#spotlightMask)" />
         </svg>
 
         <!-- Animated pulsing glow highlight box around target -->
@@ -11874,7 +11863,6 @@
                     <span class="spotlight-step-icon">✨</span>
                     <span id="spotlightStepCounter">1 / 12</span>
                 </div>
-                <button type="button" class="spotlight-close-btn" onclick="App.closeSpotlightTour()" aria-label="ปิดทัวร์" title="ปิดคู่มือการใช้งาน">✕</button>
             </div>
             <div class="spotlight-tooltip-body">
                 <h3 class="spotlight-title" id="spotlightTitle">เวลานับถอยหลังสด</h3>

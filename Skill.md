@@ -103,7 +103,7 @@ flutter pub get
 flutter analyze
 flutter build apk --release
 # คัดลอกผลลัพธ์ไปยัง releases/Android/APK/
-Copy-Item -Path "build\app\outputs\flutter-apk\app-release.apk" -Destination "..\releases\Android\APK\BKK_SkyTrains_V.1.3.6_(Build 14).apk" -Force
+Copy-Item -Path "build\app\outputs\flutter-apk\app-release.apk" -Destination "..\releases\Android\APK\BKK_SkyTrains_V.1.3.6_(Build 15).apk" -Force
 flutter clean
 cd ..
 ```

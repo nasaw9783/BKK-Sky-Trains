@@ -40,18 +40,12 @@ android {
                 keyPassword = "bkkskytrains2026"
                 enableV1Signing = true
                 enableV2Signing = true
-                enableV3Signing = true
-                enableV4Signing = true
             } else {
                 val debugConfig = signingConfigs.getByName("debug")
                 storeFile = debugConfig.storeFile
                 storePassword = debugConfig.storePassword
                 keyAlias = debugConfig.keyAlias
                 keyPassword = debugConfig.keyPassword
-                enableV1Signing = true
-                enableV2Signing = true
-                enableV3Signing = true
-                enableV4Signing = true
             }
         }
     }

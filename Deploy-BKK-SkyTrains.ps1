@@ -1,4 +1,4 @@
-﻿﻿# ==============================================================================
+﻿# ==============================================================================
 #  BKK SkyTrains - Automated Release, Build & GitHub Deployment Script
 #  Encoding: UTF-8 with BOM | Supports: Windows PowerShell 5.1 & pwsh 7+
 #

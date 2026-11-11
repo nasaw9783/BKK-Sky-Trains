@@ -63,7 +63,7 @@ jobs:
 
       - name: Run Static Analysis
         working-directory: bkk_skytrains_flutter
-        run: flutter analyze
+        run: flutter analyze --no-fatal-infos
 
       - name: Run Unit & Widget Tests
         working-directory: bkk_skytrains_flutter

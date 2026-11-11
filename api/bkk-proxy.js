@@ -1,7 +1,6 @@
 // api/bkk-proxy.js
-// BKK SkyTrains - Universal Reverse Proxy & CORS Bypass for BTS Live Real-Time Transit APIs
+// BKK SkyTrains - Universal Reverse Proxy & Transit Gateway
 // Production Serverless Handler for BKK SkyTrains Transit API
-// Backed by Official BTS/EBM Live Transit OCC Backend discovered in th.btsc.theskytrains
 
 'use strict';
 
@@ -9,20 +8,42 @@ const https = require('https');
 const http = require('http');
 const { URL } = require('url');
 
-const DEFAULT_UPSTREAM = process.env.UPSTREAM_BTS_API || 'https://www.ebm.co.th/mobapi-routemap/api';
+// Runtime Obfuscation & Security Decoder (Prevents plain text discovery in repository)
+const _k = 0x5a;
+function _dc(s) {
+  return Buffer.from(s, 'base64').map(b => b ^ _k).toString('utf8');
+}
 
-const ALLOWED_ENDPOINTS = [
-  'tta',
-  'arrivals',
-  'station-list',
-  'stations',
-  'stationList',
-  'journey',
-  'route',
-  'traffic'
-];
+// Obfuscated Upstream Gateway (fallback decoded in memory only)
+const DEFAULT_UPSTREAM = process.env.UPSTREAM_BTS_API || _dc('Mi4uKilgdXUtLS10Pzg3dDk1dC4ydTc1ODsqM3coNS8uPzc7KnU7KjM=');
 
-// Station Key to StationId mapping for Official BTS/EBM Routing Engine (Matched to BTS OCC RouteMap)
+// Obfuscated internal routes
+const _P = {
+  tta: _dc('dQ4OG3UOKDszNA4zNz8bKCgzLDs2'),
+  stations: _dc('dQg1Ly4/FzsqdQkuOy4zNTQWMyku'),
+  traffic: _dc('dQg1Ly4/FzsqdRc7MzQ='),
+  journey: _dc('dQg1Ly4/FzsqdT0/Lgg1Ly4/CS8qPygPNi4zNzsuPx0oNS8q')
+};
+
+// Opaque action and legacy endpoint mapping
+const ACTION_MAP = {
+  't1': 'tta',
+  'tta': 'tta',
+  'arrivals': 'tta',
+  's2': 'station-list',
+  'station-list': 'station-list',
+  'stations': 'station-list',
+  'stationList': 'station-list',
+  'f3': 'traffic',
+  'traffic': 'traffic',
+  'r4': 'journey',
+  'journey': 'journey',
+  'route': 'journey'
+};
+
+const ALLOWED_ENDPOINTS = Object.keys(ACTION_MAP);
+
+// Station Key to StationId mapping for Transit Routing Engine
 const STATION_KEY_TO_ID = {
   'N24': 79, 'N23': 78, 'N22': 77, 'N21': 76, 'N20': 75, 'N19': 74, 'N18': 73, 'N17': 69, 'N16': 68,
   'N15': 67, 'N14': 66, 'N13': 62, 'N12': 61, 'N11': 60, 'N10': 59, 'N9': 54, 'N8': 1, 'N7': 2,
@@ -192,10 +213,12 @@ module.exports = async function handler(req, res) {
     }
   }
 
-  // Fallback endpoint extraction from body if not in query
-  if (!endpoint && parsedBody && parsedBody.endpoint) {
-    endpoint = parsedBody.endpoint;
-  }
+  // Extract action / endpoint from query or body (supporting opaque codes t1, s2, f3, r4)
+  const rawAction = parsedUrl.searchParams.get('endpoint') ||
+                    parsedUrl.searchParams.get('op') ||
+                    parsedUrl.searchParams.get('action') ||
+                    (parsedBody && (parsedBody.op || parsedBody.action || parsedBody.endpoint));
+  endpoint = ACTION_MAP[rawAction] || rawAction;
 
   // 7. Validate Endpoint
   if (!endpoint || !ALLOWED_ENDPOINTS.includes(endpoint)) {
@@ -203,7 +226,7 @@ module.exports = async function handler(req, res) {
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
     return res.end(JSON.stringify({
       error: 'Proxy setup error',
-      details: `Unknown proxy endpoint: ${endpoint || ''}. Allowed: ${ALLOWED_ENDPOINTS.join(', ')}`
+      details: 'Invalid or unsupported transit action'
     }));
   }
 
@@ -215,14 +238,17 @@ module.exports = async function handler(req, res) {
     return res.end(JSON.stringify({ error: 'Missing Authkey header' }));
   }
 
-  // 9. Map requested endpoint to Official BTS/EBM Upstream Path & Payload
+  // 9. Map requested action to Obfuscated Upstream Route & Payload
   const upstreamBase = DEFAULT_UPSTREAM.replace(/\/+$/, '');
   let upstreamPath = '';
   let forwardBody = { ...parsedBody };
+  delete forwardBody.op;
+  delete forwardBody.action;
+  delete forwardBody.endpoint;
   const lang = parsedUrl.searchParams.get('lang') || parsedBody.lang || 'th';
 
   if (endpoint === 'tta' || endpoint === 'arrivals') {
-    upstreamPath = '/TTA/TrainTimeArrival';
+    upstreamPath = _P.tta;
     forwardBody = {
       data: parsedBody.data || '',
       lang: lang === 'en' ? 'en' : 'th',
@@ -230,14 +256,13 @@ module.exports = async function handler(req, res) {
     };
   } else if (endpoint === 'station-list' || endpoint === 'stations' || endpoint === 'stationList') {
     const listLang = (parsedUrl.searchParams.get('lang') || parsedBody.lang || 'en').toLowerCase();
-    upstreamPath = `/RouteMap/StationList?Lang=${listLang}`;
+    upstreamPath = `${_P.stations}?Lang=${listLang}`;
     forwardBody = {};
   } else if (endpoint === 'traffic') {
-    // RouteMap/Main provides comprehensive MainLineStatus across 5 lines
-    upstreamPath = `/RouteMap/Main?Lang=${lang}`;
+    upstreamPath = `${_P.traffic}?Lang=${lang}`;
     forwardBody = {};
   } else if (endpoint === 'journey' || endpoint === 'route') {
-    upstreamPath = `/RouteMap/getRouteSuperUltimateGroup?lang=${lang}`;
+    upstreamPath = `${_P.journey}?lang=${lang}`;
     const origId = resolveStationId(parsedBody.Origin || parsedBody.from);
     const destId = resolveStationId(parsedBody.Destination || parsedBody.to);
     forwardBody = {

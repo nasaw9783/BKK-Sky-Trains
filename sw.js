@@ -5,7 +5,7 @@
  * - ไฟล์ static อื่นๆ (CDN): stale-while-revalidate ให้โหลดซ้ำเร็วขึ้น
  * - คำขอ API ขบวนรถ (POST ข้ามโดเมน) ปล่อยผ่าน ไม่แตะ — ข้อมูลสดต้องมาจากเน็ตเสมอ
  */
-const VERSION = 'bkk-v94';
+const VERSION = 'bkk-v98';
 const SHELL_CACHE = 'bkk-shell-' + VERSION;
 const RUNTIME_CACHE = 'bkk-runtime-' + VERSION;
 
@@ -77,8 +77,8 @@ self.addEventListener('fetch', event => {
 
     const url = new URL(req.url);
 
-    // ปล่อยผ่านคำขอ API ขบวนรถสด /api/bkk-proxy เสมอ ไม่แตะแคช
-    if (url.pathname.includes('/api/bkk-proxy') || url.pathname.includes('/api/')) return;
+    // ปล่อยผ่านคำขอข้อมูลระบบ (/api/) เสมอ ไม่แตะแคช
+    if (url.pathname.includes('/api/')) return;
 
     // ข้ามคำขอที่ไม่ใช่โปรโตคอล http/https (เช่น chrome-extension://) ป้องกัน Cache API error
     if (!url.protocol.startsWith('http')) return;

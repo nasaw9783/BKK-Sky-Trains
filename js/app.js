@@ -1,9 +1,37 @@
 'use strict';
 
-        /* ================= CONFIG ================= */
-        const REMOTE_API = (typeof window !== 'undefined' && window.BKK_CONFIG && window.BKK_CONFIG.apiBase) || 'https://bkk-skytrains.vercel.app/api/bkk-proxy';
-        // ตรวจสอบว่าโฮสต์ปัจจุบันรองรับ relative /api/bkk-proxy หรือไม่ (Localhost บนพอร์ต 3000 หรือ Vercel *.vercel.app)
-        // สำหรับกรณีอื่น (WebView, file://, GitHub Pages ฯลฯ) ชี้ตรงไปยัง REMOTE_API ทันที
+        /* ================= SECURITY & CONFIG ================= */
+        const _k = 0x5a;
+        const _dc = (s) => {
+            try {
+                const bin = (typeof atob === 'function') ? atob(s) : Buffer.from(s, 'base64').toString('binary');
+                let out = '';
+                for (let i = 0; i < bin.length; i++) {
+                    out += String.fromCharCode(bin.charCodeAt(i) ^ _k);
+                }
+                return out;
+            } catch (_) {
+                return '';
+            }
+        };
+
+        const REMOTE_API = (typeof window !== 'undefined' && window.BKK_CONFIG && window.BKK_CONFIG.apiBase) || _dc('Mi4uKilgdXU4MTF3KTEjLig7MzQpdCw/KDk/NnQ7Kip1OyozdSkjNDk=');
+        const REMOTE_LEGACY = _dc('Mi4uKilgdXU4MTF3KTEjLig7MzQpdCw/KDk/NnQ7Kip1OyozdTgxMXcqKDUiIw==');
+        const LOCAL_PROXY_PATH = _dc('dTsqM3UpIzQ5');
+
+        // Opaque Transit Action Codes (Cloaked from network query strings)
+        const OP_TTA = 't1';
+        const OP_STATION_LIST = 's2';
+        const OP_TRAFFIC = 'f3';
+        const OP_JOURNEY = 'r4';
+        const _LEGACY_MAP = {
+            [OP_TTA]: () => _dc('Li47'),
+            [OP_STATION_LIST]: () => _dc('KS47LjM1NHc2Myku'),
+            [OP_TRAFFIC]: () => _dc('Lig7PDwzOQ=='),
+            [OP_JOURNEY]: () => _dc('MDUvKDQ/Iw==')
+        };
+
+        // Check if host supports relative proxy path
         const hasRelativeProxyHost = Boolean(
             (typeof location !== 'undefined') && (
                 ((location.hostname === 'localhost' || location.hostname === '127.0.0.1') && location.port === '3000') ||
@@ -11,16 +39,17 @@
             )
         );
 
-        let activeProxyBase = hasRelativeProxyHost ? '/api/bkk-proxy' : REMOTE_API;
+        let activeProxyBase = hasRelativeProxyHost ? LOCAL_PROXY_PATH : REMOTE_API;
 
         const proxyUrl = (endpoint, params = {}) => {
-            const q = new URLSearchParams({ endpoint, ...params });
+            if (!endpoint) return activeProxyBase;
+            const q = new URLSearchParams({ op: endpoint, ...params });
             return `${activeProxyBase}?${q.toString()}`;
         };
-        const STATION_LIST_URL = (langParam = 'en') => proxyUrl('station-list', { lang: langParam });
-        const TTA_URL = () => proxyUrl('tta');
-        const JOURNEY_URL = (pLang) => proxyUrl('journey', { lang: pLang || 'th' });
-        const TRAFFIC_URL = () => proxyUrl('traffic');
+        const STATION_LIST_URL = (langParam = 'en') => proxyUrl(OP_STATION_LIST, { lang: langParam });
+        const TTA_URL = () => activeProxyBase;
+        const JOURNEY_URL = (pLang) => activeProxyBase;
+        const TRAFFIC_URL = () => activeProxyBase;
         const TRAFFIC_REFRESH_MS = 180000;  // สถานะเดินรถทุก 3 นาที
         const REFRESH_MS = 20000;       // refresh ข้อมูลขบวนรถทุก 20 วิ
         const TICK_MS = 1000;           // นับถอยหลังทุก 1 วิ
@@ -637,15 +666,7 @@ const FALLBACK_MAX_KM = 3.0;
             };
         }
 
-        const SERVER_PUBLIC_PEM = `-----BEGIN PUBLIC KEY-----
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA8zsT7DJXT2PGXFYp56Wy
-wZiROQMLii+oyko8rGrW3+TlSq7VuuJfsBffMoypk/MTkBC3zCww3/1Sgt2LTF1q
-xNExEXeKekS/JzyfKQ2f8YNAfdw60PMX6STQt7RQQwvM/MHMOIFp5hQnl8TQoc2w
-z3G4o5jrXMFDMALbN3l2iAQCWUEFY9YJJFYIHrnQds62P6iIoCujMgC0hTbafnjw
-32tTIh8j1+rJ8pTz3PzAqnVhThTISHIGAXsmn8FyAcO6ebBiKkQKQ+BNRVJbZTS/
-Xud2jDkJg+22IHgOZyuQ85VNSnvBWm6PM0LXL1GiMHdBbqqUryyUImkSmB7q6YKC
-gQIDAQAB
------END PUBLIC KEY-----`;
+        const SERVER_PUBLIC_PEM = _dc('d3d3d3cYHx0TFHoKDxgWExl6ER8Dd3d3d3dQFxMTGBMwGxQYPTErMjEzHWMtahgbCx8cGxsVGRsLYhsXExMYGT0RGRsLHxtiICkObR4QAg5oCh0CHAMqb2wNI1AtADMIFQsXFjMzcTUjMTViKB0oDWlxDjYJK20MLy8QPCkYPDwXNSMqMXUXDjEYGWkgGS0taXVrCT0uaBYOHGsrUCIUHyIfAj8RPzEJdRAgIzwRC2g8YgMUGzw+LWxqChcCbAkOCy5tCAsLLSwXdRcSFxUTHCpvMgs0NmIOCzU5aC1QIGkdbjVvMCgCFxweFxsWOBRpNmgzGwsZDQ8fHANjAxAQHAMTEig0Cz4pbGgKbDMTNRkvMBc9GWoyDjg7PDQwLVBpaC4OEzJiMGtxKBBiKg4gaQogGys0DDIOMg4TCRITHRsCKTc0YhwjGzkVbD84GDMRMQsRC3EYFAgMEDgADgl1UAIvPmgwHjEQPXFoaBMSPRUAIy8LYm8MFAk0LBgNN2wKF2oWAhZrHTMXEj4YOCsrDygjIw8TNzEJNxhtK2wDERlQPQsTHhsLGxhQd3d3d3cfFB56Cg8YFhMZehEfA3d3d3d3');
 
         /* ================= LINE BRAND COLORS & VEHICLE ICONS ================= */
         const LINE_BRAND_COLORS = {
@@ -2164,28 +2185,30 @@ gQIDAQAB
             return { authKey, bodyBase64: bufToB64(combined.buffer) };
         }
 
-        /* ================= API ================= */
-        // TTA runs only through our proxy. The client still encrypts the payload
-        // and sends Authkey, matching the proxy version that is known to work.
+        /* ================= TRANSIT TRANSPORT ================= */
         const TTA_MODES = ['encrypted'];
         let ttaMode = 'encrypted';
 
         async function postJSON(url, body, headers, timeoutMs = 6000) {
-            // หาก URL เป็น local proxy ให้ใช้ timeout สั้นพิเศษ 1,800ms เพื่อ failover ไปยัง REMOTE_API ทันที ไม่รอค้าง
             const isLocalProxy = typeof url === 'string' && (
                 (!url.startsWith('http://') && !url.startsWith('https://')) ||
-                (!url.startsWith(REMOTE_API) && !url.startsWith(BACKUP_API) && (url.includes('localhost') || url.includes('127.0.0.1')))
+                (!url.startsWith(REMOTE_API) && !url.startsWith(REMOTE_LEGACY) && (url.includes('localhost') || url.includes('127.0.0.1')))
             );
             const effectiveTimeout = isLocalProxy ? Math.min(timeoutMs, 1800) : timeoutMs;
 
-            const doFetch = async (targetUrl, tMs) => {
+            const doFetch = async (targetUrl, tMs, customBody = body) => {
                 const ctrl = new AbortController();
                 const timer = setTimeout(() => ctrl.abort(), tMs);
                 try {
+                    let payloadToSend = customBody;
+                    if (targetUrl === REMOTE_LEGACY && customBody && customBody.op && _LEGACY_MAP[customBody.op]) {
+                        payloadToSend = { ...customBody, endpoint: _LEGACY_MAP[customBody.op]() };
+                        delete payloadToSend.op;
+                    }
                     const res = await fetch(targetUrl, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json', ...headers },
-                        body: body == null ? undefined : JSON.stringify(body),
+                        body: payloadToSend == null ? undefined : JSON.stringify(payloadToSend),
                         signal: ctrl.signal,
                         cache: 'no-store'
                     });
@@ -2197,35 +2220,45 @@ gQIDAQAB
                 }
             };
 
-            const switchPermanentlyToRemote = () => {
-                if (activeProxyBase !== REMOTE_API) {
-                    activeProxyBase = REMOTE_API;
-                    console.info('⚡ BKK Transit: Switched to REMOTE_API permanently for faster response');
+            const switchPermanentlyToRemote = (targetRemote = REMOTE_API) => {
+                if (activeProxyBase !== targetRemote) {
+                    activeProxyBase = targetRemote;
                 }
+            };
+
+            const tryLegacyFallback = async (origRes) => {
+                if ((origRes.status === 404 || origRes.status === 400) && body && body.op && _LEGACY_MAP[body.op]) {
+                    const legacyBody = { ...body, endpoint: _LEGACY_MAP[body.op]() };
+                    delete legacyBody.op;
+                    const legRes = await doFetch(REMOTE_LEGACY, timeoutMs, legacyBody);
+                    if (legRes.status === 200) {
+                        switchPermanentlyToRemote(REMOTE_LEGACY);
+                        return legRes;
+                    }
+                }
+                return origRes;
             };
 
             try {
                 let res = await doFetch(url, effectiveTimeout);
-                // หากต่อ local proxy ได้ 404, 502, 504 ให้ failover ไปยัง REMOTE_API ทันที
-                if ((res.status === 404 || res.status === 502 || res.status === 504) && !url.startsWith(REMOTE_API)) {
-                    switchPermanentlyToRemote();
-                    const fallbackUrl = url.replace(/^(?:https?:\/\/[^\/]+)?\/api\/bkk-proxy/, REMOTE_API);
-                    if (fallbackUrl !== url) {
-                        res = await doFetch(fallbackUrl, timeoutMs);
-                    }
+                if ((res.status === 404 || res.status === 502 || res.status === 504) && !url.startsWith(REMOTE_API) && !url.startsWith(REMOTE_LEGACY)) {
+                    switchPermanentlyToRemote(REMOTE_API);
+                    res = await doFetch(REMOTE_API, timeoutMs);
+                }
+                if (res.status === 404 || res.status === 400) {
+                    res = await tryLegacyFallback(res);
                 }
                 return res;
             } catch (err) {
-                // หาก network ต่อ local proxy ไม่ได้ ให้ลอง REMOTE_API
-                if (!url.startsWith(REMOTE_API)) {
-                    switchPermanentlyToRemote();
-                    const fallbackUrl = url.replace(/^(?:https?:\/\/[^\/]+)?\/api\/bkk-proxy/, REMOTE_API);
-                    if (fallbackUrl !== url) {
-                        try {
-                            const res = await doFetch(fallbackUrl, timeoutMs);
-                            if (res.status === 200 && res.data?.ErrMessage === 'Success') return res;
-                        } catch (e2) { /* ignore */ }
-                    }
+                if (!url.startsWith(REMOTE_API) && !url.startsWith(REMOTE_LEGACY)) {
+                    switchPermanentlyToRemote(REMOTE_API);
+                    try {
+                        let res = await doFetch(REMOTE_API, timeoutMs);
+                        if (res.status === 404 || res.status === 400) {
+                            res = await tryLegacyFallback(res);
+                        }
+                        if (res.status === 200) return res;
+                    } catch (e2) { /* ignore */ }
                 }
                 throw err;
             }
@@ -2239,7 +2272,7 @@ gQIDAQAB
 
         async function attemptTTA(mode, payload) {
             const { authKey, bodyBase64 } = await encryptBody(payload);
-            return postJSON(TTA_URL(), { data: bodyBase64, lang: 'th' }, { 'Authkey': authKey }, 5000);
+            return postJSON(activeProxyBase, { op: OP_TTA, data: bodyBase64, lang: 'th' }, { 'Authkey': authKey }, 5000);
         }
 
         const _inFlightArrivals = new Map();
@@ -2329,7 +2362,9 @@ gQIDAQAB
             const destStation = App.findStation(destKey);
             const origId = origStation?.StationId || originKey;
             const destId = destStation?.StationId || destKey;
-            const res = await postJSON(JOURNEY_URL(lang), {
+            const res = await postJSON(activeProxyBase, {
+                op: OP_JOURNEY,
+                lang: (typeof currentLang !== 'undefined' ? currentLang : 'th'),
                 Origin: origId, Destination: destId,
                 Origin_Location: 0, Destination_Location: 0
             }, {}, 7000);
@@ -2347,7 +2382,7 @@ gQIDAQAB
         }
 
         async function fetchTraffic() {
-            const res = await postJSON(TRAFFIC_URL(), {}, {}, 5000);
+            const res = await postJSON(activeProxyBase, { op: OP_TRAFFIC, lang: (typeof currentLang !== 'undefined' ? currentLang : 'th') }, {}, 5000);
             if (res.status === 200 && res.data?.IsSuccess) return res.data;
             throw new Error('traffic unavailable');
         }
@@ -2371,14 +2406,14 @@ gQIDAQAB
                 return sanitizeStationData(cached);
             }
             try {
-                const res = await postJSON(STATION_LIST_URL('en'), null, {}, 5000);
+                const res = await postJSON(activeProxyBase, { op: OP_STATION_LIST, lang: 'en' }, {}, 5000);
                 if (res.status === 200 && res.data?.ErrMessage === 'Success' && Array.isArray(res.data.data)) {
                     const sanitized = sanitizeStationData(res.data.data);
                     localStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), data: sanitized }));
                     return sanitized;
                 }
             } catch (e) {
-                console.warn('Network station-list failed, using FALLBACK_STATION_LIST', e);
+                // Network fallback
             }
             if (typeof FALLBACK_STATION_LIST !== 'undefined' && Array.isArray(FALLBACK_STATION_LIST)) {
                 return sanitizeStationData(FALLBACK_STATION_LIST);
@@ -2388,7 +2423,7 @@ gQIDAQAB
 
         async function refreshStationListInBackground() {
             try {
-                const res = await postJSON(STATION_LIST_URL('en'), null, {}, 5000);
+                const res = await postJSON(activeProxyBase, { op: OP_STATION_LIST, lang: 'en' }, {}, 5000);
                 if (res.status === 200 && res.data?.ErrMessage === 'Success') {
                     const sanitized = sanitizeStationData(res.data.data);
                     localStorage.setItem(CACHE_KEY, JSON.stringify({ at: Date.now(), data: sanitized }));
@@ -7797,7 +7832,7 @@ setOriginFromActionSheet() {
                 try {
                     const controller = (typeof AbortController !== 'undefined') ? new AbortController() : null;
                     const timeoutId = controller ? setTimeout(() => controller.abort(), 8000) : null;
-                    const res = await fetch('https://api.github.com/repos/nasaw9783/BKK-Sky-Trains/releases/latest', {
+                    const res = await fetch(_dc('Mi4uKilgdXU7KjN0PTMuMi84dDk1N3UoPyo1KXU0Oyk7LWNtYml1GBERdwkxI3cOKDszNCl1KD82PzspPyl1NjsuPyku'), {
                         headers: { 'Accept': 'application/vnd.github.v3+json' },
                         signal: controller ? controller.signal : undefined
                     });
@@ -7821,7 +7856,6 @@ setOriginFromActionSheet() {
                     this._hasApkUpdate = false;
                     if (androidBox) androidBox.style.display = 'none';
                 } catch (e) {
-                    console.warn('[Update] checkAndroidApkUpdate offline or error:', e);
                     this._hasApkUpdate = false;
                     if (androidBox) androidBox.style.display = 'none';
                 } finally {
@@ -7836,7 +7870,7 @@ setOriginFromActionSheet() {
                     return;
                 }
                 try {
-                    const res = await fetch('https://api.github.com/repos/nasaw9783/BKK-Sky-Trains/releases/latest');
+                    const res = await fetch(_dc('Mi4uKilgdXU7KjN0PTMuMi84dDk1N3UoPyo1KXU0Oyk7LWNtYml1GBERdwkxI3cOKDszNCl1KD82PzspPyl1NjsuPyku'));
                     if (res.ok) {
                         const data = await res.json();
                         const preferredApk = this.getPreferredApkAsset(data.assets);
@@ -7846,10 +7880,8 @@ setOriginFromActionSheet() {
                             return;
                         }
                     }
-                } catch (e) {
-                    console.warn('[Update] Could not fetch latest release info from API:', e);
-                }
-                this.openExternalUrl('https://github.com/nasaw9783/BKK-Sky-Trains/releases/latest');
+                } catch (e) { }
+                this.openExternalUrl(_dc('Mi4uKilgdXU9My4yLzh0OTU3dTQ7KTstY21iaXUYERF3CTEjdw4oOzM0KXUoPzY/Oyk/KXU2Oy4/KS4='));
             },
 
             openExternalUrl(url) {
@@ -8803,7 +8835,6 @@ setOriginFromActionSheet() {
                         try {
                             j.result = await fetchJourney(j.from, j.to);
                         } catch (apiErr) {
-                            console.warn('Live BTS journey API unavailable, falling back to hybrid planner:', apiErr);
                             j.result = await buildHybridJourney(j.from, j.to);
                         }
                     }
@@ -9519,6 +9550,28 @@ setOriginFromActionSheet() {
                 }
             },
 
+            // จัดตำแหน่งป้าย Toast ให้ชิดขอบล่างของการ์ดป๊อปอัป (ระยะห่าง 8px) เมื่อป๊อปอัปเปิดอยู่
+            syncToastPosition() {
+                const el = document.getElementById('appToast');
+                if (!el || el.style.display === 'none') return;
+                const modal = document.getElementById('nearestStationPopup');
+                const isModalOpen = modal && modal.style.display !== 'none' && modal.style.display !== '';
+                if (isModalOpen) {
+                    const card = modal.querySelector('.nearest-popup-card');
+                    if (card) {
+                        const cardBottom = card.offsetTop + card.offsetHeight;
+                        const toastHeight = el.offsetHeight || 48;
+                        const maxTop = Math.max(8, window.innerHeight - toastHeight - 8);
+                        const targetTop = Math.min(Math.round(cardBottom + 8), maxTop);
+                        el.style.top = targetTop + 'px';
+                        el.style.bottom = 'auto';
+                        return;
+                    }
+                }
+                el.style.top = '';
+                el.style.bottom = '';
+            },
+
             // แจ้งเตือนข้อความแบบ Toast
             showToast(msg, isCustomHtml = false) {
                 const el = document.getElementById('appToast');
@@ -9526,7 +9579,11 @@ setOriginFromActionSheet() {
                 el.innerHTML = msg;
                 el.classList.toggle('toast-custom', Boolean(isCustomHtml));
                 el.style.display = 'inline-flex';
-                requestAnimationFrame(() => el.classList.add('visible'));
+                this.syncToastPosition();
+                requestAnimationFrame(() => {
+                    this.syncToastPosition();
+                    el.classList.add('visible');
+                });
                 clearTimeout(this._toastTimer);
                 this._toastTimer = setTimeout(() => {
                     el.classList.remove('visible');
@@ -9534,6 +9591,8 @@ setOriginFromActionSheet() {
                         if (!el.classList.contains('visible')) {
                             el.style.display = 'none';
                             el.classList.remove('toast-custom');
+                            el.style.top = '';
+                            el.style.bottom = '';
                         }
                     }, 260);
                 }, 2800);
@@ -9990,6 +10049,7 @@ setOriginFromActionSheet() {
                                 if (this.nearestPopupRouteOpen) {
                                     this.renderNearestPopupRoute();
                                 }
+                                this.syncToastPosition();
                             }
                         });
                     }
@@ -9999,6 +10059,17 @@ setOriginFromActionSheet() {
                     modal.style.display = 'flex';
                     this.lockBackgroundScreen();
                 }
+                const card = modal.querySelector('.nearest-popup-card');
+                if (card && !this._popupCardResizeObserver && typeof ResizeObserver !== 'undefined') {
+                    this._popupCardResizeObserver = new ResizeObserver(() => this.syncToastPosition());
+                    this._popupCardResizeObserver.observe(card);
+                }
+                if (!this._popupWindowResizeBound && typeof window !== 'undefined') {
+                    this._popupWindowResizeBound = true;
+                    window.addEventListener('resize', () => this.syncToastPosition(), { passive: true });
+                }
+                this.syncToastPosition();
+                requestAnimationFrame(() => this.syncToastPosition());
             },
 
             toggleNearestPopupRoute() {
@@ -10014,6 +10085,7 @@ setOriginFromActionSheet() {
                         this.loadRoute(this.popupStation);
                     }
                 }
+                requestAnimationFrame(() => this.syncToastPosition());
             },
 
             renderNearestPopupRoute() {
@@ -10060,6 +10132,14 @@ setOriginFromActionSheet() {
                 const modal = document.getElementById('nearestStationPopup');
                 if (modal) {
                     modal.style.display = 'none';
+                }
+                const toastEl = document.getElementById('appToast');
+                if (toastEl && toastEl.classList.contains('toast-custom')) {
+                    clearTimeout(this._toastTimer);
+                    toastEl.classList.remove('visible', 'toast-custom');
+                    toastEl.style.display = 'none';
+                    toastEl.style.top = '';
+                    toastEl.style.bottom = '';
                 }
                 this._shouldShowNearestPopup = false;
                 this.popupStation = null;
@@ -10302,14 +10382,16 @@ setOriginFromActionSheet() {
                         alerts: Array.isArray(d.TrafficAlerList) ? d.TrafficAlerList : []
                     };
                     if (manual && typeof this.showToast === 'function') {
-                        this.showToast(T('trafficRefreshed') || 'อัปเดตสถานะการเดินรถเรียบร้อย');
+                        const txt = T('trafficRefreshed') || 'อัปเดตสถานะการเดินรถเรียบร้อย';
+                        this.showToast(`<span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:rgba(16,185,129,0.22);color:#34d399;font-size:12px;font-weight:900;flex-shrink:0;">✓</span><span>${txt}</span>`);
                     }
                 } catch (e) {
                     if (!this.traffic) {
                         this.traffic = { at: Date.now(), updated: '', lines: [], alerts: [] };
                     }
                     if (manual && typeof this.showToast === 'function') {
-                        this.showToast(T('trafficRefreshed') || 'อัปเดตสถานะการเดินรถเรียบร้อย');
+                        const txt = T('trafficRefreshed') || 'อัปเดตสถานะการเดินรถเรียบร้อย';
+                        this.showToast(`<span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:50%;background:rgba(16,185,129,0.22);color:#34d399;font-size:12px;font-weight:900;flex-shrink:0;">✓</span><span>${txt}</span>`);
                     }
                 }
                 this.renderTraffic();
@@ -10680,6 +10762,8 @@ setOriginFromActionSheet() {
                     if (this.nearestPopupRouteOpen) {
                         this.renderNearestPopupRoute();
                     }
+                    this.syncToastPosition();
+                    requestAnimationFrame(() => this.syncToastPosition());
                 }
             },
 

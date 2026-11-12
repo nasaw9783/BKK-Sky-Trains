@@ -9,29 +9,30 @@ description: >-
 ## 1. ขอบเขตและหน้าที่ของ Skill (Overview & Scope)
 
 Skill นี้ออกแบบมาเพื่อให้ AI Agent (Antigravity & Google Gemini) สามารถปฏิบัติงาน, พัฒนาฟีเจอร์, แก้ไขบั๊ก, ตรวจสอบคุณภาพโค้ด, ซิงค์ไฟล์ และสร้างตัวติดตั้งสำหรับระบบ **BKK SKYTRAINs** ได้อย่างถูกต้องและปลอดภัย 100% ภายใต้ไดเรกทอรีทำงาน:
-`C:\Users\Administrator\Documents\BKK Sky Trains`
+`C:\Users\Administrator\Downloads\Project\BKK Sky Trains`
 
 ---
 
 ## 2. โครงสร้างระบบ 4 หมวดหมู่หลัก (Project Architecture)
 
 ```text
-C:\Users\Administrator\Documents\BKK Sky Trains\
+C:\Users\Administrator\Downloads\Project\BKK Sky Trains\
 ├── [1. Web App & PWA] (Root)
-│   ├── index.html                  # Frontend หลักของระบบ (Transit UI & Blueprint Map)
+│   ├── index.html                  # Frontend หลักของระบบ (Header Clock Card, Popup Top Cards, Blueprint Map, Spotlight Tour)
 │   ├── js/
-│   │   ├── app.js                  # Client Logic, Live TTA, Router, GPS, Fares, Hotspots
+│   │   ├── app.js                  # Client Logic, Live TTA, Router, GPS, Open-Meteo Weather, Holidays, Fares, Hotspots, BKKLiveBridge
 │   │   └── jsencrypt.min.js        # RSA cryptographic client library สำหรับ API Security
 │   ├── api/
 │   │   └── bkk-proxy.js            # Universal Serverless Reverse Proxy & CORS Bypass สำหรับ BTS Live Transit API
-│   ├── vercel.json                 # การตั้งค่า Deployment และ Universal CORS Routing บน Vercel
-│   ├── sw.js                       # Service Worker แคช PWA สำหรับ Offline Support (bkk-v85)
+│   ├── vercel.json                 # การตั้งค่า Deployment, Security Headers และ Universal CORS Routing บน Vercel
+│   ├── sw.js                       # Service Worker แคช PWA สำหรับ Offline Support (bkk-v111)
 │   ├── leaflet.css                 # Leaflet Map CSS
-│   ├── icons/                      # ไอคอนเวกเตอร์ประจำสายสีและระบบนำทาง
+│   ├── icons/                      # ไอคอนเวกเตอร์ประจำสายสี (lines/), สัญลักษณ์ (legend/), นำทาง (nav/), หน้าจอ (ui/)
 │   ├── images/                     # แอสเซทและไอคอนแจ้งเหตุขัดข้อง (ic_traffic_alert, icon_traffic_information)
+│   ├── Holiday/                    # ข้อมูลวันหยุดอ้างอิง BTS (holidays2026.md, holidays2027.md)
 │   ├── manifest.json               # Web App Manifest สำหรับติดตั้งบนหน้าจอมือถือ
 │   ├── Start-BKK-Transit.ps1       # สคริปต์เซิร์ฟเวอร์ทดสอบในเครื่อง + BTS Live Reverse Proxy (UTF-8 BOM)
-│   ├── Deploy-BKK-SkyTrains.ps1    # สคริปต์บิลด์ Android APK, ล้างข้อมูลเก่าบน GitHub และ Push อัตโนมัติ (UTF-8 BOM)
+│   ├── Deploy-BKK-SkyTrains.ps1    # สคริปต์บิลด์ Android APK/AAB, ล้างข้อมูลเก่าบน GitHub และ Push อัตโนมัติ (UTF-8 BOM)
 │   ├── bkk_transit_map.svg         # เวกเตอร์แผนผังรถไฟฟ้าโหมดสว่าง (Light Blueprint)
 │   ├── bkk_transit_map_dark.svg    # เวกเตอร์แผนผังรถไฟฟ้าโหมดมืด (Dark Blueprint)
 │   ├── bkk_transit_map.jpg         # รูปภาพสำรองแผนผังรถไฟฟ้า
@@ -39,22 +40,25 @@ C:\Users\Administrator\Documents\BKK Sky Trains\
 │   └── *.png, *.svg, *.ico         # ไอคอนระบบและ Web Assets
 │
 ├── [2. Mobile Flutter App] (bkk_skytrains_flutter/)
-│   ├── android/                    # Android Native configuration & build files
-│   ├── ios/                        # iOS Native configuration & Storyboards
-│   ├── lib/                        # Flutter Dart source code (WebView, Services, Themes)
-│   ├── test/                       # Flutter widget test suite
+│   ├── android/                    # Android Native: MainActivity.kt (Custom RemoteViews Lock Screen Notification Card), StationWidgetProvider.kt, notification XMLs/drawables, network_security_config.xml
+│   ├── ios/                        # iOS Native configuration, Storyboards & StationWidget (WidgetKit / Live Activities)
+│   ├── lib/                        # Flutter Dart source code (main.dart, bkk_web_view_screen.dart [FlutterLocation + BKKLiveBridge], live_transit_service.dart, static_stations.dart, app_theme.dart)
+│   ├── test/                       # Flutter widget test suite (widget_test.dart)
 │   ├── assets/www/                 # ไฟล์เว็บแคชออฟไลน์ในตัวแอป (ซิงค์ตรงกับ Root 100%)
-│   └── pubspec.yaml                # Flutter dependencies (Android & iOS v1.3.6+10)
+│   └── pubspec.yaml                # Flutter dependencies (Android & iOS v1.3.6+19)
 │
 ├── [3. Releases & CI/CD]
-│   ├── releases/                   # แหล่งเก็บตัวติดตั้ง (แบ่งแยก Android และ Apple)
+│   ├── releases/                   # แหล่งเก็บตัวติดตั้ง (แบ่งแยก Android, Apple และ Packages)
 │   │   ├── Android/                # APK/, AAB/ (BKK_SkyTrains_V.xxxx_(Build xxxx).apk, .aab, .sha256)
-│   │   └── Apple/                  # IPA/ (BKK_SkyTrains_V.xxxx_(Build xxxx).ipa, .sha256)
-│   └── .github/workflows/          # CI/CD Workflows (Build iOS & Android Apps.yml สำหรับบิลด์ iOS .ipa และ Android .apk อัตโนมัติ)
+│   │   ├── Apple/                  # IPA/ (BKK_SkyTrains_V.xxxx_(Build xxxx).ipa, .sha256)
+│   │   └── Packages/               # BKK_SkyTrains_V.xxxx_(Build xxxx)_Release_Packages.zip (.sha256)
+│   └── .github/workflows/          # CI/CD Workflows (Build iOS & Android Apps.yml สำหรับบิลด์ iOS .ipa, Android .apk และ .aab อัตโนมัติ)
 │
 └── [4. Documentation & Specifications]
     ├── README.md                   # คู่มือระบบและภาพรวมโปรเจกต์
     ├── PRD.md                      # Product Requirements Document
+    ├── USER_GUIDE.md               # คู่มือการใช้งานสำหรับผู้โดยสารทั่วไป
+    ├── SECURITY.md                 # นโยบายความปลอดภัยและมาตรการป้องกันของระบบ
     ├── Skill.md                    # ข้อกำหนด Antigravity Skill
     ├── AGENTS.md                   # ข้อกำหนดมาตรฐาน Agent
     └── GEMINI.md                   # ข้อกำหนดและโปรโตคอล Workspace
@@ -100,18 +104,20 @@ C:\Users\Administrator\Documents\BKK Sky Trains\
 cd bkk_skytrains_flutter
 flutter clean
 flutter pub get
-flutter analyze
+flutter analyze --no-fatal-infos
+flutter test
 flutter build apk --release
 # คัดลอกผลลัพธ์ไปยัง releases/Android/APK/
-Copy-Item -Path "build\app\outputs\flutter-apk\app-release.apk" -Destination "..\releases\Android\APK\BKK_SkyTrains_V.1.3.6_(Build 16).apk" -Force
+Copy-Item -Path "build\app\outputs\flutter-apk\app-release.apk" -Destination "..\releases\Android\APK\BKK_SkyTrains_V.1.3.6_(Build 19).apk" -Force
 flutter clean
 cd ..
 ```
 
 ### SOP-4: การบิลด์ตัวติดตั้ง iOS & Android (iOS IPA, Android APK & App Bundle Automated Build)
 - ไฟล์ Workflow: `.github/workflows/Build iOS & Android Apps.yml` ("Build iOS & Android Apps")
-- รันบน GitHub Runner `macos-15` อัตโนมัติเมื่อมีการ Push ไปยัง branch `main` หรือ Tag `v*`
-- สคริปต์ Workflow จะดึงเวอร์ชันจาก `pubspec.yaml` อัตโนมัติ และสร้างไฟล์แพ็กเกจ:
+- รันบน GitHub Runner `macos-latest` พร้อม Flutter `3.47.9` อัตโนมัติเมื่อมีการ Push Tag `v*` หรือสั่งรันผ่าน `workflow_dispatch`
+- สคริปต์ Workflow จะดึงเวอร์ชันจาก `pubspec.yaml` (`1.3.6+19`) อัตโนมัติ และสร้างไฟล์แพ็กเกจ:
+  - Release Bundle ZIP: `BKK_SkyTrains_V.${VERSION_BASE}_(Build ${BUILD_NUMBER})_Release_Packages.zip` + `.sha256`
   - iOS IPA: `BKK_SkyTrains_V.${VERSION_BASE}_(Build ${BUILD_NUMBER}).ipa` + `.sha256`
   - Android APK: `BKK_SkyTrains_V.${VERSION_BASE}_(Build ${BUILD_NUMBER}).apk` + `.sha256`
   - Android App Bundle (AAB): `BKK_SkyTrains_V.${VERSION_BASE}_(Build ${BUILD_NUMBER}).aab` + `.sha256`
@@ -122,9 +128,9 @@ cd ..
 ```powershell
 .\Deploy-BKK-SkyTrains.ps1
 ```
-1. **จัดระเบียบไฟล์:** `C:\Users\Administrator\Documents\BKK Sky Trains` จากเครื่องให้เป็นระเบียบ พร้อมจัดหมวดหมู่/Folder ถ้าไฟล์หรือแอพไหนไม่สำคัญต่อระบบแล้ว และไม่ทำลายระบบให้เสียหาย ให้ลบทิ้งได้ทันที
-2. **Update .yml ทั้งหมด:** ตรวจสอบและอัปเดตไฟล์คอนฟิก CI/CD (`.github/workflows/*.yml`, `pubspec.yaml`) ให้สอดคล้องกับเวอร์ชันปัจจุบัน
-3. **Update .md ทั้งหมดให้ตรงตามเว็บ/แอพ เท่านั้น:** ตรวจสอบและอัปเดตเอกสารทุกไฟล์ (`README.md`, `PRD.md`, `AGENTS.md`, `GEMINI.md`, `Skill.md`) ให้ตรงตามเว็บ/แอพ 100%
+1. **จัดระเบียบไฟล์:** `C:\Users\Administrator\Downloads\Project\BKK Sky Trains` จากเครื่องให้เป็นระเบียบ พร้อมจัดหมวดหมู่/Folder ถ้าไฟล์หรือแอพไหนไม่สำคัญต่อระบบแล้ว และไม่ทำลายระบบให้เสียหาย ให้ลบทิ้งได้ทันที
+2. **Update .yml ทั้งหมด:** ตรวจสอบและอัปเดตไฟล์คอนฟิก CI/CD (`.github/workflows/*.yml`, `pubspec.yaml`, `analysis_options.yaml`) ให้สอดคล้องกับเวอร์ชันปัจจุบัน (`1.3.6+19`)
+3. **Update .md ทั้งหมดให้ตรงตามเว็บ/แอพ เท่านั้น:** ตรวจสอบและอัปเดตเอกสารทุกไฟล์ (`README.md`, `bkk_skytrains_flutter/README.md`, `PRD.md`, `USER_GUIDE.md`, `SECURITY.md`, `AGENTS.md`, `GEMINI.md`, `Skill.md`) ให้ตรงตามเว็บ/แอพ 100% (โดยคง `Holiday/holidays2026.md` และ `Holiday/holidays2027.md` ไว้เป็นไฟล์ข้อมูลอ้างอิง)
 4. **Update .ps1 ทั้งหมดให้ตรงตามเว็บ/แอพ เท่านั้น:** ตรวจสอบและอัปเดตสคริปต์ PowerShell ทั้งหมด (`Deploy-BKK-SkyTrains.ps1`, `Start-BKK-Transit.ps1`) พร้อมบันทึกด้วย UTF-8 with BOM เสมอ
 5. **ทำแอพ Android:** รันการตรวจสอบคุณภาพโค้ด (node --check, flutter analyze, flutter test) และคอมไพล์ Android Release APK พร้อมคำนวณ SHA-256 Checksum
 6. **ต้องการให้ทำเป็น App Bundle:** คอมไพล์ Android App Bundle (`.aab`) สำหรับการแจกจ่ายบน Google Play Store พร้อมคำนวณ SHA-256 Checksum และเคลียร์แคชบิลด์
@@ -149,7 +155,7 @@ cd ..
 
 - [ ] โค้ด `index.html` และ `js/app.js` ที่ Root และ `bkk_skytrains_flutter/assets/www/` ตรงกัน 100%
 - [ ] ผ่านการทดสอบ `node --check js/app.js` (0 errors)
-- [ ] ผ่านการทดสอบ `flutter analyze` ใน `bkk_skytrains_flutter` (0 issues)
+- [ ] ผ่านการทดสอบ `flutter analyze --no-fatal-infos` และ `flutter test` ใน `bkk_skytrains_flutter` (0 issues, all pass)
 - [ ] ทุกไอคอนสายสีใช้ `getLineIconSvg(lineId)` ตามมาตรฐานโครงการ
 - [ ] รัน `flutter clean` และลบไฟล์แคชขยะชั่วคราวทั้งหมด
 - [ ] ไฟล์ `.ps1` ทุกไฟล์เข้ารหัสด้วย `UTF-8 with BOM`

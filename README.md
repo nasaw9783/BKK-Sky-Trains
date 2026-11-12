@@ -22,12 +22,13 @@
 4. <img src="icons/ui/check.svg" width="18" height="18" alt="Center" style="vertical-align:middle;"> **มาตรฐานการจัดองค์ประกอบกึ่งกลาง (Project Element Centering Standard)**
    - ทุกกรอบข้อความ รหัสสถานี (Station Code เช่น `YL20`, `CEN`), ไอคอนสัญลักษณ์ (Icons / Symbols เช่น Theme Button, Line Icons, Badges), และปุ่มควบคุมแบบ Pill/Box ทั้งหมด ถูกจัดวางกึ่งกลางอย่างสมบูรณ์แบบทั้งแนวนอนและแนวตั้ง (Centering Layout)
 5. <img src="icons/ui/map.svg" width="18" height="18" alt="Map" style="vertical-align:middle;"> **แผนผังโครงข่ายรถไฟฟ้าความละเอียดสูงแบบโต้ตอบ (Transit Blueprint Vector Map & Interactive Hotspots)**
-   - แผนที่โครงข่ายรวม 10 สายรถไฟฟ้า กทม. และปริมณฑล คมชัดระดับ Vector Blueprint สลับตามโหมดการแสดงผลอัตโนมัติ:
+   - แผนที่โครงข่ายรวม 12 สายรถไฟฟ้า กทม. และปริมณฑล คมชัดระดับ Vector Blueprint สลับตามโหมดการแสดงผลอัตโนมัติ:
      - โหมดสว่าง (Light Theme): `bkk_transit_map.svg`
      - โหมดมืด (Dark Theme): `bkk_transit_map_dark.svg`
    - จุดฮอตสปอตสถานีแบบโต้ตอบ (Interactive Station Hotspots): แตะที่สถานีใดๆ บนแผนที่เพื่อเลือกเป็น **สถานีต้นทาง**, **สถานีปลายทาง** หรือเปิดดู **ข้อมูลประตูทางออก** ได้ทันที
    - หน้าต่างคำอธิบายสัญลักษณ์โครงข่าย (Transit Network Legend): แสดงสัญลักษณ์สายสีและจุดเชื่อมต่อสำคัญ เช่น ท่าอากาศยาน (Airport), ท่าเรือ (Pier/Boat), รถไฟทางไกล (SRT), สถานีขนส่งผู้โดยสาร (Bus Terminal), อาคารจอดแล้วจร (Park & Ride), จุดเชื่อมต่อข้ามสาย (Interchange) และสายแยกเมืองทองธานี
-   - แคชออฟไลน์ระดับสูงด้วย Service Worker `bkk-v85` พร้อมใช้งาน 100% แม้ไม่มีอินเทอร์เน็ต
+   - ไฮไลต์จุดสถานีกำลังเปิดดูบนเส้นทางด้วยวงแหวนกระพริบสีฟ้า/น้ำเงิน (`pulseRingBlue` / `pulseRingBlueLight`) แยกชัดเจนจากจุดสีเขียวของสถานีใกล้ตัวคุณ
+   - แคชออฟไลน์ระดับสูงด้วย Service Worker `bkk-v111` พร้อมใช้งาน 100% แม้ไม่มีอินเทอร์เน็ต
 6. <img src="icons/ui/compass.svg" width="18" height="18" alt="Planner" style="vertical-align:middle;"> **วางแผนการเดินทางอัจฉริยะ (Smart Journey Planner)**
    - ค้นหาเส้นทางที่ดีที่สุดระหว่างสถานีต้นทางและสถานีปลายทาง
    - คำนวณเวลาเดินทางรวม, จำนวนสถานีที่ผ่าน, จุดเปลี่ยนสาย (Interchanges), และประมาณการค่าโดยสาร
@@ -59,17 +60,26 @@
 14. <img src="icons/legend/branch.svg" width="110" height="18" alt="Branch" style="vertical-align:middle;"> **รองรับสายแยกเมืองทองธานี (Muang Thong Branch PK10 ⇄ MT01, MT02)**
     - กำหนดสถานีเมืองทองธานี (`PK10`) เป็นจุดเชื่อมต่อข้ามสายสำหรับสายแยก
     - การ์ดแนะนำการเปลี่ยนขบวน (Transfer Card) ที่แสดงไอคอนโมโนเรลสายสีชมพู พร้อมชานชาลาเฉพาะ (MT01 ชานชาลา 3 & 4, MT02 ชานชาลา 4)
-15. <img src="icons/ui/timer.svg" width="18" height="18" alt="Widget" style="vertical-align:middle;"> **วิดเจ็ตหน้าจอโฮมและการแจ้งเตือนสดบนหน้าจอล็อก (Home Screen Widget & Lock Screen Live Notification)**
-    - **หน้าจอล็อก (Lock Screen):** แสดงการ์ดสถานีใกล้ตัวคุณ รหัสสถานี ชานชาลา 1 และชานชาลา 2 พร้อมเวลานับถอยหลังสด ผ่าน Ongoing Persistent Notification (`VISIBILITY_PUBLIC`) บน Android และระบบ Live Activities บน iOS 16.1+
-    - **หน้าจอโฮม (Home Screen Widget):** แอปวิดเจ็ตบนหน้าจอหลักแสดงสถานีที่ใกล้ที่สุด ระยะทาง ชานชาลา 1 & 2 และเวลารถเข้าเทียบชานชาลาแบบเรียลไทม์ พร้อมแตะเปิดแอปตรงสู่สถานีได้ทันที
+15. <img src="icons/ui/timer.svg" width="18" height="18" alt="Widget" style="vertical-align:middle;"> **วิดเจ็ตหน้าจอโฮมและการ์ดแจ้งเตือนสดบนหน้าจอล็อก (Home Screen Widget & Lock Screen Live Card)**
+    - **หน้าจอล็อก Android (Custom RemoteViews Card):** แสดงการ์ด "ตรวจพบสถานีใกล้ตัวคุณ" (`notification_station_expanded.xml` / `notification_station_collapsed.xml` + `DecoratedCustomViewStyle`) พร้อมป้ายรหัสสถานีปรับสีตามสายสีอัตโนมัติ ชื่อสถานี ไทย/อังกฤษ ระยะทาง และชานชาลา 1–2 ที่มีเวลารถเข้าสูงสุด 3 ขบวนต่อชานชาลา ผ่านช่องทาง `BKKLiveBridge` และ `MethodChannel` บน Android (`MainActivity.kt`) รวมถึงระบบ Live Activities / WidgetKit บน iOS (`StationWidget.swift`)
+    - **หน้าจอโฮม (Home Screen Widget):** แอปวิดเจ็ต (`StationWidgetProvider.kt` / `StationWidget.swift`) แสดงสถานีที่ใกล้ที่สุด ระยะทาง ชานชาลา 1 & 2 และเวลารถเข้าเทียบชานชาลาแบบเรียลไทม์ พร้อมแตะเปิดแอปตรงสู่สถานีได้ทันที
 16. <img src="icons/ui/timer.svg" width="18" height="18" alt="Performance" style="vertical-align:middle;"> **ความเร็วสูงสุดและมาตรฐานระบบแจ้งเตือน (High-Performance Loading & Notifications)**
     - ปรับปรุงการโหลดด้วย Resource Hints: `preload` สำหรับสคริปต์หลัก (`leaflet.js`, `app.js`) และ `defer` สำหรับไลบรารีความปลอดภัย
     - สถาปัตยกรรม Lazy-rendering สำหรับหน้าที่ไม่ได้เปิด (Exits, Map, Fares, Timetables) ผ่าน `requestIdleCallback` ทำให้เปิดหน้าแรกได้เร็วที่สุด
-    - สถาปัตยกรรม Service Worker แคช `bkk-v85` แยก Critical App Shell ออกจากไฟล์เวกเตอร์ขนาดใหญ่ เพื่อติดตั้ง PWA ได้ทันที
-    - รองรับสิทธิ์แจ้งเตือน Runtime Notification บน Android 13+ (API 33+) และมาตรฐาน W3C Web Notification
+    - สถาปัตยกรรม Service Worker แคช `bkk-v111` แยก Critical App Shell ออกจากไฟล์เวกเตอร์ขนาดใหญ่ เพื่อติดตั้ง PWA ได้ทันที
+    - รองรับสิทธิ์แจ้งเตือน Runtime Notification (`POST_NOTIFICATIONS`) บน Android 13+ (API 33+) และมาตรฐาน W3C Web Notification
+    - จัดตำแหน่งป้ายแจ้งเตือน Toast (`#appToast`) ให้ลอยห่างขอบล่างการ์ดป๊อปอัป `8px` (`syncToastPosition`) ไม่บดบังเนื้อหา
 17. <img src="icons/ui/check.svg" width="18" height="18" alt="Update" style="vertical-align:middle;"> **ปุ่มอัปเดตเวอร์ชันสำหรับแอป Android (Android In-App APK Update)**
     - เฉพาะบนแอปมือถือ Android (ตรวจพบสภาพแวดล้อม Android อัตโนมัติ) ระบบจะแสดงกล่องอัปเดตเวอร์ชันในหน้า "ข้อมูลแอปพลิเคชัน" (แท็บเพิ่มเติม)
     - ปุ่ม **Update Version** สำหรับดาวน์โหลดไฟล์ APK ตัวล่าสุด (`BKK_SkyTrains_V.*_(Build *).apk`) ได้โดยตรงผ่านตัวจัดการดาวน์โหลดของ Android (จะแสดงผลเฉพาะเมื่อตรวจพบไฟล์ .apk เวอร์ชันใหม่กว่าในเครื่องเท่านั้น)
+18. <img src="icons/ui/clock.svg" width="18" height="18" alt="Clock" style="vertical-align:middle;"> **การ์ดนาฬิกาเวลาของระบบ 3 ชั้น & โหมดเวลาตามอุปกรณ์ (3-Tier System Clock & Auto Time Format)**
+    - การ์ด `#hdrClockCard` บริเวณมุมขวาบนของแถบหัวเว็บและ `#popupClockCard` ในป๊อปอัป แสดงตัวเลขดิจิทัลเกรเดียนต์เรืองแสง แบดจ์ `12H` / `24H` แตะสลับได้ทันที เส้นแบ่ง และวันที่แบบเต็ม/กระชับตามความกว้างหน้าจอ
+    - รองรับโหมด **ตั้งค่าตามอุปกรณ์ (`auto`)** ในแท็บเพิ่มเติม พร้อมจัดรูปแบบวันที่ 4 สไตล์ และระบบศักราช พุทธศักราช (พ.ศ.) / คริสต์ศักราช (ค.ศ.)
+19. <img src="icons/ui/calendar.svg" width="18" height="18" alt="Weather Holidays" style="vertical-align:middle;"> **การ์ดสภาพอากาศสด & ปฏิทินวันหยุดราชการ/BTS (Live Weather & 2569–2570 Holidays)**
+    - **การ์ดสภาพอากาศ (`#popupWeatherCard`):** ดึงอุณหภูมิและสภาพอากาศปัจจุบันตามพิกัดสถานีจาก **Open-Meteo API** พร้อมไอคอนเวกเตอร์ 3 มิติ (แตะเพื่อรีเฟรชได้ทันที)
+    - **การ์ดวันหยุด (`#popupHolidayCard`):** แสดงวันหยุดราชการถัดไปพร้อมจำนวนวันคงเหลือ และ **วันหยุด BTS (สำนักงาน) ประจำปี 2569–2570** (ปีละ 17 วัน) กางดูปฏิทินแบบการ์ด 2 คอลัมน์สมมาตร
+20. <img src="icons/ui/bulb.svg" width="18" height="18" alt="Tour" style="vertical-align:middle;"> **คู่มือแนะนำการใช้งานแบบโต้ตอบ 12 ขั้นตอน (12-Step Interactive Spotlight Tour)**
+    - ระบบโค้ชมาร์กแนะนำการใช้งานทุกฟีเจอร์สำคัญทีละขั้นตอน เปิดใช้งานได้ตลอดเวลาจากแท็บ "เพิ่มเติม" (More)
 
 ---
 
@@ -122,7 +132,7 @@
 | <img src="icons/nav/planner.svg" width="22" height="22" alt="Planner" style="vertical-align:middle;"> | **วางแผน (Planner)** | `tab-planner` | วางแผนการเดินทางอัจฉริยะ คำนวณเวลา ค่าโดยสาร และจุดเปลี่ยนสายข้ามทุกระบบ |
 | <img src="icons/nav/fares.svg" width="22" height="22" alt="Fares" style="vertical-align:middle;"> | **ค่าโดยสาร (Fares)** | `tab-fares` | ตารางอัตราค่าโดยสารแต่ละสาย นโยบายส่วนลด และการชำระเงิน EMV Contactless |
 | <img src="icons/nav/timetables.svg" width="22" height="22" alt="Timetables" style="vertical-align:middle;"> | **เวลาเดินรถ (Timetables)** | `tab-timetables` | ตารางเวลาเดินรถขบวนแรก-สุดท้าย และความถี่การปล่อยขบวนรถแยกวันทำงาน/วันหยุด |
-| <img src="icons/nav/more.svg" width="22" height="22" alt="More" style="vertical-align:middle;"> | **เพิ่มเติม (More)** | `tab-more` | เมนูแฮมเบอร์เกอร์สามขีด: วิดเจ็ตแจ้งเตือนเบื้องหลังอัตโนมัติ (True Background Geofencing), สวิตช์สลับภาษา (TH/EN/ZH), สวิตช์สลับธีม (Dark/Light), และข้อมูลเวอร์ชันแอปพลิเคชัน |
+| <img src="icons/nav/more.svg" width="22" height="22" alt="More" style="vertical-align:middle;"> | **เพิ่มเติม (More)** | `tab-more` | เมนูตั้งค่าและการ์ดระบบ: การแจ้งเตือนเบื้องหลังอัตโนมัติ (`#bgGeofenceSwitch`), สวิตช์สลับภาษา (`TH/EN/ZH`), สวิตช์สลับธีม (`Auto/Dark/Light`), รูปแบบเวลา (`24H/12H/Auto`) และวันที่ 4 สไตล์ (`พ.ศ./ค.ศ.`), ทัวร์คู่มือ 12 ขั้นตอน, ปุ่ม Update APK (Android) และข้อมูลเวอร์ชัน (`v1.3.6 (Build 19)`) |
 
 ---
 
@@ -179,35 +189,36 @@
 โปรเจกต์แบ่งออกเป็น 4 ส่วนหลักอย่างเป็นระเบียบ:
 
 ```text
-c:\Users\Administrator\Documents\BKK Sky Trains/
+C:\Users\Administrator\Downloads\Project\BKK Sky Trains/
 ├── [1. Web App & PWA] (Root)
-│   ├── index.html                  # หน้าเว็บแอปพลิเคชันหลัก (Transit UI & Blueprint Map)
+│   ├── index.html                  # หน้าเว็บแอปพลิเคชันหลัก (Header Clock Card, Popup Top Cards, Blueprint Map, Spotlight Tour)
 │   ├── js/
-│   │   ├── app.js                  # โค้ดควบคุมระบบหลัก (Live TTA, Planner, Routing, Fares, Hotspots)
+│   │   ├── app.js                  # โค้ดควบคุมระบบหลัก (Live TTA, Planner, Weather, Holidays 2569-2570, Clock, Hotspots, BKKLiveBridge)
 │   │   └── jsencrypt.min.js        # ไลบรารีการเข้ารหัสความปลอดภัย API (RSA)
 │   ├── api/
 │   │   └── bkk-proxy.js            # Universal Serverless Reverse Proxy & CORS Bypass สำหรับ BTS Live Transit API
-│   ├── vercel.json                 # การตั้งค่า Deployment และ Universal CORS Routing บน Vercel
-│   ├── sw.js                       # Service Worker สำหรับแคช PWA & Offline Support (bkk-v85)
+│   ├── vercel.json                 # การตั้งค่า Deployment, Security Headers และ Universal CORS Routing บน Vercel
+│   ├── sw.js                       # Service Worker สำหรับแคช PWA & Offline Support (bkk-v111)
 │   ├── manifest.json               # PWA Web App Manifest สำหรับติดตั้งบนอุปกรณ์
 │   ├── Start-BKK-Transit.ps1       # สคริปต์เปิด Local Server + BTS Live API Reverse Proxy (UTF-8 BOM)
-│   ├── Deploy-BKK-SkyTrains.ps1    # สคริปต์บิลด์ Android APK, ล้างข้อมูลเก่าบน GitHub และ Push อัตโนมัติ (UTF-8 BOM)
+│   ├── Deploy-BKK-SkyTrains.ps1    # สคริปต์บิลด์ Android APK/AAB, ล้างข้อมูลเก่าบน GitHub และ Push อัตโนมัติ (UTF-8 BOM)
 │   ├── bkk_transit_map.svg         # เวกเตอร์แผนผังรถไฟฟ้าโหมดสว่าง (Light Vector Blueprint)
 │   ├── bkk_transit_map_dark.svg    # เวกเตอร์แผนผังรถไฟฟ้าโหมดมืด (Dark Vector Blueprint)
 │   ├── bkk_transit_map.jpg         # รูปภาพสำรองแผนผังรถไฟฟ้า
 │   ├── leaflet.css                 # สไตล์ชีตแผนที่ Leaflet
 │   ├── icons/                      # ไอคอนประจำสายสี (lines/), สัญลักษณ์ (legend/), นำทาง (nav/), หน้าจอ (ui/)
 │   ├── images/                     # แอสเซท Leaflet, ไอคอนแจ้งเหตุขัดข้อง (ic_traffic_alert, icon_traffic_information) และพรีวิว
+│   ├── Holiday/                    # ข้อมูลวันหยุดอ้างอิง BTS (holidays2026.md, holidays2027.md)
 │   ├── robots.txt, sitemap.xml     # การตั้งค่า SEO
 │   └── *.png, *.svg, *.ico         # โลโก้และไอคอนแอปพลิเคชัน
 │
 ├── [2. Mobile Flutter App] (bkk_skytrains_flutter/)
-│   ├── android/                    # คอนฟิกูเรชันและ Build scripts ของระบบ Android
-│   ├── ios/                        # คอนฟิกูเรชัน, Storyboard และ Assets ของระบบ iOS
-│   ├── lib/                        # ซอร์สโค้ด Dart (BkkWebViewScreen, Theme, Services, Screens, Models)
-│   ├── test/                       # ชุดทดสอบ Unit & Widget Test
+│   ├── android/                    # MainActivity.kt (Custom RemoteViews Lock Screen Notification Card), StationWidgetProvider.kt, layouts/drawables และ Gradle
+│   ├── ios/                        # คอนฟิกูเรชัน iOS, Storyboard และ StationWidget (WidgetKit / Live Activities)
+│   ├── lib/                        # ซอร์สโค้ด Dart (main.dart, bkk_web_view_screen.dart, live_transit_service.dart, static_stations.dart, models, theme)
+│   ├── test/                       # ชุดทดสอบ Unit & Widget Test (`widget_test.dart`)
 │   ├── assets/www/                 # ไฟล์เว็บแคชออฟไลน์ในตัวแอป (ซิงค์ตรงกับ Root 100%)
-│   └── pubspec.yaml                # รายการ Dependencies และการตั้งค่า Assets (Android & iOS)
+│   └── pubspec.yaml                # รายการ Dependencies และเวอร์ชัน (`1.3.6+19`, Android & iOS)
 │
 ├── [3. Releases & CI/CD]
 │   ├── releases/                   # โฟลเดอร์เก็บไฟล์ตัวติดตั้งแอปพลิเคชัน (แบ่งแยก Android, Apple และ Packages)
@@ -224,6 +235,7 @@ c:\Users\Administrator\Documents\BKK Sky Trains/
     ├── README.md                   # คู่มือภาพรวมโปรเจกต์และวิธีใช้งาน
     ├── USER_GUIDE.md               # คู่มือการใช้งานระบบรถไฟฟ้าสำหรับผู้โดยสารทั่วไป (User Guide)
     ├── PRD.md                      # Product Requirements Document
+    ├── SECURITY.md                 # นโยบายความปลอดภัยและมาตรการป้องกันของระบบ
     ├── Skill.md                    # ข้อกำหนด Antigravity / Gemini Agent Skill
     ├── AGENTS.md                   # ข้อกำหนดและมาตรฐาน Agent ใน Workspace
     └── GEMINI.md                   # Directives & Protocols สำหรับ Gemini/Antigravity
@@ -251,29 +263,29 @@ node -e "require('child_process').execSync('powershell ./Start-BKK-Transit.ps1',
 
 ### วิธีที่ 3: เลือกดาวน์โหลดและติดตั้งตัวติดตั้งแอปพลิเคชัน (3 รูปแบบระบุเวอร์ชันและบิลด์เท่านั้น)
 สามารถเลือกดาวน์โหลดตัวติดตั้งตามความต้องการได้โดยตรงจากหน้า **GitHub Actions Artifacts** หรือ **GitHub Releases**:
-1. 📦 **BKK_SkyTrains_V.1.3.6_(Build 16)_Release_Packages (ZIP)**:
+1. 📦 **BKK_SkyTrains_V.1.3.6_(Build 19)_Release_Packages (ZIP)**:
    - รวมแพ็กเกจตัวติดตั้งครบทุกระบบ (Android APK, AAB, iOS IPA พร้อมไฟล์ตรวจสอบ SHA-256 Checksum)
-   - ไฟล์: `releases/Packages/BKK_SkyTrains_V.1.3.6_(Build 16)_Release_Packages.zip` พร้อมไฟล์ตรวจสอบ `.sha256`
-2. 🤖 **BKK_SkyTrains_V.1.3.6_(Build 16).apk (Android)**:
+   - ไฟล์: `releases/Packages/BKK_SkyTrains_V.1.3.6_(Build 19)_Release_Packages.zip` พร้อมไฟล์ตรวจสอบ `.sha256`
+2. 🤖 **BKK_SkyTrains_V.1.3.6_(Build 19).apk (Android)**:
    - ตัวติดตั้ง Android Release APK สำหรับติดตั้งบนอุปกรณ์ Android ได้ทันที
-   - ไฟล์: `releases/Android/APK/BKK_SkyTrains_V.1.3.6_(Build 16).apk` พร้อมไฟล์ตรวจสอบ `.sha256`
-   - สำหรับขึ้นสโตร์: `releases/Android/AAB/BKK_SkyTrains_V.1.3.6_(Build 16).aab`
-3. 🍎 **BKK_SkyTrains_V.1.3.6_(Build 16).ipa (iOS)**:
+   - ไฟล์: `releases/Android/APK/BKK_SkyTrains_V.1.3.6_(Build 19).apk` พร้อมไฟล์ตรวจสอบ `.sha256`
+   - สำหรับขึ้นสโตร์: `releases/Android/AAB/BKK_SkyTrains_V.1.3.6_(Build 19).aab`
+3. 🍎 **BKK_SkyTrains_V.1.3.6_(Build 19).ipa (iOS)**:
    - ตัวติดตั้ง Apple iOS IPA สำหรับ Sideload ติดตั้งบน iPhone / iPad (ผ่าน AltStore, Sideloadly, หรือ TrollStore)
-   - ไฟล์: `releases/Apple/IPA/BKK_SkyTrains_V.1.3.6_(Build 16).ipa` พร้อมไฟล์ตรวจสอบ `.sha256`
+   - ไฟล์: `releases/Apple/IPA/BKK_SkyTrains_V.1.3.6_(Build 19).ipa` พร้อมไฟล์ตรวจสอบ `.sha256`
 
 ### วิธีที่ 5: บิลด์และดีพลอยอัตโนมัติด้วยสคริปต์ `Deploy-BKK-SkyTrains.ps1`
 สคริปต์รวมกระบวนการพัฒนาและปล่อยเวอร์ชันใหม่ ทำงานตามลำดับ 8 ขั้นตอนอย่างเคร่งครัด:
 ```powershell
 .\Deploy-BKK-SkyTrains.ps1
 ```
-1. **จัดระเบียบไฟล์:** `C:\Users\Administrator\Documents\BKK Sky Trains` จากเครื่องให้เป็นระเบียบ พร้อมจัดหมวดหมู่/Folder ถ้าไฟล์หรือแอพไหนไม่สำคัญต่อระบบแล้ว และไม่ทำลายระบบให้เสียหาย ให้ลบทิ้งได้ทันที
-2. **Update .yml ทั้งหมด:** ตรวจสอบและอัปเดตไฟล์คอนฟิก CI/CD (`.github/workflows/*.yml`, `pubspec.yaml`) ให้สอดคล้องกับเวอร์ชันปัจจุบัน
-3. **Update .md ทั้งหมดให้ตรงตามเว็บ/แอพ เท่านั้น:** ตรวจสอบและอัปเดตเอกสารทุกไฟล์ (`README.md`, `PRD.md`, `AGENTS.md`, `GEMINI.md`, `Skill.md`) ให้ตรงตามเว็บ/แอพ 100%
+1. **จัดระเบียบไฟล์:** `C:\Users\Administrator\Downloads\Project\BKK Sky Trains` จากเครื่องให้เป็นระเบียบ พร้อมจัดหมวดหมู่/Folder ถ้าไฟล์หรือแอพไหนไม่สำคัญต่อระบบแล้ว และไม่ทำลายระบบให้เสียหาย ให้ลบทิ้งได้ทันที
+2. **Update .yml ทั้งหมด:** ตรวจสอบและอัปเดตไฟล์คอนฟิก CI/CD (`.github/workflows/*.yml`, `pubspec.yaml`, `analysis_options.yaml`) ให้สอดคล้องกับเวอร์ชันปัจจุบัน (`1.3.6+19`)
+3. **Update .md ทั้งหมดให้ตรงตามเว็บ/แอพ เท่านั้น:** ตรวจสอบและอัปเดตเอกสารทุกไฟล์ (`README.md`, `bkk_skytrains_flutter/README.md`, `PRD.md`, `USER_GUIDE.md`, `SECURITY.md`, `AGENTS.md`, `GEMINI.md`, `Skill.md`) ให้ตรงตามเว็บ/แอพ 100% (คง `Holiday/holidays2026.md` & `holidays2027.md` ไว้เป็นไฟล์อ้างอิง)
 4. **Update .ps1 ทั้งหมดให้ตรงตามเว็บ/แอพ เท่านั้น:** ตรวจสอบและอัปเดตสคริปต์ PowerShell ทั้งหมด (`Deploy-BKK-SkyTrains.ps1`, `Start-BKK-Transit.ps1`) พร้อมบันทึกด้วย UTF-8 with BOM เสมอ
-5. **ทำแอพ Android:** รันการตรวจสอบคุณภาพโค้ด (node --check, flutter analyze, flutter test) และคอมไพล์ Android Release APK พร้อมคำนวณ SHA-256 Checksum
+5. **ทำแอพ Android:** รันการตรวจสอบคุณภาพโค้ด (`node --check`, `flutter analyze`, `flutter test`) และคอมไพล์ Android Release APK พร้อมคำนวณ SHA-256 Checksum
 6. **ต้องการให้ทำเป็น App Bundle:** คอมไพล์ Android App Bundle (`.aab`) สำหรับการแจกจ่ายบน Google Play Store พร้อมคำนวณ SHA-256 Checksum และเคลียร์แคชบิลด์
-7. **ทำแอพ IOS:** ตรวจสอบโครงสร้าง Native iOS (Info.plist, Xcode Project, AppIcons) และคอมไพล์ iOS IPA (บน macOS) หรือเตรียมส่งต่อให้ Cloud Runner
+7. **ทำแอพ IOS:** ตรวจสอบโครงสร้าง Native iOS (Info.plist, Xcode Project, AppIcons, StationWidget) และคอมไพล์ iOS IPA (บน macOS) หรือเตรียมส่งต่อให้ Cloud Runner
 8. **ลบข้อมูลเวอร์เก่า บน Github ออก และ Upload ขึ้น Github Build iOS & Android Apps เวอร์ชั่นที่ทำใหม่ล่าสุดเสมอ:** ล้าง Releases และ Tags เก่าบน GitHub, Commit, Tag และ Push เพื่อทริกเกอร์ GitHub Actions บิลด์ iOS & Android เวอร์ชันล่าสุด
 
 ### วิธีที่ 6: รันหรือบิลด์แอปพลิเคชัน Flutter แบบแมนนวล
@@ -281,6 +293,8 @@ node -e "require('child_process').execSync('powershell ./Start-BKK-Transit.ps1',
 ```bash
 cd bkk_skytrains_flutter
 flutter pub get
+flutter analyze --no-fatal-infos
+flutter test
 flutter run
 ```
 บิลด์ APK สำหรับติดตั้งบนเครื่อง:
@@ -297,12 +311,12 @@ flutter build appbundle --release
 ## 🔄 มาตรฐานการพัฒนาและซิงค์ไฟล์ (Development Protocols)
 
 1. **Dual-Asset Synchronization**:
-   - หากมีการแก้ไข `index.html`, `js/app.js`, `js/jsencrypt.min.js`, หรือไฟล์แผนที่ในโฟลเดอร์ Root ให้คัดลอกและซิงค์ไปยัง `bkk_skytrains_flutter/assets/www/` ให้ตรงกัน 100% เสมอ
+   - หากมีการแก้ไข `index.html`, `js/app.js`, `js/jsencrypt.min.js`, `sw.js`, `leaflet.css`, `icons/`, `images/` หรือไฟล์แผนที่ในโฟลเดอร์ Root ให้คัดลอกและซิงค์ไปยัง `bkk_skytrains_flutter/assets/www/` ให้ตรงกัน 100% เสมอ
 2. **Code Quality & Validation**:
    - ตรวจสอบไวยากรณ์ JavaScript: `node --check js/app.js`
-   - ตรวจสอบโค้ด Flutter/Dart: `flutter analyze` ในโฟลเดอร์ `bkk_skytrains_flutter` (ต้องได้ 0 issues)
+   - ตรวจสอบโค้ด Flutter/Dart: `flutter analyze --no-fatal-infos` และ `flutter test` ในโฟลเดอร์ `bkk_skytrains_flutter` (ต้องได้ 0 issues และผ่านครบทุกเทสต์)
    - สคริปต์ PowerShell ทั้งหมดต้องบันทึกด้วยรูปแบบ **UTF-8 with BOM**
 3. **Automated CI/CD (iOS & Android)**:
-   - ระบบ CI/CD บน GitHub Actions (`.github/workflows/Build iOS & Android Apps.yml` - "Build iOS & Android Apps") รันบน macOS runner รองรับการคอมไพล์และสร้างตัวติดตั้งทั้งสองระบบพร้อมกัน: iOS IPA (`BKK_SkyTrains_V.*.ipa`), Android APK (`BKK_SkyTrains_V.*_(Build *).apk`) และ Android App Bundle (`BKK_SkyTrains_V.*.aab`) พร้อมสร้าง SHA-256 Checksum และเผยแพร่ลง GitHub Releases อัตโนมัติ (หมายเหตุ: สำหรับ Private Repository บน GitHub จำเป็นต้องตั้งค่า Spending Limit สำหรับ Actions ให้มากกว่า $0 ในหน้า Settings > Billing & plans เพื่อให้ GitHub อนุญาตให้ใช้งาน macOS Runner)
+   - ระบบ CI/CD บน GitHub Actions (`.github/workflows/Build iOS & Android Apps.yml` - "Build iOS & Android Apps") รันบน `macos-latest` พร้อมปักหมุด Flutter `3.47.9` รองรับการคอมไพล์และสร้างตัวติดตั้งทั้งสองระบบพร้อมกัน: iOS IPA (`BKK_SkyTrains_V.*.ipa`), Android APK (`BKK_SkyTrains_V.*_(Build *).apk`) และ Android App Bundle (`BKK_SkyTrains_V.*.aab`) พร้อมสร้าง SHA-256 Checksum และเผยแพร่ลง GitHub Releases อัตโนมัติ (หมายเหตุ: สำหรับ Private Repository บน GitHub จำเป็นต้องตั้งค่า Spending Limit สำหรับ Actions ให้มากกว่า $0 ในหน้า Settings > Billing & plans เพื่อให้ GitHub อนุญาตให้ใช้งาน macOS Runner)
 4. **Zero-Waste Pruning & Workspace Cleanliness**:
    - ถ้าไฟล์หรือแอพไหนไม่สำคัญต่อระบบแล้ว และไม่ทำลายระบบให้เสียหาย ให้ลบทิ้งได้ทันทีหลังแก้ไขหรือทดสอบไฟล์ทุกครั้ง เพื่อรักษาความสะอาดของ Workspace และความปลอดภัยของระบบ

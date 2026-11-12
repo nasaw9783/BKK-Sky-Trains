@@ -1,6 +1,6 @@
 # GEMINI.md - BKK SkyTrains Workspace Directives & Protocols
 
-Directives and mandatory operational standards for Google Gemini and Antigravity AI Agents working within `C:\Users\Administrator\Documents\BKK Sky Trains`.
+Directives and mandatory operational standards for Google Gemini and Antigravity AI Agents working within `C:\Users\Administrator\Downloads\Project\BKK Sky Trains`.
 
 ---
 

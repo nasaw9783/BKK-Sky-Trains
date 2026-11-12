@@ -1,21 +1,22 @@
 # AGENTS.md - BKK SkyTrains Workspace Guidelines
 
-Directives and mandatory standards for AI Agents working within `C:\Users\Administrator\Documents\BKK Sky Trains`.
+Directives and mandatory standards for AI Agents working within `C:\Users\Administrator\Downloads\Project\BKK Sky Trains`.
 
 ---
 
 ## 🏗️ 1. Project Architecture & Categories (โครงสร้างระบบ 4 หมวดหมู่หลัก)
 
 1. **Web App & PWA (Root Directory)**:
-   - `index.html`: Main real-time web application frontend.
-   - `js/app.js`: Core client-side logic, routing, stations data, real-time countdown, and UI rendering.
+   - `index.html`: Main real-time web application frontend (Header 3-tier System Clock card `#hdrClockCard`, Nearest Station Popup top stack `#popupTopCards`, Route Strip w/ blue active-node pulse, Blueprint Map, 12-Step Spotlight Tour, Settings UI).
+   - `js/app.js`: Core client-side logic, routing, stations data, real-time countdown (`REFRESH_MS = 20000`), Open-Meteo live weather widget, Thai Public & BTS Office Holidays (`2569–2570`), clock & BE/CE era helpers, Toast `8px` positioning (`syncToastPosition`), native bridge sync (`BKKLiveBridge`), and UI rendering.
    - `js/jsencrypt.min.js`: RSA cryptographic client library for secure transit API communications.
    - `js/leaflet.js`, `leaflet.css`: Leaflet map engine and stylesheets.
    - `api/bkk-proxy.js`: Universal serverless reverse proxy & CORS bypass handler for BTS live transit APIs.
-   - `vercel.json`: Deployment configuration for Vercel serverless functions and universal CORS routing.
-   - `sw.js`: Service worker for offline caching and PWA support.
-   - `icons/`: Train line icons (`lines/`), transit legend symbols (`legend/`), bottom navigation icons (`nav/`), and UI icons (`ui/`).
+   - `vercel.json`: Deployment configuration for Vercel serverless functions, security headers, cache policies, and universal CORS routing.
+   - `sw.js`: Service worker for offline caching (`bkk-v111`, Critical App Shell + Large Media split cache) and PWA support.
+   - `icons/`: Train line icons (`lines/` - 13), transit legend symbols (`legend/` - 7), bottom navigation icons (`nav/` - 6), and UI icons (`ui/` - 40).
    - `images/`: Leaflet map markers/tiles, traffic disruption alert icons (`ic_traffic_alert.svg`, `icon_traffic_information.svg`), and disruption dialog preview (`bkk_skytrains_disruption_preview.svg`).
+   - `Holiday/`: Official BTS holiday specification files (`holidays2026.md`, `holidays2027.md` — 17 holidays/year).
    - `manifest.json`: Web App Manifest for mobile installation.
    - `robots.txt`, `sitemap.xml`: Web SEO metadata.
    - `Start-BKK-Transit.ps1`: Local development server and reverse-proxy runner (UTF-8 with BOM).
@@ -23,10 +24,10 @@ Directives and mandatory standards for AI Agents working within `C:\Users\Admini
    - `bkk_transit_map.svg`, `bkk_transit_map_dark.svg`, `bkk_transit_map.jpg`: High-resolution vector blueprint transit network maps.
 
 2. **Mobile App (Flutter Multi-platform in `bkk_skytrains_flutter/`)**:
-   - `android/`: Android native project configuration, launcher icons, manifest, and Gradle build files.
-   - `ios/`: iOS native project configuration, AppIcon.appiconset, LaunchScreen storyboard, and Info.plist.
-   - `lib/`: Flutter Dart codebase (`bkk_web_view_screen.dart`, theme, services, screens, models).
-   - `test/`: Flutter widget test suite.
+   - `android/`: Android native configuration, custom `RemoteViews` Lock Screen Notification layouts (`notification_station_expanded.xml`, `notification_station_collapsed.xml`, `notif_*.xml` / `ic_notif_*.xml` drawables), persistent notification channel in `MainActivity.kt` (`DecoratedCustomViewStyle`), Home Screen AppWidget (`StationWidgetProvider.kt`, `station_widget.xml`), `network_security_config.xml`, and Gradle build files.
+   - `ios/`: iOS native configuration, WidgetKit / Live Activities (`StationWidget/StationWidget.swift`, `NSSupportsLiveActivities`), `AppIcon.appiconset`, `LaunchScreen` storyboard, and `Info.plist`.
+   - `lib/`: Flutter Dart codebase (`main.dart`, `models/station.dart`, `screens/bkk_web_view_screen.dart` with `FlutterLocation` & `BKKLiveBridge` JS channels, `services/live_transit_service.dart`, `services/static_stations.dart`, `theme/app_theme.dart`).
+   - `test/`: Flutter widget test suite (`widget_test.dart`).
    - `assets/www/`: Embedded offline web assets (automatically synchronized with root web files 100%).
    - Targeted platforms: **Android & iOS only**. Do not introduce unused desktop boilerplate (Linux/Windows/macOS).
 
@@ -42,11 +43,13 @@ Directives and mandatory standards for AI Agents working within `C:\Users\Admini
      - `BKK_SkyTrains_V.xxxx_(Build xxxx).ipa`: ตัวติดตั้ง Apple iOS IPA
 
 4. **Documentation & Specifications**:
-   - `README.md`: Workspace overview and documentation.
+   - `README.md`, `bkk_skytrains_flutter/README.md`: Workspace & Flutter mobile documentation.
    - `PRD.md`: Product Requirements Document detailing product vision, personas, features, live TTA, routing, fares, and roadmap.
    - `USER_GUIDE.md`: Comprehensive end-user commuter handbook & manual for Bangkok SkyTrains system.
+   - `SECURITY.md`: Security controls, Android/WebView hardening, proxy safeguards, and vulnerability reporting policy.
    - `Skill.md`: Antigravity / Gemini Agent skill specification.
    - `AGENTS.md`, `GEMINI.md`: Mandatory Agent operating guidelines, post-file-edit protocols, and system standards.
+   - `Holiday/holidays2026.md`, `Holiday/holidays2027.md`: Official BTS holiday specification tables (2569–2570 BE).
 
 ---
 
@@ -75,7 +78,7 @@ Directives and mandatory standards for AI Agents working within `C:\Users\Admini
    - สคริปต์ `Deploy-BKK-SkyTrains.ps1` และ Agent จะต้องทำงานตามลำดับ 8 ขั้นตอนดังนี้อย่างเคร่งครัด:
      1. **จัดระเบียบไฟล์:** ทำความสะอาด Workspace และลบไฟล์/แคชขยะชั่วคราวทิ้งทันที
      2. **Update .yml ทั้งหมด:** ตรวจสอบและอัปเดตไฟล์คอนฟิก CI/CD (`.github/workflows/Build iOS & Android Apps.yml`, `pubspec.yaml`) ให้สอดคล้องกับเวอร์ชันปัจจุบัน
-     3. **Update .md ทั้งหมด:** ตรวจสอบและอัปเดตเอกสารทุกไฟล์ (`README.md`, `PRD.md`, `AGENTS.md`, `GEMINI.md`, `Skill.md`) ให้ตรงตามเว็บ/แอพ 100%
+     3. **Update .md ทั้งหมด:** ตรวจสอบและอัปเดตเอกสารทุกไฟล์ (`README.md`, `bkk_skytrains_flutter/README.md`, `PRD.md`, `USER_GUIDE.md`, `SECURITY.md`, `AGENTS.md`, `GEMINI.md`, `Skill.md`) ให้ตรงตามเว็บ/แอพ 100% (โดยคงไฟล์ข้อมูลอ้างอิง `Holiday/holidays2026.md` และ `Holiday/holidays2027.md` ไว้เป็นต้นฉบับ)
      4. **Update .ps1 ทั้งหมด:** ตรวจสอบและบันทึกสคริปต์ PowerShell ทั้งหมด (`Deploy-BKK-SkyTrains.ps1`, `Start-BKK-Transit.ps1`) ด้วย UTF-8 with BOM
      5. **ทำแอพ Android:** รันการตรวจสอบคุณภาพโค้ด และคอมไพล์ Android Release APK พร้อมคำนวณ SHA-256 Checksum
      6. **ทำ App Bundle:** คอมไพล์ Android App Bundle (`.aab`) พร้อมคำนวณ SHA-256 Checksum และเคลียร์แคชบิลด์
@@ -115,9 +118,10 @@ Directives and mandatory standards for AI Agents working within `C:\Users\Admini
    - ทุกองค์ประกอบที่ไม่ใช่ช่องกรอกข้อมูลจะต้องมี `caret-color: transparent !important;`, `user-select: none !important;`, และ `cursor: default !important;` (หรือ `cursor: pointer` หากเป็นปุ่มกดหรือลิงก์)
 
 8. **Mandatory Build & VersionCode Increment Standard (ข้อกำหนดการอัปเดต Build / VersionCode ทุกครั้งที่เสร็จสิ้นงาน)**:
+   - เวอร์ชันปัจจุบัน: `v1.3.6 (Build 19)` (`1.3.6+19`) / Service Worker `bkk-v111`
    - ทุกครั้งที่มีการแก้ไขโค้ด ปรับแต่งฟีเจอร์ หรือเขียนงานในระบบเสร็จสิ้น จะต้องอัปเดตเพิ่มหมายเลข Build / VersionCode (`+1`) เสมอ:
-     - อัปเดตใน `bkk_skytrains_flutter/pubspec.yaml`: เช่น `version: 1.3.6+10` -> `version: 1.3.6+11` (เพื่อใช้กำหนด `versionCode` ของ Android และ `CFBundleVersion` ของ iOS)
-     - อัปเดตในหน้าต่างข้อมูลแอปพลิเคชัน: แสดงเป็น `v1.3.6 (Build 11)` ใน `<span class="tag-value">` ทั้งใน `index.html` และ `bkk_skytrains_flutter/assets/www/index.html`
+     - อัปเดตใน `bkk_skytrains_flutter/pubspec.yaml`: เช่น `version: 1.3.6+19` -> `version: 1.3.6+20` (เพื่อใช้กำหนด `versionCode` ของ Android และ `CFBundleVersion` ของ iOS)
+     - อัปเดตในหน้าต่างข้อมูลแอปพลิเคชัน: แสดงเป็น `v1.3.6 (Build 20)` ใน `<span class="tag-value">` ทั้งใน `index.html` และ `bkk_skytrains_flutter/assets/www/index.html`
 
 ---
 

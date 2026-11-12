@@ -124,9 +124,9 @@ jobs:
           zip -r -9 "../releases/Apple/IPA/${IPA_NAME}" Payload
           cd ../releases/Apple/IPA
           shasum -a 256 "${IPA_NAME}" > "${IPA_NAME}.sha256"
-          rm -rf ../../bkk_skytrains_flutter/Payload
+          rm -rf ../../../bkk_skytrains_flutter/Payload
 
-      - name: Package Release Bundle (BKK_SkyTrains_V.${{ steps.app_version.outputs.version_base }}_(Build_${{ steps.app_version.outputs.build_number }})_Release_Packages)
+      - name: Package Release Bundle (BKK_SkyTrains_V.${{ steps.app_version.outputs.version_base }}_(Build ${{ steps.app_version.outputs.build_number }})_Release_Packages)
         run: |
           mkdir -p releases/Packages
           VERSION_BASE="${{ steps.app_version.outputs.version_base }}"
@@ -208,22 +208,17 @@ jobs:
             - **🤖 Android Application**: `BKK_SkyTrains_V.${{ steps.app_version.outputs.version_base }}_(Build ${{ steps.app_version.outputs.build_number }}).apk`
             - **🍎 iOS Application**: `BKK_SkyTrains_V.${{ steps.app_version.outputs.version_base }}_(Build ${{ steps.app_version.outputs.build_number }}).ipa`
             - **Key Features & Enhancements**:
-              - Live Traffic Disruption & Incident Dialog system (`TrafficTrainDialogView`) ported from `th.btsc.theskytrains` architecture.
-              - Real-time Broadcast Disruption Banner displayed on the home screen when delays or service interruptions occur.
-              - Real-time Header Control Pill showing system operational status (`ปกติ` / `ขัดข้อง`) with warning indicator animation.
-              - Full Incident Detail Dialog showing alert timestamp (`AlertTime`), disruption plan/type (`PlanName`/`TypeName`), details (`Detail`), line train icons (`getLineIconSvg`), and operational status table for 5 core transit lines (BTS Sukhumvit, Silom, Gold, MRT Yellow, Pink).
-              - Reassurance Card (`icon_traffic_information.svg`) displayed when all lines are operating normally.
-              - Built-in Disruption Simulation Toggle for end-to-end verification and testing under all operating conditions.
-              - High-resolution Transit Network Blueprint Map with interactive vector SVG overlay across Bangkok transit lines.
-              - Theme-aware vector SVG map auto-switching with high-contrast typography (Light / Dark mode).
-              - Interactive station hotspots for instant Origin/Destination selection and Exit Directory.
-              - Transit network legend modal (Transit lines and connections - Airport, Pier/Boat, Intercity Train, Bus Terminal, Park & Ride).
-              - Depot & maintenance train telemetry filtering (`YL00`, `PK00`).
-              - Real-time transit operating hours validation (05:30/06:00 - 24:00).
-              - Nearest alternate stations smooth horizontal scrolling on mobile displays.
-              - Offline Service Worker Cache `bkk-v84` with high-performance pre-caching.
-              - Unified element centering and train line icon standards.
-            - **Security & Integrity**: Cryptographic SHA-256 checksums provided for all distribution packages.
+              - Header 3-Tier System Clock Card (`#hdrClockCard`) with gradient digits, instant `12H` / `24H` / Device Auto format switching, 4 date layout styles, and Buddhist/Christian Era (`BE`/`CE`) support.
+              - Nearest Station Popup Top Info Stack (`#popupTopCards`): System Time card (`#popupClockCard`), Live Weather card via Open-Meteo API with 3D weather SVG icons (`#popupWeatherCard`), and Holidays card (`#popupHolidayCard`) with Thai Public Holidays + BTS Office Holidays (2569–2570, 17 days/year) symmetric 2-column grid panel.
+              - Native Android Custom `RemoteViews` Lock Screen Notification Card (`DecoratedCustomViewStyle` + `notification_station_expanded.xml` / `collapsed.xml`) displaying contrast-adaptive station badges, distance, and 2 platforms with up to 3 arrival countdowns per platform via `BKKLiveBridge`, alongside Android AppWidget (`StationWidgetProvider`) and iOS WidgetKit (`StationWidget`).
+              - Active expanded station node blue pulse ring (`pulseRingBlue` / `pulseRingBlueLight`), dynamic `8px` toast notification anchoring (`syncToastPosition`), and 12-step Interactive Spotlight Tour (`#spotlightOverlay`).
+              - Live Traffic Disruption & Incident Dialog system (`TrafficTrainDialogView`) with Broadcast Banner, Header Status Pill, 5-line status table, Normal Service Reassurance Card, and Disruption Simulation Toggle.
+              - High-resolution Transit Network Blueprint Vector Map (12 transit lines) with Light/Dark auto-switching, interactive station hotspots, and Transit Network Legend modal.
+              - Depot & maintenance train telemetry filtering (`YL00`, `PK00`) and real-time transit operating hours validation (05:30/06:00 - 24:00).
+              - Nearest alternate stations smooth horizontal scrolling on mobile displays and trilingual support (TH / EN / ZH).
+              - Offline Service Worker Cache `bkk-v111` with Critical Shell / Large Media split pre-caching.
+              - Unified element centering and train line icon standards (`getLineIconSvg`).
+            - **Security & Integrity**: Cryptographic SHA-256 checksums provided for all distribution packages; Android cleartext disabled (`usesCleartextTraffic="false"`).
           files: |
             releases/Packages/BKK_SkyTrains_V.${{ steps.app_version.outputs.version_base }}_(Build ${{ steps.app_version.outputs.build_number }})_Release_Packages.zip
             releases/Packages/BKK_SkyTrains_V.${{ steps.app_version.outputs.version_base }}_(Build ${{ steps.app_version.outputs.build_number }})_Release_Packages.zip.sha256

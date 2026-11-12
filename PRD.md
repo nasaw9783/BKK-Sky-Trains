@@ -6,7 +6,7 @@
 | เอกสาร | รายละเอียด |
 | :--- | :--- |
 | **ชื่อผลิตภัณฑ์** | **BKK SKYTRAINs** (Bangkok SkyTrains & Mass Transit Companion) |
-| **เวอร์ชันเอกสาร** | 1.3.6 (Production Release) |
+| **เวอร์ชันเอกสาร** | 1.3.6 (Build 19 — Production Release) |
 | **สถานะ** | Active / Production |
 | **แพลตฟอร์มที่รองรับ** | Progressive Web App (PWA), Android (Native Hybrid APK), iOS (Native Hybrid IPA) |
 | **กลุ่มเป้าหมาย** | ผู้โดยสารรถไฟฟ้าในกรุงเทพฯ และปริมณฑล (คนไทย, ชาวต่างชาติ, นักท่องเที่ยว) |
@@ -73,23 +73,26 @@ mindmap
 flowchart TD
     subgraph ClientLayer["🖥️ Frontend & Client Layer"]
         WebPWA["Web App & PWA (Vanilla HTML5 / Modern CSS / JS ES6+)"]
-        FlutterApp["Mobile Hybrid App (Flutter Android APK / iOS IPA)"]
-        SW["Service Worker (sw.js - CacheFirst / NetworkFirst)"]
+        FlutterApp["Mobile Hybrid App (Flutter Android APK / AAB & iOS IPA)"]
+        SW["Service Worker (sw.js bkk-v111 - Split Shell & Media Cache)"]
     end
 
-    subgraph NativeBridge["📱 Native Device Bridge"]
+    subgraph NativeBridge["📱 Native Device & Widget Bridge"]
         Geolocator["Native Geolocator Bridge (GPS High Accuracy)"]
-        JSChannel["FlutterLocation JavaScript Channel"]
+        JSChannel["FlutterLocation & BKKLiveBridge JS Channels"]
+        AndroidCard["Android Lock Screen Custom RemoteViews & AppWidget (MainActivity / StationWidgetProvider)"]
+        iOSWidget["iOS WidgetKit / Live Activities (StationWidget.swift)"]
     end
 
     subgraph ServerProxyLayer["⚙️ Server & Network Layer"]
         PSLocal["Start-BKK-Transit.ps1 (Local Server & Reverse Proxy :3000)"]
-        RemoteProxy["Cloudflare / Production Reverse Proxy (/api/bkk-proxy)"]
+        RemoteProxy["Vercel Serverless Reverse Proxy (/api/bkk-proxy)"]
     end
 
     subgraph DataSources["🚊 Upstream & Static Data Engines"]
         BTSLive["BTS / EBM Upstream Live API (TTA, Station-List, Traffic)"]
-        MRTStatic["MRT/SRT/ARL Embedded Static Engine (MRT_STATIC_DB)"]
+        WeatherAPI["Open-Meteo Current Weather API (api.open-meteo.com)"]
+        MRTStatic["MRT/SRT/ARL Embedded Static Engine & BTS Holidays 2569-2570"]
         Haversine["Client-Side Haversine Coordinate Calculator"]
     end
 
@@ -97,8 +100,11 @@ flowchart TD
     FlutterApp -->|WebView Asset Load| WebPWA
     FlutterApp <--> NativeBridge
     NativeBridge <--> WebPWA
+    JSChannel --> AndroidCard
+    JSChannel --> iOSWidget
     WebPWA -->|Live Requests| PSLocal
     WebPWA -->|Live Production Requests| RemoteProxy
+    WebPWA -->|Weather| WeatherAPI
     PSLocal --> BTSLive
     RemoteProxy --> BTSLive
     WebPWA --> MRTStatic
@@ -107,10 +113,10 @@ flowchart TD
 
 ### 3.1 Technology Stack Matrix
 - **Core Web Frontend:** Vanilla JavaScript (ES2022+), Semantic HTML5, CSS Variables, Responsive Grid & Flexbox (No React/Vue overhead).
-- **Offline & PWA:** Service Worker (`sw.js`), Web App Manifest (`manifest.json`), LocalStorage Cache Engine.
-- **Mobile Platform:** Flutter 3.x Multi-platform (Dart), `webview_flutter`, `geolocator`, Android SDK 34+, iOS Xcode 15+.
-- **Backend / Reverse Proxy:** Vercel Serverless Function (`api/bkk-proxy.js`) & Local Node.js Server (`Start-BKK-Transit.ps1`) สำหรับรับส่งข้อมูลและปลดล็อก CORS กับเซิร์ฟเวอร์ระบบ BTS / EBM ได้อย่างปลอดภัย.
-- **CI/CD & Cloud Build:** GitHub Actions (`.github/workflows/Build iOS & Android Apps.yml`) บน macOS Runner (`macos-15`) สร้างไฟล์ `.ipa` อัตโนมัติ (สำหรับ Private Repository ต้องตั้งค่า Spending Limit บน GitHub Actions ให้มากกว่า $0).
+- **Offline & PWA:** Service Worker (`sw.js` — `bkk-v111`), Web App Manifest (`manifest.json`), LocalStorage Cache Engine.
+- **Mobile Platform:** Flutter 3.x (CI `3.47.9`, Dart SDK `^3.13.4`), `webview_flutter`, `geolocator`, `home_widget`, `shared_preferences`, `url_launcher`, Android Native Kotlin (`MainActivity.kt` Custom `RemoteViews` Lock Screen Card + `StationWidgetProvider.kt`), iOS Swift (`StationWidget.swift` WidgetKit + `NSSupportsLiveActivities`).
+- **Backend / Reverse Proxy & Weather:** Vercel Serverless Function (`api/bkk-proxy.js`), Local Node.js Server (`Start-BKK-Transit.ps1`), and Open-Meteo Weather API (`api.open-meteo.com`).
+- **CI/CD & Cloud Build:** GitHub Actions (`.github/workflows/Build iOS & Android Apps.yml`) บน macOS Runner (`macos-latest`) สร้างไฟล์ `.apk`, `.aab` และ `.ipa` พร้อม SHA-256 Checksum อัตโนมัติ.
 
 ---
 
@@ -123,13 +129,18 @@ flowchart TD
 - **FR-1.4:** ระบบต้อง Polling ดึงข้อมูลใหม่ทุก 20 วินาที (`REFRESH_MS = 20000`) และ Tick นาฬิกาทุก 1 วินาที (`TICK_MS = 1000`)
 - **FR-1.5:** กรณีที่สถานีไม่มีข้อมูลสดแบบเรียลไทม์ (เช่น MRT สายสีน้ำเงิน/ม่วง) ระบบจะต้องแสดงเวลาตามตารางความถี่เดินรถ (Timetable Headway) อัตโนมัติ
 
-### FR-2: ระบบพิกัด GPS และตรวจจับสถานีใกล้เคียง (Nearest Station & Exit by GPS)
+### FR-2: ระบบพิกัด GPS, การ์ดข้อมูลบริบทด้านบน และตรวจจับสถานีใกล้เคียง (Nearest Station & Top Info Cards)
 - **FR-2.1:** คำนวณระยะทางจากพิกัดปัจจุบันของผู้ใช้ไปยังสถานีทั้งหมดด้วยสูตร **Haversine Formula**:
   $$d = 2r \arcsin\left(\sqrt{\sin^2\left(\frac{\Delta \phi}{2}\right) + \cos(\phi_1)\cos(\phi_2)\sin^2\left(\frac{\Delta \lambda}{2}\right)}\right)$$
 - **FR-2.2:** ระบุสถานีที่ใกล้ที่สุดโดยอัตโนมัติพร้อมระยะทาง (กม. หรือ ม.)
 - **FR-2.3:** แสดงชิปสถานีใกล้เคียงสำรอง (Alternative Nearest Stations) ในระยะไม่เกิน 120 กม.
 - **FR-2.4:** ค้นหาและแนะนำประตูทางออกสถานี (Exit Door) ที่ใกล้กับตำแหน่งพิกัดของผู้ใช้งานมากที่สุด
 - **FR-2.5:** Fallback Mechanism: หากผู้ใช้ปฏิเสธ GPS หรือระบุตำแหน่งไม่ได้ภายใน 5 วินาที ให้ใช้สถานีศูนย์กลางการเดินทางสำรอง (สถานีอโศก `E4` / สยาม `CEN`)
+- **FR-2.6 (Popup Top Info Cards `#popupTopCards`):** แสดงชุดการ์ดข้อมูล 3 ส่วนเหนือการ์ดตรวจพบสถานีใกล้ตัวคุณ:
+  - `#popupClockCard`: เวลาของระบบแบบเรียลไทม์, แบดจ์สลับ `12H`/`24H`, วันที่แบบเต็มพร้อมวันในสัปดาห์ (`formatPopupFullDate`)
+  - `#popupWeatherCard`: สภาพอากาศปัจจุบันตามพิกัดสถานีจาก **Open-Meteo API** (`temperature_2m`, `weather_code`, `is_day`) พร้อมไอคอนเวกเตอร์ 3 มิติ และแตะเพื่อรีเฟรช
+  - `#popupHolidayCard`: สถานะวันหยุดวันนี้, วันหยุดราชการถัดไป, และ **วันหยุด BTS (สำนักงาน) ปี 2569–2570** (17 วัน/ปี อ้างอิง `Holiday/holidays2026.md` & `holidays2027.md`) พร้อมแผงปฏิทินแบบการ์ด 2 คอลัมน์สมมาตร
+- **FR-2.7 (Dynamic Toast Anchor):** ตำแหน่ง `#appToast` ต้องคำนวณลอยต่ำกว่าขอบล่างของ `.nearest-popup-card` `8px` (`syncToastPosition`) เพื่อไม่ให้บดบังเนื้อหาการ์ด
 
 ### FR-3: ผังสายรถไฟฟ้าแบบโต้ตอบ (Interactive Route Strip & Line Network)
 - **FR-3.1:** แสดงผังเส้นทางเดินรถแบบ Strip ครอบคลุมโครงข่ายรถไฟฟ้าทั้งหมดในกรุงเทพฯ และปริมณฑล:
@@ -145,7 +156,7 @@ flowchart TD
   - <img src="icons/lines/line-104.svg" width="16" height="16" alt="ARL" style="vertical-align:middle;"> ARL รถไฟฟ้าแอร์พอร์ต เรล ลิงก์ (Airport Rail Link - LineId: 104, `#8A1538`)
   - <img src="icons/lines/line-201.svg" width="16" height="16" alt="BRT" style="vertical-align:middle;"> BRT รถโดยสารด่วนพิเศษ (Bus Rapid Transit - LineId: 201, `#82C341`)
   - <img src="icons/lines/line-106.svg" width="16" height="16" alt="MRT Orange" style="vertical-align:middle;"> MRT สายสีส้ม (Orange Line - LineId: 106, `#F58220`, โครงการในอนาคต)
-- **FR-3.2:** ผู้ใช้สามารถแตะเลือกสถานีใดๆ บนผังเพื่อเปิดแผ่นข้อมูลรายละเอียด (Station Bottom Sheet) ได้ทันที
+- **FR-3.2:** ผู้ใช้สามารถแตะเลือกสถานีใดๆ บนผังเพื่อเปิดแผ่นข้อมูลรายละเอียดสถานีได้ทันที โดยจุดโหนดของสถานีที่กำลังเปิดอยู่ (`.st-row.is-open .st-rail .node`) จะแสดงเอฟเฟกต์วงแหวนกระพริบสีฟ้า/น้ำเงิน (`pulseRingBlue` / `pulseRingBlueLight`) แยกชัดเจนจากจุดสีเขียวของสถานีใกล้ตัวคุณ
 - **FR-3.3 (Mandatory Icon Standard):** ทุกจุดที่แสดงสัญลักษณ์สายสี ต้องใช้ไอคอน SVG รูปรถไฟเฉพาะประจำสายสีผ่าน `getLineIconSvg(lineId)` ห้ามใช้จุดกลม (●) หรือไอคอนรถไฟทั่วไปที่ไม่ตรงกับสายเด็ดขาด
 
 ### FR-4: ระบบวางแผนการเดินทางอัจฉริยะ (Smart Journey Planner)
@@ -186,15 +197,15 @@ flowchart TD
   - โหมดจำลองเหตุขัดข้อง (Simulation Toggle) เพื่อทดสอบการแจ้งเตือนและการทำงานของระบบได้อย่างครบถ้วนทุกสถานการณ์
   - <img src="images/bkk_skytrains_disruption_preview.svg" alt="Traffic Train Dialog View Preview" width="100%" style="max-width:680px;border-radius:12px;margin:10px 0;box-shadow:0 4px 16px rgba(0,0,0,0.15);display:block;">
 
-### FR-9: รองรับ 2 ภาษาและการปรับแต่งรูปลักษณ์ (Bilingual & Theming)
-- **FR-9.1:** สลับภาษาระหว่างภาษาไทย (TH) และภาษาอังกฤษ (EN) ได้แบบทันที 0ms ทั่วทั้งแอป
-- **FR-9.2:** สลับธีม Dark Mode (Slate Dark #0F172A) และ Light Mode ได้อย่างราบรื่น
-- **FR-9.3:** บันทึกการตั้งค่าภาษาและธีมลงใน `localStorage` ให้คงอยู่ตลอดการใช้งาน
+### FR-9: รองรับ 3 ภาษา, นาฬิกาเวลาของระบบ และการปรับแต่งรูปลักษณ์ (Trilingual, Clock & Theming)
+- **FR-9.1:** สลับภาษาระหว่างภาษาไทย (TH), ภาษาอังกฤษ (EN) และภาษาจีน (ZH) ได้แบบทันที 0ms ทั่วทั้งแอป
+- **FR-9.2:** สลับธีม อัตโนมัติ (`auto`), Dark Mode (Slate Dark) และ Light Mode ได้อย่างราบรื่น พร้อมการ์ดนาฬิกาเวลาของระบบ 3 ชั้นที่หัวเว็บ (`#hdrClockCard`) แสดงตัวเลขเกรเดียนต์และแบดจ์ `12H`/`24H`
+- **FR-9.3:** การ์ดตั้งค่ารูปแบบเวลา (24 ชั่วโมง, 12 ชั่วโมง, ตั้งค่าตามอุปกรณ์ `auto`), รูปแบบการจัดวางวันที่ (4 สไตล์), ระบบศักราช (พ.ศ. / ค.ศ.) และคู่มือแนะนำการใช้งานแบบโต้ตอบ 12 ขั้นตอน (`#spotlightOverlay`) พร้อมบันทึกค่าลง `localStorage`
 
-### FR-10: การติดตั้งและการทำงานออฟไลน์ (PWA & Flutter Hybrid App)
-- **FR-10.1:** รองรับการติดตั้งแบบ PWA ผ่าน Web App Manifest และ Service Worker
+### FR-10: การติดตั้ง การทำงานออฟไลน์ และวิดเจ็ต/แจ้งเตือนเนทีฟ (PWA, Hybrid App & Native Live Bridge)
+- **FR-10.1:** รองรับการติดตั้งแบบ PWA ผ่าน Web App Manifest และ Service Worker (`bkk-v111`)
 - **FR-10.2:** แอปพลิเคชันมือถือ Flutter บรรจุไฟล์เว็บลงในตัวแอป (`assets/www/`) ทำให้เปิดแอปได้เร็วแบบออฟไลน์
-- **FR-10.3:** สื่อสารสองทางระหว่าง Flutter Native กับ WebView ผ่าน `FlutterLocation` Javascript Channel เพื่อเรียกตำแหน่ง GPS ความแม่นยำสูง
+- **FR-10.3:** สื่อสารสองทางระหว่าง Flutter Native กับ WebView ผ่าน `FlutterLocation` และ `BKKLiveBridge` Javascript Channels สำหรับพิกัด GPS ความแม่นยำสูง การเปิดลิงก์อัปเดต APK (`openExternalUrl`) และการซิงค์ข้อมูลสถานีใกล้ตัวพร้อม 2 ชานชาลา × สูงสุด 3 ขบวนขึ้น Android Custom `RemoteViews` Lock Screen Notification (`MainActivity.kt` / `DecoratedCustomViewStyle`), Android Home Screen AppWidget (`StationWidgetProvider.kt`) และ iOS WidgetKit (`StationWidget.swift`)
 
 ---
 
@@ -274,7 +285,7 @@ flowchart TD
 | <img src="icons/nav/planner.svg" width="22" height="22" alt="Planner" style="vertical-align:middle;"> | **วางแผน (Planner)** | `tab-planner` | วางแผนการเดินทางอัจฉริยะ คำนวณเวลา ค่าโดยสาร และจุดเปลี่ยนสายข้ามทุกระบบ |
 | <img src="icons/nav/fares.svg" width="22" height="22" alt="Fares" style="vertical-align:middle;"> | **ค่าโดยสาร (Fares)** | `tab-fares` | ตารางอัตราค่าโดยสารแต่ละสาย นโยบายส่วนลด และการชำระเงิน EMV Contactless |
 | <img src="icons/nav/timetables.svg" width="22" height="22" alt="Timetables" style="vertical-align:middle;"> | **เวลาเดินรถ (Timetables)** | `tab-timetables` | ตารางเวลาเดินรถขบวนแรก-สุดท้าย และความถี่การปล่อยขบวนรถแยกวันทำงาน/วันหยุด |
-| <img src="icons/nav/more.svg" width="22" height="22" alt="More" style="vertical-align:middle;"> | **เพิ่มเติม (More)** | `tab-more` | เมนูแฮมเบอร์เกอร์สามขีด: วิดเจ็ตแจ้งเตือนเบื้องหลังอัตโนมัติ (True Background Geofencing), สวิตช์สลับภาษา (TH/EN/ZH), สวิตช์สลับธีม (Dark/Light), และข้อมูลเวอร์ชันแอปพลิเคชัน |
+| <img src="icons/nav/more.svg" width="22" height="22" alt="More" style="vertical-align:middle;"> | **เพิ่มเติม (More)** | `tab-more` | เมนูตั้งค่าและการ์ดระบบ: การแจ้งเตือนเบื้องหลังอัตโนมัติ (`#bgGeofenceSwitch`), สวิตช์สลับภาษา (`TH/EN/ZH`), สวิตช์สลับธีม (`Auto/Dark/Light`), รูปแบบเวลา (`24H/12H/Auto`) และวันที่ 4 สไตล์ (`พ.ศ./ค.ศ.`), ทัวร์คู่มือ 12 ขั้นตอน, ปุ่ม Update APK (Android) และข้อมูลเวอร์ชัน (`v1.3.6 (Build 19)`) |
 
 ### 6.5 ระบบเวกเตอร์ไอคอนส่วนต่อประสาน (Modern Vector UI Icons System)
 ไอคอนทั้งหมดในระบบฝังตัวในออบเจกต์ `UI_ICONS` (`js/app.js`) ทั้ง 40 รายการ เรนเดอร์เป็น SVG Inline เพื่อความเร็ว 0ms และความคมชัด 100%:
@@ -343,7 +354,7 @@ flowchart LR
 ```
 
 1. **JavaScript Validation:** รัน `node --check js/app.js` และ `node --check bkk_skytrains_flutter/assets/www/js/app.js` ต้องไม่มี Syntax Error
-2. **Flutter / Dart Validation:** รัน `flutter analyze` ภายในโฟลเดอร์ `bkk_skytrains_flutter` ต้องผ่าน 100% (0 errors, 0 warnings)
+2. **Flutter / Dart Validation:** รัน `flutter analyze --no-fatal-infos` และ `flutter test` ภายในโฟลเดอร์ `bkk_skytrains_flutter` ต้องผ่าน 100% (0 errors, 0 warnings, และเทสต์ผ่านทั้งหมด)
 3. **Encoding Validation:** ตรวจสอบไฟล์ `.ps1` ทุกไฟล์ว่าถูกบันทึกด้วยรูปแบบ `UTF-8 with BOM`
 4. **Offline Resilience Test:** ปิดการเชื่อมต่อเครือข่ายและทดสอบการเปิดหน้าเว็บและค้นหาเส้นทาง ต้องทำงานได้ตามปกติ
 
@@ -351,7 +362,12 @@ flowchart LR
 
 ## 8. แผนการพัฒนาในอนาคต (Product Roadmap)
 
-- **v1.3.6 (Completed / Current Production Release):**
+- **v1.3.6 (Build 19 — Completed / Current Production Release):**
+  - **การ์ดนาฬิกาเวลาของระบบ 3 ชั้น & โหมดเวลาตามอุปกรณ์ (`#hdrClockCard` / `#popupClockCard`):** ตัวเลขเกรเดียนต์เรืองแสง พร้อมแบดจ์สลับ `12H` / `24H` บนการ์ดหัวเว็บและป๊อปอัป, รองรับโหมด **ตั้งค่าตามอุปกรณ์ (`auto`)**, จัดวางวันที่ 4 สไตล์ (`full_day`, `slash`, `text`, `weekday`), และระบบศักราช พ.ศ./ค.ศ.
+  - **ชุดการ์ดข้อมูลบริบทด้านบนในหน้าต่างตรวจพบสถานีใกล้ตัวคุณ (`#popupTopCards`):** การ์ดเวลาของระบบ + การ์ดสภาพอากาศสดจาก **Open-Meteo API** (ไอคอนเวกเตอร์ 3 มิติ + แตะรีเฟรช) + การ์ด **วันหยุดราชการ & วันหยุด BTS (สำนักงาน) ปี 2569–2570** (ปีละ 17 วัน) กางแผงปฏิทินแบบการ์ด 2 คอลัมน์สมมาตร
+  - **Native Android Lock Screen Custom Notification Card (`DecoratedCustomViewStyle`):** ปรับปรุงการแจ้งเตือนถาวรบน Android (`MainActivity.kt` + `notification_station_expanded.xml` / `collapsed.xml` + Custom Drawables) ให้ถอดแบบการ์ด "ตรวจพบสถานีใกล้ตัวคุณ" พร้อมแบดจ์สถานีปรับสีตัวอักษรตามสายสี, ชื่อสถานี TH/EN, ระยะทาง, และ 2 ชานชาลา × สูงสุด 3 ขบวนต่อชานชาลา via `BKKLiveBridge`
+  - **ไฮไลต์จุดสถานีกำลังเปิดดู & การจัดวางป้าย Toast:** เพิ่มเอฟเฟกต์วงแหวนกระพริบสีฟ้า/น้ำเงิน (`pulseRingBlue` / `pulseRingBlueLight`) สำหรับจุดสถานีที่เปิดรายละเอียด แยกชัดเจนจากจุดสีเขียวของสถานีใกล้ตัวคุณ และล็อกระยะห่าง `#appToast` ให้ต่ำกว่าขอบล่าง `.nearest-popup-card` `8px` (`syncToastPosition`)
+  - **Interactive 12-Step Spotlight Tour (`#spotlightOverlay`):** คู่มือแนะนำการใช้งานทีละขั้นตอนในแท็บ "เพิ่มเติม"
   - ระบบประกาศเหตุขัดข้องและสถานะการเดินรถสด (Live Traffic Disruption & Incident Dialog):
     - ถอดแบบสถาปัตยกรรม UI `TrafficTrainDialogView` จาก `th.btsc.theskytrains`
     - แถบประกาศแจ้งเตือนด่วน (Broadcast Disruption Banner) บนหน้าหลักเมื่อพบความล่าช้าหรือเหตุขัดข้อง
@@ -360,20 +376,15 @@ flowchart LR
     - การ์ดยืนยันการเดินรถปกติ (Reassurance Card) พร้อมไอคอน `icon_traffic_information.svg`
     - สวิตช์ทดสอบจำลองเหตุขัดข้อง (Disruption Simulation Toggle)
   - ระบบแสดงผลสถานีใกล้ตัวและเวลารถเข้าบนหน้าจอล็อก & หน้าจอโฮม (Lock Screen Live Notification & Home Screen Widget):
-    - Ongoing Persistent Notification (`VISIBILITY_PUBLIC`) บน Android แสดงการ์ดสถานี รหัสสถานี ชานชาลา 1 & 2 และเวลานับถอยหลังสดบน Lock Screen
-    - รองรับ Live Activities บน iOS 16.1+ ผ่าน ActivityKit / WidgetKit
-    - Home Screen Widget (Android AppWidget RemoteViews & iOS WidgetKit) แสดงข้อมูลสถานีและเวลารถเข้าเทียบชานชาลา พร้อมแตะเปิดแอปตรงสู่สถานีได้ทันที
-  - แผนผังโครงข่ายรถไฟฟ้าความละเอียดสูงแบบเวกเตอร์พิมพ์เขียว (Transit Blueprint Vector Map) ครอบคลุม 10 สายรถไฟฟ้า กทม. และปริมณฑล รองรับการสลับโหมดมืด/สว่างอัตโนมัติ (`bkk_transit_map.svg`, `bkk_transit_map_dark.svg`)
+    - Ongoing Persistent Notification (`VISIBILITY_PUBLIC`) บน Android และ Live Activities / WidgetKit บน iOS 16.1+
+    - Home Screen Widget (`StationWidgetProvider.kt` & `StationWidget.swift`) แสดงข้อมูลสถานีและเวลารถเข้าเทียบชานชาลา พร้อมแตะเปิดแอปตรงสู่สถานีได้ทันที
+  - แผนผังโครงข่ายรถไฟฟ้าความละเอียดสูงแบบเวกเตอร์พิมพ์เขียว (Transit Blueprint Vector Map) ครอบคลุม 12 สายรถไฟฟ้า กทม. และปริมณฑล รองรับการสลับโหมดมืด/สว่างอัตโนมัติ (`bkk_transit_map.svg`, `bkk_transit_map_dark.svg`)
   - จุดฮอตสปอตสถานีแบบโต้ตอบบนแผนที่ (`MAP_STATION_HOTSPOTS`) แตะเลือกสถานีต้นทาง, ปลายทาง หรือเปิดดูข้อมูลประตูทางออกได้ทันที
   - หน้าต่างคำอธิบายสัญลักษณ์โครงข่ายและจุดเชื่อมต่อ (Transit Network Legend: Airport, Pier/Boat, SRT, Bus, Park & Ride)
-  - อัปเกรด Service Worker แคชออฟไลน์ขั้นสูงเป็นเวอร์ชัน `bkk-v85` พร้อมพรีแคชไฟล์เวกเตอร์แผนผังความละเอียดสูง
-  - สคริปต์รวมกระบวนการดีพลอยและบิลด์อัตโนมัติ (`Deploy-BKK-SkyTrains.ps1`) รองรับการทำงาน 8 ขั้นตอน: จัดระเบียบไฟล์, Update .yml ทั้งหมด, Update .md ทั้งหมดให้ตรงตามเว็บ/แอพ เท่านั้น, Update .ps1 ทั้งหมดให้ตรงตามเว็บ/แอพ เท่านั้น, ทำแอพ Android (Release APK), ต้องการให้ทำเป็น App Bundle (.aab), ทำแอพ IOS, และลบข้อมูลเวอร์เก่า บน Github ออก และ Upload ขึ้น Github Build iOS & Android Apps เวอร์ชั่นที่ทำใหม่ล่าสุดเสมอ
-  - ปรับปรุงมาตรฐานการตั้งชื่อตัวติดตั้งและจัดระเบียบโฟลเดอร์ `releases/` แบ่งแยกเป็นโฟลเดอร์ `Android/APK`, `Android/AAB`, `Apple/IPA` และ `Packages/` พร้อมรองรับตัวเลือกการดาวน์โหลด 3 รูปแบบระบุเวอร์ชันและบิลด์เท่านั้น: `BKK_SkyTrains_V.xxxx_(Build xxxx)_Release_Packages` (All Packages ZIP), `BKK_SkyTrains_V.xxxx_(Build xxxx).apk` (Android Universal APK), และ `BKK_SkyTrains_V.xxxx_(Build xxxx).ipa` (Apple iOS IPA) ทั้งบน GitHub Actions Artifacts และ GitHub Releases พร้อมสร้าง SHA-256 Checksum ครบถ้วน
-  - เพิ่มปุ่ม "Update Version" สำหรับแอปมือถือ Android โดยเฉพาะ แสดงเมื่อตรวจพบไฟล์ .apk เวอร์ชันใหม่กว่า เพื่อเปิดดาวน์โหลดไฟล์ APK ตัวล่าสุดได้โดยตรงผ่านระบบเบราว์เซอร์ภายนอก/ตัวจัดการดาวน์โหลดของ Android
-  - ปรับปรุงประสิทธิภาพการโหลด (Web & App Performance): Preload สคริปต์หลัก, Defer ไลบรารีความปลอดภัย และ Lazy-render หน้าที่ไม่ใช่หน้าแรกผ่าน `requestIdleCallback` ทำให้หน้าแรกเปิดทันทีแบบ 0ms
-  - ยกระดับ Service Worker แคชเป็นเวอร์ชัน `bkk-v85`: แยกชุดแคช `SHELL_URLS` ออกจากไฟล์เวกเตอร์ขนาดใหญ่ เพื่อให้ติดตั้ง PWA ได้เร็วที่สุด พร้อมระบบแคชพื้นหลังและ Universal Notification Scope Navigation
-  - ยกระดับมาตรฐานการแจ้งเตือน (Notification Standards): รองรับ Runtime Permission (`POST_NOTIFICATIONS`) บน Android 13+ (API 33+) และระบบการสั่นเตือนมาตรฐานสากลบน Web Notification
-  - ปรับปรุงความเรียบร้อยของ UI หน้าเวลาเดินรถ: ลบเส้นประคั่นส่วนหัวการ์ดเส้นทาง (`.line-hero-meta-item.is-route`) เพื่อความสะอาดตาและเป็นระเบียบ
+  - ยกระดับ Service Worker แคชออฟไลน์ขั้นสูงเป็นเวอร์ชัน `bkk-v111` (Critical Shell / Large Media Split Pre-caching) พร้อมโหลดด้วย Resource Hints (`preload`, `defer`, `requestIdleCallback`)
+  - สคริปต์รวมกระบวนการดีพลอยและบิลด์อัตโนมัติ (`Deploy-BKK-SkyTrains.ps1`) รองรับ 8 ขั้นตอน, ปรับมาตรฐานชื่อไฟล์ตัวติดตั้ง 3 รูปแบบ (`Release_Packages.zip`, `.apk`, `.ipa`) + `.aab` และ SHA-256 Checksum ครบถ้วน
+  - ปุ่ม "Update Version" สำหรับแอปมือถือ Android (`#androidUpdateCard`) ดาวน์โหลดไฟล์ APK ตัวล่าสุดผ่านตัวจัดการดาวน์โหลดของ Android
+  - ยกระดับมาตรฐานการแจ้งเตือน (`POST_NOTIFICATIONS` บน Android 13+) และระบบความปลอดภัย (`usesCleartextTraffic="false"`, `network_security_config.xml`, WebView allowlist)
 - **v1.3.5 (Completed):**
   - คอมไพล์และบิลด์ตัวติดตั้ง Android APK รุ่นสมบูรณ์ (`BKK_SkyTrains_Android_latest.apk`, `BKK_SkyTrains_Android_v1.3.5.apk`) พร้อมสร้าง SHA-256 Checksum (`FBACEE348015...`)
   - อัปเกรดระบบ CI/CD Workflow (`.github/workflows/Build iOS & Android Apps.yml` - `Build iOS & Android Apps`) ให้คอมไพล์และสร้างแพ็กเกจทั้ง iOS IPA และ Android APK พร้อมสร้าง SHA-256 และเผยแพร่ลง GitHub Releases อัตโนมัติในครั้งเดียว

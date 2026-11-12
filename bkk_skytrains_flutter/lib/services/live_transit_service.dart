@@ -34,12 +34,22 @@ class LiveTransitService {
   Future<void> updateLiveTransit({
     required String stationKey,
     required String stationName,
+    String stationNameEN = '',
     required String distanceText,
     required String lineColor,
     required String plat1Dest,
+    String plat1Num = '1',
+    String plat1DestName = '',
     required String plat1Time,
+    String plat1Time2 = '-- นาที',
+    String plat1Time3 = '-- นาที',
     required String plat2Dest,
+    String plat2Num = '2',
+    String plat2DestName = '',
     required String plat2Time,
+    String plat2Time2 = '-- นาที',
+    String plat2Time3 = '-- นาที',
+    String statusLabel = 'กำลังเข้า / นับถอยหลังสด',
   }) async {
     try {
       await _ensureInitialized();
@@ -68,12 +78,22 @@ class LiveTransitService {
           <String, dynamic>{
             'stationKey': stationKey,
             'stationName': stationName,
+            'stationNameEN': stationNameEN,
             'distanceText': distanceText,
             'lineColor': lineColor,
             'plat1Text': plat1Dest,
+            'plat1Num': plat1Num,
+            'plat1DestName': plat1DestName,
             'plat1Time': plat1Time,
+            'plat1Time2': plat1Time2,
+            'plat1Time3': plat1Time3,
             'plat2Text': plat2Dest,
+            'plat2Num': plat2Num,
+            'plat2DestName': plat2DestName,
             'plat2Time': plat2Time,
+            'plat2Time2': plat2Time2,
+            'plat2Time3': plat2Time3,
+            'statusLabel': statusLabel,
           },
         );
       }

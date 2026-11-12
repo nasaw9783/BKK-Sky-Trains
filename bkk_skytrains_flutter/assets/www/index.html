@@ -1081,76 +1081,173 @@
         }
 
         .clock {
-            text-align: right;
+            text-align: center;
             font-variant-numeric: tabular-nums;
             margin-left: 2px;
             flex-shrink: 0;
             cursor: pointer;
             user-select: none !important;
+            -webkit-user-select: none !important;
             caret-color: transparent !important;
             -webkit-tap-highlight-color: transparent;
-            transition: all 0.2s ease;
-            padding: 5px 12px;
-            border-radius: 14px;
-            background: rgba(12, 74, 110, 0.25);
-            border: 1px solid rgba(56, 189, 248, 0.35);
-            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1), 0 4px 12px rgba(0, 0, 0, 0.25);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
+            transition: border-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+            padding: 5px 10px 4px 10px;
+            min-width: 146px;
+            border-radius: 12px;
+            background: linear-gradient(160deg, #0d1627 0%, #09111f 100%);
+            border: 1px solid rgba(148, 163, 184, 0.22);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+            position: relative;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        .clock::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 48%, rgba(0, 200, 210, 0.09) 0%, transparent 65%);
+            pointer-events: none;
         }
 
         html:not(.dark) .clock {
-            background: rgba(2, 132, 199, 0.08);
-            border-color: rgba(2, 132, 199, 0.25);
-            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+            background: rgba(255, 255, 255, 0.96);
+            border-color: #cbd5e1;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+        }
+
+        html:not(.dark) .clock::after {
+            background: radial-gradient(circle at 50% 48%, rgba(2, 132, 199, 0.06) 0%, transparent 65%);
         }
 
         .clock:hover {
-            border-color: rgba(56, 189, 248, 0.6);
-            background: rgba(12, 74, 110, 0.35);
+            border-color: rgba(56, 189, 248, 0.45);
             transform: translateY(-1px);
         }
 
         html:not(.dark) .clock:hover {
             border-color: rgba(2, 132, 199, 0.45);
-            background: rgba(2, 132, 199, 0.12);
+            background: #ffffff;
         }
 
         .clock:active {
-            transform: scale(0.96);
+            transform: scale(0.97);
+        }
+
+        .hdr-clock-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 1px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hdr-clock-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 3.5px;
+            font-size: 8.5px;
+            font-weight: 500;
+            color: #8b9bb4;
+            white-space: nowrap;
+            line-height: 1.15;
+        }
+
+        html:not(.dark) .hdr-clock-label {
+            color: #64748b;
+        }
+
+        .hdr-clock-dot {
+            width: 5.5px;
+            height: 5.5px;
+            border-radius: 50%;
+            background: #00dca8;
+            box-shadow: 0 0 6px rgba(0, 220, 168, 0.85);
+            flex-shrink: 0;
+        }
+
+        .hdr-clock-badge {
+            background: #0095ff;
+            color: #031222;
+            font-size: 7.5px;
+            font-weight: 800;
+            line-height: 1;
+            padding: 2px 5.5px;
+            border-radius: 999px;
+            box-shadow: 0 0 8px rgba(0, 149, 255, 0.45);
+            letter-spacing: 0.2px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        html:not(.dark) .hdr-clock-badge {
+            background: #0284c7;
+            color: #ffffff;
+            box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25);
         }
 
         .clock .t {
-            font-size: 14px;
+            font-size: 15px;
             font-weight: 800;
-            line-height: 1.1;
-            letter-spacing: -0.2px;
+            line-height: 1.12;
+            letter-spacing: 0.3px;
+            text-align: center;
+            margin: 1px 0 2.5px 0;
             white-space: nowrap;
-            color: #38bdf8;
-            font-family: 'JetBrains Mono', 'Prompt', monospace, sans-serif;
-            text-shadow: 0 0 10px rgba(56, 189, 248, 0.35);
+            font-family: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+            font-variant-numeric: tabular-nums;
+            background: linear-gradient(90deg, #00dec4 0%, #00b7eb 50%, #0096ff 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            filter: drop-shadow(0 0 6px rgba(0, 195, 225, 0.25));
+            position: relative;
+            z-index: 1;
             user-select: none !important;
             caret-color: transparent !important;
         }
 
         html:not(.dark) .clock .t {
-            color: #0284c7;
-            text-shadow: none;
+            background: linear-gradient(90deg, #0d9488 0%, #0284c7 50%, #0369a1 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            filter: none;
+        }
+
+        .hdr-clock-divider {
+            height: 1px;
+            background: rgba(148, 163, 184, 0.16);
+            margin: 0 0 2px 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        html:not(.dark) .hdr-clock-divider {
+            background: #e2e8f0;
         }
 
         .clock .d {
-            font-size: 10px;
-            font-weight: 700;
-            color: #fbbf24;
-            margin-top: 2px;
+            font-size: 9px;
+            font-weight: 500;
+            color: #dbe4f0;
+            margin-top: 0;
             white-space: nowrap;
-            letter-spacing: -0.2px;
+            text-align: center;
+            line-height: 1.2;
+            letter-spacing: 0;
+            position: relative;
+            z-index: 1;
             user-select: none !important;
             caret-color: transparent !important;
         }
 
         html:not(.dark) .clock .d {
-            color: #d97706;
+            color: #0f172a;
         }
 
         @media (max-width: 480px) {
@@ -1197,14 +1294,31 @@
                 padding: 0 6px;
             }
             .clock {
-                padding: 4px 8px;
+                padding: 3.5px 7px 3px 7px;
                 border-radius: 11px;
+                min-width: 112px;
+            }
+            .hdr-clock-top {
+                gap: 5px;
+            }
+            .hdr-clock-label {
+                font-size: 7.2px;
+                gap: 3px;
+            }
+            .hdr-clock-dot {
+                width: 4.5px;
+                height: 4.5px;
+            }
+            .hdr-clock-badge {
+                font-size: 6.8px;
+                padding: 1.8px 4.5px;
             }
             .clock .t {
-                font-size: 12.5px;
+                font-size: 12px;
+                margin: 1px 0 2px 0;
             }
             .clock .d {
-                font-size: 8.5px;
+                font-size: 7.5px;
             }
             .j-fields {
                 gap: 5px;
@@ -2578,19 +2692,19 @@
             animation: pulseRing 1.8s infinite;
         }
 
-        /* Active Glow Node (ตัวเลือกที่ 2) เมื่อเปิดการ์ดข้อมูลสถานี */
+        /* Active Glow Node + Effect กระพริบ (Pulse Ring สีฟ้า) เมื่อเปิดการ์ดข้อมูลสถานี */
         .st-row.is-open .st-rail .node,
         .st-rail .node.node-glow {
             border-color: #0284c7 !important;
-            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.35), 0 0 10px rgba(2, 132, 199, 0.5) !important;
             transform: scale(1.15);
+            animation: pulseRingBlueLight 1.8s infinite;
         }
 
         html.dark .st-row.is-open .st-rail .node,
         html.dark .st-rail .node.node-glow {
             border-color: #38bdf8 !important;
-            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.4), 0 0 12px #38bdf8 !important;
             transform: scale(1.15);
+            animation: pulseRingBlue 1.8s infinite;
         }
 
         .st-row.branch-row {
@@ -2615,6 +2729,18 @@
             0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
             70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
             100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        @keyframes pulseRingBlueLight {
+            0% { box-shadow: 0 0 0 0 rgba(2, 132, 199, 0.72), 0 0 10px rgba(2, 132, 199, 0.5); }
+            70% { box-shadow: 0 0 0 8px rgba(2, 132, 199, 0), 0 0 10px rgba(2, 132, 199, 0.3); }
+            100% { box-shadow: 0 0 0 0 rgba(2, 132, 199, 0), 0 0 10px rgba(2, 132, 199, 0.5); }
+        }
+
+        @keyframes pulseRingBlue {
+            0% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.78), 0 0 12px rgba(56, 189, 248, 0.7); }
+            70% { box-shadow: 0 0 0 8px rgba(56, 189, 248, 0), 0 0 12px rgba(56, 189, 248, 0.42); }
+            100% { box-shadow: 0 0 0 0 rgba(56, 189, 248, 0), 0 0 12px rgba(56, 189, 248, 0.7); }
         }
 
         .st-main {
@@ -7553,8 +7679,9 @@
 
         .popup-sys-clock-date {
             text-align: center;
-            font-size: clamp(9.5px, 2.6vw, 11px);
+            font-size: clamp(8.2px, 2.3vw, 10.5px);
             font-weight: 500;
+            letter-spacing: -0.1px;
             color: #dbe4f0;
             white-space: nowrap;
             line-height: 1.25;
@@ -7649,21 +7776,40 @@
             padding: 8px 11px;
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.05);
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 8px;
+            flex-direction: column;
             width: 100%;
             box-sizing: border-box;
             cursor: default !important;
             caret-color: transparent !important;
         }
 
-        .popup-holiday-left {
+        .popup-holiday-main {
             display: flex;
             align-items: center;
             gap: 8px;
+            width: 100%;
+        }
+
+        .popup-holiday-rows {
+            display: flex;
+            flex-direction: column;
             min-width: 0;
             flex: 1 1 auto;
+        }
+
+        .popup-holiday-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            width: 100%;
+            min-width: 0;
+        }
+
+        .popup-holiday-row-bts {
+            margin-top: 5px;
+            padding-top: 5px;
+            border-top: 1px dashed rgba(148, 163, 184, 0.22);
         }
 
         .popup-holiday-ic {
@@ -7716,7 +7862,7 @@
         }
 
         .popup-holiday-next {
-            font-size: clamp(10px, 2.7vw, 11px);
+            font-size: clamp(9.5px, 2.55vw, 10.5px);
             font-weight: 600;
             color: #f1f5f9;
             line-height: 1.3;
@@ -7726,7 +7872,7 @@
         .popup-holiday-countdown {
             font-size: clamp(9.5px, 2.5vw, 10px);
             font-weight: 700;
-            padding: 4px 8px;
+            padding: 3.5px 8px;
             border-radius: 8px;
             background: rgba(245, 158, 11, 0.18);
             color: #fcd34d;
@@ -7738,10 +7884,276 @@
             flex-shrink: 0;
         }
 
+        .popup-holiday-countdown.is-bts {
+            background: rgba(56, 189, 248, 0.14);
+            color: #7dd3fc;
+            border-color: rgba(56, 189, 248, 0.28);
+        }
+
         .popup-holiday-countdown.is-today {
             background: rgba(16, 185, 129, 0.2);
             color: #6ee7b7;
             border-color: rgba(52, 211, 153, 0.4);
+        }
+
+        .popup-holiday-bts-head {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .popup-holiday-bts-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 1px 5.5px;
+            border-radius: 999px;
+            font-size: clamp(8.5px, 2.2vw, 9.2px);
+            font-weight: 700;
+            letter-spacing: 0.1px;
+            background: rgba(56, 189, 248, 0.14);
+            color: #7dd3fc;
+            border: 1px solid rgba(56, 189, 248, 0.28);
+            white-space: nowrap;
+        }
+
+        .popup-holiday-bts-text {
+            margin-top: 3px;
+            font-size: clamp(9px, 2.4vw, 10px);
+            line-height: 1.3;
+            color: #cbd5e1;
+            font-weight: 500;
+            min-width: 0;
+        }
+
+        .popup-holiday-bts-text strong {
+            color: #f8fafc;
+            font-weight: 700;
+        }
+
+        .popup-holiday-bts-toggle {
+            appearance: none;
+            -webkit-appearance: none;
+            border: 1px solid rgba(148, 163, 184, 0.25);
+            background: rgba(30, 41, 59, 0.72);
+            color: #94a3b8;
+            border-radius: 999px;
+            padding: 1px 7px;
+            font-family: inherit;
+            font-size: clamp(8.5px, 2.2vw, 9.5px);
+            font-weight: 600;
+            line-height: 1.35;
+            cursor: pointer;
+            caret-color: transparent !important;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -webkit-tap-highlight-color: transparent;
+            transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+            white-space: nowrap;
+        }
+
+        .popup-holiday-bts-toggle:hover,
+        .popup-holiday-bts-toggle[aria-expanded="true"] {
+            background: rgba(56, 189, 248, 0.16);
+            color: #bae6fd;
+            border-color: rgba(56, 189, 248, 0.35);
+        }
+
+        .popup-holiday-bts-panel {
+            width: 100%;
+            margin-top: 7px;
+            padding-top: 7px;
+            border-top: 1px solid rgba(148, 163, 184, 0.16);
+            box-sizing: border-box;
+        }
+
+        .popup-holiday-bts-panel-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 7px;
+            font-size: clamp(9.5px, 2.4vw, 10.5px);
+            font-weight: 700;
+            color: #e2e8f0;
+        }
+
+        .popup-holiday-bts-panel-src {
+            font-weight: 500;
+            color: #64748b;
+            font-size: clamp(8.5px, 2.1vw, 9px);
+            white-space: nowrap;
+        }
+
+        .popup-holiday-bts-years {
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            padding: 2px;
+            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.88);
+            border: 1px solid rgba(148, 163, 184, 0.2);
+            flex-shrink: 0;
+        }
+
+        .popup-holiday-bts-year-btn {
+            appearance: none;
+            -webkit-appearance: none;
+            border: 0;
+            background: transparent;
+            color: #94a3b8;
+            border-radius: 999px;
+            padding: 2px 8.5px;
+            font-family: inherit;
+            font-size: clamp(8.5px, 2.1vw, 9.5px);
+            font-weight: 700;
+            line-height: 1.3;
+            cursor: pointer;
+            caret-color: transparent !important;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -webkit-tap-highlight-color: transparent;
+            transition: background-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .popup-holiday-bts-year-btn.is-active {
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(2, 132, 199, 0.4);
+        }
+
+        .popup-holiday-bts-list {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 6px;
+            max-height: 204px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scroll-snap-type: y proximity;
+            padding: 2px 2px 4px 2px;
+        }
+
+        @media (max-width: 359px) {
+            .popup-holiday-bts-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .popup-holiday-bts-item {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            padding: 7px 9px;
+            border-radius: 11px;
+            background: rgba(30, 41, 59, 0.46);
+            border: 1px solid rgba(148, 163, 184, 0.16);
+            color: #cbd5e1;
+            min-width: 0;
+            box-sizing: border-box;
+            scroll-snap-align: start;
+        }
+
+        .popup-holiday-bts-item.is-next {
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.18), rgba(15, 23, 42, 0.8));
+            border-color: rgba(56, 189, 248, 0.52);
+            box-shadow: 0 3px 12px rgba(14, 165, 233, 0.15);
+            color: #f8fafc;
+        }
+
+        .popup-holiday-bts-item.is-today {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(15, 23, 42, 0.8));
+            border-color: rgba(52, 211, 153, 0.52);
+            box-shadow: 0 3px 12px rgba(16, 185, 129, 0.15);
+            color: #ecfdf5;
+        }
+
+        .popup-holiday-bts-item.is-past {
+            opacity: 0.58;
+            background: rgba(15, 23, 42, 0.42);
+        }
+
+        .popup-holiday-bts-card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 4px;
+            min-width: 0;
+        }
+
+        .popup-holiday-bts-chip {
+            font-size: 8.5px;
+            font-weight: 800;
+            color: #cbd5e1;
+            background: rgba(148, 163, 184, 0.16);
+            padding: 1.5px 6px;
+            border-radius: 6px;
+            white-space: nowrap;
+            flex-shrink: 0;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .popup-holiday-bts-item.is-next .popup-holiday-bts-chip {
+            background: rgba(14, 165, 233, 0.34);
+            color: #e0f2fe;
+        }
+
+        .popup-holiday-bts-item.is-today .popup-holiday-bts-chip {
+            background: rgba(16, 185, 129, 0.34);
+            color: #d1fae5;
+        }
+
+        .popup-holiday-bts-item.is-upcoming .popup-holiday-bts-chip {
+            background: rgba(245, 158, 11, 0.22);
+            color: #fde68a;
+        }
+
+        .popup-holiday-bts-pill {
+            font-size: 8px;
+            font-weight: 700;
+            color: #94a3b8;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .popup-holiday-bts-item.is-next .popup-holiday-bts-pill {
+            color: #7dd3fc;
+        }
+
+        .popup-holiday-bts-item.is-today .popup-holiday-bts-pill {
+            color: #6ee7b7;
+        }
+
+        .popup-holiday-bts-item.is-upcoming .popup-holiday-bts-pill {
+            color: #fcd34d;
+        }
+
+        .popup-holiday-bts-item-name {
+            font-size: clamp(10px, 2.5vw, 11px);
+            font-weight: 700;
+            color: #f8fafc;
+            line-height: 1.25;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .popup-holiday-bts-item-date {
+            font-size: clamp(7.8px, 2.1vw, 8.5px);
+            font-weight: 500;
+            color: #94a3b8;
+            line-height: 1.2;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .popup-holiday-bts-item.is-next .popup-holiday-bts-item-date {
+            color: #bae6fd;
+        }
+
+        .popup-holiday-bts-item.is-today .popup-holiday-bts-item-date {
+            color: #a7f3d0;
         }
 
         /* Light Mode overrides for Popup Top Cards */
@@ -7795,6 +8207,149 @@
             background: rgba(245, 158, 11, 0.14);
             color: #b45309;
             border-color: rgba(217, 119, 6, 0.3);
+        }
+
+        html:not(.dark) .popup-holiday-countdown.is-bts {
+            background: #e0f2fe;
+            color: #0369a1;
+            border-color: #bae6fd;
+        }
+
+        html:not(.dark) .popup-holiday-countdown.is-today {
+            background: rgba(16, 185, 129, 0.16);
+            color: #047857;
+            border-color: rgba(5, 150, 105, 0.34);
+        }
+
+        html:not(.dark) .popup-holiday-row-bts {
+            border-top-color: rgba(148, 163, 184, 0.28);
+        }
+
+        html:not(.dark) .popup-holiday-bts-badge {
+            background: #e0f2fe;
+            color: #0369a1;
+            border-color: #bae6fd;
+        }
+
+        html:not(.dark) .popup-holiday-bts-text {
+            color: #334155;
+        }
+
+        html:not(.dark) .popup-holiday-bts-text strong {
+            color: #0f172a;
+        }
+
+        html:not(.dark) .popup-holiday-bts-toggle {
+            background: #f1f5f9;
+            color: #475569;
+            border-color: #cbd5e1;
+        }
+
+        html:not(.dark) .popup-holiday-bts-toggle:hover,
+        html:not(.dark) .popup-holiday-bts-toggle[aria-expanded="true"] {
+            background: #e0f2fe;
+            color: #0369a1;
+            border-color: #7dd3fc;
+        }
+
+        html:not(.dark) .popup-holiday-bts-panel {
+            border-top-color: #e2e8f0;
+        }
+
+        html:not(.dark) .popup-holiday-bts-panel-head {
+            color: #0f172a;
+        }
+
+        html:not(.dark) .popup-holiday-bts-panel-src {
+            color: #64748b;
+        }
+
+        html:not(.dark) .popup-holiday-bts-years {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        html:not(.dark) .popup-holiday-bts-year-btn {
+            background: transparent;
+            color: #475569;
+        }
+
+        html:not(.dark) .popup-holiday-bts-year-btn.is-active {
+            background: linear-gradient(135deg, #0ea5e9, #0284c7);
+            color: #ffffff;
+            box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25);
+        }
+
+        html:not(.dark) .popup-holiday-bts-item {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+            color: #334155;
+        }
+
+        html:not(.dark) .popup-holiday-bts-item.is-next {
+            background: linear-gradient(135deg, #e0f2fe, #f8fafc);
+            border-color: #7dd3fc;
+            box-shadow: 0 3px 10px rgba(2, 132, 199, 0.1);
+            color: #0f172a;
+        }
+
+        html:not(.dark) .popup-holiday-bts-item.is-today {
+            background: linear-gradient(135deg, #d1fae5, #f8fafc);
+            border-color: #6ee7b7;
+            box-shadow: 0 3px 10px rgba(5, 150, 105, 0.1);
+            color: #065f46;
+        }
+
+        html:not(.dark) .popup-holiday-bts-chip {
+            background: #e2e8f0;
+            color: #475569;
+        }
+
+        html:not(.dark) .popup-holiday-bts-item.is-next .popup-holiday-bts-chip {
+            background: #0284c7;
+            color: #ffffff;
+        }
+
+        html:not(.dark) .popup-holiday-bts-item.is-today .popup-holiday-bts-chip {
+            background: #059669;
+            color: #ffffff;
+        }
+
+        html:not(.dark) .popup-holiday-bts-item.is-upcoming .popup-holiday-bts-chip {
+            background: #fef3c7;
+            color: #b45309;
+        }
+
+        html:not(.dark) .popup-holiday-bts-item-name {
+            color: #0f172a;
+        }
+
+        html:not(.dark) .popup-holiday-bts-item-date {
+            color: #64748b;
+        }
+
+        html:not(.dark) .popup-holiday-bts-item.is-next .popup-holiday-bts-item-date {
+            color: #0369a1;
+        }
+
+        html:not(.dark) .popup-holiday-bts-item.is-today .popup-holiday-bts-item-date {
+            color: #047857;
+        }
+
+        html:not(.dark) .popup-holiday-bts-pill {
+            color: #64748b;
+        }
+
+        html:not(.dark) .popup-holiday-bts-item.is-next .popup-holiday-bts-pill {
+            color: #0369a1;
+        }
+
+        html:not(.dark) .popup-holiday-bts-item.is-today .popup-holiday-bts-pill {
+            color: #047857;
+        }
+
+        html:not(.dark) .popup-holiday-bts-item.is-upcoming .popup-holiday-bts-pill {
+            color: #b45309;
         }
 
         @keyframes fadeInOverlay {
@@ -11023,8 +11578,16 @@
                 <img src="images/ic_traffic_alert.svg" alt="Traffic Alert" width="16" height="16" style="display:block;margin:auto;flex-shrink:0;">
                 <span class="traffic-alert-status-text" id="trafficStatusBadgeText">ปกติ</span>
             </button>
-            <div class="clock" onclick="App.toggleClockFormat()" title="แตะเพื่อสลับรูปแบบเวลา 12 หรือ 24 ชั่วโมง">
+            <div class="clock" id="hdrClockCard" onclick="App.toggleClockFormat()" title="แตะเพื่อสลับรูปแบบ 12H / 24H">
+                <div class="hdr-clock-top">
+                    <span class="hdr-clock-label">
+                        <span class="hdr-clock-dot" aria-hidden="true"></span>
+                        <span id="hdrClockLabel">เวลาของระบบ</span>
+                    </span>
+                    <span class="hdr-clock-badge" id="hdrClockModeBadge">24H</span>
+                </div>
                 <div class="t" id="clockT">--:--:--</div>
+                <div class="hdr-clock-divider" aria-hidden="true"></div>
                 <div class="d" id="clockD"></div>
             </div>
         </div>
@@ -12136,7 +12699,7 @@
 
                 <!-- Card 3: Holidays -->
                 <div class="popup-holiday-card" id="popupHolidayCard">
-                    <div class="popup-holiday-left">
+                    <div class="popup-holiday-main">
                         <span class="popup-holiday-ic">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
@@ -12145,15 +12708,30 @@
                                 <line x1="3" y1="10" x2="21" y2="10"></line>
                             </svg>
                         </span>
-                        <div class="popup-holiday-text">
-                            <div class="popup-holiday-head">
-                                <span class="popup-holiday-kicker" id="popupHolidayKicker">HOLIDAYS · วันหยุดราชการ</span>
-                                <span class="popup-holiday-status" id="popupHolidayStatus">วันนี้: วันปกติ</span>
+                        <div class="popup-holiday-rows">
+                            <div class="popup-holiday-row">
+                                <div class="popup-holiday-text">
+                                    <div class="popup-holiday-head">
+                                        <span class="popup-holiday-kicker" id="popupHolidayKicker">HOLIDAYS · วันหยุดราชการ</span>
+                                        <span class="popup-holiday-status" id="popupHolidayStatus">วันนี้: วันปกติ</span>
+                                    </div>
+                                    <div class="popup-holiday-next" id="popupHolidayNext">--</div>
+                                </div>
+                                <span class="popup-holiday-countdown" id="popupHolidayCountdown">--</span>
                             </div>
-                            <div class="popup-holiday-next" id="popupHolidayNext">--</div>
+                            <div class="popup-holiday-row popup-holiday-row-bts" id="popupHolidayBts">
+                                <div class="popup-holiday-text">
+                                    <div class="popup-holiday-bts-head">
+                                        <span class="popup-holiday-bts-badge" id="popupHolidayBtsBadge">วันหยุด BTS (สำนักงาน)</span>
+                                        <button type="button" class="popup-holiday-bts-toggle" id="popupHolidayBtsToggle" aria-expanded="false" onclick="App.togglePopupBtsHolidays(event)">17 วัน ▾</button>
+                                    </div>
+                                    <div class="popup-holiday-bts-text" id="popupHolidayBtsText">--</div>
+                                </div>
+                                <span class="popup-holiday-countdown is-bts" id="popupHolidayBtsCountdown">--</span>
+                            </div>
                         </div>
                     </div>
-                    <span class="popup-holiday-countdown" id="popupHolidayCountdown">--</span>
+                    <div class="popup-holiday-bts-panel" id="popupHolidayBtsPanel" hidden></div>
                 </div>
             </div>
 

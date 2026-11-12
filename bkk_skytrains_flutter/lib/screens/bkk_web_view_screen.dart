@@ -165,12 +165,22 @@ class _BkkWebViewScreenState extends State<BkkWebViewScreen> {
           await LiveTransitService().updateLiveTransit(
             stationKey: (data['stationKey'] ?? '').toString(),
             stationName: (data['stationName'] ?? '').toString(),
+            stationNameEN: (data['stationNameEN'] ?? '').toString(),
             distanceText: (data['distanceText'] ?? '').toString(),
             lineColor: (data['lineColor'] ?? '#7AB420').toString(),
             plat1Dest: (data['plat1Dest'] ?? '').toString(),
+            plat1Num: (data['plat1Num'] ?? '1').toString(),
+            plat1DestName: (data['plat1DestName'] ?? '').toString(),
             plat1Time: (data['plat1Time'] ?? '').toString(),
+            plat1Time2: (data['plat1Time2'] ?? '-- นาที').toString(),
+            plat1Time3: (data['plat1Time3'] ?? '-- นาที').toString(),
             plat2Dest: (data['plat2Dest'] ?? '').toString(),
+            plat2Num: (data['plat2Num'] ?? '2').toString(),
+            plat2DestName: (data['plat2DestName'] ?? '').toString(),
             plat2Time: (data['plat2Time'] ?? '').toString(),
+            plat2Time2: (data['plat2Time2'] ?? '-- นาที').toString(),
+            plat2Time3: (data['plat2Time3'] ?? '-- นาที').toString(),
+            statusLabel: (data['statusLabel'] ?? 'กำลังเข้า / นับถอยหลังสด').toString(),
           );
         } else if (action == 'cancelLiveStation') {
           await LiveTransitService().cancelLiveTransit();

@@ -8527,23 +8527,79 @@ setOriginFromActionSheet() {
                 return this.isDevice12HourFormat();
             },
 
+            renderClockDigits(el, n, is12) {
+                if (!el) return;
+                let h = n.getHours();
+                const m = String(n.getMinutes()).padStart(2, '0');
+                const s = String(n.getSeconds()).padStart(2, '0');
+                if (is12) {
+                    const ap = h >= 12 ? 'PM' : 'AM';
+                    h = h % 12 || 12;
+                    el.innerHTML = `${String(h).padStart(2, '0')}:${m}:${s}<small style="font-size:0.62em;margin-left:3px;font-weight:700;opacity:0.9;">${ap}</small>`;
+                } else {
+                    el.textContent = `${String(h).padStart(2, '0')}:${m}:${s}`;
+                }
+            },
+
             startClock() {
                 const f = () => {
                     const n = new Date(), loc = T('clockLocale');
                     const is12 = this.resolveIs12HourClock();
                     const clockTElem = document.getElementById('clockT');
                     const clockDElem = document.getElementById('clockD');
-                    if (clockTElem) {
-                        clockTElem.textContent = n.toLocaleTimeString(loc, { hour12: is12 });
+                    const hdrBadge = document.getElementById('hdrClockModeBadge');
+                    const hdrLabel = document.getElementById('hdrClockLabel');
+                    const hdrCard = document.getElementById('hdrClockCard');
+                    if (hdrBadge) hdrBadge.textContent = is12 ? '12H' : '24H';
+                    if (hdrLabel) {
+                        hdrLabel.textContent = lang === 'en' ? 'System Time' : (lang === 'zh' ? '系统时间' : 'เวลาของระบบ');
                     }
+                    if (hdrCard) {
+                        hdrCard.title = lang === 'en'
+                            ? 'Tap to switch 12H / 24H format'
+                            : (lang === 'zh' ? '点击切换 12H / 24H 格式' : 'แตะเพื่อสลับรูปแบบ 12H / 24H');
+                    }
+                    this.renderClockDigits(clockTElem, n, is12);
                     if (clockDElem) {
                         clockDElem.textContent = this.formatHeaderDate(n, loc);
                     }
                     this.updatePopupClock(n);
                 };
                 f();
+                if (!this._hdrClockResizeBound && typeof window !== 'undefined') {
+                    this._hdrClockResizeBound = true;
+                    window.addEventListener('resize', f, { passive: true });
+                }
                 if (this._clockInterval) clearInterval(this._clockInterval);
                 this._clockInterval = setInterval(f, 1000);
+            },
+
+            formatPopupFullDate(dateOrIso) {
+                let d;
+                if (typeof dateOrIso === 'string') {
+                    const [hy, hm, hd] = dateOrIso.split('-').map(Number);
+                    d = new Date(hy, hm - 1, hd);
+                } else {
+                    d = dateOrIso instanceof Date ? dateOrIso : new Date();
+                }
+                const TH_WEEKDAYS = ['วัน อาทิตย์', 'วัน จันทร์', 'วัน อังคาร', 'วัน พุธ', 'วัน พฤหัสบดี', 'วัน ศุกร์', 'วัน เสาร์'];
+                const TH_MONTHS = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+                const EN_WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+                const EN_MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+                const ZH_WEEKDAYS = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+                const curEra = this.dateEra || (lang === 'en' || lang === 'zh' ? 'ce' : 'be');
+                const year = curEra === 'be' ? (d.getFullYear() + 543) : d.getFullYear();
+                const dayPad = String(d.getDate()).padStart(2, '0');
+                const month = d.getMonth();
+                const weekday = d.getDay();
+
+                if (lang === 'en') {
+                    return `${EN_WEEKDAYS[weekday]}, ${dayPad} ${EN_MONTHS[month]} ${year}`;
+                }
+                if (lang === 'zh') {
+                    return `${ZH_WEEKDAYS[weekday]}, ${year}年${String(month + 1).padStart(2, '0')}月${dayPad}日`;
+                }
+                return `${TH_WEEKDAYS[weekday]} , ${dayPad} ${TH_MONTHS[month]} ${year}`;
             },
 
             updatePopupClock(n = new Date()) {
@@ -8565,38 +8621,10 @@ setOriginFromActionSheet() {
                         : (lang === 'zh' ? '点击切换 12H / 24H 格式' : 'แตะเพื่อสลับรูปแบบ 12H / 24H');
                 }
 
-                if (digitsEl) {
-                    let h = n.getHours();
-                    const m = String(n.getMinutes()).padStart(2, '0');
-                    const s = String(n.getSeconds()).padStart(2, '0');
-                    if (is12) {
-                        const ap = h >= 12 ? 'PM' : 'AM';
-                        h = h % 12 || 12;
-                        digitsEl.innerHTML = `${String(h).padStart(2, '0')}:${m}:${s}<small style="font-size:0.58em;margin-left:3px;font-weight:700;opacity:0.88;">${ap}</small>`;
-                    } else {
-                        digitsEl.textContent = `${String(h).padStart(2, '0')}:${m}:${s}`;
-                    }
-                }
+                this.renderClockDigits(digitsEl, n, is12);
 
                 if (dateEl) {
-                    const TH_WEEKDAYS = ['วันอาทิตย์', 'วันจันทร์', 'วันอังคาร', 'วันพุธ', 'วันพฤหัสบดี', 'วันศุกร์', 'วันเสาร์'];
-                    const TH_MONTHS = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
-                    const EN_WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-                    const EN_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                    const ZH_WEEKDAYS = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
-                    const curEra = this.dateEra || (lang === 'en' || lang === 'zh' ? 'ce' : 'be');
-                    const year = curEra === 'be' ? (n.getFullYear() + 543) : n.getFullYear();
-                    const day = n.getDate();
-                    const month = n.getMonth();
-                    const weekday = n.getDay();
-
-                    if (lang === 'en') {
-                        dateEl.textContent = `${EN_WEEKDAYS[weekday]}, ${day} ${EN_MONTHS[month]} ${year}`;
-                    } else if (lang === 'zh') {
-                        dateEl.textContent = `${ZH_WEEKDAYS[weekday]}, ${year}年${month + 1}月${day}日`;
-                    } else {
-                        dateEl.textContent = `${TH_WEEKDAYS[weekday]}, ${day} ${TH_MONTHS[month]} ${year}`;
-                    }
+                    dateEl.textContent = this.formatPopupFullDate(n);
                 }
             },
 
@@ -8753,7 +8781,7 @@ setOriginFromActionSheet() {
             },
 
             getHolidayScheduleList() {
-                // อ้างอิงประกาศวันหยุดทางการและ Holiday/holidays.md (ปี 2569-2570 และวันหยุดคงที่ปีถัดไป)
+                // อ้างอิงประกาศวันหยุดราชการและวันหยุดสำคัญไทย (ปี 2569-2570)
                 return [
                     { date: '2026-12-05', th: 'วันพ่อแห่งชาติ', en: "King Rama IX Memorial & Father's Day", zh: '九世王纪念日暨父亲节' },
                     { date: '2026-12-07', th: 'ชดเชยวันพ่อแห่งชาติ', en: "Sub. Father's Day", zh: '父亲节补休' },
@@ -8779,11 +8807,79 @@ setOriginFromActionSheet() {
                 ];
             },
 
+            getBtsOfficeHolidays() {
+                // อ้างอิงข้อมูลจาก Holiday/holidays2026.md (ปี 2569: 17 วัน) และ Holiday/holidays2027.md (ปี 2570: 17 วัน)
+                return [
+                    { date: '2026-01-01', btsDay: 'พฤ', th: 'วันขึ้นปีใหม่', en: "New Year's Day", zh: '元旦' },
+                    { date: '2026-02-17', btsDay: 'อ', th: 'วันตรุษจีน', en: 'Chinese New Year', zh: '春节' },
+                    { date: '2026-03-03', btsDay: 'อ', th: 'วันมาฆบูชา', en: 'Makha Bucha Day', zh: '万佛节' },
+                    { date: '2026-04-06', btsDay: 'จ', th: 'วันจักรี', en: 'Chakri Memorial Day', zh: '却克里王朝纪念日' },
+                    { date: '2026-04-13', btsDay: 'จ', th: 'วันสงกรานต์', en: 'Songkran Festival', zh: '宋干节' },
+                    { date: '2026-04-14', btsDay: 'อ', th: 'วันสงกรานต์', en: 'Songkran Festival', zh: '宋干节' },
+                    { date: '2026-04-15', btsDay: 'พ', th: 'วันสงกรานต์', en: 'Songkran Festival', zh: '宋干节' },
+                    { date: '2026-05-01', btsDay: 'ศ', th: 'วันแรงงานแห่งชาติ', en: 'National Labour Day', zh: '劳动节' },
+                    { date: '2026-05-04', btsDay: 'จ', th: 'วันฉัตรมงคล', en: 'Coronation Day', zh: '泰王加冕日' },
+                    { date: '2026-06-03', btsDay: 'พ', th: 'วันเฉลิมฯ พระราชินี', fullTh: 'วันเฉลิมพระชนมพรรษา สมเด็จพระนางเจ้าสุทิดา พัชรสุธาพิมลลักษณ พระบรมราชินี', en: "H.M. Queen Suthida's Birthday", zh: '王后寿辰' },
+                    { date: '2026-07-28', btsDay: 'อ', th: 'วันเฉลิมฯ รัชกาลที่ 10', fullTh: 'วันเฉลิมพระชนมพรรษา พระบาทสมเด็จพระเจ้าอยู่หัว รัชกาลที่ 10', en: "H.M. King Rama X's Birthday", zh: '国王寿辰' },
+                    { date: '2026-07-29', btsDay: 'พ', th: 'วันอาสาฬหบูชา', en: 'Asahna Bucha Day', zh: '三宝佛节' },
+                    { date: '2026-08-12', btsDay: 'พ', th: 'วันแม่แห่งชาติ', fullTh: 'วันเฉลิมพระชนมพรรษา สมเด็จพระนางเจ้าสิริกิติ์ พระบรมราชินีนาถ ฯ และวันแม่แห่งชาติ', en: "Mother's Day", zh: '母亲节' },
+                    { date: '2026-10-13', btsDay: 'อ', th: 'วันนวมินทรมหาราช', en: 'King Rama IX Memorial Day', zh: '九世王逝世纪念日' },
+                    { date: '2026-10-23', btsDay: 'ศ', th: 'วันปิยมหาราช', en: 'Chulalongkorn Day', zh: '五世王纪念日' },
+                    { date: '2026-12-07', btsDay: 'จ', th: 'ชดเชยวันพ่อแห่งชาติ', fullTh: 'ชดเชยวันคล้ายวันพระบรมราชสมภพ พระบาทสมเด็จพระบรมชนกาธิเบศร ฯ วันชาติ และวันพ่อแห่งชาติ', en: "Sub. Father's Day", zh: '父亲节补休' },
+                    { date: '2026-12-31', btsDay: 'พฤ', th: 'วันสิ้นปี', en: "New Year's Eve", zh: '跨年夜' },
+                    { date: '2027-01-01', btsDay: 'ศ', th: 'วันขึ้นปีใหม่', en: "New Year's Day", zh: '元旦' },
+                    { date: '2027-02-22', btsDay: 'จ', th: 'ชดเชยวันมาฆบูชา', en: 'Sub. Makha Bucha Day', zh: '万佛节补休' },
+                    { date: '2027-04-06', btsDay: 'อ', th: 'วันจักรี', fullTh: 'วันจักรี — วันที่ระลึกถึงพระบาทสมเด็จพระพุทธยอดฟ้าจุฬาโลกมหาราช และวันที่ระลึกมหาจักรีบรมราชวงศ์', en: 'Chakri Memorial Day', zh: '却克里王朝纪念日' },
+                    { date: '2027-04-13', btsDay: 'อ', th: 'วันสงกรานต์', en: 'Songkran Festival', zh: '宋干节' },
+                    { date: '2027-04-14', btsDay: 'พ', th: 'วันสงกรานต์', en: 'Songkran Festival', zh: '宋干节' },
+                    { date: '2027-04-15', btsDay: 'พฤ', th: 'วันสงกรานต์', en: 'Songkran Festival', zh: '宋干节' },
+                    { date: '2027-05-03', btsDay: 'จ', th: 'ชดเชยวันแรงงานแห่งชาติ', en: 'Sub. National Labour Day', zh: '劳动节补休' },
+                    { date: '2027-05-04', btsDay: 'อ', th: 'วันฉัตรมงคล', en: 'Coronation Day', zh: '泰王加冕日' },
+                    { date: '2027-05-20', btsDay: 'พฤ', th: 'วันวิสาขบูชา', en: 'Visakha Bucha Day', zh: '卫塞节' },
+                    { date: '2027-06-03', btsDay: 'พฤ', th: 'วันเฉลิมฯ พระราชินี', fullTh: 'วันเฉลิมพระชนมพรรษา สมเด็จพระนางเจ้าสุทิดา พัชรสุธาพิมลลักษณ พระบรมราชินี', en: "H.M. Queen Suthida's Birthday", zh: '王后寿辰' },
+                    { date: '2027-07-19', btsDay: 'จ', th: 'ชดเชยวันอาสาฬหบูชา', en: 'Sub. Asahna Bucha Day', zh: '三宝佛节补休' },
+                    { date: '2027-07-28', btsDay: 'พ', th: 'วันเฉลิมฯ รัชกาลที่ 10', fullTh: 'วันเฉลิมพระชนมพรรษา พระบาทสมเด็จพระเจ้าอยู่หัว รัชกาลที่ 10', en: "H.M. King Rama X's Birthday", zh: '国王寿辰' },
+                    { date: '2027-08-12', btsDay: 'พฤ', th: 'วันแม่แห่งชาติ', fullTh: 'วันคล้ายวันพระราชสมภพ สมเด็จพระนางเจ้าสิริกิติ์ พระบรมราชินีนาถ ฯ และวันแม่แห่งชาติ', en: "Mother's Day", zh: '母亲节' },
+                    { date: '2027-10-13', btsDay: 'พ', th: 'วันนวมินทรมหาราช', en: 'King Rama IX Memorial Day', zh: '九世王逝世纪念日' },
+                    { date: '2027-10-25', btsDay: 'จ', th: 'ชดเชยวันปิยมหาราช', en: 'Sub. Chulalongkorn Day', zh: '五世王纪念日补休' },
+                    { date: '2027-12-06', btsDay: 'จ', th: 'ชดเชยวันพ่อแห่งชาติ', fullTh: 'ชดเชยวันคล้ายวันพระราชสมภพ พระบาทสมเด็จพระบรมชนกาธิเบศร ฯ วันชาติ และวันพ่อแห่งชาติ', en: "Sub. Father's Day", zh: '国庆暨父亲节补休' },
+                    { date: '2027-12-31', btsDay: 'ศ', th: 'วันสิ้นปี', en: "New Year's Eve", zh: '跨年夜' }
+                ];
+            },
+
+            togglePopupBtsHolidays(event) {
+                if (event) event.stopPropagation();
+                const panelEl = document.getElementById('popupHolidayBtsPanel');
+                if (!panelEl) return;
+                panelEl.hidden = !panelEl.hidden;
+                this.renderPopupHolidays(this._lastHolidayRenderNow || new Date());
+                if (typeof this.syncToastPosition === 'function') {
+                    this.syncToastPosition();
+                    requestAnimationFrame(() => this.syncToastPosition());
+                }
+            },
+
+            selectPopupBtsYear(year, event) {
+                if (event) event.stopPropagation();
+                this.btsHolidayPanelYear = year;
+                this.renderPopupHolidays(this._lastHolidayRenderNow || new Date());
+                if (typeof this.syncToastPosition === 'function') {
+                    this.syncToastPosition();
+                    requestAnimationFrame(() => this.syncToastPosition());
+                }
+            },
+
             renderPopupHolidays(now = new Date()) {
+                this._lastHolidayRenderNow = now;
                 const kickerEl = document.getElementById('popupHolidayKicker');
                 const statusEl = document.getElementById('popupHolidayStatus');
                 const nextEl = document.getElementById('popupHolidayNext');
                 const countEl = document.getElementById('popupHolidayCountdown');
+                const btsBadgeEl = document.getElementById('popupHolidayBtsBadge');
+                const btsTextEl = document.getElementById('popupHolidayBtsText');
+                const btsCountEl = document.getElementById('popupHolidayBtsCountdown');
+                const btsToggleEl = document.getElementById('popupHolidayBtsToggle');
+                const btsPanelEl = document.getElementById('popupHolidayBtsPanel');
                 if (!kickerEl && !nextEl) return;
 
                 const todayMid = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -8795,19 +8891,22 @@ setOriginFromActionSheet() {
                 const todayHoliday = list.find(item => item.date === todayIso);
                 const nextHoliday = list.find(item => item.date > todayIso);
 
-                const TH_MONTHS = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
-                const EN_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                const fmtHolidayDate = (isoStr) => {
-                    const [hy, hm, hd] = isoStr.split('-').map(Number);
-                    const curEra = this.dateEra || (lang === 'en' || lang === 'zh' ? 'ce' : 'be');
-                    const yr = curEra === 'be' ? (hy + 543) : hy;
-                    if (lang === 'en') return `${hd} ${EN_MONTHS[hm - 1]} ${yr}`;
-                    if (lang === 'zh') return `${yr}年${hm}月${hd}日`;
-                    return `${hd} ${TH_MONTHS[hm - 1]} ${yr}`;
+                const curEra = this.dateEra || (lang === 'en' || lang === 'zh' ? 'ce' : 'be');
+                const fmtYear = (ceYear) => (curEra === 'be' ? (ceYear + 543) : ceYear);
+                const fmtHolidayDate = (isoStr) => this.formatPopupFullDate(isoStr);
+                const getHolidayName = (item, preferBtsTitle = false) => {
+                    if (lang === 'en') return item.en;
+                    if (lang === 'zh') return item.zh;
+                    return preferBtsTitle ? (item.btsTh || item.th) : item.th;
+                };
+                const calcDiffDays = (isoStr) => {
+                    const [ny, nm, nd] = isoStr.split('-').map(Number);
+                    const targetMid = new Date(ny, nm - 1, nd);
+                    return Math.max(1, Math.round((targetMid.getTime() - todayMid.getTime()) / 86400000));
                 };
 
                 if (kickerEl) {
-                    kickerEl.textContent = lang === 'en' ? 'HOLIDAYS · BTS SCHEDULE' : (lang === 'zh' ? 'HOLIDAYS · 泰国法定假日' : 'HOLIDAYS · วันหยุดราชการ');
+                    kickerEl.textContent = lang === 'en' ? 'HOLIDAYS · PUBLIC SCHEDULE' : (lang === 'zh' ? 'HOLIDAYS · 泰国法定假日' : 'HOLIDAYS · วันหยุดราชการ');
                 }
 
                 const isWeekend = todayMid.getDay() === 0 || todayMid.getDay() === 6;
@@ -8823,7 +8922,7 @@ setOriginFromActionSheet() {
                 }
 
                 if (todayHoliday) {
-                    const hName = lang === 'en' ? todayHoliday.en : (lang === 'zh' ? todayHoliday.zh : todayHoliday.th);
+                    const hName = getHolidayName(todayHoliday);
                     if (nextEl) {
                         nextEl.textContent = lang === 'en' ? `Today: ${hName}` : (lang === 'zh' ? `今日假日: ${hName}` : `วันนี้: ${hName}`);
                     }
@@ -8831,31 +8930,194 @@ setOriginFromActionSheet() {
                         countEl.classList.add('is-today');
                         countEl.textContent = lang === 'en' ? 'Holiday' : (lang === 'zh' ? '假日' : 'วันนี้');
                     }
-                    return;
+                } else {
+                    if (countEl) countEl.classList.remove('is-today');
+                    if (nextHoliday) {
+                        const diffDays = calcDiffDays(nextHoliday.date);
+                        const hName = getHolidayName(nextHoliday);
+                        const hDateTxt = fmtHolidayDate(nextHoliday.date);
+                        if (nextEl) {
+                            nextEl.textContent = lang === 'en'
+                                ? `Next: ${hDateTxt} (${hName})`
+                                : (lang === 'zh' ? `下个假日: ${hDateTxt} (${hName})` : `ถัดไป: ${hDateTxt} (${hName})`);
+                        }
+                        if (countEl) {
+                            countEl.textContent = lang === 'en'
+                                ? `In ${diffDays}d`
+                                : (lang === 'zh' ? `${diffDays}天后` : `อีก ${diffDays} วัน`);
+                        }
+                    } else {
+                        if (nextEl) {
+                            nextEl.textContent = lang === 'en' ? 'Check official BTS holiday calendar' : (lang === 'zh' ? '请关注BTS官方假日表' : 'ตรวจสอบประกาศวันหยุดประจำปี');
+                        }
+                        if (countEl) countEl.textContent = '--';
+                    }
                 }
 
-                if (countEl) countEl.classList.remove('is-today');
-                if (nextHoliday) {
-                    const [ny, nm, nd] = nextHoliday.date.split('-').map(Number);
-                    const targetMid = new Date(ny, nm - 1, nd);
-                    const diffDays = Math.max(1, Math.round((targetMid.getTime() - todayMid.getTime()) / 86400000));
-                    const hName = lang === 'en' ? nextHoliday.en : (lang === 'zh' ? nextHoliday.zh : nextHoliday.th);
-                    const hDateTxt = fmtHolidayDate(nextHoliday.date);
-                    if (nextEl) {
-                        nextEl.textContent = lang === 'en'
-                            ? `Next: ${hDateTxt} (${hName})`
-                            : (lang === 'zh' ? `下个假日: ${hDateTxt} (${hName})` : `ถัดไป: ${hDateTxt} (${hName})`);
+                // วันหยุด BTS (สำนักงาน) จาก Holiday/holidays2026.md และ Holiday/holidays2027.md
+                const btsList = this.getBtsOfficeHolidays();
+                const todayBts = btsList.find(item => item.date === todayIso);
+                const nextBts = btsList.find(item => item.date > todayIso);
+                const btsYears = [2026, 2027];
+                const defaultBtsYear = todayMid.getFullYear() <= 2026 ? 2026 : 2027;
+                const activeBtsYear = btsYears.includes(this.btsHolidayPanelYear) ? this.btsHolidayPanelYear : defaultBtsYear;
+                const activeBtsItems = btsList.filter(item => Number(item.date.slice(0, 4)) === activeBtsYear);
+                const activeYearLabel = fmtYear(activeBtsYear);
+
+                if (btsBadgeEl) {
+                    btsBadgeEl.textContent = lang === 'en' ? 'BTS (Office)' : (lang === 'zh' ? 'BTS 办公室假日' : 'วันหยุด BTS (สำนักงาน)');
+                }
+
+                if (btsTextEl) {
+                    btsTextEl.textContent = '';
+                    btsTextEl.removeAttribute('title');
+                    const appendStrong = (txt) => {
+                        const strongEl = document.createElement('strong');
+                        strongEl.textContent = txt;
+                        btsTextEl.appendChild(strongEl);
+                    };
+                    if (todayBts) {
+                        const bName = getHolidayName(todayBts);
+                        const bFull = lang === 'th' ? (todayBts.fullTh || todayBts.th) : bName;
+                        btsTextEl.title = `${fmtHolidayDate(todayBts.date)} · ${bFull}`;
+                        if (btsCountEl) {
+                            btsCountEl.classList.add('is-today');
+                            btsCountEl.textContent = lang === 'en' ? 'Holiday' : (lang === 'zh' ? '假日' : 'วันนี้');
+                        }
+                        if (lang === 'en') {
+                            appendStrong(`Today (${bName})`);
+                            if (nextBts) btsTextEl.append(` · Next ${fmtHolidayDate(nextBts.date)} (${getHolidayName(nextBts)})`);
+                        } else if (lang === 'zh') {
+                            appendStrong(`今日 (${bName})`);
+                            if (nextBts) btsTextEl.append(` · 下次 ${fmtHolidayDate(nextBts.date)} (${getHolidayName(nextBts)})`);
+                        } else {
+                            appendStrong(`วันนี้ (${bName})`);
+                            if (nextBts) btsTextEl.append(` · ถัดไป ${fmtHolidayDate(nextBts.date)} (${getHolidayName(nextBts)})`);
+                        }
+                    } else if (nextBts) {
+                        const bDiff = calcDiffDays(nextBts.date);
+                        const bDateTxt = fmtHolidayDate(nextBts.date);
+                        const bName = getHolidayName(nextBts);
+                        const bFull = lang === 'th' ? (nextBts.fullTh || nextBts.th) : bName;
+                        btsTextEl.title = `${bDateTxt} · ${bFull}`;
+                        appendStrong(bDateTxt);
+                        btsTextEl.append(` (${bName})`);
+                        if (btsCountEl) {
+                            btsCountEl.classList.remove('is-today');
+                            btsCountEl.textContent = lang === 'en'
+                                ? `In ${bDiff}d`
+                                : (lang === 'zh' ? `${bDiff}天后` : `อีก ${bDiff} วัน`);
+                        }
+                    } else {
+                        btsTextEl.textContent = lang === 'en'
+                            ? `${fmtYear(2027)} schedule ended`
+                            : (lang === 'zh' ? `${fmtYear(2027)}年假日表已结束` : `ครบปฏิทินปี ${fmtYear(2027)}`);
+                        if (btsCountEl) {
+                            btsCountEl.classList.remove('is-today');
+                            btsCountEl.textContent = '--';
+                        }
                     }
-                    if (countEl) {
-                        countEl.textContent = lang === 'en'
-                            ? `In ${diffDays}d`
-                            : (lang === 'zh' ? `${diffDays}天后` : `อีก ${diffDays} วัน`);
+                }
+
+                const isPanelOpen = Boolean(btsPanelEl && !btsPanelEl.hidden);
+                if (btsToggleEl) {
+                    btsToggleEl.setAttribute('aria-expanded', isPanelOpen ? 'true' : 'false');
+                    btsToggleEl.title = lang === 'en'
+                        ? `BTS Office Holidays ${activeYearLabel} (${activeBtsItems.length} days)`
+                        : (lang === 'zh' ? `BTS ${activeYearLabel}年办公室假日 (${activeBtsItems.length}天)` : `ปฏิทินวันหยุด BTS (สำนักงาน) ปี ${activeYearLabel} (${activeBtsItems.length} วัน)`);
+                    btsToggleEl.textContent = isPanelOpen
+                        ? (lang === 'en' ? 'Hide ▴' : (lang === 'zh' ? '收起 ▴' : 'ซ่อน ▴'))
+                        : (lang === 'en' ? `${activeBtsItems.length}d ▾` : (lang === 'zh' ? `${activeBtsItems.length}天 ▾` : `${activeBtsItems.length} วัน ▾`));
+                }
+
+                if (btsPanelEl) {
+                    const TH_M_ABBR = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+                    const EN_M_ABBR = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                    btsPanelEl.textContent = '';
+                    const panelHead = document.createElement('div');
+                    panelHead.className = 'popup-holiday-bts-panel-head';
+                    const headTitle = document.createElement('span');
+                    headTitle.textContent = lang === 'en'
+                        ? `BTS Office Holidays ${activeYearLabel} · ${activeBtsItems.length} days`
+                        : (lang === 'zh' ? `BTS ${activeYearLabel}年办公室假日 · ${activeBtsItems.length}天` : `วันหยุด BTS (สำนักงาน) ปี ${activeYearLabel} · ${activeBtsItems.length} วัน`);
+
+                    const yearTabsEl = document.createElement('span');
+                    yearTabsEl.className = 'popup-holiday-bts-years';
+                    for (const yrCe of btsYears) {
+                        const yrBtn = document.createElement('button');
+                        yrBtn.type = 'button';
+                        yrBtn.className = 'popup-holiday-bts-year-btn' + (yrCe === activeBtsYear ? ' is-active' : '');
+                        yrBtn.textContent = String(fmtYear(yrCe));
+                        yrBtn.setAttribute('aria-pressed', yrCe === activeBtsYear ? 'true' : 'false');
+                        yrBtn.addEventListener('click', (ev) => this.selectPopupBtsYear(yrCe, ev));
+                        yearTabsEl.appendChild(yrBtn);
                     }
-                } else {
-                    if (nextEl) {
-                        nextEl.textContent = lang === 'en' ? 'Check official BTS holiday calendar' : (lang === 'zh' ? '请关注BTS官方假日表' : 'ตรวจสอบประกาศวันหยุดประจำปี');
+                    panelHead.appendChild(headTitle);
+                    panelHead.appendChild(yearTabsEl);
+                    btsPanelEl.appendChild(panelHead);
+
+                    const listEl = document.createElement('div');
+                    listEl.className = 'popup-holiday-bts-list';
+                    for (const item of activeBtsItems) {
+                        const [, hm, hd] = item.date.split('-').map(Number);
+                        const rowEl = document.createElement('div');
+                        rowEl.className = 'popup-holiday-bts-item';
+
+                        const isItemToday = item.date === todayIso;
+                        const isItemNext = !todayBts && nextBts && item.date === nextBts.date;
+                        const isItemPast = item.date < todayIso;
+
+                        let pillText = '';
+                        if (isItemToday) {
+                            rowEl.classList.add('is-today');
+                            pillText = lang === 'en' ? 'Today' : (lang === 'zh' ? '今日' : 'วันนี้');
+                        } else if (isItemNext) {
+                            rowEl.classList.add('is-next');
+                            const nDiff = calcDiffDays(item.date);
+                            pillText = lang === 'en' ? `Next · ${nDiff}d` : (lang === 'zh' ? `下次 · ${nDiff}天后` : `ถัดไป · อีก ${nDiff} วัน`);
+                        } else if (isItemPast) {
+                            rowEl.classList.add('is-past');
+                            pillText = lang === 'en' ? 'Passed' : (lang === 'zh' ? '已过' : 'ผ่านแล้ว');
+                        } else {
+                            rowEl.classList.add('is-upcoming');
+                            const uDiff = calcDiffDays(item.date);
+                            pillText = lang === 'en' ? `In ${uDiff}d` : (lang === 'zh' ? `${uDiff}天后` : `อีก ${uDiff} วัน`);
+                        }
+
+                        const dayPad = String(hd).padStart(2, '0');
+                        const monLabel = lang === 'en' ? EN_M_ABBR[hm - 1] : (lang === 'zh' ? `${hm}月` : TH_M_ABBR[hm - 1]);
+
+                        const cardTop = document.createElement('div');
+                        cardTop.className = 'popup-holiday-bts-card-top';
+                        const chipEl = document.createElement('span');
+                        chipEl.className = 'popup-holiday-bts-chip';
+                        chipEl.textContent = lang === 'zh' ? `${monLabel}${dayPad}日` : `${monLabel} ${dayPad}`;
+                        const pillEl = document.createElement('span');
+                        pillEl.className = 'popup-holiday-bts-pill';
+                        pillEl.textContent = pillText;
+                        cardTop.appendChild(chipEl);
+                        cardTop.appendChild(pillEl);
+
+                        const itemName = getHolidayName(item);
+                        const itemFull = lang === 'th' ? (item.fullTh || item.th) : itemName;
+                        const fullDateStr = fmtHolidayDate(item.date);
+
+                        const nameEl = document.createElement('div');
+                        nameEl.className = 'popup-holiday-bts-item-name';
+                        nameEl.textContent = itemName;
+
+                        const dateEl = document.createElement('div');
+                        dateEl.className = 'popup-holiday-bts-item-date';
+                        dateEl.textContent = fullDateStr;
+
+                        rowEl.appendChild(cardTop);
+                        rowEl.appendChild(nameEl);
+                        rowEl.appendChild(dateEl);
+
+                        rowEl.title = `${fullDateStr} · ${itemFull}`;
+                        listEl.appendChild(rowEl);
                     }
-                    if (countEl) countEl.textContent = '--';
+                    btsPanelEl.appendChild(listEl);
                 }
             },
 
@@ -8915,9 +9177,13 @@ setOriginFromActionSheet() {
                     return `${dayStr}/${monthStr}/${year}`;
                 }
 
-                const TH_W = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'];
+                const TH_W_SHORT = ['อา.', 'จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.'];
+                const TH_W_FULL = ['วันอาทิตย์', 'วันจันทร์', 'วันอังคาร', 'วันพุธ', 'วันพฤหัสบดี', 'วันศุกร์', 'วันเสาร์'];
                 const TH_M = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
-                const wText = (lang === 'th') ? TH_W[n.getDay()] : n.toLocaleDateString(loc, { weekday: 'short' });
+                const isNarrowHdr = typeof window !== 'undefined' && window.innerWidth <= 480;
+                const wText = (lang === 'th')
+                    ? (isNarrowHdr ? TH_W_SHORT[n.getDay()] : TH_W_FULL[n.getDay()])
+                    : n.toLocaleDateString(loc, { weekday: 'short' });
                 const mText = (lang === 'th') ? TH_M[n.getMonth()] : (lang === 'zh' ? `${monthNum}月` : n.toLocaleDateString('en-US', { month: 'short' }));
 
                 if (curStyle === 'text') {
@@ -8925,9 +9191,9 @@ setOriginFromActionSheet() {
                     return `${day} ${mText} ${year}`;
                 }
 
-                // full_day: วันสัปดาห์+ว/ด/ป
+                // full_day: แสดงแบบกระชับบนมือถือแคบ และชื่อวันเต็มบนหน้าจอกว้าง
                 if (lang === 'zh') return `${wText} ${year}年${mText}${day}日`;
-                if (lang === 'th') return `${wText} ${day} ${mText} ${year}`;
+                if (lang === 'th') return isNarrowHdr ? `${wText} ${day} ${mText} ${year}` : `${wText}, ${day} ${mText} ${year}`;
                 return `${wText}, ${day} ${mText} ${year}`;
             },
 
@@ -10309,56 +10575,68 @@ setOriginFromActionSheet() {
                 const key = station.StationKey;
                 const arr = this.arrivals[key];
                 const plats = (arr && arr.platforms) ? visiblePlatformsForStation(station, arr.platforms) : [];
-                
-                let p1Dest = '1 ชานชาลา 1', p1Time = '--';
-                let p2Dest = '2 ชานชาลา 2', p2Time = '--';
 
-                if (plats.length > 0) {
-                    const p1 = plats[0];
-                    const dest1 = shortDest(destName(p1.DestinationStation));
-                    p1Dest = `1 ไป${dest1}`;
-                    const trains1 = (arr && arr.fetchedAt) ? displayTrains(key, p1.platform, p1.train_list, arr.fetchedAt) : [];
-                    if (trains1.length) {
-                        const isNoTime1 = (trains1[0].time_come === '--' || trains1[0].time_come === '-');
-                        const eta1 = isNoTime1 ? null : bestEta(key, p1.platform, trains1[0], arr.fetchedAt);
-                        if (!isNoTime1 && (trains1[0].status === 'arriving' || trains1[0].time_come === '0')) p1Time = T('arrived');
-                        else if (eta1) {
-                            const m = eta1.exactFromApi ? Math.round(eta1.base) : Math.round(eta1.base - (Date.now() - eta1.at) / 60000);
-                            p1Time = m <= 0 ? T('arrived') : `${m} นาที`;
-                        } else if (isNoTime1) {
-                            p1Time = `-- นาที`;
-                        }
+                const formatTrainEta = (pRef, tr, fetchedAt, emptyTxt) => {
+                    if (!tr) return emptyTxt;
+                    const isNoTime = (tr.time_come === '--' || tr.time_come === '-');
+                    const eta = isNoTime ? null : bestEta(key, pRef.platform, tr, fetchedAt);
+                    if (!isNoTime && (tr.status === 'arriving' || tr.time_come === '0')) return T('arrived');
+                    if (eta) {
+                        const m = eta.exactFromApi ? Math.round(eta.base) : Math.round(eta.base - (Date.now() - eta.at) / 60000);
+                        return m <= 0 ? T('arrived') : `${m} นาที`;
                     }
-                }
+                    return `-- นาที`;
+                };
 
-                if (plats.length > 1) {
-                    const p2 = plats[1];
-                    const dest2 = shortDest(destName(p2.DestinationStation));
-                    p2Dest = `2 ไป${dest2}`;
-                    const trains2 = (arr && arr.fetchedAt) ? displayTrains(key, p2.platform, p2.train_list, arr.fetchedAt) : [];
-                    if (trains2.length) {
-                        const isNoTime2 = (trains2[0].time_come === '--' || trains2[0].time_come === '-');
-                        const eta2 = isNoTime2 ? null : bestEta(key, p2.platform, trains2[0], arr.fetchedAt);
-                        if (!isNoTime2 && (trains2[0].status === 'arriving' || trains2[0].time_come === '0')) p2Time = T('arrived');
-                        else if (eta2) {
-                            const m = eta2.exactFromApi ? Math.round(eta2.base) : Math.round(eta2.base - (Date.now() - eta2.at) / 60000);
-                            p2Time = m <= 0 ? T('arrived') : `${m} นาที`;
-                        } else if (isNoTime2) {
-                            p2Time = `-- นาที`;
-                        }
+                const buildPlatformPayload = (platIdx, fallbackNum) => {
+                    if (plats.length <= platIdx) {
+                        return {
+                            num: fallbackNum,
+                            destName: `ชานชาลา ${fallbackNum}`,
+                            destFull: `${fallbackNum} ชานชาลา ${fallbackNum}`,
+                            t1: '--',
+                            t2: '-- นาที',
+                            t3: '-- นาที'
+                        };
                     }
-                }
+                    const p = plats[platIdx];
+                    const num = String(p.platform || fallbackNum);
+                    const dName = shortDest(destName(p.DestinationStation));
+                    const trains = (arr && arr.fetchedAt) ? displayTrains(key, p.platform, p.train_list, arr.fetchedAt) : [];
+                    return {
+                        num,
+                        destName: dName,
+                        destFull: `${num} ไป${dName}`,
+                        t1: trains.length > 0 ? formatTrainEta(p, trains[0], arr.fetchedAt, '-- นาที') : '--',
+                        t2: formatTrainEta(p, trains[1], arr.fetchedAt, '-- นาที'),
+                        t3: formatTrainEta(p, trains[2], arr.fetchedAt, '-- นาที')
+                    };
+                };
+
+                const p1 = buildPlatformPayload(0, '1');
+                const p2 = buildPlatformPayload(1, '2');
+                const statusLabel = (arr && arr.isTimetable) ? 'ตารางเวลาเดินรถ' : 'กำลังเข้า / นับถอยหลังสด';
 
                 const payload = {
                     action: 'updateLiveStation',
                     stationKey: key || '',
                     stationName: station.StationNameTH || station.StationName || '',
+                    stationNameEN: station.StationNameEN || station.StationName || '',
                     distanceText: distText || (this.nearest?.km != null ? fmtDist(this.nearest.km) : ''),
                     lineColor: station.StationLineColor || '#7AB420',
-                    plat1Dest: p1Dest,
-                    plat1Time: p1Time,
-                    plat2Dest: p2Dest,
-                    plat2Time: p2Time
+                    plat1Dest: p1.destFull,
+                    plat1Num: p1.num,
+                    plat1DestName: p1.destName,
+                    plat1Time: p1.t1,
+                    plat1Time2: p1.t2,
+                    plat1Time3: p1.t3,
+                    plat2Dest: p2.destFull,
+                    plat2Num: p2.num,
+                    plat2DestName: p2.destName,
+                    plat2Time: p2.t1,
+                    plat2Time2: p2.t2,
+                    plat2Time3: p2.t3,
+                    statusLabel
                 };
 
                 // ส่งข้อมูลไปยัง Flutter Native Bridge สำหรับ Lock Screen & Home Screen Widget

@@ -1180,6 +1180,7 @@ const FALLBACK_MAX_KM = 3.0;
                 moreClockDesc: 'เลือกรูปแบบการแสดงเวลาของนาฬิกาที่แถบหัวเว็บ',
                 moreClock24Lbl: '24 ชั่วโมง',
                 moreClock12Lbl: '12 ชั่วโมง',
+                moreClockAutoLbl: 'ตั้งค่าตามอุปกรณ์',
                 moreDateTitle: 'รูปแบบวัน/เดือน/ปี',
                 moreDateDesc: 'เลือกรูปแบบการแสดงวันที่และระบบศักราชของนาฬิกาที่แถบหัวเว็บ',
                 moreDateStyleLabel: '1. รูปแบบการจัดวาง:',
@@ -1533,8 +1534,9 @@ const FALLBACK_MAX_KM = 3.0;
                 moreGlassCrystal: 'Crystal Glass',
                 moreClockTitle: 'Clock Format',
                 moreClockDesc: 'Choose the time display format for the header clock',
-                moreClock24Lbl: '24 Hours (24H)',
-                moreClock12Lbl: '12 Hours (12H AM/PM)',
+                moreClock24Lbl: '24 Hours',
+                moreClock12Lbl: '12 Hours',
+                moreClockAutoLbl: 'Device Default',
                 moreDateTitle: 'Date Format',
                 moreDateDesc: 'Choose the date display format and era system for the header clock',
                 moreDateStyleLabel: '1. Date Layout Style:',
@@ -1890,6 +1892,7 @@ const FALLBACK_MAX_KM = 3.0;
                 moreClockDesc: '选择顶部时钟的时间显示格式',
                 moreClock24Lbl: '24 小时制',
                 moreClock12Lbl: '12 小时制',
+                moreClockAutoLbl: '跟随系统',
                 moreDateTitle: '日期格式',
                 moreDateDesc: '选择顶部时钟的日期显示格式与纪年系统',
                 moreDateStyleLabel: '1. 排版格式:',
@@ -4291,7 +4294,7 @@ const FALLBACK_MAX_KM = 3.0;
         /* ================= APP ================= */
         const App = {
             version: '1.3.6',
-            build: 18,
+            build: 19,
             _hasApkUpdate: undefined,
             _isCheckingApkUpdate: false,
             _latestApkDownloadUrl: null,
@@ -7602,11 +7605,13 @@ setOriginFromActionSheet() {
                 if (minimalBtn) minimalBtn.classList.toggle('active', storedGlass === 'minimal');
 
                 // 4. Clock Format Segmented Buttons
-                const curClockFmt = this.clockFormat || '24';
+                const curClockFmt = this.clockFormat || 'auto';
                 const clock24Btn = document.getElementById('clockOpt24');
                 const clock12Btn = document.getElementById('clockOpt12');
+                const clockAutoBtn = document.getElementById('clockOptAuto');
                 if (clock24Btn) clock24Btn.classList.toggle('active', curClockFmt === '24');
                 if (clock12Btn) clock12Btn.classList.toggle('active', curClockFmt === '12');
+                if (clockAutoBtn) clockAutoBtn.classList.toggle('active', curClockFmt === 'auto');
 
                 // 5. Date Format & Era Segmented Buttons
                 const curStyle = this.dateStyle || 'full_day';
@@ -7775,7 +7780,7 @@ setOriginFromActionSheet() {
                 };
 
                 const currentVerStr = this.version || '1.3.6';
-                const currentBuildNum = this.build || 18;
+                const currentBuildNum = this.build || 19;
 
                 const remoteVer = parseVersion(releaseData.tag_name || releaseData.name);
                 const localVer = parseVersion(currentVerStr);
@@ -8064,6 +8069,7 @@ setOriginFromActionSheet() {
                 set('moreClockDesc', T('moreClockDesc'));
                 set('moreClock24Lbl', T('moreClock24Lbl'));
                 set('moreClock12Lbl', T('moreClock12Lbl'));
+                set('moreClockAutoLbl', T('moreClockAutoLbl'));
                 set('moreDateTitle', T('moreDateTitle'));
                 set('moreDateDesc', T('moreDateDesc'));
                 set('moreDateStyleLabel', T('moreDateStyleLabel'));
@@ -8100,6 +8106,9 @@ setOriginFromActionSheet() {
                 set('nearestPopupPlatSub', T('popupPlatSub'));
                 set('nearestPopupActionLbl', T('popupAction'));
                 set('nearestPopupDismissLbl', T('popupDismiss'));
+                this.updatePopupClock();
+                this.renderPopupWeather();
+                this.renderPopupHolidays();
 
                 // Interchange Hub Modal
                 set('interchangeStatusPill', lang === 'zh' ? '● 运营中换乘枢纽' : (lang === 'en' ? '● ACTIVE INTERCHANGE' : '● จุดเชื่อมต่อพร้อมบริการ'));
@@ -8113,11 +8122,11 @@ setOriginFromActionSheet() {
             },
 
             async init() {
-                let savedClockFmt = '24';
+                let savedClockFmt = 'auto';
                 let savedDateStyle = 'full_day';
                 let savedDateEra = (lang === 'en' || lang === 'zh') ? 'ce' : 'be';
                 try {
-                    savedClockFmt = localStorage.getItem('bkk_skytrains_clock_format') || '24';
+                    savedClockFmt = localStorage.getItem('bkk_skytrains_clock_format') || 'auto';
                     savedDateStyle = localStorage.getItem('bkk_skytrains_date_style') || 'full_day';
                     savedDateEra = localStorage.getItem('bkk_skytrains_date_era') || ((lang === 'en' || lang === 'zh') ? 'ce' : 'be');
                 } catch (e) { }
@@ -8228,6 +8237,8 @@ setOriginFromActionSheet() {
                 this.locate(true);
 
                 this.loadTraffic();   // สถานะการเดินรถ (ฟีเจอร์เสริม — พังก็ไม่กระทบส่วนอื่น)
+                this.refreshPopupWeather(); // โหลดสภาพอากาศล่วงหน้าสำหรับหน้าต่างป๊อปอัป
+                this.renderPopupHolidays(); // อัปเดตปฏิทินวันหยุดบนหน้าต่างป๊อปอัป
                 this.initScrollNav(); // ซ่อนปุ่มนำทางเมื่อเลื่อนขึ้น / แสดงเมื่อเลื่อนลง
 
                 // จัดการวงจรชีวิตแอป: ตรวจจับเมื่อพับหรือเปิดแอปกลับมา (Folded / Background / Resume)
@@ -8493,10 +8504,33 @@ setOriginFromActionSheet() {
             },
 
             /* ---------- clock & date ---------- */
+            isDevice12HourFormat() {
+                try {
+                    if (typeof Intl !== 'undefined' && Intl.DateTimeFormat) {
+                        const dt = new Intl.DateTimeFormat(undefined, { hour: 'numeric', minute: 'numeric' });
+                        const opts = dt.resolvedOptions ? dt.resolvedOptions() : {};
+                        if (typeof opts.hour12 === 'boolean') return opts.hour12;
+                        if (opts.hourCycle === 'h11' || opts.hourCycle === 'h12') return true;
+                        if (opts.hourCycle === 'h23' || opts.hourCycle === 'h24') return false;
+                        if (typeof dt.formatToParts === 'function') {
+                            return dt.formatToParts(new Date(2026, 0, 1, 13, 5)).some(p => p.type === 'dayPeriod');
+                        }
+                    }
+                } catch (e) { }
+                return false;
+            },
+
+            resolveIs12HourClock() {
+                const fmt = this.clockFormat || 'auto';
+                if (fmt === '12') return true;
+                if (fmt === '24') return false;
+                return this.isDevice12HourFormat();
+            },
+
             startClock() {
                 const f = () => {
                     const n = new Date(), loc = T('clockLocale');
-                    const is12 = (this.clockFormat === '12');
+                    const is12 = this.resolveIs12HourClock();
                     const clockTElem = document.getElementById('clockT');
                     const clockDElem = document.getElementById('clockD');
                     if (clockTElem) {
@@ -8505,14 +8539,328 @@ setOriginFromActionSheet() {
                     if (clockDElem) {
                         clockDElem.textContent = this.formatHeaderDate(n, loc);
                     }
+                    this.updatePopupClock(n);
                 };
                 f();
                 if (this._clockInterval) clearInterval(this._clockInterval);
                 this._clockInterval = setInterval(f, 1000);
             },
 
+            updatePopupClock(n = new Date()) {
+                const digitsEl = document.getElementById('popupClockDigits');
+                const dateEl = document.getElementById('popupClockDate');
+                const badgeEl = document.getElementById('popupClockModeBadge');
+                const labelEl = document.getElementById('popupClockLabel');
+                const cardEl = document.getElementById('popupClockCard');
+                if (!digitsEl && !dateEl) return;
+
+                const is12 = this.resolveIs12HourClock();
+                if (badgeEl) badgeEl.textContent = is12 ? '12H' : '24H';
+                if (labelEl) {
+                    labelEl.textContent = lang === 'en' ? 'System Time' : (lang === 'zh' ? '系统时间' : 'เวลาของระบบ');
+                }
+                if (cardEl) {
+                    cardEl.title = lang === 'en'
+                        ? 'Tap to switch 12H / 24H format'
+                        : (lang === 'zh' ? '点击切换 12H / 24H 格式' : 'แตะเพื่อสลับรูปแบบ 12H / 24H');
+                }
+
+                if (digitsEl) {
+                    let h = n.getHours();
+                    const m = String(n.getMinutes()).padStart(2, '0');
+                    const s = String(n.getSeconds()).padStart(2, '0');
+                    if (is12) {
+                        const ap = h >= 12 ? 'PM' : 'AM';
+                        h = h % 12 || 12;
+                        digitsEl.innerHTML = `${String(h).padStart(2, '0')}:${m}:${s}<small style="font-size:0.58em;margin-left:3px;font-weight:700;opacity:0.88;">${ap}</small>`;
+                    } else {
+                        digitsEl.textContent = `${String(h).padStart(2, '0')}:${m}:${s}`;
+                    }
+                }
+
+                if (dateEl) {
+                    const TH_WEEKDAYS = ['วันอาทิตย์', 'วันจันทร์', 'วันอังคาร', 'วันพุธ', 'วันพฤหัสบดี', 'วันศุกร์', 'วันเสาร์'];
+                    const TH_MONTHS = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+                    const EN_WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                    const EN_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                    const ZH_WEEKDAYS = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+                    const curEra = this.dateEra || (lang === 'en' || lang === 'zh' ? 'ce' : 'be');
+                    const year = curEra === 'be' ? (n.getFullYear() + 543) : n.getFullYear();
+                    const day = n.getDate();
+                    const month = n.getMonth();
+                    const weekday = n.getDay();
+
+                    if (lang === 'en') {
+                        dateEl.textContent = `${EN_WEEKDAYS[weekday]}, ${day} ${EN_MONTHS[month]} ${year}`;
+                    } else if (lang === 'zh') {
+                        dateEl.textContent = `${ZH_WEEKDAYS[weekday]}, ${year}年${month + 1}月${day}日`;
+                    } else {
+                        dateEl.textContent = `${TH_WEEKDAYS[weekday]}, ${day} ${TH_MONTHS[month]} ${year}`;
+                    }
+                }
+            },
+
+            getWeatherSvg(kind) {
+                if (kind === 'clear-day') {
+                    return `<svg viewBox="0 0 64 56" aria-hidden="true"><defs><radialGradient id="bkkSunOnly" cx="42%" cy="38%" r="60%"><stop offset="0%" stop-color="#FFF078"/><stop offset="65%" stop-color="#FFB319"/><stop offset="100%" stop-color="#F57C00"/></radialGradient></defs><g transform="translate(32, 28)"><path d="M0,-20 L4,-16.5 L9,-17.5 L11,-13 L16,-11.5 L15.5,-6.5 L19.5,-2.5 L16.8,1.8 L18,6.8 L13.5,9 L12.2,14 L7.2,13.8 L3.8,18 L-0.5,15.5 L-5.2,17.2 L-8,13 L-13,12.5 L-13.2,7.5 L-17.5,4.2 L-15.5,-0.2 L-17.8,-4.8 L-13.8,-7.8 L-13.4,-12.8 L-8.6,-13.4 L-6,-17.5 L-1.2,-15.8 Z" fill="#F57C00"/><circle cx="0" cy="0" r="14" fill="url(#bkkSunOnly)"/></g></svg>`;
+                }
+                if (kind === 'clear-night') {
+                    return `<svg viewBox="0 0 64 56" aria-hidden="true"><defs><linearGradient id="bkkMoonOnly" x1="20%" y1="10%" x2="85%" y2="90%"><stop offset="0%" stop-color="#FEF08A"/><stop offset="60%" stop-color="#FACC15"/><stop offset="100%" stop-color="#CA8A04"/></linearGradient></defs><path d="M38 11C28.6 11 21 18.6 21 28s7.6 17 17 17c3.6 0 7-.1 9.8-2.9-5.8-.3-10.8-5.1-10.8-11.2 0-6.2 4.9-11.3 11.1-11.4-2.8-5.2-8.2-8.5-10.1-8.5z" fill="url(#bkkMoonOnly)"/><circle cx="48" cy="14" r="2" fill="#BAE6FD"/><circle cx="53" cy="24" r="1.4" fill="#BAE6FD"/></svg>`;
+                }
+                if (kind === 'partly-cloudy-night') {
+                    return `<svg viewBox="0 0 64 56" aria-hidden="true"><defs><linearGradient id="bkkNightMoon" x1="20%" y1="10%" x2="80%" y2="90%"><stop offset="0%" stop-color="#FEF08A"/><stop offset="100%" stop-color="#EAB308"/></linearGradient><linearGradient id="bkkNightCloud" x1="25%" y1="0%" x2="65%" y2="100%"><stop offset="0%" stop-color="#FFFFFF"/><stop offset="55%" stop-color="#EDE9FE"/><stop offset="100%" stop-color="#C4B5FD"/></linearGradient></defs><path d="M27 10c-5.5 0-10 4.5-10 10s4.5 10 10 10c1.9 0 3.7-.5 5.2-1.5-3.4-.3-6.1-3.2-6.1-6.7 0-3.7 2.9-6.7 6.5-6.8-1.5-3-3.6-5-5.6-5z" fill="url(#bkkNightMoon)"/><path d="M19,49 C12.4,49 7,43.8 7,37.4 C7,31.6 11.4,26.8 17.1,26 C18.8,19.4 24.8,14.5 32,14.5 C40.5,14.5 47.4,21.2 47.7,29.6 C52.9,30.6 56.8,35.1 56.8,40.5 C56.8,45.2 53,49 48.2,49 Z" fill="url(#bkkNightCloud)"/></svg>`;
+                }
+                if (kind === 'rain' || kind === 'storm') {
+                    const bolt = kind === 'storm' ? `<polygon points="33,39 27,48 32,48 30,55 39,44 33.5,44" fill="#FACC15"/>` : '';
+                    return `<svg viewBox="0 0 64 56" aria-hidden="true"><defs><linearGradient id="bkkRainCloud" x1="20%" y1="0%" x2="70%" y2="100%"><stop offset="0%" stop-color="#E2E8F0"/><stop offset="60%" stop-color="#CBD5E1"/><stop offset="100%" stop-color="#94A3B8"/></linearGradient></defs><path d="M18,38 C11.8,38 7,33.2 7,27.3 C7,21.9 11.1,17.4 16.5,16.7 C18.1,10.5 23.7,6 30.5,6 C38.5,6 45,12.2 45.3,20 C50.1,20.9 53.8,25.1 53.8,30.1 C53.8,34.5 50.2,38 45.8,38 Z" fill="url(#bkkRainCloud)"/><line x1="20" y1="42" x2="17" y2="50" stroke="#38BDF8" stroke-width="2.8" stroke-linecap="round"/><line x1="29" y1="42" x2="26" y2="51" stroke="#38BDF8" stroke-width="2.8" stroke-linecap="round"/><line x1="39" y1="42" x2="36" y2="50" stroke="#38BDF8" stroke-width="2.8" stroke-linecap="round"/>${bolt}</svg>`;
+                }
+                if (kind === 'cloudy') {
+                    return `<svg viewBox="0 0 64 56" aria-hidden="true"><defs><linearGradient id="bkkCloudBack" x1="20%" y1="0%" x2="70%" y2="100%"><stop offset="0%" stop-color="#CBD5E1"/><stop offset="100%" stop-color="#94A3B8"/></linearGradient><linearGradient id="bkkCloudFront" x1="25%" y1="0%" x2="65%" y2="100%"><stop offset="0%" stop-color="#FFFFFF"/><stop offset="60%" stop-color="#EEF2FF"/><stop offset="100%" stop-color="#C7D2FE"/></linearGradient></defs><path d="M27,36 C22,36 18,32.2 18,27.3 C18,22.9 21.3,19.2 25.6,18.6 C26.9,13.5 31.5,9.8 37,9.8 C43.5,9.8 48.8,14.9 49.1,21.3 C53.1,22 56,25.5 56,29.6 C56,33.1 53.1,36 49.5,36 Z" fill="url(#bkkCloudBack)"/><path d="M16,49 C9.8,49 5,44 5,37.8 C5,32.1 9.2,27.4 14.8,26.6 C16.5,20.1 22.3,15.3 29.3,15.3 C37.6,15.3 44.3,21.9 44.6,30.1 C49.7,31 53.5,35.4 53.5,40.7 C53.5,45.3 49.8,49 45.1,49 Z" fill="url(#bkkCloudFront)"/></svg>`;
+                }
+                // Default / partly-cloudy-day: Exact 100% match to reference Weather icon
+                return `<svg viewBox="0 0 64 56" aria-hidden="true"><defs><radialGradient id="bkkRefSun" cx="42%" cy="38%" r="60%"><stop offset="0%" stop-color="#FFE055"/><stop offset="65%" stop-color="#FFB319"/><stop offset="100%" stop-color="#F57C00"/></radialGradient><linearGradient id="bkkRefCloud" x1="25%" y1="0%" x2="65%" y2="100%"><stop offset="0%" stop-color="#FFFFFF"/><stop offset="55%" stop-color="#F2F0FF"/><stop offset="100%" stop-color="#CFC8F8"/></linearGradient><radialGradient id="bkkRefGlow" cx="42%" cy="22%" r="55%"><stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.95"/><stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/></radialGradient></defs><g transform="translate(24, 21)"><path d="M0,-14.5 L3.1,-12.5 L6.7,-13 L8.3,-9.7 L11.8,-8.4 L11.5,-4.8 L14.2,-2 L12.3,1.2 L13.2,4.8 L10,6.6 L9.1,10.2 L5.5,10.2 L2.9,13.1 L-0.4,11.4 L-3.9,12.7 L-6,9.7 L-9.6,9.2 L-9.9,5.6 L-13,3.3 L-11.6,-0.1 L-13.2,-3.4 L-10.3,-5.7 L-10.1,-9.3 L-6.5,-9.9 L-4.5,-13 L-1,-11.7 Z" fill="#F57C00"/><circle cx="0" cy="0" r="10.8" fill="url(#bkkRefSun)"/></g><path d="M19,49 C12.4,49 7,43.8 7,37.4 C7,31.6 11.4,26.8 17.1,26 C18.8,19.4 24.8,14.5 32,14.5 C40.5,14.5 47.4,21.2 47.7,29.6 C52.9,30.6 56.8,35.1 56.8,40.5 C56.8,45.2 53,49 48.2,49 Z" fill="url(#bkkRefCloud)"/><ellipse cx="32" cy="24" rx="12" ry="7.5" fill="url(#bkkRefGlow)"/></svg>`;
+            },
+
+            mapWmoWeather(code, isDay = 1) {
+                const c = Number(code);
+                const day = isDay !== 0;
+                if (c === 0) {
+                    return {
+                        kind: day ? 'clear-day' : 'clear-night',
+                        th: 'ท้องฟ้าแจ่มใส',
+                        en: day ? 'Clear Sky' : 'Clear Night',
+                        zh: '晴朗'
+                    };
+                }
+                if (c === 1 || c === 2) {
+                    return {
+                        kind: day ? 'partly-cloudy' : 'partly-cloudy-night',
+                        th: 'มีเมฆบางส่วน',
+                        en: 'Partly Cloudy',
+                        zh: '局部多云'
+                    };
+                }
+                if (c === 3 || c === 45 || c === 48) {
+                    return {
+                        kind: 'cloudy',
+                        th: c === 3 ? 'มีเมฆมาก' : 'มีหมอก',
+                        en: c === 3 ? 'Overcast' : 'Foggy',
+                        zh: c === 3 ? '多云' : '有雾'
+                    };
+                }
+                if (c >= 95) {
+                    return {
+                        kind: 'storm',
+                        th: 'พายุฝนฟ้าคะนอง',
+                        en: 'Thunderstorm',
+                        zh: '雷阵雨'
+                    };
+                }
+                if ((c >= 51 && c <= 67) || (c >= 80 && c <= 82)) {
+                    return {
+                        kind: 'rain',
+                        th: c >= 63 || c >= 81 ? 'ฝนตกหนัก' : 'ฝนตกเล็กน้อย',
+                        en: c >= 63 || c >= 81 ? 'Heavy Rain' : 'Light Rain',
+                        zh: c >= 63 || c >= 81 ? '大雨' : '小雨'
+                    };
+                }
+                return {
+                    kind: day ? 'partly-cloudy' : 'partly-cloudy-night',
+                    th: 'มีเมฆบางส่วน',
+                    en: 'Partly Cloudy',
+                    zh: '局部多云'
+                };
+            },
+
+            renderPopupWeather() {
+                const labelEl = document.getElementById('popupWeatherLabel');
+                const tempEl = document.getElementById('popupWeatherTemp');
+                const descEl = document.getElementById('popupWeatherDesc');
+                const iconEl = document.getElementById('popupWeatherIcon');
+                const cardEl = document.getElementById('popupWeatherCard');
+                if (!tempEl && !descEl && !iconEl) return;
+
+                if (labelEl) {
+                    labelEl.textContent = lang === 'en' ? 'Weather' : (lang === 'zh' ? '实时天气' : 'สภาพอากาศ');
+                }
+                if (cardEl) {
+                    cardEl.title = lang === 'en' ? 'Tap to refresh weather' : (lang === 'zh' ? '点击刷新天气' : 'แตะเพื่ออัปเดตสภาพอากาศ');
+                }
+
+                const w = this._popupWeather;
+                if (w && w.temp != null) {
+                    const info = this.mapWmoWeather(w.code, w.isDay);
+                    if (tempEl) tempEl.textContent = `${Math.round(w.temp)}°C`;
+                    if (descEl) descEl.textContent = lang === 'en' ? info.en : (lang === 'zh' ? info.zh : info.th);
+                    if (iconEl) iconEl.innerHTML = this.getWeatherSvg(info.kind);
+                } else {
+                    const isNight = new Date().getHours() < 6 || new Date().getHours() >= 19;
+                    if (tempEl) tempEl.textContent = '--°C';
+                    if (descEl) {
+                        descEl.textContent = this._popupWeatherError
+                            ? (lang === 'en' ? 'Weather unavailable' : (lang === 'zh' ? '暂无天气数据' : 'ไม่มีข้อมูลอากาศ'))
+                            : (lang === 'en' ? 'Loading...' : (lang === 'zh' ? '加载中...' : 'กำลังโหลด...'));
+                    }
+                    if (iconEl) iconEl.innerHTML = this.getWeatherSvg(isNight ? 'partly-cloudy-night' : 'partly-cloudy');
+                }
+            },
+
+            async refreshPopupWeather(force = false, station = null) {
+                const target = station || this.popupStation || this.pinnedStation();
+                const lat = Number(target?.Latitude ?? this.userPos?.lat ?? 13.7563);
+                const lon = Number(target?.Longitude ?? this.userPos?.lon ?? 100.5018);
+                const coordKey = `${lat.toFixed(2)},${lon.toFixed(2)}`;
+                const now = Date.now();
+
+                if (!force && this._popupWeather && this._popupWeather.key === coordKey && (now - this._popupWeather.at) < 600000) {
+                    this.renderPopupWeather();
+                    return;
+                }
+                if (this._popupWeatherLoading && !force) return;
+                this._popupWeatherLoading = true;
+                this._popupWeatherError = false;
+                if (!this._popupWeather) this.renderPopupWeather();
+
+                try {
+                    const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+                    const timer = controller ? setTimeout(() => controller.abort(), 5000) : null;
+                    try {
+                        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat.toFixed(4)}&longitude=${lon.toFixed(4)}&current=temperature_2m,weather_code,is_day&timezone=Asia%2FBangkok`;
+                        const res = await fetch(url, { signal: controller ? controller.signal : undefined, cache: 'no-cache' });
+                        if (!res.ok) throw new Error('HTTP ' + res.status);
+                        const data = await res.json();
+                        const cur = data?.current;
+                        if (cur && typeof cur.temperature_2m === 'number') {
+                            this._popupWeather = {
+                                key: coordKey,
+                                at: Date.now(),
+                                temp: cur.temperature_2m,
+                                code: cur.weather_code ?? 2,
+                                isDay: cur.is_day ?? 1
+                            };
+                            this._popupWeatherError = false;
+                        }
+                    } finally {
+                        if (timer) clearTimeout(timer);
+                    }
+                } catch (e) {
+                    if (!this._popupWeather) this._popupWeatherError = true;
+                } finally {
+                    this._popupWeatherLoading = false;
+                    this.renderPopupWeather();
+                    this.syncToastPosition();
+                }
+            },
+
+            getHolidayScheduleList() {
+                // อ้างอิงประกาศวันหยุดทางการและ Holiday/holidays.md (ปี 2569-2570 และวันหยุดคงที่ปีถัดไป)
+                return [
+                    { date: '2026-12-05', th: 'วันพ่อแห่งชาติ', en: "King Rama IX Memorial & Father's Day", zh: '九世王纪念日暨父亲节' },
+                    { date: '2026-12-07', th: 'ชดเชยวันพ่อแห่งชาติ', en: "Sub. Father's Day", zh: '父亲节补休' },
+                    { date: '2026-12-10', th: 'วันรัฐธรรมนูญ', en: 'Constitution Day', zh: '宪法纪念日' },
+                    { date: '2026-12-31', th: 'วันสิ้นปี', en: "New Year's Eve", zh: '跨年夜' },
+                    { date: '2027-01-01', th: 'วันขึ้นปีใหม่', en: "New Year's Day", zh: '元旦' },
+                    { date: '2027-02-22', th: 'ชดเชยวันมาฆบูชา', en: 'Sub. Makha Bucha Day', zh: '万佛节补休' },
+                    { date: '2027-04-06', th: 'วันจักรี', en: 'Chakri Memorial Day', zh: '却克里王朝纪念日' },
+                    { date: '2027-04-13', th: 'วันสงกรานต์', en: 'Songkran Festival', zh: '宋干节' },
+                    { date: '2027-04-14', th: 'วันสงกรานต์', en: 'Songkran Festival', zh: '宋干节' },
+                    { date: '2027-04-15', th: 'วันสงกรานต์', en: 'Songkran Festival', zh: '宋干节' },
+                    { date: '2027-05-03', th: 'ชดเชยวันแรงงานแห่งชาติ', en: 'Sub. National Labour Day', zh: '劳动节补休' },
+                    { date: '2027-05-04', th: 'วันฉัตรมงคล', en: 'Coronation Day', zh: '泰王加冕日' },
+                    { date: '2027-05-20', th: 'วันวิสาขบูชา', en: 'Visakha Bucha Day', zh: '卫塞节' },
+                    { date: '2027-06-03', th: 'วันเฉลิมฯ พระราชินี', en: "H.M. Queen Suthida's Birthday", zh: '王后寿辰' },
+                    { date: '2027-07-19', th: 'ชดเชยวันอาสาฬหบูชา', en: 'Sub. Asahna Bucha Day', zh: '三宝佛节补休' },
+                    { date: '2027-07-28', th: 'วันเฉลิมฯ รัชกาลที่ 10', en: "H.M. King Rama X's Birthday", zh: '国王寿辰' },
+                    { date: '2027-08-12', th: 'วันแม่แห่งชาติ', en: "Mother's Day", zh: '母亲节' },
+                    { date: '2027-10-13', th: 'วันนวมินทรมหาราช', en: 'King Rama IX Memorial Day', zh: '九世王逝世纪念日' },
+                    { date: '2027-10-25', th: 'ชดเชยวันปิยมหาราช', en: 'Sub. Chulalongkorn Day', zh: '五世王纪念日补休' },
+                    { date: '2027-12-06', th: 'ชดเชยวันพ่อแห่งชาติ', en: "Sub. Father's Day", zh: '国庆暨父亲节补休' },
+                    { date: '2027-12-31', th: 'วันสิ้นปี', en: "New Year's Eve", zh: '跨年夜' }
+                ];
+            },
+
+            renderPopupHolidays(now = new Date()) {
+                const kickerEl = document.getElementById('popupHolidayKicker');
+                const statusEl = document.getElementById('popupHolidayStatus');
+                const nextEl = document.getElementById('popupHolidayNext');
+                const countEl = document.getElementById('popupHolidayCountdown');
+                if (!kickerEl && !nextEl) return;
+
+                const todayMid = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                const y = todayMid.getFullYear();
+                const m = String(todayMid.getMonth() + 1).padStart(2, '0');
+                const d = String(todayMid.getDate()).padStart(2, '0');
+                const todayIso = `${y}-${m}-${d}`;
+                const list = this.getHolidayScheduleList();
+                const todayHoliday = list.find(item => item.date === todayIso);
+                const nextHoliday = list.find(item => item.date > todayIso);
+
+                const TH_MONTHS = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+                const EN_MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                const fmtHolidayDate = (isoStr) => {
+                    const [hy, hm, hd] = isoStr.split('-').map(Number);
+                    const curEra = this.dateEra || (lang === 'en' || lang === 'zh' ? 'ce' : 'be');
+                    const yr = curEra === 'be' ? (hy + 543) : hy;
+                    if (lang === 'en') return `${hd} ${EN_MONTHS[hm - 1]} ${yr}`;
+                    if (lang === 'zh') return `${yr}年${hm}月${hd}日`;
+                    return `${hd} ${TH_MONTHS[hm - 1]} ${yr}`;
+                };
+
+                if (kickerEl) {
+                    kickerEl.textContent = lang === 'en' ? 'HOLIDAYS · BTS SCHEDULE' : (lang === 'zh' ? 'HOLIDAYS · 泰国法定假日' : 'HOLIDAYS · วันหยุดราชการ');
+                }
+
+                const isWeekend = todayMid.getDay() === 0 || todayMid.getDay() === 6;
+                if (statusEl) {
+                    statusEl.classList.toggle('is-holiday', Boolean(todayHoliday || isWeekend));
+                    if (todayHoliday) {
+                        statusEl.textContent = lang === 'en' ? 'Today: Holiday' : (lang === 'zh' ? '今日: 法定假日' : 'วันนี้: วันหยุด');
+                    } else if (isWeekend) {
+                        statusEl.textContent = lang === 'en' ? 'Today: Weekend' : (lang === 'zh' ? '今日: 周末' : 'วันนี้: สุดสัปดาห์');
+                    } else {
+                        statusEl.textContent = lang === 'en' ? 'Today: Regular' : (lang === 'zh' ? '今日: 工作日' : 'วันนี้: วันปกติ');
+                    }
+                }
+
+                if (todayHoliday) {
+                    const hName = lang === 'en' ? todayHoliday.en : (lang === 'zh' ? todayHoliday.zh : todayHoliday.th);
+                    if (nextEl) {
+                        nextEl.textContent = lang === 'en' ? `Today: ${hName}` : (lang === 'zh' ? `今日假日: ${hName}` : `วันนี้: ${hName}`);
+                    }
+                    if (countEl) {
+                        countEl.classList.add('is-today');
+                        countEl.textContent = lang === 'en' ? 'Holiday' : (lang === 'zh' ? '假日' : 'วันนี้');
+                    }
+                    return;
+                }
+
+                if (countEl) countEl.classList.remove('is-today');
+                if (nextHoliday) {
+                    const [ny, nm, nd] = nextHoliday.date.split('-').map(Number);
+                    const targetMid = new Date(ny, nm - 1, nd);
+                    const diffDays = Math.max(1, Math.round((targetMid.getTime() - todayMid.getTime()) / 86400000));
+                    const hName = lang === 'en' ? nextHoliday.en : (lang === 'zh' ? nextHoliday.zh : nextHoliday.th);
+                    const hDateTxt = fmtHolidayDate(nextHoliday.date);
+                    if (nextEl) {
+                        nextEl.textContent = lang === 'en'
+                            ? `Next: ${hDateTxt} (${hName})`
+                            : (lang === 'zh' ? `下个假日: ${hDateTxt} (${hName})` : `ถัดไป: ${hDateTxt} (${hName})`);
+                    }
+                    if (countEl) {
+                        countEl.textContent = lang === 'en'
+                            ? `In ${diffDays}d`
+                            : (lang === 'zh' ? `${diffDays}天后` : `อีก ${diffDays} วัน`);
+                    }
+                } else {
+                    if (nextEl) {
+                        nextEl.textContent = lang === 'en' ? 'Check official BTS holiday calendar' : (lang === 'zh' ? '请关注BTS官方假日表' : 'ตรวจสอบประกาศวันหยุดประจำปี');
+                    }
+                    if (countEl) countEl.textContent = '--';
+                }
+            },
+
             setClockFormat(fmt) {
-                if (fmt !== '12' && fmt !== '24') fmt = '24';
+                if (fmt !== '12' && fmt !== '24' && fmt !== 'auto') fmt = 'auto';
                 this.clockFormat = fmt;
                 try {
                     localStorage.setItem('bkk_skytrains_clock_format', fmt);
@@ -8522,7 +8870,7 @@ setOriginFromActionSheet() {
             },
 
             toggleClockFormat() {
-                const nextFmt = this.clockFormat === '12' ? '24' : '12';
+                const nextFmt = this.resolveIs12HourClock() ? '24' : '12';
                 this.setClockFormat(nextFmt);
             },
 
@@ -8543,6 +8891,7 @@ setOriginFromActionSheet() {
                     localStorage.setItem('bkk_skytrains_date_era', era);
                 } catch (e) { }
                 this.startClock();
+                this.renderPopupHolidays();
                 this.renderMoreView();
             },
 
@@ -9550,7 +9899,7 @@ setOriginFromActionSheet() {
                 }
             },
 
-            // จัดตำแหน่งป้าย Toast ให้ชิดขอบล่างของการ์ดป๊อปอัป (ระยะห่าง 8px) เมื่อป๊อปอัปเปิดอยู่
+            // จัดตำแหน่งป้าย Toast ให้ลอยพ้นขอบล่างของการ์ดป๊อปอัป (ระยะห่าง 8px ไม่ซ้อนทับ 100%) เมื่อป๊อปอัปเปิดอยู่ หรือลอยพ้นขอบบนของแถบนำทาง 8px
             syncToastPosition() {
                 const el = document.getElementById('appToast');
                 if (!el || el.style.display === 'none') return;
@@ -9559,11 +9908,27 @@ setOriginFromActionSheet() {
                 if (isModalOpen) {
                     const card = modal.querySelector('.nearest-popup-card');
                     if (card) {
-                        const cardBottom = card.offsetTop + card.offsetHeight;
+                        // อ่านตำแหน่งขอบล่างตาม Layout จริง (ไม่ถูก transform ช่วง slideDownModal ดึงขึ้น)
+                        let cardBottom = card.offsetHeight;
+                        let cur = card;
+                        while (cur && cur !== modal && cur !== document.body) {
+                            cardBottom += cur.offsetTop;
+                            cur = cur.offsetParent;
+                        }
                         const toastHeight = el.offsetHeight || 48;
                         const maxTop = Math.max(8, window.innerHeight - toastHeight - 8);
                         const targetTop = Math.min(Math.round(cardBottom + 8), maxTop);
                         el.style.top = targetTop + 'px';
+                        el.style.bottom = 'auto';
+                        return;
+                    }
+                }
+                const bottomNav = document.querySelector('.bottom-nav');
+                if (bottomNav && !bottomNav.classList.contains('nav-hidden') && bottomNav.offsetHeight > 0) {
+                    const navRect = bottomNav.getBoundingClientRect();
+                    const toastHeight = el.offsetHeight || 40;
+                    if (navRect.top > toastHeight + 16 && navRect.top <= window.innerHeight) {
+                        el.style.top = Math.round(navRect.top - toastHeight - 8) + 'px';
                         el.style.bottom = 'auto';
                         return;
                     }
@@ -9576,6 +9941,10 @@ setOriginFromActionSheet() {
             showToast(msg, isCustomHtml = false) {
                 const el = document.getElementById('appToast');
                 if (!el) return;
+                if (!this._popupWindowResizeBound && typeof window !== 'undefined') {
+                    this._popupWindowResizeBound = true;
+                    window.addEventListener('resize', () => this.syncToastPosition(), { passive: true });
+                }
                 el.innerHTML = msg;
                 el.classList.toggle('toast-custom', Boolean(isCustomHtml));
                 el.style.display = 'inline-flex';
@@ -10030,6 +10399,9 @@ setOriginFromActionSheet() {
                 if (nameEN) nameEN.textContent = lang === 'en' ? (station.StationNameTH || station.StationName_TH || '') : (station.StationNameEN || station.StationName_EN || '');
 
                 this.updatePopupDistance(station);
+                this.updatePopupClock();
+                this.renderPopupHolidays();
+                this.refreshPopupWeather(false, station);
 
                 // พรีโหลดตำแหน่งขบวนรถรอบสถานีรอไว้
                 this.loadRoute(station);
@@ -10060,9 +10432,23 @@ setOriginFromActionSheet() {
                     this.lockBackgroundScreen();
                 }
                 const card = modal.querySelector('.nearest-popup-card');
+                const stack = modal.querySelector('.nearest-popup-stack');
+                const topCards = modal.querySelector('.popup-top-cards');
+                if (card && !this._popupCardAnimBound) {
+                    this._popupCardAnimBound = true;
+                    card.addEventListener('animationend', () => this.syncToastPosition(), { passive: true });
+                    if (topCards) {
+                        topCards.addEventListener('animationend', () => this.syncToastPosition(), { passive: true });
+                    }
+                    if (document.fonts && document.fonts.ready) {
+                        document.fonts.ready.then(() => this.syncToastPosition()).catch(() => {});
+                    }
+                }
                 if (card && !this._popupCardResizeObserver && typeof ResizeObserver !== 'undefined') {
                     this._popupCardResizeObserver = new ResizeObserver(() => this.syncToastPosition());
                     this._popupCardResizeObserver.observe(card);
+                    if (stack) this._popupCardResizeObserver.observe(stack);
+                    if (topCards) this._popupCardResizeObserver.observe(topCards);
                 }
                 if (!this._popupWindowResizeBound && typeof window !== 'undefined') {
                     this._popupWindowResizeBound = true;
@@ -10070,6 +10456,7 @@ setOriginFromActionSheet() {
                 }
                 this.syncToastPosition();
                 requestAnimationFrame(() => this.syncToastPosition());
+                setTimeout(() => this.syncToastPosition(), 320);
             },
 
             toggleNearestPopupRoute() {

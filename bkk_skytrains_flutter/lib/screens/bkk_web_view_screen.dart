@@ -38,7 +38,9 @@ class _BkkWebViewScreenState extends State<BkkWebViewScreen> {
     controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(const Color(0xFF10213A))
-      ..setUserAgent('BKKSkyTrains/App')
+      ..setUserAgent(defaultTargetPlatform == TargetPlatform.android
+          ? 'BKKSkyTrains/App (Android)'
+          : 'BKKSkyTrains/App (iOS)')
       ..setOnConsoleMessage((JavaScriptConsoleMessage message) {
         if (kDebugMode) {
           debugPrint('[JS ${message.level.name}] ${message.message}');

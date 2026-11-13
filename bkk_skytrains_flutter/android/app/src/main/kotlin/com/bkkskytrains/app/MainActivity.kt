@@ -240,7 +240,7 @@ class MainActivity : FlutterActivity() {
         val fallbackSummary = "$plat1Text: $cleanP1Time | $plat2Text: $cleanP2Time"
 
         val builder = NotificationCompat.Builder(this, CHANNEL_ID)
-            .setSmallIcon(R.mipmap.ic_launcher)
+            .setSmallIcon(R.drawable.ic_notif_app_icon)
             .setContentTitle(fallbackTitle)
             .setContentText(fallbackSummary)
             .setStyle(NotificationCompat.DecoratedCustomViewStyle())

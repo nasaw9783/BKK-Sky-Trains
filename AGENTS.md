@@ -118,10 +118,11 @@ Directives and mandatory standards for AI Agents working within `C:\Users\Admini
    - ทุกองค์ประกอบที่ไม่ใช่ช่องกรอกข้อมูลจะต้องมี `caret-color: transparent !important;`, `user-select: none !important;`, และ `cursor: default !important;` (หรือ `cursor: pointer` หากเป็นปุ่มกดหรือลิงก์)
 
 8. **Mandatory Build & VersionCode Increment Standard (ข้อกำหนดการอัปเดต Build / VersionCode ทุกครั้งที่เสร็จสิ้นงาน)**:
-   - เวอร์ชันปัจจุบัน: `v1.3.6 (Build 19)` (`1.3.6+19`) / Service Worker `bkk-v111`
-   - ทุกครั้งที่มีการแก้ไขโค้ด ปรับแต่งฟีเจอร์ หรือเขียนงานในระบบเสร็จสิ้น จะต้องอัปเดตเพิ่มหมายเลข Build / VersionCode (`+1`) เสมอ:
-     - อัปเดตใน `bkk_skytrains_flutter/pubspec.yaml`: เช่น `version: 1.3.6+19` -> `version: 1.3.6+20` (เพื่อใช้กำหนด `versionCode` ของ Android และ `CFBundleVersion` ของ iOS)
-     - อัปเดตในหน้าต่างข้อมูลแอปพลิเคชัน: แสดงเป็น `v1.3.6 (Build 20)` ใน `<span class="tag-value">` ทั้งใน `index.html` และ `bkk_skytrains_flutter/assets/www/index.html`
+   - เวอร์ชันปัจจุบัน: `v1.3.6 (Build 23)` (`1.3.6+23`) / Service Worker `bkk-v115`
+   - ทุกครั้งที่มีการแก้ไขโค้ด ปรับแต่งฟีเจอร์ หรือเขียนงานในระบบเสร็จสิ้น จะต้องอัปเดตเพิ่มหมายเลข Build / VersionCode (`+1`) เสมอให้ครบทุกจุด:
+     - อัปเดตใน `bkk_skytrains_flutter/pubspec.yaml`: เช่น `version: 1.3.6+23` -> `version: 1.3.6+24` (และ `flutter.versionCode` ใน `bkk_skytrains_flutter/android/local.properties` เพื่อกำหนด `versionCode` ของ Android และ `CFBundleVersion` ของ iOS)
+     - อัปเดตใน `js/app.js` (`App.build` และ fallback `currentBuildNum`) และ `sw.js` (`const VERSION = 'bkk-v...'` +1)
+     - อัปเดตในหน้าต่างข้อมูลแอปพลิเคชัน: แสดงเป็น `v1.3.6 (Build xx)` ใน `<span class="tag-value">` ทั้งใน `index.html`, `bkk_skytrains_flutter/assets/www/index.html` รวมถึงซิงค์ `js/app.js` และ `sw.js` ไปยัง `bkk_skytrains_flutter/assets/www/` ให้ตรงกัน 100%
 
 ---
 

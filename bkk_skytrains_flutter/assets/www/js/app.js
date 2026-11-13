@@ -750,11 +750,19 @@ const FALLBACK_MAX_KM = 3.0;
             // 🚶 Skywalk Pedestrian
             walk: (s, c, cls) => `<svg class="ui-ic ui-ic-walk ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || 'currentColor'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="13" cy="4" r="2"/><path d="m9 20 3-6-2.5-3.5L13 7l3 3.5-2 3.5 3 6"/><path d="m6 13 3-2.5"/></svg>`,
 
-            // 🛗 Elevator
-            elevator: (s, c, cls) => `<svg class="ui-ic ui-ic-elevator ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || '#8b5cf6'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="20" x="3" y="2" rx="2"/><path d="m8 8 2-2 2 2"/><path d="m8 16 2 2 2-2"/><path d="M15 7v10"/></svg>`,
+            // 🛗 Priority Elevator
+            elevator: (s, c, cls) => `<svg class="ui-ic ui-ic-elevator ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || 'currentColor'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="19" x="3" y="2.5" rx="3"/><path d="m7.5 8 2.5-2.5L12.5 8"/><path d="m7.5 16 2.5 2.5 2.5-2.5"/><path d="M16 6.5v11"/></svg>`,
 
             // 🪜 Escalator
-            escalator: (s, c, cls) => `<svg class="ui-ic ui-ic-escalator ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || 'currentColor'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 19 6-6h4l6-6"/><circle cx="5" cy="15" r="1.5"/></svg>`,
+            escalator: (s, c, cls) => `<svg class="ui-ic ui-ic-escalator ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || 'currentColor'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m4 18h4l6-8h6"/><circle cx="8" cy="8" r="1.8"/><path d="m9 11-1.5 3.5"/></svg>`,
+
+            // 🚻 Restroom / Toilet
+            toilet: (s, c, cls) => `<svg class="ui-ic ui-ic-toilet ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || 'currentColor'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18"/><circle cx="7" cy="5" r="1.8"/><path d="M5 18v-4a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v4"/><circle cx="17" cy="5" r="1.8"/><path d="M14.5 18l1.2-5.5a1.5 1.5 0 0 1 2.6 0L19.5 18"/></svg>`,
+            restroom: (s, c, cls) => `<svg class="ui-ic ui-ic-restroom ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || 'currentColor'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v18"/><circle cx="7" cy="5" r="1.8"/><path d="M5 18v-4a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v4"/><circle cx="17" cy="5" r="1.8"/><path d="M14.5 18l1.2-5.5a1.5 1.5 0 0 1 2.6 0L19.5 18"/></svg>`,
+
+            // ♿ Accessibility / Wheelchair Ramp
+            wheelchair: (s, c, cls) => `<svg class="ui-ic ui-ic-wheelchair ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || 'currentColor'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="4.5" r="2"/><path d="M12 9v4.5l3.5 1.5"/><path d="m15.5 15-2.5 4h-4"/><path d="M8.5 19A5 5 0 1 1 12 10.5"/></svg>`,
+            ramp: (s, c, cls) => `<svg class="ui-ic ui-ic-ramp ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || 'currentColor'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="4.5" r="2"/><path d="M12 9v4.5l3.5 1.5"/><path d="m15.5 15-2.5 4h-4"/><path d="M8.5 19A5 5 0 1 1 12 10.5"/></svg>`,
 
             // 📏 Ruler
             ruler: (s, c, cls) => `<svg class="ui-ic ui-ic-ruler ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || '#64748b'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.4 2.4 0 0 1 0-3.4l2.6-2.6a2.4 2.4 0 0 1 3.4 0Z"/><path d="m14.5 12.5 2-2"/><path d="m11.5 9.5 2-2"/><path d="m8.5 6.5 2-2"/><path d="m17.5 15.5 2-2"/></svg>`,
@@ -814,6 +822,42 @@ const FALLBACK_MAX_KM = 3.0;
             parking: (s, c, cls) => `<svg class="ui-ic ui-ic-parking ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || '#3b82f6'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="4"/><path d="M9 17V7h4a3 3 0 0 1 0 6H9"/></svg>`,
 
             // 💻 Device / System Auto
+                        // 🛍️ Shopping Mall / Retail
+            shopping: (s, c, cls) => `<svg class="ui-ic ui-ic-shopping ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || '#f59e0b'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" fill="${c || '#f59e0b'}" fill-opacity="0.18"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>`,
+
+            // 🎪 Expo / Arena / Convention / Stadium
+            expo: (s, c, cls) => `<svg class="ui-ic ui-ic-expo ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || '#ec4899'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 2-9 9 9 11 9-11-9-9Z" fill="${c || '#ec4899'}" fill-opacity="0.18"/><path d="M12 2v20"/><path d="m3 11 9-4 9 4"/><path d="M8 22V13"/><path d="M16 22V13"/></svg>`,
+
+            // 🐉 Chinatown / Traditional Gate / Dragon
+            chinatown: (s, c, cls) => `<svg class="ui-ic ui-ic-chinatown ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || '#ef4444'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 9c3-2 7-3 10-3s7 1 10 3M4 9v12M20 9v12M8 9V6M16 9V6M7 14h10M9 3h6" fill="${c || '#ef4444'}" fill-opacity="0.15"/></svg>`,
+
+            // 🏛️ Palace / Government / Heritage / Monument
+            palace: (s, c, cls) => `<svg class="ui-ic ui-ic-palace ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || '#38bdf8'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21h18M5 21V10M9 21V10M15 21V10M19 21V10M2 10l10-7 10 7M12 3v4" fill="${c || '#38bdf8'}" fill-opacity="0.15"/></svg>`,
+
+            // 🏥 Hospital / Medical Center
+            hospital: (s, c, cls) => `<svg class="ui-ic ui-ic-hospital ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || '#ef4444'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="3" rx="4" fill="${c || '#ef4444'}" fill-opacity="0.15"/><path d="M12 7v10M7 12h10" stroke-width="2.6"/></svg>`,
+
+            // 🌳 Tree / Public Park / Nature
+            tree: (s, c, cls) => `<svg class="ui-ic ui-ic-tree ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || '#10b981'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19v3M12 19a7 7 0 1 1 0-14 7 7 0 0 1 0 14Z" fill="${c || '#10b981'}" fill-opacity="0.22"/><path d="M9 19c-2-2-3-4-3-6a6 6 0 0 1 12 0c0 2-1 4-3 6"/></svg>`,
+
+            // 🏙️ City / Skyline / Empire Tower / Business Hub
+            city: (s, c, cls) => `<svg class="ui-ic ui-ic-city ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || '#00A99D'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 21V7a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v14M12 11h6a2 2 0 0 1 2 2v8M2 21h20" fill="${c || '#00A99D'}" fill-opacity="0.15"/><path d="M8 9h.01M8 13h.01M8 17h.01M16 15h.01M16 18h.01"/></svg>`,
+
+            // 🎓 University / Education
+            gradcap: (s, c, cls) => `<svg class="ui-ic ui-ic-gradcap ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || '#7AB420'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 10v6M2 10l10-5 10 5-10 5z" fill="${c || '#7AB420'}" fill-opacity="0.2"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>`,
+
+            // 🎡 Ferris Wheel / Riverfront
+            wheel: (s, c, cls) => `<svg class="ui-ic ui-ic-wheel ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || '#00807D'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.5" fill="${c || '#00807D'}"/><line x1="12" y1="3" x2="12" y2="21"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="5.6" y1="5.6" x2="18.4" y2="18.4"/><line x1="5.6" y1="18.4" x2="18.4" y2="5.6"/></svg>`,
+
+            // 🚉 Train Hub
+            train: (s, c, cls) => `<svg class="ui-ic ui-ic-train ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || '#38bdf8'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="16" height="15" x="4" y="3" rx="3" fill="${c || '#38bdf8'}" fill-opacity="0.15"/><path d="M4 11h16M8 15h.01M16 15h.01M7 21l2-3M17 21l-2-3"/></svg>`,
+
+            // 🛕 Temple Prang / Wat Arun
+            temple: (s, c, cls) => `<svg class="ui-ic ui-ic-temple ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || '#f59e0b'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2v4M4 8l8-2 8 2M6 8v5M18 8v5M2 13l10-2 10 2M4 13v7M20 13v7M2 20h20M9 20v-4h6v4" fill="${c || '#f59e0b'}" fill-opacity="0.15"/></svg>`,
+
+            // 🛒 Market / Cart
+            cart: (s, c, cls) => `<svg class="ui-ic ui-ic-cart ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || '#EC4899'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>`,
+
             device: (s, c, cls) => `<svg class="ui-ic ui-ic-device ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || 'currentColor'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>`
         };
 
@@ -824,6 +868,34 @@ const FALLBACK_MAX_KM = 3.0;
         }
         if (typeof window !== 'undefined') {
             window.getUiIcon = getUiIcon;
+        }
+
+        function getLandmarkIconSvg(iconKey, size = 15, color = '', extraClass = '') {
+            if (!iconKey) return '';
+            const emojiMap = {
+                '📍': 'pin',
+                '🛍️': 'shopping',
+                '🎪': 'expo',
+                '✈️': 'plane',
+                '🐉': 'chinatown',
+                '🏛️': 'palace',
+                '🏥': 'hospital',
+                '🌳': 'tree',
+                '🏙️': 'city',
+                '🎓': 'gradcap',
+                '🎡': 'wheel',
+                '🚉': 'train',
+                '⛵': 'boat',
+                '🛕': 'temple',
+                '🛒': 'cart',
+                '🚣': 'boat',
+                '🏢': 'city'
+            };
+            const key = emojiMap[iconKey] || iconKey;
+            return getUiIcon(key, size, color, extraClass) || getUiIcon('pin', size, color, extraClass);
+        }
+        if (typeof window !== 'undefined') {
+            window.getLandmarkIconSvg = getLandmarkIconSvg;
         }
 
 
@@ -854,7 +926,7 @@ const FALLBACK_MAX_KM = 3.0;
                 sub: 'สถานะรถไฟฟ้า BTS / MRT / SRT / ARL ณ ขณะนี้',
                 affiliation: 'ไม่เกี่ยวข้องกับทาง BTS/MRT/SRT/ARL',
                 nearestTitle: 'สถานีใกล้คุณที่สุด',
-                nearestExitTitle: 'ทางออกใกล้คุณที่สุด',
+                nearestExitTitle: 'ตรวจพบทางออกใกล้ตัวคุณ',
                 relocate: 'หาตำแหน่งปัจจุบัน',
                 findNearest: 'ค้นหาสถานีใกล้ฉัน',
                 findNearestExit: 'ระบุทางออกที่คุณยืนอยู่ด้วย GPS',
@@ -1210,7 +1282,7 @@ const FALLBACK_MAX_KM = 3.0;
                 sub: 'Real-time BTS / MRT / SRT / ARL trains status',
                 affiliation: 'Not affiliated with BTS/MRT/SRT/ARL.',
                 nearestTitle: 'Nearest station',
-                nearestExitTitle: 'Nearest Exit to You',
+                nearestExitTitle: 'Detected Nearest Exit',
                 relocate: 'Current Location',
                 findNearest: 'Find my nearest station',
                 findNearestExit: 'Find your nearest exit by GPS',
@@ -1566,7 +1638,7 @@ const FALLBACK_MAX_KM = 3.0;
                 sub: '曼谷 BTS / MRT / SRT / ARL 轨道交通实时运行状态',
                 affiliation: '非 BTS/MRT/SRT/ARL 官方应用',
                 nearestTitle: '离您最近的车站',
-                nearestExitTitle: '离您最近的出入口',
+                nearestExitTitle: '检测到最近的出入口',
                 relocate: '重新定位',
                 findNearest: '查找附近车站',
                 findNearestExit: '通过 GPS 确定您所在的出入口',
@@ -3205,137 +3277,276 @@ const FALLBACK_MAX_KM = 3.0;
             ];
         }
 
-        /* ================= TRANSIT LANDMARKS / POI DIRECTORY (FEATURE 3) ================= */
+                /* ================= TRANSIT LANDMARKS / POI DIRECTORY (FEATURE 3) ================= */
         const TRANSIT_LANDMARKS = [
+            // 1. BTS สายสุขุมวิท (LineId: 1, #7AB420)
             {
-                nameTH: 'ไอคอนสยาม', nameEN: 'ICONSIAM', nameZH: '暹罗天地 (ICONSIAM)',
-                stationKeys: ['G2', 'S6'],
-                keywords: ['iconsiam', 'ไอคอนสยาม', 'เจริญนคร', 'charoen nakhon', 'แม่น้ำเจ้าพระยา', 'chao phraya']
-            },
-            {
-                nameTH: 'สยามพารากอน', nameEN: 'Siam Paragon', nameZH: '暹罗百丽宫 (Siam Paragon)',
+                nameTH: 'สยามพารากอน / สยามสแควร์', nameEN: 'Siam Paragon & Siam Square', nameZH: '暹罗百丽宫与暹罗广场 (Siam Paragon)',
+                icon: 'shopping', lineId: 1, lineColor: '#7AB420',
                 stationKeys: ['CEN'],
-                keywords: ['paragon', 'พารากอน', 'siam paragon', 'สยามเซ็นเตอร์', 'siam center', 'siam discovery', 'สยามสแควร์']
+                keywords: ['paragon', 'พารากอน', 'siam paragon', 'สยามเซ็นเตอร์', 'siam center', 'siam discovery', 'สยามสแควร์', 'siam square', 'สยาม', 'siam']
             },
             {
-                nameTH: 'เซ็นทรัลเวิลด์', nameEN: 'CentralWorld', nameZH: '尚泰领使商场 (CentralWorld)',
+                nameTH: 'เซ็นทรัลเวิลด์ / ราชประสงค์', nameEN: 'CentralWorld & Ratchaprasong', nameZH: '尚泰领使商场 (CentralWorld)',
+                icon: 'shopping', lineId: 1, lineColor: '#7AB420',
                 stationKeys: ['CEN', 'E1'],
-                keywords: ['centralworld', 'central world', 'เซ็นทรัลเวิลด์', 'เซ็นทรัลเวิล', 'ctw', 'ราชประสงค์', 'ratchaprasong']
-            },
-            {
-                nameTH: 'เซ็นทรัล ลาดพร้าว', nameEN: 'Central Ladprao', nameZH: '拉抛尚泰百货 (Central Ladprao)',
-                stationKeys: ['N9', 'BL14'],
-                keywords: ['central ladprao', 'เซ็นทรัลลาดพร้าว', 'ห้าแยกลาดพร้าว', 'ยูเนี่ยนมอลล์', 'union mall']
-            },
-            {
-                nameTH: 'เซ็นทรัล พระราม 9', nameEN: 'Central Rama 9', nameZH: '拉玛九尚泰商场 (Central Rama 9)',
-                stationKeys: ['BL20'],
-                keywords: ['central rama 9', 'เซ็นทรัลพระราม 9', 'พระราม 9', 'ฟอร์จูนทาวน์', 'fortune town']
+                keywords: ['centralworld', 'central world', 'เซ็นทรัลเวิลด์', 'เซ็นทรัลเวิล', 'ctw', 'ราชประสงค์', 'ratchaprasong', 'gaysorn', 'เกษร', 'ชิดลม', 'chit lom']
             },
             {
                 nameTH: 'เทอร์มินอล 21 อโศก', nameEN: 'Terminal 21 Asok', nameZH: '航站楼21 (Terminal 21 Asok)',
+                icon: 'shopping', lineId: 1, lineColor: '#7AB420',
                 stationKeys: ['E4', 'BL22'],
-                keywords: ['terminal 21', 'terminal21', 'เทอร์มินอล 21', 'เทอร์มินอล', 'asok', 'อโศก']
+                keywords: ['terminal 21', 'terminal21', 'เทอร์มินอล 21', 'เทอร์มินอล', 'asok', 'อโศก', 'สุขุมวิท']
             },
             {
-                nameTH: 'เอ็มควอเทียร์ / เอ็มสเฟียร์ / เอ็มโพเรียม', nameEN: 'EM District (Emsphere/EmQuartier/Emporium)', nameZH: 'EM 商圈 (Emsphere/EmQuartier)',
+                nameTH: 'เอ็มดิสทริค (Emsphere / EmQuartier)', nameEN: 'EM District (Emsphere/EmQuartier/Emporium)', nameZH: 'EM 商圈 (Emsphere/EmQuartier)',
+                icon: 'shopping', lineId: 1, lineColor: '#7AB420',
                 stationKeys: ['E5'],
-                keywords: ['emquartier', 'emsphere', 'emporium', 'เอ็มควอเทียร์', 'เอ็มสเฟียร์', 'เอ็มโพเรียม', 'พร้อมพงษ์']
+                keywords: ['emquartier', 'emsphere', 'emporium', 'เอ็มควอเทียร์', 'เอ็มสเฟียร์', 'เอ็มโพเรียม', 'เอ็มดิสทริค', 'em district', 'พร้อมพงษ์', 'phrom phong']
             },
             {
-                nameTH: 'เอ็มบีเค เซ็นเตอร์ (มาบุญครอง)', nameEN: 'MBK Center', nameZH: 'MBK 购物中心 (玛芬宫)',
-                stationKeys: ['W1', 'CEN'],
-                keywords: ['mbk', 'mbk center', 'มาบุญครอง', 'สนามกีฬาแห่งชาติ', 'bacc', 'หอศิลป์']
-            },
-            {
-                nameTH: 'อิมแพ็ค เมืองทองธานี', nameEN: 'IMPACT Muang Thong Thani', nameZH: 'IMPACT 会展中心 (通他尼)',
-                stationKeys: ['MT01', 'MT02', 'PK10'],
-                keywords: ['impact', 'impact arena', 'อิมแพ็ค', 'อิมแพค', 'ชาเลนเจอร์', 'challenger', 'เมืองทอง', 'muang thong']
-            },
-            {
-                nameTH: 'ท่าอากาศยานสุวรรณภูมิ', nameEN: 'Suvarnabhumi Airport', nameZH: '素万那普国际机场 (BKK)',
-                stationKeys: ['A1'],
-                keywords: ['suvarnabhumi', 'airport', 'สุวรรณภูมิ', 'สนามบินสุวรรณภูมิ', 'bkk airport']
-            },
-            {
-                nameTH: 'ท่าอากาศยานดอนเมือง', nameEN: 'Don Mueang Airport', nameZH: '廊曼国际机场 (DMK)',
-                stationKeys: ['RN08', 'N8'],
-                keywords: ['don mueang', 'don muang', 'ดอนเมือง', 'สนามบินดอนเมือง', 'dmk airport']
+                nameTH: 'เซ็นทรัล ลาดพร้าว / ยูเนี่ยนมอลล์', nameEN: 'Central Ladprao & Union Mall', nameZH: '拉抛尚泰百货与联合商场 (Central Ladprao)',
+                icon: 'shopping', lineId: 1, lineColor: '#7AB420',
+                stationKeys: ['N9', 'BL14'],
+                keywords: ['central ladprao', 'เซ็นทรัลลาดพร้าว', 'ห้าแยกลาดพร้าว', 'ยูเนี่ยนมอลล์', 'union mall', 'ลาดพร้าว']
             },
             {
                 nameTH: 'ตลาดนัดจตุจักร', nameEN: 'Chatuchak Weekend Market', nameZH: '恰图恰周末市集 (Chatuchak)',
-                stationKeys: ['N8', 'BL13', 'BL12'],
-                keywords: ['chatuchak', 'jj market', 'จตุจักร', 'ตลาดนัดจตุจักร', 'สวนจตุจักร', 'หมอชิต']
-            },
-            {
-                nameTH: 'โรงพยาบาลศิริราช', nameEN: 'Siriraj Hospital', nameZH: '诗里拉吉医院 (Siriraj Hospital)',
-                stationKeys: ['BL04', 'BL05', 'RW02'],
-                keywords: ['siriraj', 'ศิริราช', 'โรงพยาบาลศิริราช', 'วังหลัง', 'บางขุนนนท์']
-            },
-            {
-                nameTH: 'โรงพยาบาลจุฬาลงกรณ์ / จุฬาฯ', nameEN: 'King Chulalongkorn Memorial Hospital / Chula', nameZH: '朱拉隆功医院 / 朱拉隆功大学',
-                stationKeys: ['S2', 'BL26', 'BL27'],
-                keywords: ['chula', 'จุฬา', 'จุฬาลงกรณ์', 'โรงพยาบาลจุฬา', 'สามย่าน', 'ศาลาแดง']
-            },
-            {
-                nameTH: 'ศูนย์ฯ สิริกิติ์ (QSNCC)', nameEN: 'QSNCC Convention Center', nameZH: '诗丽吉王后国家会议中心 (QSNCC)',
-                stationKeys: ['BL23'],
-                keywords: ['qsncc', 'ศูนย์สิริกิติ์', 'ศูนย์การประชุมแห่งชาติสิริกิติ์', 'queen sirikit']
+                icon: 'tree', lineId: 1, lineColor: '#7AB420',
+                stationKeys: ['N8', 'BL13'],
+                keywords: ['chatuchak', 'jj market', 'จตุจักร', 'ตลาดนัดจตุจักร', 'สวนจตุจักร', 'หมอชิต', 'mo chit']
             },
             {
                 nameTH: 'ไบเทค บางนา (BITEC)', nameEN: 'BITEC Bangna', nameZH: '曼谷国际贸易展览中心 (BITEC)',
+                icon: 'expo', lineId: 1, lineColor: '#7AB420',
                 stationKeys: ['E13'],
-                keywords: ['bitec', 'ไบเทค', 'ไบเทคบางนา', 'bitec bangna', 'บางนา']
+                keywords: ['bitec', 'ไบเทค', 'ไบเทคบางนา', 'bitec bangna', 'บางนา', 'bang na']
             },
             {
-                nameTH: 'เมกาบางนา (Mega Bangna)', nameEN: 'Mega Bangna', nameZH: 'Mega Bangna 购物中心',
+                nameTH: 'เมกาบางนา (Mega Bangna)', nameEN: 'Mega Bangna & IKEA', nameZH: 'Mega Bangna 购物中心与宜家',
+                icon: 'shopping', lineId: 1, lineColor: '#7AB420',
                 stationKeys: ['E12'],
-                keywords: ['mega bangna', 'megabangna', 'เมกาบางนา', 'อิเกีย', 'ikea bangna', 'อุดมสุข']
+                keywords: ['mega bangna', 'megabangna', 'เมกาบางนา', 'อิเกีย', 'ikea bangna', 'ikea', 'อุดมสุข', 'udom suk']
             },
             {
-                nameTH: 'สามย่านมิตรทาวน์', nameEN: 'Samyan Mitrtown', nameZH: '三养米特镇 (Samyan Mitrtown)',
-                stationKeys: ['BL27'],
-                keywords: ['samyan', 'mitrtown', 'สามย่าน', 'สามย่านมิตรทาวน์', 'samyan mitrtown']
+                nameTH: 'มหาวิทยาลัยเกษตรศาสตร์', nameEN: 'Kasetsart University (KU)', nameZH: '泰国农业大学 (Kasetsart)',
+                icon: 'gradcap', lineId: 1, lineColor: '#7AB420',
+                stationKeys: ['N13'],
+                keywords: ['kasetsart', 'ม.เกษตร', 'เกษตรศาสตร์', 'มหาวิทยาลัยเกษตรศาสตร์', 'ku', 'บางเขน']
+            },
+
+            // 2. BTS สายสีลม (LineId: 2, #00807D)
+            {
+                nameTH: 'เอ็มบีเค เซ็นเตอร์ (มาบุญครอง)', nameEN: 'MBK Center & BACC', nameZH: 'MBK 购物中心 (玛芬宫)',
+                icon: 'shopping', lineId: 2, lineColor: '#00807D',
+                stationKeys: ['W1', 'CEN'],
+                keywords: ['mbk', 'mbk center', 'มาบุญครอง', 'สนามกีฬาแห่งชาติ', 'national stadium', 'bacc', 'หอศิลป์', 'หอศิลปกรุงเทพ']
             },
             {
-                nameTH: 'เยาวราช / สำเพ็ง (Chinatown)', nameEN: 'Chinatown Yaowarat / Sampheng', nameZH: '曼谷唐人街 (耀华力路)',
-                stationKeys: ['BL29'],
-                keywords: ['yaowarat', 'เยาวราช', 'chinatown', 'สำเพ็ง', 'วัดมังกร']
-            },
-            {
-                nameTH: 'วัดพระแก้ว / พระบรมมหาราชวัง', nameEN: 'Grand Palace & Wat Phra Kaew', nameZH: '大皇宫与玉佛寺 (Grand Palace)',
-                stationKeys: ['BL31'],
-                keywords: ['grand palace', 'วัดพระแก้ว', 'พระบรมมหาราชวัง', 'สนามไชย', 'ท่าช้าง', 'ท่าเตียน']
-            },
-            {
-                nameTH: 'วัดอรุณราชวราราม', nameEN: 'Wat Arun (Temple of Dawn)', nameZH: '郑王庙 / 黎明寺 (Wat Arun)',
-                stationKeys: ['BL31', 'BL32'],
-                keywords: ['wat arun', 'วัดอรุณ', 'วัดอรุณราชวราราม', 'อิสรภาพ']
+                nameTH: 'สีลมคอมเพล็กซ์ / สวนลุมพินี', nameEN: 'Silom Complex & Lumphini Park', nameZH: '是隆综合大厦与伦披尼公园',
+                icon: 'tree', lineId: 2, lineColor: '#00807D',
+                stationKeys: ['S2', 'BL26'],
+                keywords: ['silom', 'silom complex', 'สีลม', 'สีลมคอมเพล็กซ์', 'สวนลุม', 'สวนลุมพินี', 'lumphini', 'lumpini', 'ศาลาแดง', 'sala daeng', 'พัฒน์พงศ์', 'patpong']
             },
             {
                 nameTH: 'เอเชียทีค เดอะ ริเวอร์ฟรอนท์', nameEN: 'Asiatique The Riverfront', nameZH: '摩天轮夜市 (Asiatique)',
-                stationKeys: ['S6'],
-                keywords: ['asiatique', 'เอเชียทีค', 'สะพานตากสิน', 'แม่น้ำเจ้าพระยา']
+                icon: 'wheel', lineId: 2, lineColor: '#00807D',
+                stationKeys: ['S6', 'B3'],
+                keywords: ['asiatique', 'เอเชียทีค', 'สะพานตากสิน', 'saphan taksin', 'แม่น้ำเจ้าพระยา', 'ท่าเรือสาทร', 'sathorn pier']
             },
             {
-                nameTH: 'ซีคอนสแควร์ ศรีนครินทร์', nameEN: 'Seacon Square Srinakarin', nameZH: '西康广场 (Seacon Square)',
+                nameTH: 'สถานีบางหว้า (จุดเชื่อมต่อฝั่งธนฯ)', nameEN: 'Bang Wa Interchange', nameZH: '挽哇换乘枢纽 (Bang Wa)',
+                icon: 'train', lineId: 2, lineColor: '#00807D',
+                stationKeys: ['S12', 'BL34'],
+                keywords: ['bang wa', 'บางหว้า', 'ม.สยาม', 'มหาวิทยาลัยสยาม', 'siam university', 'เพชรเกษม']
+            },
+
+            // 3. BTS สายสีทอง (LineId: 3, #C9A038)
+            {
+                nameTH: 'ไอคอนสยาม / ไอซีเอส', nameEN: 'ICONSIAM & ICS', nameZH: '暹罗天地 (ICONSIAM)',
+                icon: 'shopping', lineId: 3, lineColor: '#C9A038',
+                stationKeys: ['G2', 'S6'],
+                keywords: ['iconsiam', 'ไอคอนสยาม', 'เจริญนคร', 'charoen nakhon', 'ics', 'แม่น้ำเจ้าพระยา', 'chao phraya']
+            },
+            {
+                nameTH: 'คลองสาน / รพ.ตากสิน', nameEN: 'Khlong San & Taksin Hospital', nameZH: '空讪与达信医院 (Khlong San)',
+                icon: 'hospital', lineId: 3, lineColor: '#C9A038',
+                stationKeys: ['G3'],
+                keywords: ['khlong san', 'คลองสาน', 'รพ.ตากสิน', 'โรงพยาบาลตากสิน', 'taksin hospital', 'ท่าดินแดง']
+            },
+
+            // 4. MRT สายสีเหลือง (LineId: 4, #FFD100)
+            {
+                nameTH: 'ซีคอนสแควร์ ศรีนครินทร์', nameEN: 'Seacon Square & Paradise Park', nameZH: '西康广场 (Seacon Square)',
+                icon: 'shopping', lineId: 4, lineColor: '#FFD100',
                 stationKeys: ['YL15'],
-                keywords: ['seacon', 'seacon square', 'ซีคอน', 'ซีคอนสแควร์', 'พาราไดซ์', 'paradise park', 'สวนหลวง ร.9']
+                keywords: ['seacon', 'seacon square', 'ซีคอน', 'ซีคอนสแควร์', 'พาราไดซ์', 'paradise park', 'สวนหลวง ร.9', 'suan luang']
             },
             {
                 nameTH: 'เดอะมอลล์ ไลฟ์สโตร์ บางกะปิ', nameEN: 'The Mall Lifestore Bangkapi', nameZH: '邦卡皮商场 (The Mall Bangkapi)',
+                icon: 'shopping', lineId: 4, lineColor: '#FFD100',
                 stationKeys: ['YL08'],
-                keywords: ['the mall bangkapi', 'เดอะมอลล์บางกะปิ', 'บางกะปิ', 'ตะวันนา']
+                keywords: ['the mall bangkapi', 'เดอะมอลล์บางกะปิ', 'บางกะปิ', 'bangkapi', 'ตะวันนา', 'tawanna', 'ตลาดบางกะปิ']
             },
             {
-                nameTH: 'แฟชั่นไอส์แลนด์', nameEN: 'Fashion Island', nameZH: '时尚岛商场 (Fashion Island)',
+                nameTH: 'อิมพีเรียลเวิลด์ สำโรง', nameEN: 'Imperial World Samrong', nameZH: '三隆帝国商场 (Imperial Samrong)',
+                icon: 'shopping', lineId: 4, lineColor: '#FFD100',
+                stationKeys: ['YL23', 'E23'],
+                keywords: ['imperial samrong', 'อิมพีเรียลสำโรง', 'สำโรง', 'samrong', 'สุขุมวิท']
+            },
+
+            // 5. MRT สายสีชมพู (LineId: 5, #EC4899)
+            {
+                nameTH: 'แฟชั่นไอส์แลนด์ / พรอมานาด', nameEN: 'Fashion Island & Promenade', nameZH: '时尚岛商场 (Fashion Island)',
+                icon: 'shopping', lineId: 5, lineColor: '#EC4899',
                 stationKeys: ['PK25'],
-                keywords: ['fashion island', 'แฟชั่นไอส์แลนด์', 'เดอะพรอมานาด', 'promenade', 'รามอินทรา']
+                keywords: ['fashion island', 'แฟชั่นไอส์แลนด์', 'เดอะพรอมานาด', 'promenade', 'รามอินทรา', 'ram intra', 'วงแหวนรามอินทรา']
+            },
+            {
+                nameTH: 'ศูนย์ราชการเฉลิมพระเกียรติฯ แจ้งวัฒนะ', nameEN: 'Government Complex Chaeng Watthana', nameZH: '政府综合办公区 (Chaeng Watthana)',
+                icon: 'palace', lineId: 5, lineColor: '#EC4899',
+                stationKeys: ['PK12'],
+                keywords: ['government complex', 'ศูนย์ราชการ', 'ศูนย์ราชการแจ้งวัฒนะ', 'แจ้งวัฒนะ', 'chaeng watthana', 'กต', 'ดีเอสไอ', 'ศาล']
+            },
+            {
+                nameTH: 'ตลาดมีนบุรี', nameEN: 'Min Buri Market', nameZH: '民武里市集 (Min Buri Market)',
+                icon: 'cart', lineId: 5, lineColor: '#EC4899',
+                stationKeys: ['PK30'],
+                keywords: ['min buri', 'มีนบุรี', 'ตลาดมีนบุรี', 'minburi market']
+            },
+
+            // 6. MRT สายสีชมพู ส่วนต่อขยายอิมแพ็ค (LineId: 5, #C93B6E)
+            {
+                nameTH: 'อิมแพ็ค เมืองทองธานี (Challenger/Arena)', nameEN: 'IMPACT Muang Thong Thani', nameZH: 'IMPACT 会展中心与体育馆',
+                icon: 'expo', lineId: 5, lineColor: '#C93B6E',
+                stationKeys: ['MT01', 'PK10'],
+                keywords: ['impact', 'impact arena', 'อิมแพ็ค', 'อิมแพค', 'ชาเลนเจอร์', 'challenger', 'เมืองทอง', 'muang thong', 'อิมแพคอารีน่า']
+            },
+            {
+                nameTH: 'ทะเลสาบเมืองทองธานี / คอสโม บาซาร์', nameEN: 'Muang Thong Lake & Cosmo Bazaar', nameZH: '通他尼湖畔与 Cosmo 商场',
+                icon: 'boat', lineId: 5, lineColor: '#C93B6E',
+                stationKeys: ['MT02'],
+                keywords: ['lake muang thong', 'ทะเลสาบเมืองทอง', 'คอสโม', 'cosmo bazaar', 'ธันเดอร์โดม', 'thunder dome']
+            },
+
+            // 7. MRT สายสีน้ำเงิน (LineId: 101, #0284C7)
+            {
+                nameTH: 'เยาวราช / สำเพ็ง (Chinatown)', nameEN: 'Chinatown Yaowarat & Sampheng', nameZH: '曼谷唐人街 (耀华力路)',
+                icon: 'chinatown', lineId: 101, lineColor: '#0284C7',
+                stationKeys: ['BL29'],
+                keywords: ['yaowarat', 'เยาวราช', 'chinatown', 'สำเพ็ง', 'sampheng', 'วัดมังกร', 'wat mangkon']
+            },
+            {
+                nameTH: 'วัดพระแก้ว / พระบรมมหาราชวัง', nameEN: 'Grand Palace & Wat Phra Kaew', nameZH: '大皇宫与玉佛寺 (Grand Palace)',
+                icon: 'palace', lineId: 101, lineColor: '#0284C7',
+                stationKeys: ['BL31'],
+                keywords: ['grand palace', 'วัดพระแก้ว', 'พระบรมมหาราชวัง', 'สนามไชย', 'sanam chai', 'มิวเซียมสยาม', 'museum siam', 'ท่าช้าง', 'ท่าเตียน']
+            },
+            {
+                nameTH: 'วัดอรุณราชวราราม', nameEN: 'Wat Arun (Temple of Dawn)', nameZH: '郑王庙 / 黎明寺 (Wat Arun)',
+                icon: 'temple', lineId: 101, lineColor: '#0284C7',
+                stationKeys: ['BL31', 'BL32'],
+                keywords: ['wat arun', 'วัดอรุณ', 'วัดอรุณราชวราราม', 'อิสรภาพ', 'itsaraphap']
+            },
+            {
+                nameTH: 'สามย่านมิตรทาวน์ / จุฬาฯ', nameEN: 'Samyan Mitrtown & Chulalongkorn', nameZH: '三养米特镇与朱拉隆功大学',
+                icon: 'shopping', lineId: 101, lineColor: '#0284C7',
+                stationKeys: ['BL27'],
+                keywords: ['samyan', 'mitrtown', 'สามย่าน', 'สามย่านมิตรทาวน์', 'samyan mitrtown', 'จุฬา', 'chula', 'chulalongkorn']
+            },
+            {
+                nameTH: 'เซ็นทรัล พระราม 9 / ฟอร์จูนทาวน์', nameEN: 'Central Rama 9 & Fortune Town', nameZH: '拉玛九尚泰商场 (Central Rama 9)',
+                icon: 'shopping', lineId: 101, lineColor: '#0284C7',
+                stationKeys: ['BL20'],
+                keywords: ['central rama 9', 'เซ็นทรัลพระราม 9', 'พระราม 9', 'rama 9', 'ฟอร์จูนทาวน์', 'fortune town']
+            },
+            {
+                nameTH: 'ศูนย์ฯ สิริกิติ์ / สวนเบญจกิติ', nameEN: 'QSNCC & Benjakitti Forest Park', nameZH: '诗丽吉王后国家会议中心与森林公园',
+                icon: 'tree', lineId: 101, lineColor: '#0284C7',
+                stationKeys: ['BL23'],
+                keywords: ['qsncc', 'ศูนย์สิริกิติ์', 'ศูนย์การประชุมแห่งชาติสิริกิติ์', 'queen sirikit', 'เบญจกิติ', 'benjakitti']
+            },
+            {
+                nameTH: 'โรงพยาบาลศิริราช / วังหลัง', nameEN: 'Siriraj Hospital & Wang Lang Market', nameZH: '诗丽拉医院与王朗市场',
+                icon: 'hospital', lineId: 101, lineColor: '#0284C7',
+                stationKeys: ['BL04', 'RW02'],
+                keywords: ['siriraj', 'ศิริราช', 'โรงพยาบาลศิริราช', 'วังหลัง', 'wang lang', 'บางขุนนนท์', 'bang khun non']
+            },
+
+            // 8. MRT สายสีม่วง (LineId: 102, #8A2C9B)
+            {
+                nameTH: 'เซ็นทรัล เวสต์เกต / อิเกีย บางใหญ่', nameEN: 'Central Westgate & IKEA Bang Yai', nameZH: '中央西区尚泰商场与宜家 (Central Westgate)',
+                icon: 'shopping', lineId: 102, lineColor: '#8A2C9B',
+                stationKeys: ['PP02'],
+                keywords: ['central westgate', 'เซ็นทรัลเวสต์เกต', 'เวสต์เกต', 'westgate', 'ikea bang yai', 'อิเกียบางใหญ่', 'ตลาดบางใหญ่', 'บางใหญ่', 'bang yai']
+            },
+            {
+                nameTH: 'เซ็นทรัล รัตนาธิเบศร์', nameEN: 'Central Rattanathibet', nameZH: '拉达那提贝尚泰商场 (Central Rattanathibet)',
+                icon: 'shopping', lineId: 102, lineColor: '#8A2C9B',
+                stationKeys: ['PP10'],
+                keywords: ['central rattanathibet', 'เซ็นทรัลรัตนาธิเบศร์', 'รัตนาธิเบศร์', 'แยกนนทบุรี 1', 'yaek nonthaburi 1']
+            },
+            {
+                nameTH: 'ศูนย์ราชการนนทบุรี', nameEN: 'Nonthaburi Civic Center', nameZH: '暖武里政务中心 (Nonthaburi Civic Center)',
+                icon: 'palace', lineId: 102, lineColor: '#8A2C9B',
+                stationKeys: ['PP11'],
+                keywords: ['nonthaburi civic center', 'ศูนย์ราชการนนทบุรี', 'ศาลากลางนนทบุรี', 'นนทบุรี']
+            },
+
+            // 9. SRT สายสีแดงเข้ม (LineId: 103, #B91C1C)
+            {
+                nameTH: 'ท่าอากาศยานดอนเมือง (DMK)', nameEN: 'Don Mueang Airport (DMK)', nameZH: '廊曼国际机场 (DMK Airport)',
+                icon: 'plane', lineId: 103, lineColor: '#B91C1C',
+                stationKeys: ['RN08', 'N8'],
+                keywords: ['don mueang', 'don muang', 'ดอนเมือง', 'สนามบินดอนเมือง', 'dmk airport', 'dmk']
+            },
+            {
+                nameTH: 'ฟิวเจอร์พาร์ค รังสิต / สเปลล์ (Zpell)', nameEN: 'Future Park Rangsit & Zpell', nameZH: '未来公园兰实商场 (Future Park Rangsit)',
+                icon: 'shopping', lineId: 103, lineColor: '#B91C1C',
+                stationKeys: ['RN10'],
+                keywords: ['future park', 'future park rangsit', 'ฟิวเจอร์พาร์ค', 'ฟิวเจอร์รังสิต', 'สเปลล์', 'zpell', 'รังสิต', 'rangsit']
             },
             {
                 nameTH: 'สถานีกลางกรุงเทพอภิวัฒน์', nameEN: 'Krung Thep Aphiwat Central Terminal', nameZH: '曼谷阿披瓦中央车站',
+                icon: 'train', lineId: 103, lineColor: '#B91C1C',
                 stationKeys: ['BL11', 'RN01'],
-                keywords: ['krung thep aphiwat', 'กรุงเทพอภิวัฒน์', 'สถานีกลางบางซื่อ', 'บางซื่อ', 'bang sue']
+                keywords: ['krung thep aphiwat', 'กรุงเทพอภิวัฒน์', 'สถานีกลางบางซื่อ', 'บางซื่อ', 'bang sue', 'รถไฟทางไกล']
+            },
+
+            // 10. SRT สายสีแดงอ่อน (LineId: 105, #F87171)
+            {
+                nameTH: 'ตลาดน้ำตลิ่งชัน', nameEN: 'Taling Chan Floating Market', nameZH: '大林江水上市场 (Taling Chan)',
+                icon: 'boat', lineId: 105, lineColor: '#F87171',
+                stationKeys: ['RW04', 'RW01'],
+                keywords: ['taling chan', 'ตลิ่งชัน', 'ตลาดน้ำตลิ่งชัน', 'floating market', 'ชุมทางตลิ่งชัน']
+            },
+
+            // 11. ARL แอร์พอร์ต เรล ลิงก์ (LineId: 104, #8A1538)
+            {
+                nameTH: 'ท่าอากาศยานสุวรรณภูมิ (BKK)', nameEN: 'Suvarnabhumi Airport (BKK)', nameZH: '素万那普国际机场 (BKK Airport)',
+                icon: 'plane', lineId: 104, lineColor: '#8A1538',
+                stationKeys: ['A1'],
+                keywords: ['suvarnabhumi', 'airport', 'สุวรรณภูมิ', 'สนามบินสุวรรณภูมิ', 'bkk airport', 'bkk']
+            },
+            {
+                nameTH: 'มักกะสัน ซิตี้แอร์เทอร์มินัล', nameEN: 'Makkasan City Air Terminal', nameZH: '玛卡讪城市候机楼 (Makkasan)',
+                icon: 'city', lineId: 104, lineColor: '#8A1538',
+                stationKeys: ['A6', 'BL21'],
+                keywords: ['makkasan', 'มักกะสัน', 'เพชรบุรี', 'phetchaburi', 'asok', 'อโศก']
+            },
+
+            // 12. BRT รถโดยสารด่วนพิเศษ (LineId: 201, #82C341)
+            {
+                nameTH: 'เอ็มไพร์ ทาวเวอร์ / สาทร', nameEN: 'Empire Tower Sathorn', nameZH: '沙吞帝国大厦 (Empire Tower)',
+                icon: 'city', lineId: 201, lineColor: '#82C341',
+                stationKeys: ['B1', 'S3'],
+                keywords: ['empire tower', 'เอ็มไพร์ทาวเวอร์', 'สาทร', 'sathorn', 'chong nonsi', 'ช่องนนทรี']
+            },
+            {
+                nameTH: 'เดอะมอลล์ ไลฟ์สโตร์ ท่าพระ', nameEN: 'The Mall Lifestore Thapra', nameZH: '塔帕商场 (The Mall Thapra)',
+                icon: 'shopping', lineId: 201, lineColor: '#82C341',
+                stationKeys: ['B12', 'S10'],
+                keywords: ['the mall thapra', 'เดอะมอลล์ท่าพระ', 'ท่าพระ', 'thapra', 'ตลาดพลู', 'talat phlu', 'ราชพฤกษ์']
             }
         ];
 
@@ -4294,7 +4505,7 @@ const FALLBACK_MAX_KM = 3.0;
         /* ================= APP ================= */
         const App = {
             version: '1.3.6',
-            build: 19,
+            build: 23,
             _hasApkUpdate: undefined,
             _isCheckingApkUpdate: false,
             _latestApkDownloadUrl: null,
@@ -4335,7 +4546,7 @@ const FALLBACK_MAX_KM = 3.0;
             mapMode: 'schematic', // 'schematic' | 'hybrid'
             geoMap: null,
             geoTileLayers: {},
-            geoCurrentLayer: 'hybrid',
+            geoCurrentLayer: 'roadmap',
             geoStationMarkers: [],
             geoLinesGroup: null,
             geoMarkersGroup: null,
@@ -4354,6 +4565,7 @@ const FALLBACK_MAX_KM = 3.0;
                 // Update bottom tabs and ensure nav is revealed
                 const nav = document.querySelector('.bottom-nav');
                 if (nav) nav.classList.remove('nav-hidden');
+                if (this._resetScrollNavAnchor) this._resetScrollNavAnchor();
                 document.querySelectorAll('.bottom-nav .nav-tab').forEach(tab => {
                     tab.classList.toggle('active', tab.id === 'tab-' + viewName);
                 });
@@ -4375,6 +4587,7 @@ const FALLBACK_MAX_KM = 3.0;
                 if (viewName === 'home') {
                     this.scrollActiveTabIntoView();
                     this.renderFavoritesBar();
+                this.renderPoiQuickChips();
                 } else if (viewName === 'map') {
                     if (this.mapMode === 'hybrid') {
                         this.initGoogleHybridMap();
@@ -4391,6 +4604,9 @@ const FALLBACK_MAX_KM = 3.0;
                 } else if (viewName === 'exits') {
                     const fallback = this.pinnedStation()?.StationKey || this.nearest?.station?.StationKey || 'CEN';
                     this.renderExitsView(this.selectedExitKey || fallback);
+                    if (!this.userPos && !this.locating) {
+                        this.locate(false);
+                    }
                 } else if (viewName === 'planner') {
                     this.journey.open = true;
                     this.renderJourney();
@@ -4725,7 +4941,7 @@ const FALLBACK_MAX_KM = 3.0;
                 if (!el) return;
 
                 if (this.locating && !this.userPos) {
-                    el.innerHTML = `<button class="btn btn-big" disabled><span class="spin"></span> ${T('locating')}</button>`;
+                    el.innerHTML = `<button class="btn btn-big gps-locate-btn" disabled><span class="spin"></span> ${T('locating')}</button>`;
                     return;
                 }
 
@@ -4733,7 +4949,7 @@ const FALLBACK_MAX_KM = 3.0;
                     const locateExitLabel = lang === 'zh' ? '通过 GPS 查找最近的出入口' : (lang === 'th' ? 'ระบุทางออกที่คุณยืนอยู่ด้วย GPS' : 'Find your nearest exit by GPS');
                     el.innerHTML =
                         (this.locError ? `<div class="err-box" style="margin:0 0 10px">${this.locError}</div>` : '') +
-                        `<button class="btn btn-big" onclick="App.locateExitGps(true)">${getUiIcon('pin', 16, '#ffffff')} ${locateExitLabel}</button>`;
+                        `<div class="gps-locate-prompt"><button class="btn btn-big gps-locate-btn" onclick="App.locateExitGps(true)">${getUiIcon('compass', 16, '#ffffff')} <span>${locateExitLabel}</span></button></div>`;
                     return;
                 }
 
@@ -4760,91 +4976,55 @@ const FALLBACK_MAX_KM = 3.0;
                 }).sort((a, b) => a.meters - b.meters);
 
                 const nearestExit = exitsWithDist[0];
-                const isAtStation = this.userPos?.calibrated || nearestExit.meters <= 450;
                 const mUnit = lang === 'zh' ? '米' : (lang === 'th' ? 'เมตร' : 'm');
                 const kmUnit = lang === 'zh' ? '公里' : (lang === 'th' ? 'กม.' : 'km');
-                const mUnitShort = lang === 'zh' ? '米' : (lang === 'th' ? 'ม.' : 'm');
-                const kmUnitShort = lang === 'zh' ? '公里' : (lang === 'th' ? 'กม.' : 'km');
 
                 const distText = nearestExit.meters < 1000
                     ? `${nearestExit.meters} ${mUnit}`
                     : `${(nearestExit.meters / 1000).toFixed(1)} ${kmUnit}`;
 
-                const color = s.StationLineColor || '#7AB420';
                 const allLines = [...this.lines, ...MRT_STATIC_DB.lines];
                 const lineObj = this.lineById[s.StationLineId] || allLines.find(l => l.LineId === s.StationLineId);
                 const lineLabel = lineObj ? (lang === 'zh' ? (LINE_NAMES_ZH[lineObj.LineId] || lineObj.LineName_EN || lineObj.LineName_TH) : (lang === 'en' ? (lineObj.LineName_EN || lineObj.LineName_TH) : (lineObj.LineName_TH || ''))) : '';
 
-                const headline = isAtStation
-                    ? (lang === 'zh' ? `您正位于 <b>出入口 ${nearestExit.exit}</b> 附近` : (lang === 'th' ? `คุณยืนอยู่บริเวณ <b>ทางออก ${nearestExit.exit}</b>` : `You are standing near <b>Exit ${nearestExit.exit}</b>`))
-                    : (lang === 'zh' ? `距您当前位置最近的出入口为 <b>出入口 ${nearestExit.exit}</b>` : (lang === 'th' ? `ทางออกที่ใกล้จุดที่คุณอยู่ที่สุดคือ <b>ทางออก ${nearestExit.exit}</b>` : `Closest exit from your location is <b>Exit ${nearestExit.exit}</b>`));
-
-                const statusBadge = isAtStation
-                    ? `<span class="badge near-b" style="font-size:10px">${getUiIcon('pin', 11, '#16a34a')} ${lang === 'zh' ? '您当前所在位置' : (lang === 'th' ? 'จุดที่คุณยืนอยู่' : 'Your Location')}</span>`
-                    : `<span class="badge" style="background:#e0f2fe;color:#0369a1;font-size:10px">${lang === 'zh' ? '就近车站' : (lang === 'th' ? 'สถานีใกล้คุณ' : 'Nearest Station')}</span>`;
-
+                const exitWord = lang === 'zh' ? '出入口' : (lang === 'th' ? 'ทางออก' : 'Exit');
                 const lm = lang === 'zh' ? (nearestExit.landmarks_zh || nearestExit.landmarks_en || nearestExit.landmarks_th) : (lang === 'th' ? nearestExit.landmarks_th : (nearestExit.landmarks_en || nearestExit.landmarks_th));
 
-                const facilityBadges = (nearestExit.facilities || []).map(f => {
-                    if (f === 'skywalk') return `<span class="facility-chip skywalk">${getUiIcon('walk', 13, 'currentColor')} ${lang === 'zh' ? '空中连廊' : (lang === 'th' ? 'ทางเชื่อมสกายวอล์ก' : 'Skywalk Link')}</span>`;
-                    if (f === 'elevator') return `<span class="facility-chip elevator">${getUiIcon('elevator', 13, 'currentColor')} ${lang === 'zh' ? '无障碍/长者专用电梯' : (lang === 'th' ? 'ลิฟต์คนพิการ/ผู้สูงอายุ' : 'Priority Elevator')}</span>`;
-                    if (f === 'escalator') return `<span class="facility-chip">${getUiIcon('escalator', 13, 'currentColor')} ${lang === 'zh' ? '自动扶梯' : (lang === 'th' ? 'บันไดเลื่อน' : 'Escalator')}</span>`;
-                    return '';
-                }).join('');
-
-                const exitWord = lang === 'zh' ? '出入口' : (lang === 'th' ? 'ทางออก' : 'Exit');
-                const altChips = exitsWithDist.map(ex => {
-                    const isSelected = ex.exit === nearestExit.exit;
-                    const dStr = ex.meters < 1000 ? `~${ex.meters} ${mUnitShort}` : `~${(ex.meters / 1000).toFixed(1)} ${kmUnitShort}`;
-                    return `
-                        <button type="button" class="alt-chip ${isSelected ? 'on' : ''}" onclick="App.scrollToExit(${ex.exit}, '${esc(s.StationKey)}')">
-                            <span class="dot" style="background:${isSelected ? '#16a34a' : '#94a3b8'}"></span>
-                            <span>${exitWord} ${ex.exit}</span>
-                            <span class="km">${dStr}</span>
-                        </button>`;
-                }).join('');
-
                 const isCurrentDirectoryStation = this.selectedExitKey === s.StationKey;
-                const calibrateExitBtn = (!this.userPos?.calibrated && nearestExit.meters > 120 && nearestExit.meters <= 800)
-                    ? `<button class="btn btn-ghost" style="padding:3px 8px;font-size:11px;color:var(--primary,#0284c7);border:1px dashed var(--primary,#0284c7);border-radius:8px;margin-left:auto" onclick="App.calibrateToStation('${esc(s.StationKey)}')">${getUiIcon('pin', 12, 'currentColor')} ${lang === 'zh' ? '我在此站' : (lang === 'th' ? 'ฉันอยู่ที่สถานีนี้' : "I'm at this station")}</button>`
-                    : '';
                 const viewDirectoryBtn = !isCurrentDirectoryStation
-                    ? `<button class="btn btn-ghost view-dir-btn" style="padding:3px 8px;font-size:11px;margin-left:${calibrateExitBtn ? '6px' : 'auto'}" onclick="App.selectExitStation('${esc(s.StationKey)}')">${getUiIcon('door', 13, 'currentColor')} ${lang === 'zh' ? '查看本站出入口名录 ➔' : (lang === 'th' ? 'เปิดไดเรกทอรีสถานีนี้ ➔' : 'View Station Exits ➔')}</button>`
+                    ? `<button class="btn btn-ghost view-dir-btn" style="padding:3px 8px;font-size:11px;margin-left:auto;margin-top:6px;" onclick="App.selectExitStation('${esc(s.StationKey)}')">${getUiIcon('door', 13, 'currentColor')} ${lang === 'zh' ? '查看本站出入口名录 ➔' : (lang === 'th' ? 'เปิดไดเรกทอรีสถานีนี้ ➔' : 'View Station Exits ➔')}</button>`
                     : '';
 
-                    const isBrt = s.StationLineId === 201;
-                    el.innerHTML = `
-                    ${this.locError ? `<div class="err-box" style="margin:0 0 10px">${this.locError}</div>` : ''}
-                    <div class="current-exit-hero">
-                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;padding-bottom:8px;border-bottom:1px dashed var(--line);flex-wrap:wrap">
-                            <span class="st-key ${isBrt ? 'st-key-brt' : ''}" style="${isBrt ? '' : 'background:' + color + ';'}font-size:12px;padding:3px 8px">${esc(s.StationKey)}</span>
-                            <div>
-                                <span style="font-weight:700;font-size:14px;color:var(--ink)">${esc(stName(s))}</span>
-                                <span style="font-size:11px;color:var(--muted);margin-left:6px">${esc(lineLabel)}</span>
-                            </div>
-                            ${statusBadge}
-                            ${calibrateExitBtn}
-                            ${viewDirectoryBtn}
-                        </div>
-                        <div class="box-content">
-                            <div class="exit-circle-lg">
+                // Option 3: Integrated Transit Station Bar (สไตล์การ์ดหน้าแรก)
+                const stBadgeColor = lineObj ? (lineObj.LineColor || '#7AB420') : '#7AB420';
+                const badgeTextColor = (lineObj && lineObj.TextColor) ? lineObj.TextColor : '#ffffff';
+                const hereLabel = lang === 'zh' ? '当前所在站' : (lang === 'th' ? 'จุดที่คุณยืนอยู่' : 'You are here');
+                const nearestExitLabel = lang === 'zh' ? '最近出入口' : (lang === 'th' ? 'ทางออกที่ใกล้ที่สุด' : 'Nearest Exit');
+
+                el.innerHTML = `
+                    <div class="integrated-st-bar">
+                        <span class="line-key-badge" style="background:${stBadgeColor};color:${badgeTextColor}">${esc(s.StationKey)}</span>
+                        <span class="st-title-text">${esc(stName(s))}</span>
+                        <span class="you-are-here-pill" style="margin-left:auto;">${getUiIcon('pin', 10, '#10b981')} <span>${hereLabel}</span></span>
+                    </div>
+                    <div class="gps-proximity-banner" onclick="App.scrollToExit(${nearestExit.exit}, '${esc(s.StationKey)}')">
+                        <div class="gps-left">
+                            <div class="gps-pulse-circle">
                                 <span class="sub">EXIT</span>
                                 <span class="num">${nearestExit.exit}</span>
                             </div>
-                            <div class="box-details">
-                                <div class="headline">${headline}</div>
-                                <div class="dist-tag">${getUiIcon('ruler', 14, 'var(--primary,#0284c7)')} ${lang === 'zh' ? '距您所在位置约' : (lang === 'th' ? 'ระยะห่างประมาณ' : 'Approx.')} <b>${distText}</b> ${lang === 'zh' ? '' : (lang === 'th' ? 'จากจุดที่คุณยืน' : 'from your location')}</div>
-                                <div class="landmark-tag">${getUiIcon('door', 14, 'var(--text-sub,#64748b)')} ${esc(lm)}</div>
+                            <div class="gps-info">
+                                <div class="tag">
+                                    ${getUiIcon('pin', 10, '#34d399')}
+                                    <span>${nearestExitLabel}</span>
+                                </div>
+                                <div class="loc-desc">${exitWord} ${nearestExit.exit} · ${esc(lm)}</div>
+                                <div class="loc-sub">${esc(stName(s))} (${esc(lineLabel)})</div>
                             </div>
                         </div>
-                        ${facilityBadges ? `<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px">${facilityBadges}</div>` : ''}
-                        <div style="margin-top:12px;padding-top:10px;border-top:1px dashed var(--line)">
-                            <div style="font-size:11.5px;color:var(--muted);margin-bottom:6px;font-weight:600">
-                                ${lang === 'zh' ? '本站全部出入口 (点击查看详情):' : (lang === 'th' ? 'ทางออกทั้งหมดของสถานีนี้ (แตะเพื่อดูรายละเอียด):' : 'All exits of this station (tap to jump to details):')}
-                            </div>
-                            <div class="alt-row">${altChips}</div>
-                        </div>
-                    </div>`;
+                        <div class="gps-dist-pill">~${distText}</div>
+                    </div>
+                    ${viewDirectoryBtn ? `<div style="display:flex;justify-content:flex-end;">${viewDirectoryBtn}</div>` : ''}`;
             },
 
             renderExitsView(selectedKey) {
@@ -4971,89 +5151,151 @@ const FALLBACK_MAX_KM = 3.0;
                 // 6. Update Nearest Exit Hero Card at the top of View 4
                 this.renderNearestExit();
 
-                // 7. Render Station Hero
-                const mUnitEx = lang === 'zh' ? '米' : (lang === 'th' ? 'ม.' : 'm');
-                const kmUnitEx = lang === 'zh' ? '公里' : (lang === 'th' ? 'กม.' : 'km');
-                const exitHint = nearestExitInfo ? `
-                    <div class="dist-chip">
-                        <div class="v">${lang === 'zh' ? '出入口' : (lang === 'th' ? 'ทางออก' : 'Exit')} ${nearestExitInfo.exit}</div>
-                        <div class="l">${lang === 'zh' ? '就近方向' : (lang === 'th' ? 'ใกล้ทิศทางคุณ' : 'Nearest')} (~${nearestExitInfo.meters < 1000 ? nearestExitInfo.meters + ' ' + mUnitEx : (nearestExitInfo.meters/1000).toFixed(1) + ' ' + kmUnitEx})</div>
-                    </div>` : '';
+                // 7. Station Hero Header (Option A: Empty to eliminate duplicate station card, title displayed in custom trigger)
+                heroEl.innerHTML = '';
 
-                heroEl.innerHTML = `
-                    <div class="station-hero" style="margin-bottom:12px">
-                        <div class="key-badge" style="background:${color}">${esc(s.StationKey)}</div>
-                        <div class="names">
-                            <div class="th">${esc(stName(s))}</div>
-                            <div class="en">${esc(s.StationName_EN || s.StationNameEN || '')} ${connBadges(s.StationKey, s.StationLineId)}</div>
-                        </div>
-                        ${exitHint}
-                    </div>`;
-
-                // 8. Render Station Facility Summary Grid & Exit Directory List (FEATURE 5)
+                // 8. Render Station Facility Summary Grid & Exit Directory List (Option A: Unified Modern Wayfinding Hub)
                 const elevatorExits = exits.filter(e => (e.facilities || []).includes('elevator')).map(e => e.exit);
                 const skywalkExits = exits.filter(e => (e.facilities || []).includes('skywalk')).map(e => e.exit);
                 const hasParking = STATION_PARKING_KEYS.has(s.StationKey);
                 const toiletInfo = getStationToiletInfo(s);
 
+                const facElevatorLabel = lang === 'zh' ? '无障碍电梯' : (lang === 'en' ? 'Priority Elevator' : 'ลิฟต์คนพิการ/ผู้สูงอายุ');
+                const facElevatorVal = elevatorExits.length ? (lang === 'zh' ? `出入口 ${elevatorExits.join(', ')}` : (lang === 'en' ? `Exit ${elevatorExits.join(', ')}` : `ทางออก ${elevatorExits.join(', ')}`)) : (lang === 'zh' ? '有无障碍服务' : (lang === 'en' ? 'Available' : 'มีให้บริการ'));
+                const facElevatorSub = lang === 'zh' ? '直达站厅及站台' : (lang === 'en' ? 'Concourse & Platform' : 'ทุกชั้นชานชาลา');
+
+                const facToiletLabel = lang === 'zh' ? '卫生间' : (lang === 'en' ? 'Restroom' : 'ห้องน้ำสาธารณะ');
+                const facToiletSub = lang === 'zh' ? '干净安全' : (lang === 'en' ? 'Clean & Safe' : 'สะอาด สะดวก ปลอดภัย');
+
+                const facSkywalkLabel = lang === 'zh' ? '连廊天桥/人行道' : (lang === 'en' ? 'Skywalk / Walkway' : 'ทางเดินเท้า / สกายวอล์ก');
+                const facSkywalkVal = skywalkExits.length ? (lang === 'zh' ? `出入口 ${skywalkExits.join(', ')}` : (lang === 'en' ? `Exit ${skywalkExits.join(', ')}` : `ทางออก ${skywalkExits.join(', ')}`)) : (lang === 'zh' ? '连接地面人行道' : (lang === 'en' ? 'Street Level Link' : 'เชื่อมต่อฟุตบาทรอบด้าน'));
+                const facSkywalkSub = lang === 'zh' ? '安全步行连廊' : (lang === 'en' ? 'Direct Link' : 'ทางเดินเชื่อมอาคาร');
+
+                const facRampLabel = hasParking
+                    ? (lang === 'zh' ? '换乘停车场' : (lang === 'en' ? 'Park & Ride' : 'อาคารจอดแล้วจร'))
+                    : (lang === 'zh' ? '无障碍坡道' : (lang === 'en' ? 'Wheelchair Ramp' : 'ทางลาดวีลแชร์'));
+                const facRampVal = hasParking
+                    ? (lang === 'zh' ? 'มีอาคารจอดรถ' : (lang === 'en' ? 'Parking Available' : 'มีอาคารจอดรถ'))
+                    : (lang === 'zh' ? '无障碍通行' : (lang === 'en' ? 'Available' : 'มีให้บริการ'));
+                const facRampSub = hasParking
+                    ? (lang === 'zh' ? '支持汽车及摩托车' : (lang === 'en' ? 'Car & Motorbike' : 'รองรับรถยนต์ / รถจักรยานยนต์'))
+                    : (lang === 'zh' ? '国际标准无障碍坡道' : (lang === 'en' ? 'Universal Access' : 'ทางลาดมาตรฐานสากล'));
+
                 const facGridHtml = `
-                    <div class="facility-summary-grid">
-                        <div class="fac-badge-card">
-                            <span class="fac-badge-icon">🛗</span>
-                            <div class="fac-badge-info">
-                                <span class="fac-badge-name">${lang === 'zh' ? '无障碍电梯' : (lang === 'en' ? 'Priority Elevator' : 'ลิฟต์โดยสาร')}</span>
-                                <span class="fac-badge-count">${elevatorExits.length ? (lang === 'zh' ? `出入口 ${elevatorExits.join(', ')}` : (lang === 'en' ? `Exit ${elevatorExits.join(', ')}` : `ทางออก ${elevatorExits.join(', ')}`)) : (lang === 'zh' ? '有无障碍服务' : (lang === 'en' ? 'Available' : 'มีให้บริการ'))}</span>
+                    <div class="facility-section-title">
+                        ${getUiIcon('check', 13, 'var(--accent, #10b981)')}
+                        <span>${lang === 'zh' ? '车站便民设施' : (lang === 'en' ? 'Station Facilities' : 'สิ่งอำนวยความสะดวกประจำสถานี')}</span>
+                    </div>
+                    <div class="facility-grid-v2">
+                        <div class="fac-card-v2 elevator">
+                            <div class="fac-icon-wrap">${getUiIcon('elevator', 16, '#38bdf8')}</div>
+                            <div class="fac-meta">
+                                <div class="label">${facElevatorLabel}</div>
+                                <div class="value">${facElevatorVal}</div>
+                                <div class="sub-hint">${facElevatorSub}</div>
                             </div>
                         </div>
-                        <div class="fac-badge-card">
-                            <span class="fac-badge-icon">🚻</span>
-                            <div class="fac-badge-info">
-                                <span class="fac-badge-name">${lang === 'zh' ? '卫生间' : (lang === 'en' ? 'Restroom' : 'ห้องน้ำสาธารณะ')}</span>
-                                <span class="fac-badge-count">${toiletInfo}</span>
+                        <div class="fac-card-v2 restroom">
+                            <div class="fac-icon-wrap">${getUiIcon('toilet', 16, '#c084fc')}</div>
+                            <div class="fac-meta">
+                                <div class="label">${facToiletLabel}</div>
+                                <div class="value">${esc(toiletInfo)}</div>
+                                <div class="sub-hint">${facToiletSub}</div>
                             </div>
                         </div>
-                        <div class="fac-badge-card">
-                            <span class="fac-badge-icon">🚶</span>
-                            <div class="fac-badge-info">
-                                <span class="fac-badge-name">${lang === 'zh' ? '连廊天桥' : (lang === 'en' ? 'Skywalk' : 'สกายวอล์ก')}</span>
-                                <span class="fac-badge-count">${skywalkExits.length ? (lang === 'zh' ? `出入口 ${skywalkExits.join(', ')}` : (lang === 'en' ? `Exit ${skywalkExits.join(', ')}` : `ทางออก ${skywalkExits.join(', ')}`)) : (lang === 'zh' ? 'เชื่อมต่อทางเท้า' : (lang === 'en' ? 'Footpath' : 'ทางเดินเท้า'))}</span>
+                        <div class="fac-card-v2 skywalk">
+                            <div class="fac-icon-wrap">${getUiIcon('walk', 16, '#10b981')}</div>
+                            <div class="fac-meta">
+                                <div class="label">${facSkywalkLabel}</div>
+                                <div class="value">${facSkywalkVal}</div>
+                                <div class="sub-hint">${facSkywalkSub}</div>
                             </div>
                         </div>
-                        <div class="fac-badge-card">
-                            <span class="fac-badge-icon">${hasParking ? '🅿️' : '♿'}</span>
-                            <div class="fac-badge-info">
-                                <span class="fac-badge-name">${hasParking ? (lang === 'zh' ? '换乘停车场' : (lang === 'en' ? 'Park & Ride' : 'อาคารจอดแล้วจร')) : (lang === 'zh' ? '无障碍坡道' : (lang === 'en' ? 'Wheelchair Ramp' : 'ทางลาดวีลแชร์'))}</span>
-                                <span class="fac-badge-count">${hasParking ? (lang === 'zh' ? 'มีอาคารจอดรถ' : (lang === 'en' ? 'Available' : 'มีอาคารจอดรถ')) : (lang === 'zh' ? '无障碍通行' : (lang === 'en' ? 'Available' : 'มีให้บริการ'))}</span>
+                        <div class="fac-card-v2 ${hasParking ? 'parking' : 'ramp'}">
+                            <div class="fac-icon-wrap">${hasParking ? getUiIcon('parking', 16, '#f59e0b') : getUiIcon('wheelchair', 16, '#fb923c')}</div>
+                            <div class="fac-meta">
+                                <div class="label">${facRampLabel}</div>
+                                <div class="value">${facRampVal}</div>
+                                <div class="sub-hint">${facRampSub}</div>
                             </div>
                         </div>
                     </div>`;
 
-                listEl.innerHTML = facGridHtml + exits.map(ex => {
+                const exitDirTitle = lang === 'zh' ? `车站出入口名录 (${esc(stName(s))})` : (lang === 'en' ? `Exits Directory (${esc(stName(s))})` : `ผังทางออกทั้งหมดของสถานี${esc(stName(s))}`);
+                const exitCountLabel = `${exits.length} ${lang === 'zh' ? '个出入口' : (lang === 'en' ? 'Exits' : 'ทางออก')}`;
+                const mUnitEx = lang === 'zh' ? '米' : (lang === 'th' ? 'ม.' : 'm');
+                const kmUnitEx = lang === 'zh' ? '公里' : (lang === 'th' ? 'กม.' : 'km');
+
+                const exitCardsHtml = exits.map(ex => {
                     const isNearest = nearestExitInfo && nearestExitInfo.exit === ex.exit;
-                    const badges = (ex.facilities || []).map(f => {
-                        if (f === 'skywalk') return `<span class="facility-chip skywalk">${getUiIcon('walk', 13, '#0284c7')} ${lang === 'zh' ? '空中连廊' : (lang === 'th' ? 'ทางเชื่อมสกายวอล์ก' : 'Skywalk Link')}</span>`;
-                        if (f === 'elevator') return `<span class="facility-chip elevator">${getUiIcon('elevator', 13, '#10b981')} ${lang === 'zh' ? '无障碍/长者专用电梯' : (lang === 'th' ? 'ลิฟต์คนพิการ/ผู้สูงอายุ' : 'Priority Elevator')}</span>`;
-                        if (f === 'escalator') return `<span class="facility-chip">${getUiIcon('escalator', 13, '#64748b')} ${lang === 'zh' ? '自动扶梯' : (lang === 'th' ? 'บันไดเลื่อน' : 'Escalator')}</span>`;
+                    let exDistM = null;
+                    if (this.userPos && s.Latitude && s.Longitude) {
+                        const coord = getExitCoordinates(s, ex.exit, exits.length);
+                        if (coord) {
+                            exDistM = Math.round(haversineKm(this.userPos.lat, this.userPos.lon, coord.lat, coord.lon) * 1000);
+                        }
+                    }
+
+                    const distTextEx = exDistM != null
+                        ? (exDistM < 1000 ? `${exDistM} ${mUnitEx}` : `${(exDistM / 1000).toFixed(1)} ${kmUnitEx}`)
+                        : null;
+
+                    const facTags = (ex.facilities || []).map(f => {
+                        if (f === 'elevator') return `<span class="fac-tag-pill elevator">${getUiIcon('elevator', 12, '#38bdf8')} ${lang === 'zh' ? '无障碍电梯' : (lang === 'en' ? 'Elevator' : 'ลิฟต์คนพิการ')}</span>`;
+                        if (f === 'escalator') return `<span class="fac-tag-pill escalator">${getUiIcon('escalator', 12, '#94a3b8')} ${lang === 'zh' ? '自动扶梯' : (lang === 'en' ? 'Escalator' : 'บันไดเลื่อน')}</span>`;
+                        if (f === 'skywalk') return `<span class="fac-tag-pill skywalk">${getUiIcon('walk', 12, '#10b981')} ${lang === 'zh' ? '空中连廊' : (lang === 'en' ? 'Skywalk' : 'สกายวอล์ก')}</span>`;
                         return '';
                     }).join('');
 
-                    const nearestBadge = isNearest
-                        ? `<span class="facility-chip nearest-live-chip">${getUiIcon('pin', 13, '#10b981')} ${lang === 'zh' ? '您正位于此出入口附近' : (lang === 'th' ? 'คุณยืนอยู่ใกล้ทางออกนี้' : 'You are near this exit')} (${nearestExitInfo.meters < 1000 ? '~' + nearestExitInfo.meters + ' ' + mUnitEx : (nearestExitInfo.meters / 1000).toFixed(1) + ' ' + kmUnitEx})</span>`
+                    const nearestSpotBadge = isNearest
+                        ? `<div class="nearest-spot-badge">🟢 ${lang === 'zh' ? '离您最近' : (lang === 'en' ? 'Closest to you' : 'ใกล้คุณที่สุด')} (~${distTextEx || (nearestExitInfo.meters < 1000 ? nearestExitInfo.meters + ' ' + mUnitEx : (nearestExitInfo.meters / 1000).toFixed(1) + ' ' + kmUnitEx)})</div>`
                         : '';
 
                     const lm = lang === 'zh' ? (ex.landmarks_zh || ex.landmarks_en || ex.landmarks_th) : (lang === 'th' ? ex.landmarks_th : (ex.landmarks_en || ex.landmarks_th));
+
+                    const distMetaStr = isNearest
+                        ? `🟢 ${lang === 'zh' ? `距您约 ${distTextEx || (nearestExitInfo.meters < 1000 ? nearestExitInfo.meters + ' ' + mUnitEx : (nearestExitInfo.meters / 1000).toFixed(1) + ' ' + kmUnitEx)}` : (lang === 'en' ? `~${distTextEx || (nearestExitInfo.meters < 1000 ? nearestExitInfo.meters + ' ' + mUnitEx : (nearestExitInfo.meters / 1000).toFixed(1) + ' ' + kmUnitEx)} from your position` : `ประมาณ ${distTextEx || (nearestExitInfo.meters < 1000 ? nearestExitInfo.meters + ' ' + mUnitEx : (nearestExitInfo.meters / 1000).toFixed(1) + ' ' + kmUnitEx)} จากจุดที่คุณยืน`)}`
+                        : (distTextEx ? `${lang === 'zh' ? '距离约' : (lang === 'en' ? 'Distance ~' : 'ระยะห่างประมาณ')} ${distTextEx}` : '');
+
+                    const roadSideHint = (ex.exit % 2 === 1)
+                        ? (lang === 'zh' ? '进城方向' : (lang === 'en' ? 'Inbound' : 'ฝั่งขาเข้า'))
+                        : (lang === 'zh' ? '出城方向' : (lang === 'en' ? 'Outbound' : 'ฝั่งขาออก'));
+
                     return `
-                        <div class="exit-item ${isNearest ? 'nearest-exit-active' : ''}" id="exit-card-${ex.exit}">
-                            <div class="exit-badge-num" style="${isNearest ? 'background:linear-gradient(135deg,#16a34a,#15803d);' : ''}">
-                                <span class="lbl">EXIT</span>
-                                <span>${ex.exit}</span>
+                        <div class="wayfinding-exit-card exit-item ${isNearest ? 'is-nearest nearest-exit-active' : ''}" id="exit-card-${ex.exit}">
+                            <div class="exit-top-row">
+                                <div class="exit-num-badge-group">
+                                    <div class="exit-pill-large">
+                                        <span class="exit-lbl">EXIT</span>
+                                        <span>${ex.exit}</span>
+                                    </div>
+                                    ${nearestSpotBadge}
+                                </div>
+                                <div class="exit-fac-tags">${facTags}</div>
                             </div>
-                            <div class="exit-content">
-                                <div class="exit-facilities">${nearestBadge}${badges}</div>
-                                <div class="exit-landmarks">${getUiIcon('pin', 13, 'var(--text-sub,#64748b)')} ${esc(lm)}</div>
+                            <div class="exit-landmark-body">
+                                <span class="landmark-pin-icon">${getUiIcon('pin', 13, '#ef4444')}</span>
+                                <div class="landmark-desc-text">${esc(lm)}</div>
+                            </div>
+                            <div class="exit-bottom-meta">
+                                <span class="dist-val">${distMetaStr}</span>
+                                <span class="tap-hint">${roadSideHint}</span>
                             </div>
                         </div>`;
                 }).join('');
+
+                listEl.innerHTML = `
+                    ${facGridHtml}
+                    <div class="exit-section-header">
+                        <h2>
+                            ${getUiIcon('door', 14, '#facc15')}
+                            <span>${exitDirTitle}</span>
+                        </h2>
+                        <span class="exit-count-pill">${exitCountLabel}</span>
+                    </div>
+                    <div class="exit-cards-list">
+                        ${exitCardsHtml}
+                    </div>`;
             },
 
             /* ---------- THE SKYTRAINs: Interactive Transit Network Map (Smooth GPU Camera Engine) ---------- */
@@ -5259,37 +5501,110 @@ const FALLBACK_MAX_KM = 3.0;
                 }
             },
 
-            updateModalLockState() {
+            isAnyModalOpen() {
                 const legendSheet = document.getElementById('mapLegendSheet');
-                const isLegendOpen = !!legendSheet && legendSheet.classList.contains('active');
+                if (legendSheet && legendSheet.classList.contains('active')) return true;
 
                 const nearestPopup = document.getElementById('nearestStationPopup');
-                const isNearestOpen = !!nearestPopup && nearestPopup.style.display !== 'none' && nearestPopup.style.display !== '';
+                if (nearestPopup && nearestPopup.style.display !== 'none' && nearestPopup.style.display !== '') return true;
 
                 const interchangeModal = document.getElementById('interchangeModal');
-                const isInterchangeOpen = !!interchangeModal && interchangeModal.style.display !== 'none' && interchangeModal.style.display !== '';
+                if (interchangeModal && interchangeModal.style.display !== 'none' && interchangeModal.style.display !== '') return true;
 
                 const pickerOverlay = document.getElementById('pickerOverlay');
-                const isPickerOpen = !!pickerOverlay && !pickerOverlay.hidden && pickerOverlay.style.display !== 'none';
+                if (pickerOverlay && !pickerOverlay.hidden && pickerOverlay.style.display !== 'none') return true;
 
                 const trafficPopup = document.getElementById('trafficDisruptionPopup');
-                const isTrafficOpen = !!trafficPopup && trafficPopup.style.display === 'flex';
+                if (trafficPopup && (trafficPopup.style.display === 'flex' || (trafficPopup.style.display !== 'none' && trafficPopup.style.display !== ''))) return true;
 
-                const shouldLock = isLegendOpen || isNearestOpen || isInterchangeOpen || isPickerOpen || isTrafficOpen;
+                const mapActionSheet = document.getElementById('mapActionSheet');
+                if (mapActionSheet && !mapActionSheet.hidden && mapActionSheet.style.display !== 'none') return true;
+
+                const spotlight = document.getElementById('spotlightOverlay');
+                if (spotlight && spotlight.style.display !== 'none' && spotlight.style.display !== '') return true;
+
+                return false;
+            },
+
+            updateModalLockState() {
+                const shouldLock = this.isAnyModalOpen();
 
                 if (shouldLock) {
+                    if (!this._isLockedScreen) {
+                        this._isLockedScreen = true;
+                        this._bodyLockScrollY = window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0;
+                    }
+
+                    document.documentElement.classList.add('modal-backdrop-locked');
                     document.body.classList.add('modal-backdrop-locked');
-                    if (document.body) document.body.style.overflow = 'hidden';
-                    if (this.geoMap && this.geoMap.dragging) {
-                        try { this.geoMap.dragging.disable(); } catch (e) {}
+
+                    document.documentElement.style.overflow = 'hidden';
+                    document.documentElement.style.overflowX = 'hidden';
+                    document.documentElement.style.overflowY = 'hidden';
+                    document.documentElement.style.touchAction = 'none';
+
+                    document.body.style.overflow = 'hidden';
+                    document.body.style.overflowX = 'hidden';
+                    document.body.style.overflowY = 'hidden';
+                    document.body.style.touchAction = 'none';
+                    document.body.style.position = 'fixed';
+                    document.body.style.top = `-${this._bodyLockScrollY || 0}px`;
+                    document.body.style.left = '0';
+                    document.body.style.right = '0';
+                    document.body.style.width = '100%';
+
+                    if (this.geoMap) {
+                        try {
+                            if (this.geoMap.dragging) this.geoMap.dragging.disable();
+                            if (this.geoMap.touchZoom) this.geoMap.touchZoom.disable();
+                            if (this.geoMap.scrollWheelZoom) this.geoMap.scrollWheelZoom.disable();
+                            if (this.geoMap.doubleClickZoom) this.geoMap.doubleClickZoom.disable();
+                            if (this.geoMap.boxZoom) this.geoMap.boxZoom.disable();
+                            if (this.geoMap.keyboard) this.geoMap.keyboard.disable();
+                        } catch (e) {}
                     }
                 } else {
-                    document.body.classList.remove('modal-backdrop-locked');
+                    this._isLockedScreen = false;
+
                     document.documentElement.classList.remove('modal-backdrop-locked');
-                    if (document.body) document.body.style.overflow = '';
-                    if (document.documentElement) document.documentElement.style.overflow = '';
-                    if (this.geoMap && this.geoMap.dragging) {
-                        try { this.geoMap.dragging.enable(); } catch (e) {}
+                    document.body.classList.remove('modal-backdrop-locked');
+
+                    document.documentElement.style.overflow = '';
+                    document.documentElement.style.overflowX = '';
+                    document.documentElement.style.overflowY = '';
+                    document.documentElement.style.touchAction = '';
+
+                    document.body.style.overflow = '';
+                    document.body.style.overflowX = '';
+                    document.body.style.overflowY = '';
+                    document.body.style.touchAction = '';
+                    document.body.style.position = '';
+                    document.body.style.top = '';
+                    document.body.style.left = '';
+                    document.body.style.right = '';
+                    document.body.style.width = '';
+
+                    if (typeof this._bodyLockScrollY === 'number') {
+                        const restoredY = this._bodyLockScrollY;
+                        this._bodyLockScrollY = null;
+                        this._restoringModalScroll = true;
+                        window.scrollTo(0, restoredY);
+                        if (this._resetScrollNavAnchor) this._resetScrollNavAnchor();
+                        requestAnimationFrame(() => {
+                            this._restoringModalScroll = false;
+                            if (this._resetScrollNavAnchor) this._resetScrollNavAnchor();
+                        });
+                    }
+
+                    if (this.geoMap) {
+                        try {
+                            if (this.geoMap.dragging) this.geoMap.dragging.enable();
+                            if (this.geoMap.touchZoom) this.geoMap.touchZoom.enable();
+                            if (this.geoMap.scrollWheelZoom) this.geoMap.scrollWheelZoom.enable();
+                            if (this.geoMap.doubleClickZoom) this.geoMap.doubleClickZoom.enable();
+                            if (this.geoMap.boxZoom) this.geoMap.boxZoom.enable();
+                            if (this.geoMap.keyboard) this.geoMap.keyboard.enable();
+                        } catch (e) {}
                     }
                 }
             },
@@ -5301,13 +5616,35 @@ const FALLBACK_MAX_KM = 3.0;
             unlockBackgroundScreen(force = false) {
                 if (force) {
                     const nearestPopup = document.getElementById('nearestStationPopup');
-                    if (nearestPopup) nearestPopup.style.display = 'none';
+                    if (nearestPopup) {
+                        nearestPopup.style.display = 'none';
+                        nearestPopup.classList.remove('route-expanded');
+                    }
+                    const topCards = document.getElementById('popupTopCards');
+                    if (topCards) {
+                        topCards.style.display = '';
+                        topCards.classList.remove('hidden-by-route');
+                    }
+                    const holidayCard = document.getElementById('popupHolidayCard');
+                    if (holidayCard) {
+                        holidayCard.style.display = '';
+                        holidayCard.classList.remove('hidden-by-route');
+                    }
+                    const holidayPanel = document.getElementById('popupHolidayBtsPanel');
+                    if (holidayPanel) holidayPanel.hidden = true;
+                    this.syncHolidayStationVisibility(false);
                     const interchangeModal = document.getElementById('interchangeModal');
                     if (interchangeModal) interchangeModal.style.display = 'none';
                     const pickerOverlay = document.getElementById('pickerOverlay');
                     if (pickerOverlay) { pickerOverlay.hidden = true; pickerOverlay.innerHTML = ''; }
                     const legendSheet = document.getElementById('mapLegendSheet');
                     if (legendSheet) legendSheet.classList.remove('active');
+                    const trafficPopup = document.getElementById('trafficDisruptionPopup');
+                    if (trafficPopup) trafficPopup.style.display = 'none';
+                    const mapActionSheet = document.getElementById('mapActionSheet');
+                    if (mapActionSheet) mapActionSheet.hidden = true;
+                    const mapActionBackdrop = document.getElementById('mapActionSheetBackdrop');
+                    if (mapActionBackdrop) mapActionBackdrop.hidden = true;
                 }
                 this.updateModalLockState();
             },
@@ -5345,6 +5682,7 @@ const FALLBACK_MAX_KM = 3.0;
             },
 
             handleMapDoubleTapZoom(clientX, clientY) {
+                if (this.isAnyModalOpen()) return;
                 const vp = document.getElementById('mapViewport');
                 const container = document.getElementById('networkMapContainer');
                 if (!vp || !container) return;
@@ -5447,7 +5785,7 @@ const FALLBACK_MAX_KM = 3.0;
 
                 // --- Mouse Pan Handler (Smooth GPU 1:1 Drag + Inertia) ---
                 vp.addEventListener('mousedown', (e) => {
-                    if (this.mapMode === 'hybrid') return;
+                    if (this.mapMode === 'hybrid' || this.isAnyModalOpen()) return;
                     if (e.button !== 0) return;
                     isMouseDown = true;
                     this._mapIsPointerDown = true;
@@ -5466,7 +5804,7 @@ const FALLBACK_MAX_KM = 3.0;
                 });
 
                 window.addEventListener('mousemove', (e) => {
-                    if (this.mapMode === 'hybrid') return;
+                    if (this.mapMode === 'hybrid' || this.isAnyModalOpen()) return;
                     if (!isMouseDown) return;
                     const dx = e.clientX - mouseStartX;
                     const dy = e.clientY - mouseStartY;
@@ -5484,7 +5822,7 @@ const FALLBACK_MAX_KM = 3.0;
                 }, { passive: false });
 
                 window.addEventListener('mouseup', () => {
-                    if (this.mapMode === 'hybrid') return;
+                    if (this.mapMode === 'hybrid' || this.isAnyModalOpen()) return;
                     if (!isMouseDown) return;
                     isMouseDown = false;
                     this._mapIsPointerDown = false;
@@ -5499,7 +5837,7 @@ const FALLBACK_MAX_KM = 3.0;
 
                 // --- Desktop Mouse Double-Click Zoom ---
                 vp.addEventListener('dblclick', (e) => {
-                    if (this.mapMode === 'hybrid') return;
+                    if (this.mapMode === 'hybrid' || this.isAnyModalOpen()) return;
                     e.preventDefault();
                     vp._preventClick = true;
                     this.closeMapActionSheet();
@@ -5509,7 +5847,7 @@ const FALLBACK_MAX_KM = 3.0;
 
                 // --- Desktop Mouse Wheel & Trackpad Smooth Zoom around Cursor ---
                 vp.addEventListener('wheel', (e) => {
-                    if (this.mapMode === 'hybrid') return;
+                    if (this.mapMode === 'hybrid' || this.isAnyModalOpen()) return;
                     e.preventDefault();
                     const minZ = this.getMapMinZoom();
                     const baseZ = this.mapTargetZoom || this.mapZoom || minZ;
@@ -5539,7 +5877,7 @@ const FALLBACK_MAX_KM = 3.0;
                 let lastTapY = 0;
 
                 vp.addEventListener('touchstart', (e) => {
-                    if (this.mapMode === 'hybrid') return;
+                    if (this.mapMode === 'hybrid' || this.isAnyModalOpen()) return;
                     this._mapIsPointerDown = true;
                     this.mapVelX = 0;
                     this.mapVelY = 0;
@@ -5584,7 +5922,7 @@ const FALLBACK_MAX_KM = 3.0;
                 }, { passive: false });
 
                 vp.addEventListener('touchmove', (e) => {
-                    if (this.mapMode === 'hybrid') return;
+                    if (this.mapMode === 'hybrid' || this.isAnyModalOpen()) return;
                     if (e.touches.length === 1) {
                         const curX = e.touches[0].clientX;
                         const curY = e.touches[0].clientY;
@@ -5631,7 +5969,7 @@ const FALLBACK_MAX_KM = 3.0;
                 }, { passive: false });
 
                 vp.addEventListener('touchend', (e) => {
-                    if (this.mapMode === 'hybrid') return;
+                    if (this.mapMode === 'hybrid' || this.isAnyModalOpen()) return;
                     if (e.touches.length === 0) {
                         this._mapIsPointerDown = false;
                         if (isTouchDragging) {
@@ -5725,6 +6063,104 @@ const FALLBACK_MAX_KM = 3.0;
                         }
                     }
                 });
+            },
+
+            setupModalScrollInterception() {
+                if (this._scrollInterceptionBound) return;
+                this._scrollInterceptionBound = true;
+
+                let touchStartX = 0;
+                let touchStartY = 0;
+
+                window.addEventListener('touchstart', (e) => {
+                    if (!this.isAnyModalOpen()) return;
+                    if (e.touches && e.touches.length > 0) {
+                        touchStartX = e.touches[0].clientX;
+                        touchStartY = e.touches[0].clientY;
+                    }
+                }, { passive: true });
+
+                window.addEventListener('touchmove', (e) => {
+                    if (!this.isAnyModalOpen()) return;
+                    if (!e.touches || e.touches.length === 0) return;
+
+                    // ค้นหากล่องเลื่อนที่ใกล้ที่สุดภายในโมดอล
+                    const scrollable = e.target.closest(
+                        '.popup-holiday-bts-list, .nearest-popup-card, .map-legend-box, .traffic-dialog-card, .interchange-modal-body, .sheet-station-info'
+                    );
+
+                    // 1. หากไม่ได้สัมผัสในกล่องเลื่อนที่อนุญาต (เช่น บน backdrop หรือการ์ดด้านบน) ห้ามเลื่อน 100%
+                    if (!scrollable) {
+                        e.preventDefault();
+                        return;
+                    }
+
+                    // 2. หากลากในแนวนอน (ซ้าย-ขวา) ห้ามเลื่อน 100% ป้องกันหน้าโยกซ้ายขวา
+                    const curX = e.touches[0].clientX;
+                    const curY = e.touches[0].clientY;
+                    const dx = Math.abs(curX - touchStartX);
+                    const dy = Math.abs(curY - touchStartY);
+
+                    if (dx > dy && dx > 2) {
+                        e.preventDefault();
+                        return;
+                    }
+
+                    // 3. ป้องกัน overscroll / rubber-banding ทะลุไปพื้นหลังเมื่อเลื่อนถึงขอบบนหรือขอบล่าง
+                    const isAtTop = scrollable.scrollTop <= 0;
+                    const isAtBottom = (scrollable.scrollTop + scrollable.clientHeight) >= (scrollable.scrollHeight - 1);
+                    const movingDown = curY > touchStartY; // ลากนิ้วลง = พยายามเลื่อนดูด้านบน
+                    const movingUp = curY < touchStartY;   // ลากนิ้วขึ้น = พยายามเลื่อนดูด้านล่าง
+
+                    if ((isAtTop && movingDown) || (isAtBottom && movingUp)) {
+                        e.preventDefault();
+                    }
+                }, { passive: false });
+
+                // ป้องกัน Mouse Wheel และ Trackpad ทะลุไปเลื่อนพื้นหลัง
+                window.addEventListener('wheel', (e) => {
+                    if (!this.isAnyModalOpen()) return;
+
+                    const scrollable = e.target.closest(
+                        '.popup-holiday-bts-list, .nearest-popup-card, .map-legend-box, .traffic-dialog-card, .interchange-modal-body, .sheet-station-info'
+                    );
+
+                    if (!scrollable) {
+                        e.preventDefault();
+                        return;
+                    }
+
+                    // ป้องกันการเลื่อนล้อเมาส์แนวนอน (ซ้าย-ขวา)
+                    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+                        e.preventDefault();
+                        return;
+                    }
+
+                    // ป้องกัน scroll chaining เมื่อถึงขอบบนสุดหรือล่างสุด
+                    const isAtTop = scrollable.scrollTop <= 0 && e.deltaY < 0;
+                    const isAtBottom = (scrollable.scrollTop + scrollable.clientHeight >= scrollable.scrollHeight - 1) && e.deltaY > 0;
+
+                    if (isAtTop || isAtBottom) {
+                        e.preventDefault();
+                    }
+                }, { passive: false });
+
+                // ป้องกัน Keyboard scrolling (Arrow Keys, Space, PageUp/Down) ทะลุพื้นหลัง
+                window.addEventListener('keydown', (e) => {
+                    if (!this.isAnyModalOpen()) return;
+
+                    const scrollKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space', 'PageUp', 'PageDown', 'Home', 'End'];
+                    if (scrollKeys.includes(e.code) || scrollKeys.includes(e.key)) {
+                        const activeEl = document.activeElement;
+                        const isInput = activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA');
+                        if (!isInput) {
+                            const scrollable = activeEl ? activeEl.closest('.popup-holiday-bts-list, .nearest-popup-card, .map-legend-box') : null;
+                            if (!scrollable) {
+                                e.preventDefault();
+                            }
+                        }
+                    }
+                }, { passive: false });
             },
 
             renderInteractiveMap(force = false) {
@@ -5849,7 +6285,8 @@ const FALLBACK_MAX_KM = 3.0;
                     roadmap: L.tileLayer('https://mt{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
                         subdomains: ['0', '1', '2', '3'],
                         maxZoom: 20,
-                        detectRetina: true
+                        detectRetina: true,
+                        className: 'geo-roadmap-tiles'
                     }),
                     satellite: L.tileLayer('https://mt{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
                         subdomains: ['0', '1', '2', '3'],
@@ -5858,8 +6295,9 @@ const FALLBACK_MAX_KM = 3.0;
                     })
                 };
 
-                this.geoTileLayers.hybrid.addTo(map);
-                this.geoCurrentLayer = 'hybrid';
+                this.geoTileLayers.roadmap.addTo(map);
+                this.geoCurrentLayer = 'roadmap';
+                this.updateGeoLayerLabel();
 
                 // Click anywhere on map to inspect nearest BTS/MRT station
                 map.on('click', (e) => {
@@ -6095,10 +6533,23 @@ const FALLBACK_MAX_KM = 3.0;
                 this.renderGeoStationMarkers(this.geoActiveLineFilter);
             },
 
+            /** Sync the geo map layer toggle button text with the active tile layer and UI language. */
+            updateGeoLayerLabel() {
+                const labelEl = document.getElementById('mapGeoLayerText');
+                if (!labelEl) return;
+                const curLayer = this.geoCurrentLayer || 'roadmap';
+                const labels = {
+                    roadmap: lang === 'en' ? 'Road' : (lang === 'zh' ? '道路' : 'ถนน'),
+                    hybrid: 'Hybrid',
+                    satellite: lang === 'en' ? 'Satellite' : (lang === 'zh' ? '卫星' : 'ดาวเทียม')
+                };
+                labelEl.textContent = labels[curLayer] || labels.roadmap;
+            },
+
             cycleGeoMapLayer() {
                 if (!this.geoMap || !this.geoTileLayers) return;
 
-                const modes = ['hybrid', 'roadmap', 'satellite'];
+                const modes = ['roadmap', 'hybrid', 'satellite'];
                 const curIdx = modes.indexOf(this.geoCurrentLayer);
                 const nextMode = modes[(curIdx + 1) % modes.length];
 
@@ -6111,10 +6562,7 @@ const FALLBACK_MAX_KM = 3.0;
                     this.geoCurrentLayer = nextMode;
                 }
 
-                const labelEl = document.getElementById('mapGeoLayerText');
-                if (labelEl) {
-                    labelEl.textContent = (nextMode === 'hybrid') ? 'Hybrid' : (nextMode === 'roadmap' ? (lang === 'en' ? 'Road' : (lang === 'zh' ? '道路' : 'ถนน')) : (lang === 'en' ? 'Satellite' : (lang === 'zh' ? '卫星' : 'ดาวเทียม')));
-                }
+                this.updateGeoLayerLabel();
             },
 
             recenterGeoMap() {
@@ -6269,6 +6717,7 @@ const FALLBACK_MAX_KM = 3.0;
                 const backdrop = document.getElementById('mapActionSheetBackdrop');
                 if (sheet) sheet.hidden = false;
                 if (backdrop) backdrop.hidden = false;
+                this.lockBackgroundScreen();
             },
 
             closeMapActionSheet() {
@@ -6278,6 +6727,7 @@ const FALLBACK_MAX_KM = 3.0;
                 if (backdrop) backdrop.hidden = true;
                 const ring = document.getElementById('activeMapStationRing');
                 if (ring) ring.style.display = 'none';
+                this.unlockBackgroundScreen();
             },
 
 setOriginFromActionSheet() {
@@ -7683,14 +8133,7 @@ setOriginFromActionSheet() {
                 }
 
                 // 7. Android APK Update Action Box (เฉพาะแอพมือถือ Android เท่านั้น: แสดงเมื่อตรวจพบ .apk เวอร์ชันใหม่กว่าเท่านั้น)
-                const androidBox = document.getElementById('androidUpdateCard');
-                if (androidBox) {
-                    if (isAndroid && this._hasApkUpdate === true) {
-                        androidBox.style.display = 'flex';
-                    } else {
-                        androidBox.style.display = 'none';
-                    }
-                }
+                this.syncAndroidUpdateCard();
                 if (isAndroid && this._hasApkUpdate === undefined) {
                     this.checkAndroidApkUpdate();
                 }
@@ -7733,6 +8176,7 @@ setOriginFromActionSheet() {
                 this.renderFaresView(true);
                 this.renderTimetablesView(true);
                 this.renderQuickHubChips();
+                this.renderPoiQuickChips();
                 this.renderExitsView(this.selectedExitKey);
                 this.renderSettings();
                 if (this.journey.picking) this.renderPicker();
@@ -7741,8 +8185,41 @@ setOriginFromActionSheet() {
             isAndroidMobile() {
                 if (typeof window === 'undefined') return false;
                 if (window.isAndroidApp === true) return true;
-                if (window.isFlutterApp && /android/i.test(navigator.userAgent || '')) return true;
+                if (window.isFlutterApp && !/iphone|ipad|ipod/i.test(navigator.userAgent || '')) return true;
                 return /android/i.test(navigator.userAgent || '');
+            },
+
+            parseBuildNumber(item) {
+                if (!item) return 0;
+                let maxBuild = 0;
+                const checkStr = (s) => {
+                    if (!s || typeof s !== 'string') return;
+                    const m = s.match(/Build[._\s]+(\d+)/i) || s.match(/\+(\d+)$/);
+                    if (m) {
+                        const b = parseInt(m[1], 10);
+                        if (!isNaN(b) && b > maxBuild) maxBuild = b;
+                    }
+                };
+                if (typeof item === 'string') {
+                    checkStr(item);
+                } else if (typeof item === 'object') {
+                    checkStr(item.name);
+                    checkStr(item.tag_name);
+                    if (Array.isArray(item.assets)) {
+                        for (const a of item.assets) {
+                            if (a && a.name && a.name.endsWith('.apk') && !a.name.endsWith('.sha256')) {
+                                checkStr(a.name);
+                            }
+                        }
+                    }
+                }
+                return maxBuild;
+            },
+
+            syncAndroidUpdateCard() {
+                const androidBox = document.getElementById('androidUpdateCard');
+                if (!androidBox) return;
+                androidBox.style.display = (this.isAndroidMobile() && this._hasApkUpdate === true) ? 'flex' : 'none';
             },
 
             isReleaseNewerThanInstalled(releaseData) {
@@ -7757,34 +8234,12 @@ setOriginFromActionSheet() {
                     return [parseInt(m[1], 10) || 0, parseInt(m[2], 10) || 0, parseInt(m[3], 10) || 0];
                 };
 
-                const parseBuild = (data) => {
-                    let maxBuild = 0;
-                    const checkStr = (s) => {
-                        if (!s) return;
-                        const m = s.match(/Build[._\s]+(\d+)/i) || s.match(/\+(\d+)$/);
-                        if (m) {
-                            const b = parseInt(m[1], 10);
-                            if (!isNaN(b) && b > maxBuild) maxBuild = b;
-                        }
-                    };
-                    checkStr(data.name);
-                    checkStr(data.tag_name);
-                    if (Array.isArray(data.assets)) {
-                        for (const a of data.assets) {
-                            if (a && a.name && a.name.endsWith('.apk') && !a.name.endsWith('.sha256')) {
-                                checkStr(a.name);
-                            }
-                        }
-                    }
-                    return maxBuild;
-                };
-
                 const currentVerStr = this.version || '1.3.6';
-                const currentBuildNum = this.build || 19;
+                const currentBuildNum = this.build || 23;
 
                 const remoteVer = parseVersion(releaseData.tag_name || releaseData.name);
                 const localVer = parseVersion(currentVerStr);
-                const remoteBuild = parseBuild(releaseData);
+                const remoteBuild = this.parseBuildNumber(releaseData);
                 const localBuild = currentBuildNum;
 
                 for (let i = 0; i < 3; i++) {
@@ -7799,15 +8254,9 @@ setOriginFromActionSheet() {
                 const apks = assets.filter(a => a && a.name && a.name.endsWith('.apk') && !a.name.endsWith('.sha256'));
                 if (apks.length === 0) return null;
 
-                const parseBuild = (name) => {
-                    if (!name) return 0;
-                    const m = name.match(/Build[._\s]+(\d+)/i) || name.match(/\+(\d+)$/);
-                    return m ? parseInt(m[1], 10) || 0 : 0;
-                };
-
                 apks.sort((a, b) => {
-                    const buildB = parseBuild(b.name);
-                    const buildA = parseBuild(a.name);
+                    const buildB = this.parseBuildNumber(b.name);
+                    const buildA = this.parseBuildNumber(a.name);
                     if (buildB !== buildA) return buildB - buildA;
                     const isBuildB = /Build/i.test(b.name) ? 1 : 0;
                     const isBuildA = /Build/i.test(a.name) ? 1 : 0;
@@ -7819,17 +8268,15 @@ setOriginFromActionSheet() {
             },
 
             async checkAndroidApkUpdate(force = false) {
-                const androidBox = document.getElementById('androidUpdateCard');
                 if (!this.isAndroidMobile()) {
-                    if (androidBox) androidBox.style.display = 'none';
+                    this._hasApkUpdate = false;
+                    this.syncAndroidUpdateCard();
                     return;
                 }
 
                 if (this._isCheckingApkUpdate) return;
                 if (!force && this._hasApkUpdate !== undefined) {
-                    if (androidBox) {
-                        androidBox.style.display = this._hasApkUpdate ? 'flex' : 'none';
-                    }
+                    this.syncAndroidUpdateCard();
                     return;
                 }
 
@@ -7850,19 +8297,16 @@ setOriginFromActionSheet() {
                             if (preferredApk.browser_download_url) {
                                 this._latestApkDownloadUrl = preferredApk.browser_download_url;
                             }
-                            const isNewer = this.isReleaseNewerThanInstalled(data);
-                            this._hasApkUpdate = isNewer;
-                            if (androidBox) {
-                                androidBox.style.display = isNewer ? 'flex' : 'none';
-                            }
+                            this._hasApkUpdate = this.isReleaseNewerThanInstalled(data);
+                            this.syncAndroidUpdateCard();
                             return;
                         }
                     }
                     this._hasApkUpdate = false;
-                    if (androidBox) androidBox.style.display = 'none';
+                    this.syncAndroidUpdateCard();
                 } catch (e) {
                     this._hasApkUpdate = false;
-                    if (androidBox) androidBox.style.display = 'none';
+                    this.syncAndroidUpdateCard();
                 } finally {
                     this._isCheckingApkUpdate = false;
                 }
@@ -7921,7 +8365,11 @@ setOriginFromActionSheet() {
                     document.documentElement.classList.add('is-flutter-app');
                     if (this.isAndroidMobile()) {
                         document.documentElement.classList.add('is-android-app');
-                        this.checkAndroidApkUpdate();
+                        if (this._hasApkUpdate === undefined) {
+                            this.checkAndroidApkUpdate();
+                        } else {
+                            this.syncAndroidUpdateCard();
+                        }
                     }
                 } catch (e) { }
             },
@@ -7953,11 +8401,7 @@ setOriginFromActionSheet() {
                 set('mapModeTabHybridText', T('mapModeHybrid'));
                 set('mapGeoLocateText', T('mapMyLocation'));
                 set('mapGeoRecenterText', T('mapBkkCenter'));
-                const curLayer = this.geoCurrentLayer || 'hybrid';
-                const layerEl = document.getElementById('mapGeoLayerText');
-                if (layerEl) {
-                    layerEl.textContent = curLayer === 'hybrid' ? 'Hybrid' : (curLayer === 'roadmap' ? (lang === 'en' ? 'Road' : (lang === 'zh' ? '道路' : 'ถนน')) : (lang === 'en' ? 'Satellite' : (lang === 'zh' ? '卫星' : 'ดาวเทียม')));
-                }
+                this.updateGeoLayerLabel();
                 set('mapTitle', T('mapTitle'));
                 set('mapZoomInBtn', T('mapZoomIn'));
                 set('mapZoomOutBtn', T('mapZoomOut'));
@@ -8106,6 +8550,7 @@ setOriginFromActionSheet() {
                 set('nearestPopupPlatSub', T('popupPlatSub'));
                 set('nearestPopupActionLbl', T('popupAction'));
                 set('nearestPopupDismissLbl', T('popupDismiss'));
+                set('popupHolidayDismissLbl', T('popupDismiss'));
                 this.updatePopupClock();
                 this.renderPopupWeather();
                 this.renderPopupHolidays();
@@ -8125,16 +8570,20 @@ setOriginFromActionSheet() {
                 let savedClockFmt = 'auto';
                 let savedDateStyle = 'full_day';
                 let savedDateEra = (lang === 'en' || lang === 'zh') ? 'ce' : 'be';
+                let savedTempUnit = 'C';
                 try {
                     savedClockFmt = localStorage.getItem('bkk_skytrains_clock_format') || 'auto';
                     savedDateStyle = localStorage.getItem('bkk_skytrains_date_style') || 'full_day';
                     savedDateEra = localStorage.getItem('bkk_skytrains_date_era') || ((lang === 'en' || lang === 'zh') ? 'ce' : 'be');
+                    savedTempUnit = localStorage.getItem('bkk_skytrains_temp_unit') || 'C';
                 } catch (e) { }
                 this.clockFormat = savedClockFmt;
                 this.dateStyle = savedDateStyle;
                 this.dateEra = savedDateEra;
+                this.tempUnit = (savedTempUnit === 'F' || savedTempUnit === 'f') ? 'F' : 'C';
                 this.initResponsiveAutoDetect();
                 this.setupMobileZoomLock();
+                this.setupModalScrollInterception();
                 if (typeof window !== 'undefined' && window.isFlutterApp) {
                     try { document.documentElement.classList.add('is-flutter-app'); } catch (e) { }
                 }
@@ -8155,7 +8604,13 @@ setOriginFromActionSheet() {
                         }
                     });
                 }
-                document.getElementById('searchInput').addEventListener('input', () => this.renderStrip());
+                document.getElementById('searchInput').addEventListener('input', (e) => {
+                    const q = (e.target?.value || '').trim();
+                    document.querySelectorAll('#poiQuickChips .poi-chip.active').forEach(c => {
+                        if (c.getAttribute('data-poi-q') !== q) c.classList.remove('active');
+                    });
+                    this.renderStrip();
+                });
                 // ตรวจจับสถานะการเชื่อมต่ออินเทอร์เน็ต ออนไลน์ / ออฟไลน์ (FEATURE 2)
                 window.addEventListener('online', () => {
                     this.updateOnlineStatus();
@@ -8394,33 +8849,51 @@ setOriginFromActionSheet() {
 
             initScrollNav() {
                 // 1. Dynamic Auto-Hide Bottom Navigation on Scroll ("เลื่อนขึ้นซ่อน เลื่อนลงแสดง")
-                let lastScrollY = window.pageYOffset || document.documentElement.scrollTop;
+                const getScrollY = () => Math.max(0, window.pageYOffset || document.documentElement.scrollTop || document.body.scrollTop || 0);
+                let anchorScrollY = getScrollY();
+                let lastScrollY = anchorScrollY;
                 let scrollTicking = false;
                 const nav = document.querySelector('.bottom-nav');
 
+                this._resetScrollNavAnchor = () => {
+                    const y = getScrollY();
+                    anchorScrollY = y;
+                    lastScrollY = y;
+                };
+
                 window.addEventListener('scroll', () => {
-                    // On desktop computers, maintain floating dock stability while scrolling with mouse wheel
-                    if (this.device?.isDesktop) {
-                        nav?.classList.remove('nav-hidden');
+                    if (this.isAnyModalOpen() || this._restoringModalScroll) {
+                        this._resetScrollNavAnchor();
                         return;
                     }
                     if (!scrollTicking) {
                         window.requestAnimationFrame(() => {
-                            const currentScrollY = window.pageYOffset || document.documentElement.scrollTop;
-                            const diff = currentScrollY - lastScrollY;
+                            const currentScrollY = getScrollY();
+                            const stepDiff = currentScrollY - lastScrollY;
+
+                            if ((stepDiff > 0 && lastScrollY < anchorScrollY) || (stepDiff < 0 && lastScrollY > anchorScrollY)) {
+                                anchorScrollY = lastScrollY;
+                            }
+                            lastScrollY = currentScrollY;
+
+                            const netDiff = currentScrollY - anchorScrollY;
+                            const docHeight = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight);
+                            const maxScroll = Math.max(0, docHeight - window.innerHeight);
 
                             // หากอยู่ใกล้ด้านบนสุด ให้แสดงแถบนำทางเสมอ
                             if (currentScrollY <= 24) {
                                 nav?.classList.remove('nav-hidden');
-                            } else if (diff > 8) {
+                                anchorScrollY = currentScrollY;
+                            } else if (netDiff >= 12) {
                                 // นิ้วปัดขึ้น / เนื้อหาเลื่อนลง ("เลื่อนหน้าจอขึ้น" -> ซ่อนปุ่มนำทางเพื่อขยายพื้นที่ดูข้อมูล)
                                 nav?.classList.add('nav-hidden');
-                            } else if (diff < -8) {
+                                anchorScrollY = currentScrollY;
+                            } else if (netDiff <= -12 && currentScrollY < maxScroll - 4) {
                                 // นิ้วปัดลง / เนื้อหาเลื่อนขึ้น ("เลื่อนหน้าจอลง" -> แสดงปุ่มนำทางปกติ)
                                 nav?.classList.remove('nav-hidden');
+                                anchorScrollY = currentScrollY;
                             }
 
-                            lastScrollY = Math.max(0, currentScrollY);
                             scrollTicking = false;
                         });
                         scrollTicking = true;
@@ -8434,7 +8907,7 @@ setOriginFromActionSheet() {
                 const topIndicator = document.getElementById('pullToRefreshBar');
 
                 window.addEventListener('touchstart', (e) => {
-                    if (e.touches.length !== 1) return;
+                    if (e.touches.length !== 1 || this.isAnyModalOpen()) return;
                     // ป้องกันการรีเฟรชเมื่อเลื่อนหรือลากดูผังโครงข่ายรถไฟฟ้า 12 สาย
                     if (this.currentView === 'map' || (e.target && e.target.closest('#viewMap, #interactiveMapContainer, #networkMapContainer, #mapViewport, .map-viewport, .map-card, .network-map-container'))) {
                         isPullingTop = false;
@@ -8448,7 +8921,7 @@ setOriginFromActionSheet() {
                 }, { passive: true });
 
                 window.addEventListener('touchmove', (e) => {
-                    if (!isPullingTop) return;
+                    if (!isPullingTop || this.isAnyModalOpen()) return;
                     if (this.currentView === 'map' || (e.target && e.target.closest('#viewMap, #interactiveMapContainer, #networkMapContainer, #mapViewport, .map-viewport, .map-card, .network-map-container'))) {
                         isPullingTop = false;
                         pullDistance = 0;
@@ -8574,6 +9047,13 @@ setOriginFromActionSheet() {
                 this._clockInterval = setInterval(f, 1000);
             },
 
+            getPopupMonthNames() {
+                return {
+                    th: ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'],
+                    en: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+                };
+            },
+
             formatPopupFullDate(dateOrIso) {
                 let d;
                 if (typeof dateOrIso === 'string') {
@@ -8583,9 +9063,8 @@ setOriginFromActionSheet() {
                     d = dateOrIso instanceof Date ? dateOrIso : new Date();
                 }
                 const TH_WEEKDAYS = ['วัน อาทิตย์', 'วัน จันทร์', 'วัน อังคาร', 'วัน พุธ', 'วัน พฤหัสบดี', 'วัน ศุกร์', 'วัน เสาร์'];
-                const TH_MONTHS = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน', 'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม'];
+                const { th: TH_MONTHS, en: EN_MONTHS } = this.getPopupMonthNames();
                 const EN_WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-                const EN_MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
                 const ZH_WEEKDAYS = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
                 const curEra = this.dateEra || (lang === 'en' || lang === 'zh' ? 'ce' : 'be');
                 const year = curEra === 'be' ? (d.getFullYear() + 543) : d.getFullYear();
@@ -8628,72 +9107,130 @@ setOriginFromActionSheet() {
                 }
             },
 
-            getWeatherSvg(kind) {
+            getWeatherSvg(kind, opts = {}) {
                 if (kind === 'clear-day') {
-                    return `<svg viewBox="0 0 64 56" aria-hidden="true"><defs><radialGradient id="bkkSunOnly" cx="42%" cy="38%" r="60%"><stop offset="0%" stop-color="#FFF078"/><stop offset="65%" stop-color="#FFB319"/><stop offset="100%" stop-color="#F57C00"/></radialGradient></defs><g transform="translate(32, 28)"><path d="M0,-20 L4,-16.5 L9,-17.5 L11,-13 L16,-11.5 L15.5,-6.5 L19.5,-2.5 L16.8,1.8 L18,6.8 L13.5,9 L12.2,14 L7.2,13.8 L3.8,18 L-0.5,15.5 L-5.2,17.2 L-8,13 L-13,12.5 L-13.2,7.5 L-17.5,4.2 L-15.5,-0.2 L-17.8,-4.8 L-13.8,-7.8 L-13.4,-12.8 L-8.6,-13.4 L-6,-17.5 L-1.2,-15.8 Z" fill="#F57C00"/><circle cx="0" cy="0" r="14" fill="url(#bkkSunOnly)"/></g></svg>`;
+                    return `<svg viewBox="0 0 64 56" aria-hidden="true"><defs><radialGradient id="bkkWxSunCore" cx="42%" cy="38%" r="62%"><stop offset="0%" stop-color="#FFF59D"/><stop offset="55%" stop-color="#FFB319"/><stop offset="100%" stop-color="#F57C00"/></radialGradient></defs><g transform="translate(32, 28)"><g class="wx-sun-rays"><path d="M0,-22 L3.4,-17.2 L8.8,-19.8 L10.2,-14.1 L16.2,-14.3 L15,-8.5 L20.5,-6.2 L16.9,-1.3 L20.8,3.2 L15.5,6.1 L17,11.8 L11.1,12.2 L10.1,18 L4.6,15.9 L1.2,20.8 L-3.1,16.5 L-8.5,19.3 L-10.4,13.7 L-16.4,14 L-15.4,8.2 L-20.9,5.8 L-17.2,0.9 L-20.8,-3.8 L-15.4,-6.6 L-16.8,-12.4 L-10.9,-12.5 L-9.8,-18.3 L-4.3,-16.1 Z" fill="#F59E0B" opacity="0.92"/></g><circle class="wx-sun-core" cx="0" cy="0" r="13.5" fill="url(#bkkWxSunCore)"/></g></svg>`;
                 }
                 if (kind === 'clear-night') {
-                    return `<svg viewBox="0 0 64 56" aria-hidden="true"><defs><linearGradient id="bkkMoonOnly" x1="20%" y1="10%" x2="85%" y2="90%"><stop offset="0%" stop-color="#FEF08A"/><stop offset="60%" stop-color="#FACC15"/><stop offset="100%" stop-color="#CA8A04"/></linearGradient></defs><path d="M38 11C28.6 11 21 18.6 21 28s7.6 17 17 17c3.6 0 7-.1 9.8-2.9-5.8-.3-10.8-5.1-10.8-11.2 0-6.2 4.9-11.3 11.1-11.4-2.8-5.2-8.2-8.5-10.1-8.5z" fill="url(#bkkMoonOnly)"/><circle cx="48" cy="14" r="2" fill="#BAE6FD"/><circle cx="53" cy="24" r="1.4" fill="#BAE6FD"/></svg>`;
+                    return `<svg viewBox="0 0 64 56" aria-hidden="true"><defs><linearGradient id="bkkWxMoon" x1="18%" y1="10%" x2="85%" y2="92%"><stop offset="0%" stop-color="#FEF08A"/><stop offset="60%" stop-color="#FACC15"/><stop offset="100%" stop-color="#CA8A04"/></linearGradient></defs><g class="wx-moon-glow"><path d="M35 12C25.5 12 18 19.6 18 29s7.5 17 17 17c4 0 7.7-1.4 10.6-3.7-6-.2-10.8-5.1-10.8-11.2 0-6.2 4.8-11.1 10.8-11.3C42.7 13.5 39 12 35 12z" fill="url(#bkkWxMoon)"/></g><path class="wx-star" d="M49 11 L50.2 14.3 L53.5 15.5 L50.2 16.7 L49 20 L47.8 16.7 L44.5 15.5 L47.8 14.3 Z" fill="#BAE6FD"/><path class="wx-star wx-star-d2" d="M54 24 L54.8 26.2 L57 27 L54.8 27.8 L54 30 L53.2 27.8 L51 27 L53.2 26.2 Z" fill="#E0F2FE"/><circle class="wx-star" cx="15" cy="18" r="1.5" fill="#7DD3FC"/></svg>`;
                 }
                 if (kind === 'partly-cloudy-night') {
-                    return `<svg viewBox="0 0 64 56" aria-hidden="true"><defs><linearGradient id="bkkNightMoon" x1="20%" y1="10%" x2="80%" y2="90%"><stop offset="0%" stop-color="#FEF08A"/><stop offset="100%" stop-color="#EAB308"/></linearGradient><linearGradient id="bkkNightCloud" x1="25%" y1="0%" x2="65%" y2="100%"><stop offset="0%" stop-color="#FFFFFF"/><stop offset="55%" stop-color="#EDE9FE"/><stop offset="100%" stop-color="#C4B5FD"/></linearGradient></defs><path d="M27 10c-5.5 0-10 4.5-10 10s4.5 10 10 10c1.9 0 3.7-.5 5.2-1.5-3.4-.3-6.1-3.2-6.1-6.7 0-3.7 2.9-6.7 6.5-6.8-1.5-3-3.6-5-5.6-5z" fill="url(#bkkNightMoon)"/><path d="M19,49 C12.4,49 7,43.8 7,37.4 C7,31.6 11.4,26.8 17.1,26 C18.8,19.4 24.8,14.5 32,14.5 C40.5,14.5 47.4,21.2 47.7,29.6 C52.9,30.6 56.8,35.1 56.8,40.5 C56.8,45.2 53,49 48.2,49 Z" fill="url(#bkkNightCloud)"/></svg>`;
+                    return `<svg viewBox="0 0 64 56" aria-hidden="true"><defs><linearGradient id="bkkWxNightMoon" x1="20%" y1="10%" x2="80%" y2="90%"><stop offset="0%" stop-color="#FEF08A"/><stop offset="100%" stop-color="#EAB308"/></linearGradient><linearGradient id="bkkWxNightCloud" x1="25%" y1="0%" x2="65%" y2="100%"><stop offset="0%" stop-color="#FFFFFF"/><stop offset="55%" stop-color="#EDE9FE"/><stop offset="100%" stop-color="#C4B5FD"/></linearGradient></defs><g class="wx-moon-glow"><path d="M26 9c-5.6 0-10.2 4.6-10.2 10.2S20.4 29.4 26 29.4c2.1 0 4.1-.6 5.8-1.7-3.6-.2-6.5-3.2-6.5-6.9 0-3.8 2.9-6.8 6.5-7-1.7-3.1-3.7-4.8-5.8-4.8z" fill="url(#bkkWxNightMoon)"/></g><path class="wx-star" d="M47 10 L48 12.6 L50.6 13.6 L48 14.6 L47 17.2 L46 14.6 L43.4 13.6 L46 12.6 Z" fill="#BAE6FD"/><g class="wx-cloud-float"><path d="M19,49 C12.4,49 7,43.8 7,37.4 C7,31.6 11.4,26.8 17.1,26 C18.8,19.4 24.8,14.5 32,14.5 C40.5,14.5 47.4,21.2 47.7,29.6 C52.9,30.6 56.8,35.1 56.8,40.5 C56.8,45.2 53,49 48.2,49 Z" fill="url(#bkkWxNightCloud)"/></g></svg>`;
+                }
+                if (kind === 'windy') {
+                    return `<svg viewBox="0 0 64 56" aria-hidden="true"><defs><linearGradient id="bkkWxWindCloud" x1="20%" y1="0%" x2="70%" y2="100%"><stop offset="0%" stop-color="#F8FAFC"/><stop offset="65%" stop-color="#E2E8F0"/><stop offset="100%" stop-color="#94A3B8"/></linearGradient><linearGradient id="bkkWxWindStreak" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#38BDF8"/><stop offset="100%" stop-color="#2DD4BF"/></linearGradient></defs><g class="wx-wind-cloud"><path d="M16,29 C11.4,29 7.8,25.5 7.8,21.1 C7.8,17 10.9,13.6 14.9,13.1 C16.2,8.4 20.5,5 25.6,5 C31.7,5 36.7,9.7 36.9,15.6 C40.5,16.3 43.3,19.5 43.3,23.2 C43.3,26.5 40.6,29 37.3,29 Z" fill="url(#bkkWxWindCloud)"/></g><path class="wx-wind-line" d="M7,35 L46,35 C51.5,35 55,30.8 51.5,27 C48.8,24 44,26.2 45.2,29.8" fill="none" stroke="url(#bkkWxWindStreak)" stroke-width="2.7" stroke-linecap="round"/><path class="wx-wind-line wx-wind-line-d2" d="M12,41.5 L51,41.5 C56,41.5 59,45.5 55.8,48.8 C53.2,51.4 49,49.4 50.2,46" fill="none" stroke="#7DD3FC" stroke-width="2.5" stroke-linecap="round"/><path class="wx-wind-line wx-wind-line-d3" d="M5,47.5 L35,47.5 C39.5,47.5 42,50.8 39.2,53.2" fill="none" stroke="#5EEAD4" stroke-width="2.2" stroke-linecap="round"/></svg>`;
+                }
+                if (kind === 'cold') {
+                    return `<svg viewBox="0 0 64 56" aria-hidden="true"><defs><linearGradient id="bkkWxColdCloud" x1="20%" y1="0%" x2="70%" y2="100%"><stop offset="0%" stop-color="#FFFFFF"/><stop offset="55%" stop-color="#E0F2FE"/><stop offset="100%" stop-color="#7DD3FC"/></linearGradient></defs><g class="wx-cloud-float"><path d="M18,36 C11.8,36 7,31.2 7,25.3 C7,19.9 11.1,15.4 16.5,14.7 C18.1,8.5 23.7,4 30.5,4 C38.5,4 45,10.2 45.3,18 C50.1,18.9 53.8,23.1 53.8,28.1 C53.8,32.5 50.2,36 45.8,36 Z" fill="url(#bkkWxColdCloud)"/></g><g class="wx-snowflake"><path d="M18,40 V50 M13.7,42.5 L22.3,47.5 M22.3,42.5 L13.7,47.5" stroke="#BAE6FD" stroke-width="1.9" stroke-linecap="round"/></g><g class="wx-snowflake wx-snowflake-d2"><path d="M31.5,39 V49 M27.2,41.5 L35.8,46.5 M35.8,41.5 L27.2,46.5" stroke="#E0F2FE" stroke-width="2" stroke-linecap="round"/></g><g class="wx-snowflake wx-snowflake-d3"><path d="M44.5,40.5 V49.5 M40.5,42.8 L48.5,47.2 M48.5,42.8 L40.5,47.2" stroke="#7DD3FC" stroke-width="1.8" stroke-linecap="round"/></g></svg>`;
+                }
+                if (kind === 'fog') {
+                    return `<svg viewBox="0 0 64 56" aria-hidden="true"><defs><linearGradient id="bkkWxFogCloud" x1="20%" y1="0%" x2="70%" y2="100%"><stop offset="0%" stop-color="#F1F5F9"/><stop offset="65%" stop-color="#CBD5E1"/><stop offset="100%" stop-color="#94A3B8"/></linearGradient></defs><g class="wx-cloud-back"><path d="M18,33 C12.4,33 8,28.8 8,23.5 C8,18.7 11.7,14.7 16.6,14 C18.1,8.5 23.1,4.5 29.2,4.5 C36.4,4.5 42.3,10.1 42.5,17 C46.8,17.8 50.2,21.5 50.2,26 C50.2,29.9 47,33 43,33 Z" fill="url(#bkkWxFogCloud)"/></g><line class="wx-fog-line" x1="10" y1="38.5" x2="49" y2="38.5" stroke="#CBD5E1" stroke-width="2.7" stroke-linecap="round"/><line class="wx-fog-line wx-fog-line-d2" x1="15" y1="44.5" x2="54" y2="44.5" stroke="#94A3B8" stroke-width="2.6" stroke-linecap="round"/><line class="wx-fog-line" x1="11" y1="50.2" x2="42" y2="50.2" stroke="#CBD5E1" stroke-width="2.4" stroke-linecap="round" opacity="0.85"/></svg>`;
                 }
                 if (kind === 'rain' || kind === 'storm') {
-                    const bolt = kind === 'storm' ? `<polygon points="33,39 27,48 32,48 30,55 39,44 33.5,44" fill="#FACC15"/>` : '';
-                    return `<svg viewBox="0 0 64 56" aria-hidden="true"><defs><linearGradient id="bkkRainCloud" x1="20%" y1="0%" x2="70%" y2="100%"><stop offset="0%" stop-color="#E2E8F0"/><stop offset="60%" stop-color="#CBD5E1"/><stop offset="100%" stop-color="#94A3B8"/></linearGradient></defs><path d="M18,38 C11.8,38 7,33.2 7,27.3 C7,21.9 11.1,17.4 16.5,16.7 C18.1,10.5 23.7,6 30.5,6 C38.5,6 45,12.2 45.3,20 C50.1,20.9 53.8,25.1 53.8,30.1 C53.8,34.5 50.2,38 45.8,38 Z" fill="url(#bkkRainCloud)"/><line x1="20" y1="42" x2="17" y2="50" stroke="#38BDF8" stroke-width="2.8" stroke-linecap="round"/><line x1="29" y1="42" x2="26" y2="51" stroke="#38BDF8" stroke-width="2.8" stroke-linecap="round"/><line x1="39" y1="42" x2="36" y2="50" stroke="#38BDF8" stroke-width="2.8" stroke-linecap="round"/>${bolt}</svg>`;
+                    const cloudGrad = kind === 'storm'
+                        ? `<linearGradient id="bkkWxRainCloud" x1="20%" y1="0%" x2="70%" y2="100%"><stop offset="0%" stop-color="#CBD5E1"/><stop offset="55%" stop-color="#94A3B8"/><stop offset="100%" stop-color="#64748B"/></linearGradient>`
+                        : `<linearGradient id="bkkWxRainCloud" x1="20%" y1="0%" x2="70%" y2="100%"><stop offset="0%" stop-color="#E2E8F0"/><stop offset="60%" stop-color="#CBD5E1"/><stop offset="100%" stop-color="#94A3B8"/></linearGradient>`;
+                    const cloudClass = kind === 'storm' ? 'wx-storm-cloud' : 'wx-cloud-float';
+                    const bolt = kind === 'storm'
+                        ? `<g class="wx-bolt"><polygon points="34,36 27.5,46.5 32.5,46.5 30,54.5 40.5,42.5 34.8,42.5" fill="#FACC15"/></g>`
+                        : '';
+                    const extraDrops = kind === 'storm'
+                        ? `<line class="wx-raindrop wx-raindrop-d3" x1="45" y1="38" x2="41.5" y2="49" stroke="#38BDF8" stroke-width="2.6" stroke-linecap="round"/>`
+                        : `<line class="wx-raindrop wx-raindrop-d3" x1="39" y1="39" x2="35.5" y2="50.5" stroke="#38BDF8" stroke-width="2.6" stroke-linecap="round"/><line class="wx-raindrop" x1="47" y1="39" x2="43.5" y2="49" stroke="#7DD3FC" stroke-width="2.3" stroke-linecap="round"/>`;
+                    const windGust = (kind === 'storm' || opts.windy)
+                        ? `<path class="wx-wind-line wx-wind-line-d2" d="M6,32 L24,32" stroke="#5EEAD4" stroke-width="2" stroke-linecap="round" opacity="0.8"/>`
+                        : '';
+                    return `<svg viewBox="0 0 64 56" aria-hidden="true"><defs>${cloudGrad}</defs><g class="${cloudClass}"><path d="M18,36 C11.8,36 7,31.2 7,25.3 C7,19.9 11.1,15.4 16.5,14.7 C18.1,8.5 23.7,4 30.5,4 C38.5,4 45,10.2 45.3,18 C50.1,18.9 53.8,23.1 53.8,28.1 C53.8,32.5 50.2,36 45.8,36 Z" fill="url(#bkkWxRainCloud)"/></g><line class="wx-raindrop" x1="18.5" y1="39" x2="15" y2="50.5" stroke="#38BDF8" stroke-width="2.7" stroke-linecap="round"/><line class="wx-raindrop wx-raindrop-d2" x1="28.5" y1="39" x2="25" y2="51" stroke="#38BDF8" stroke-width="2.7" stroke-linecap="round"/>${extraDrops}${windGust}${bolt}</svg>`;
                 }
                 if (kind === 'cloudy') {
-                    return `<svg viewBox="0 0 64 56" aria-hidden="true"><defs><linearGradient id="bkkCloudBack" x1="20%" y1="0%" x2="70%" y2="100%"><stop offset="0%" stop-color="#CBD5E1"/><stop offset="100%" stop-color="#94A3B8"/></linearGradient><linearGradient id="bkkCloudFront" x1="25%" y1="0%" x2="65%" y2="100%"><stop offset="0%" stop-color="#FFFFFF"/><stop offset="60%" stop-color="#EEF2FF"/><stop offset="100%" stop-color="#C7D2FE"/></linearGradient></defs><path d="M27,36 C22,36 18,32.2 18,27.3 C18,22.9 21.3,19.2 25.6,18.6 C26.9,13.5 31.5,9.8 37,9.8 C43.5,9.8 48.8,14.9 49.1,21.3 C53.1,22 56,25.5 56,29.6 C56,33.1 53.1,36 49.5,36 Z" fill="url(#bkkCloudBack)"/><path d="M16,49 C9.8,49 5,44 5,37.8 C5,32.1 9.2,27.4 14.8,26.6 C16.5,20.1 22.3,15.3 29.3,15.3 C37.6,15.3 44.3,21.9 44.6,30.1 C49.7,31 53.5,35.4 53.5,40.7 C53.5,45.3 49.8,49 45.1,49 Z" fill="url(#bkkCloudFront)"/></svg>`;
+                    return `<svg viewBox="0 0 64 56" aria-hidden="true"><defs><linearGradient id="bkkWxCloudBack" x1="20%" y1="0%" x2="70%" y2="100%"><stop offset="0%" stop-color="#CBD5E1"/><stop offset="100%" stop-color="#94A3B8"/></linearGradient><linearGradient id="bkkWxCloudFront" x1="25%" y1="0%" x2="65%" y2="100%"><stop offset="0%" stop-color="#FFFFFF"/><stop offset="60%" stop-color="#EEF2FF"/><stop offset="100%" stop-color="#C7D2FE"/></linearGradient></defs><g class="wx-cloud-back"><path d="M27,36 C22,36 18,32.2 18,27.3 C18,22.9 21.3,19.2 25.6,18.6 C26.9,13.5 31.5,9.8 37,9.8 C43.5,9.8 48.8,14.9 49.1,21.3 C53.1,22 56,25.5 56,29.6 C56,33.1 53.1,36 49.5,36 Z" fill="url(#bkkWxCloudBack)"/></g><g class="wx-cloud-float"><path d="M16,49 C9.8,49 5,44 5,37.8 C5,32.1 9.2,27.4 14.8,26.6 C16.5,20.1 22.3,15.3 29.3,15.3 C37.6,15.3 44.3,21.9 44.6,30.1 C49.7,31 53.5,35.4 53.5,40.7 C53.5,45.3 49.8,49 45.1,49 Z" fill="url(#bkkWxCloudFront)"/></g></svg>`;
                 }
-                // Default / partly-cloudy-day: Exact 100% match to reference Weather icon
-                return `<svg viewBox="0 0 64 56" aria-hidden="true"><defs><radialGradient id="bkkRefSun" cx="42%" cy="38%" r="60%"><stop offset="0%" stop-color="#FFE055"/><stop offset="65%" stop-color="#FFB319"/><stop offset="100%" stop-color="#F57C00"/></radialGradient><linearGradient id="bkkRefCloud" x1="25%" y1="0%" x2="65%" y2="100%"><stop offset="0%" stop-color="#FFFFFF"/><stop offset="55%" stop-color="#F2F0FF"/><stop offset="100%" stop-color="#CFC8F8"/></linearGradient><radialGradient id="bkkRefGlow" cx="42%" cy="22%" r="55%"><stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.95"/><stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/></radialGradient></defs><g transform="translate(24, 21)"><path d="M0,-14.5 L3.1,-12.5 L6.7,-13 L8.3,-9.7 L11.8,-8.4 L11.5,-4.8 L14.2,-2 L12.3,1.2 L13.2,4.8 L10,6.6 L9.1,10.2 L5.5,10.2 L2.9,13.1 L-0.4,11.4 L-3.9,12.7 L-6,9.7 L-9.6,9.2 L-9.9,5.6 L-13,3.3 L-11.6,-0.1 L-13.2,-3.4 L-10.3,-5.7 L-10.1,-9.3 L-6.5,-9.9 L-4.5,-13 L-1,-11.7 Z" fill="#F57C00"/><circle cx="0" cy="0" r="10.8" fill="url(#bkkRefSun)"/></g><path d="M19,49 C12.4,49 7,43.8 7,37.4 C7,31.6 11.4,26.8 17.1,26 C18.8,19.4 24.8,14.5 32,14.5 C40.5,14.5 47.4,21.2 47.7,29.6 C52.9,30.6 56.8,35.1 56.8,40.5 C56.8,45.2 53,49 48.2,49 Z" fill="url(#bkkRefCloud)"/><ellipse cx="32" cy="24" rx="12" ry="7.5" fill="url(#bkkRefGlow)"/></svg>`;
+                // Default / partly-cloudy: Animated Sun rays behind floating cloud
+                return `<svg viewBox="0 0 64 56" aria-hidden="true"><defs><radialGradient id="bkkWxRefSun" cx="42%" cy="38%" r="60%"><stop offset="0%" stop-color="#FFE055"/><stop offset="65%" stop-color="#FFB319"/><stop offset="100%" stop-color="#F57C00"/></radialGradient><linearGradient id="bkkWxRefCloud" x1="25%" y1="0%" x2="65%" y2="100%"><stop offset="0%" stop-color="#FFFFFF"/><stop offset="55%" stop-color="#F2F0FF"/><stop offset="100%" stop-color="#CFC8F8"/></linearGradient><radialGradient id="bkkWxRefGlow" cx="42%" cy="22%" r="55%"><stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.95"/><stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/></radialGradient></defs><g transform="translate(24, 21)"><g class="wx-sun-rays"><path d="M0,-14.5 L3.1,-12.5 L6.7,-13 L8.3,-9.7 L11.8,-8.4 L11.5,-4.8 L14.2,-2 L12.3,1.2 L13.2,4.8 L10,6.6 L9.1,10.2 L5.5,10.2 L2.9,13.1 L-0.4,11.4 L-3.9,12.7 L-6,9.7 L-9.6,9.2 L-9.9,5.6 L-13,3.3 L-11.6,-0.1 L-13.2,-3.4 L-10.3,-5.7 L-10.1,-9.3 L-6.5,-9.9 L-4.5,-13 L-1,-11.7 Z" fill="#F57C00"/></g><circle class="wx-sun-core" cx="0" cy="0" r="10.8" fill="url(#bkkWxRefSun)"/></g><g class="wx-cloud-float"><path d="M19,49 C12.4,49 7,43.8 7,37.4 C7,31.6 11.4,26.8 17.1,26 C18.8,19.4 24.8,14.5 32,14.5 C40.5,14.5 47.4,21.2 47.7,29.6 C52.9,30.6 56.8,35.1 56.8,40.5 C56.8,45.2 53,49 48.2,49 Z" fill="url(#bkkWxRefCloud)"/><ellipse cx="32" cy="24" rx="12" ry="7.5" fill="url(#bkkWxRefGlow)"/></g></svg>`;
             },
 
-            mapWmoWeather(code, isDay = 1) {
+            mapWmoWeather(code, isDay = 1, extra = {}) {
                 const c = Number(code);
                 const day = isDay !== 0;
-                if (c === 0) {
-                    return {
-                        kind: day ? 'clear-day' : 'clear-night',
-                        th: 'ท้องฟ้าแจ่มใส',
-                        en: day ? 'Clear Sky' : 'Clear Night',
-                        zh: '晴朗'
-                    };
-                }
-                if (c === 1 || c === 2) {
-                    return {
-                        kind: day ? 'partly-cloudy' : 'partly-cloudy-night',
-                        th: 'มีเมฆบางส่วน',
-                        en: 'Partly Cloudy',
-                        zh: '局部多云'
-                    };
-                }
-                if (c === 3 || c === 45 || c === 48) {
-                    return {
-                        kind: 'cloudy',
-                        th: c === 3 ? 'มีเมฆมาก' : 'มีหมอก',
-                        en: c === 3 ? 'Overcast' : 'Foggy',
-                        zh: c === 3 ? '多云' : '有雾'
-                    };
-                }
+                const windSpeed = Number(extra?.windSpeed ?? 0);
+                const windGusts = Number(extra?.windGusts ?? 0);
+                const temp = extra?.temp != null ? Number(extra.temp) : null;
+                const isWindy = (Number.isFinite(windSpeed) && windSpeed >= 24) || (Number.isFinite(windGusts) && windGusts >= 38);
+                const isSnowWmo = (c >= 71 && c <= 77) || c === 85 || c === 86;
+                const isCold = isSnowWmo || (temp !== null && Number.isFinite(temp) && temp <= 18);
+
                 if (c >= 95) {
                     return {
                         kind: 'storm',
+                        fx: 'storm',
+                        windy: isWindy,
                         th: 'พายุฝนฟ้าคะนอง',
                         en: 'Thunderstorm',
                         zh: '雷阵雨'
                     };
                 }
                 if ((c >= 51 && c <= 67) || (c >= 80 && c <= 82)) {
+                    const heavy = c >= 63 || c >= 81;
                     return {
                         kind: 'rain',
-                        th: c >= 63 || c >= 81 ? 'ฝนตกหนัก' : 'ฝนตกเล็กน้อย',
-                        en: c >= 63 || c >= 81 ? 'Heavy Rain' : 'Light Rain',
-                        zh: c >= 63 || c >= 81 ? '大雨' : '小雨'
+                        fx: 'rain',
+                        windy: isWindy,
+                        th: isWindy ? (heavy ? 'ฝนตก · ลมแรง' : 'ฝนปรอย · ลมแรง') : (heavy ? 'ฝนตกหนัก' : 'ฝนตกเล็กน้อย'),
+                        en: isWindy ? (heavy ? 'Stormy Rain' : 'Wind & Rain') : (heavy ? 'Heavy Rain' : 'Light Rain'),
+                        zh: isWindy ? '风雨交加' : (heavy ? '大雨' : '小雨')
+                    };
+                }
+                if (isSnowWmo || isCold) {
+                    return {
+                        kind: 'cold',
+                        fx: 'cold',
+                        windy: isWindy,
+                        th: isSnowWmo ? 'หิมะ · อากาศหนาว' : (temp !== null && temp <= 14 ? 'อากาศหนาวเย็น' : 'อากาศเย็น'),
+                        en: isSnowWmo ? 'Snow & Cold' : (temp !== null && temp <= 14 ? 'Cold Weather' : 'Cool & Crisp'),
+                        zh: isSnowWmo ? '降雪寒冷' : (temp !== null && temp <= 14 ? '天气寒冷' : '天气微凉')
+                    };
+                }
+                if (isWindy) {
+                    const strong = windSpeed >= 35 || windGusts >= 48;
+                    return {
+                        kind: 'windy',
+                        fx: 'windy',
+                        windy: true,
+                        th: strong ? 'ลมกระโชกแรง' : 'มีลมแรง',
+                        en: strong ? 'Strong Wind' : 'Windy',
+                        zh: strong ? '强风天气' : '大风'
+                    };
+                }
+                if (c === 45 || c === 48) {
+                    return {
+                        kind: 'fog',
+                        fx: 'cloudy',
+                        th: 'มีหมอก',
+                        en: 'Foggy',
+                        zh: '有雾'
+                    };
+                }
+                if (c === 3) {
+                    return {
+                        kind: 'cloudy',
+                        fx: 'cloudy',
+                        th: 'มีเมฆมาก',
+                        en: 'Overcast',
+                        zh: '多云'
+                    };
+                }
+                if (c === 0) {
+                    return {
+                        kind: day ? 'clear-day' : 'clear-night',
+                        fx: day ? 'sunny' : 'night',
+                        th: day ? 'แดดออก · แจ่มใส' : 'ท้องฟ้าโปร่ง',
+                        en: day ? 'Sunny & Clear' : 'Clear Night',
+                        zh: day ? '晴朗阳光' : '晴夜'
                     };
                 }
                 return {
                     kind: day ? 'partly-cloudy' : 'partly-cloudy-night',
+                    fx: day ? 'sunny' : 'night',
                     th: 'มีเมฆบางส่วน',
                     en: 'Partly Cloudy',
                     zh: '局部多云'
@@ -8706,31 +9243,78 @@ setOriginFromActionSheet() {
                 const descEl = document.getElementById('popupWeatherDesc');
                 const iconEl = document.getElementById('popupWeatherIcon');
                 const cardEl = document.getElementById('popupWeatherCard');
+                const unitBadgeEl = document.getElementById('popupWeatherUnitBadge');
                 if (!tempEl && !descEl && !iconEl) return;
+
+                const isF = this.tempUnit === 'F';
+                if (unitBadgeEl) {
+                    unitBadgeEl.textContent = isF ? '°F' : '°C';
+                    unitBadgeEl.classList.toggle('is-f', isF);
+                    const toggleTip = lang === 'en'
+                        ? (isF ? 'Tap to switch to °C' : 'Tap to switch to °F')
+                        : (lang === 'zh'
+                            ? (isF ? '点击切换为 °C' : '点击切换为 °F')
+                            : (isF ? 'แตะเพื่อสลับกลับเป็น °C' : 'แตะเพื่อสลับเป็น °F'));
+                    unitBadgeEl.title = toggleTip;
+                    unitBadgeEl.setAttribute('aria-label', toggleTip);
+                }
 
                 if (labelEl) {
                     labelEl.textContent = lang === 'en' ? 'Weather' : (lang === 'zh' ? '实时天气' : 'สภาพอากาศ');
                 }
                 if (cardEl) {
-                    cardEl.title = lang === 'en' ? 'Tap to refresh weather' : (lang === 'zh' ? '点击刷新天气' : 'แตะเพื่ออัปเดตสภาพอากาศ');
+                    cardEl.title = lang === 'en'
+                        ? 'Tap to switch °C / °F unit'
+                        : (lang === 'zh' ? '点击切换 °C / °F 单位' : 'แตะเพื่อสลับหน่วย °C / °F');
                 }
 
                 const w = this._popupWeather;
                 if (w && w.temp != null) {
-                    const info = this.mapWmoWeather(w.code, w.isDay);
-                    if (tempEl) tempEl.textContent = `${Math.round(w.temp)}°C`;
+                    const info = this.mapWmoWeather(w.code, w.isDay, {
+                        temp: w.temp,
+                        windSpeed: w.windSpeed,
+                        windGusts: w.windGusts
+                    });
+                    const tempNum = isF ? ((w.temp * 1.8) + 32) : w.temp;
+                    const unitSuffix = isF ? '°F' : '°C';
+                    if (tempEl) tempEl.textContent = `${Math.round(tempNum)}${unitSuffix}`;
                     if (descEl) descEl.textContent = lang === 'en' ? info.en : (lang === 'zh' ? info.zh : info.th);
-                    if (iconEl) iconEl.innerHTML = this.getWeatherSvg(info.kind);
+                    if (cardEl) cardEl.dataset.wxFx = info.fx || 'cloudy';
+                    if (iconEl) iconEl.innerHTML = this.getWeatherSvg(info.kind, { windy: !!info.windy });
                 } else {
                     const isNight = new Date().getHours() < 6 || new Date().getHours() >= 19;
-                    if (tempEl) tempEl.textContent = '--°C';
+                    if (tempEl) tempEl.textContent = isF ? '--°F' : '--°C';
                     if (descEl) {
                         descEl.textContent = this._popupWeatherError
                             ? (lang === 'en' ? 'Weather unavailable' : (lang === 'zh' ? '暂无天气数据' : 'ไม่มีข้อมูลอากาศ'))
                             : (lang === 'en' ? 'Loading...' : (lang === 'zh' ? '加载中...' : 'กำลังโหลด...'));
                     }
+                    if (cardEl) cardEl.dataset.wxFx = isNight ? 'night' : 'sunny';
                     if (iconEl) iconEl.innerHTML = this.getWeatherSvg(isNight ? 'partly-cloudy-night' : 'partly-cloudy');
                 }
+            },
+
+            setTempUnit(unit, event) {
+                if (event) {
+                    if (typeof event.stopPropagation === 'function') event.stopPropagation();
+                    if (typeof event.preventDefault === 'function') event.preventDefault();
+                }
+                const targetUnit = (unit === 'F' || unit === 'f') ? 'F' : 'C';
+                if (this.tempUnit === targetUnit) return;
+                this.tempUnit = targetUnit;
+                try {
+                    localStorage.setItem('bkk_skytrains_temp_unit', targetUnit);
+                } catch (e) { }
+                this.renderPopupWeather();
+            },
+
+            toggleTempUnit(event) {
+                if (event) {
+                    if (typeof event.stopPropagation === 'function') event.stopPropagation();
+                    if (typeof event.preventDefault === 'function') event.preventDefault();
+                }
+                const nextUnit = this.tempUnit === 'F' ? 'C' : 'F';
+                this.setTempUnit(nextUnit, event);
             },
 
             async refreshPopupWeather(force = false, station = null) {
@@ -8753,7 +9337,7 @@ setOriginFromActionSheet() {
                     const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
                     const timer = controller ? setTimeout(() => controller.abort(), 5000) : null;
                     try {
-                        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat.toFixed(4)}&longitude=${lon.toFixed(4)}&current=temperature_2m,weather_code,is_day&timezone=Asia%2FBangkok`;
+                        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat.toFixed(4)}&longitude=${lon.toFixed(4)}&current=temperature_2m,weather_code,is_day,wind_speed_10m,wind_gusts_10m&timezone=Asia%2FBangkok`;
                         const res = await fetch(url, { signal: controller ? controller.signal : undefined, cache: 'no-cache' });
                         if (!res.ok) throw new Error('HTTP ' + res.status);
                         const data = await res.json();
@@ -8764,7 +9348,9 @@ setOriginFromActionSheet() {
                                 at: Date.now(),
                                 temp: cur.temperature_2m,
                                 code: cur.weather_code ?? 2,
-                                isDay: cur.is_day ?? 1
+                                isDay: cur.is_day ?? 1,
+                                windSpeed: typeof cur.wind_speed_10m === 'number' ? cur.wind_speed_10m : 0,
+                                windGusts: typeof cur.wind_gusts_10m === 'number' ? cur.wind_gusts_10m : 0
                             };
                             this._popupWeatherError = false;
                         }
@@ -8847,12 +9433,36 @@ setOriginFromActionSheet() {
                 ];
             },
 
+            syncHolidayStationVisibility(isHolidayPanelOpen) {
+                const isOpen = Boolean(isHolidayPanelOpen);
+                const stationCard = document.querySelector('.nearest-popup-stack > .nearest-popup-card');
+                const holidayCard = document.getElementById('popupHolidayCard');
+                const dismissBar = document.getElementById('popupHolidayDismissBar');
+                if (stationCard) {
+                    stationCard.classList.toggle('hidden-by-holiday', isOpen);
+                }
+                if (holidayCard) {
+                    holidayCard.classList.toggle('is-expanded', isOpen);
+                }
+                if (dismissBar) {
+                    dismissBar.style.display = isOpen ? 'block' : 'none';
+                }
+            },
+
             togglePopupBtsHolidays(event) {
                 if (event) event.stopPropagation();
                 const panelEl = document.getElementById('popupHolidayBtsPanel');
                 if (!panelEl) return;
                 panelEl.hidden = !panelEl.hidden;
+                if (!panelEl.hidden && !this.btsHolidayFilter) {
+                    this.btsHolidayFilter = 'all';
+                }
                 this.renderPopupHolidays(this._lastHolidayRenderNow || new Date());
+                this.syncHolidayStationVisibility(!panelEl.hidden);
+                if (!panelEl.hidden) {
+                    const listEl = panelEl.querySelector('.popup-holiday-bts-list');
+                    if (listEl) listEl.scrollTop = 0;
+                }
                 if (typeof this.syncToastPosition === 'function') {
                     this.syncToastPosition();
                     requestAnimationFrame(() => this.syncToastPosition());
@@ -8863,22 +9473,60 @@ setOriginFromActionSheet() {
                 if (event) event.stopPropagation();
                 this.btsHolidayPanelYear = year;
                 this.renderPopupHolidays(this._lastHolidayRenderNow || new Date());
+                const listEl = document.querySelector('#popupHolidayBtsPanel .popup-holiday-bts-list');
+                if (listEl) listEl.scrollTop = 0;
                 if (typeof this.syncToastPosition === 'function') {
                     this.syncToastPosition();
                     requestAnimationFrame(() => this.syncToastPosition());
                 }
             },
 
+            setPopupBtsFilter(filterKey, event) {
+                if (event) event.stopPropagation();
+                if (!['all', 'upcoming', 'past'].includes(filterKey)) filterKey = 'all';
+                this.btsHolidayFilter = filterKey;
+                this.renderPopupHolidays(this._lastHolidayRenderNow || new Date());
+                const listEl = document.querySelector('#popupHolidayBtsPanel .popup-holiday-bts-list');
+                if (listEl) listEl.scrollTop = 0;
+                if (typeof this.syncToastPosition === 'function') {
+                    this.syncToastPosition();
+                    requestAnimationFrame(() => this.syncToastPosition());
+                }
+            },
+
+            /** Render a compact name + subdate stack inside a Holiday Bento box. */
+            _fillHolidayBentoContent(containerEl, primaryText, secondaryText, tooltipText) {
+                if (!containerEl) return;
+                containerEl.textContent = '';
+                const nameEl = document.createElement('div');
+                nameEl.className = 'popup-holiday-bento-name';
+                nameEl.textContent = primaryText || '--';
+                containerEl.appendChild(nameEl);
+                if (secondaryText) {
+                    const dateEl = document.createElement('div');
+                    dateEl.className = 'popup-holiday-bento-date';
+                    dateEl.textContent = secondaryText;
+                    containerEl.appendChild(dateEl);
+                }
+                if (tooltipText) containerEl.title = tooltipText;
+                else containerEl.removeAttribute('title');
+            },
+
             renderPopupHolidays(now = new Date()) {
                 this._lastHolidayRenderNow = now;
                 const kickerEl = document.getElementById('popupHolidayKicker');
+                const sublineEl = document.getElementById('popupHolidaySubline');
                 const statusEl = document.getElementById('popupHolidayStatus');
+                const hideBtnEl = document.getElementById('popupHolidayHideBtn');
+                const pubBadgeEl = document.getElementById('popupHolidayPublicBadge');
                 const nextEl = document.getElementById('popupHolidayNext');
                 const countEl = document.getElementById('popupHolidayCountdown');
                 const btsBadgeEl = document.getElementById('popupHolidayBtsBadge');
                 const btsTextEl = document.getElementById('popupHolidayBtsText');
                 const btsCountEl = document.getElementById('popupHolidayBtsCountdown');
                 const btsToggleEl = document.getElementById('popupHolidayBtsToggle');
+                const toggleLblEl = document.getElementById('popupHolidayToggleLabel');
+                const toggleActEl = document.getElementById('popupHolidayToggleAction');
                 const btsPanelEl = document.getElementById('popupHolidayBtsPanel');
                 if (!kickerEl && !nextEl) return;
 
@@ -8904,52 +9552,65 @@ setOriginFromActionSheet() {
                     const targetMid = new Date(ny, nm - 1, nd);
                     return Math.max(1, Math.round((targetMid.getTime() - todayMid.getTime()) / 86400000));
                 };
-
-                if (kickerEl) {
-                    kickerEl.textContent = lang === 'en' ? 'HOLIDAYS · PUBLIC SCHEDULE' : (lang === 'zh' ? 'HOLIDAYS · 泰国法定假日' : 'HOLIDAYS · วันหยุดราชการ');
-                }
+                const fmtCountdown = (diffDays) => (lang === 'en'
+                    ? `In ${diffDays}d`
+                    : (lang === 'zh' ? `${diffDays}天后` : `อีก ${diffDays} วัน`));
 
                 const isWeekend = todayMid.getDay() === 0 || todayMid.getDay() === 6;
+                const statusText = todayHoliday
+                    ? (lang === 'en' ? 'Today: Holiday' : (lang === 'zh' ? '今日: 法定假日' : 'วันนี้: วันหยุด'))
+                    : (isWeekend
+                        ? (lang === 'en' ? 'Today: Weekend' : (lang === 'zh' ? '今日: 周末' : 'วันนี้: สุดสัปดาห์'))
+                        : (lang === 'en' ? 'Today: Regular' : (lang === 'zh' ? '今日: 工作日' : 'วันนี้: วันปกติ')));
+
                 if (statusEl) {
                     statusEl.classList.toggle('is-holiday', Boolean(todayHoliday || isWeekend));
-                    if (todayHoliday) {
-                        statusEl.textContent = lang === 'en' ? 'Today: Holiday' : (lang === 'zh' ? '今日: 法定假日' : 'วันนี้: วันหยุด');
-                    } else if (isWeekend) {
-                        statusEl.textContent = lang === 'en' ? 'Today: Weekend' : (lang === 'zh' ? '今日: 周末' : 'วันนี้: สุดสัปดาห์');
-                    } else {
-                        statusEl.textContent = lang === 'en' ? 'Today: Regular' : (lang === 'zh' ? '今日: 工作日' : 'วันนี้: วันปกติ');
-                    }
+                    statusEl.textContent = statusText;
+                }
+                if (pubBadgeEl) {
+                    pubBadgeEl.textContent = lang === 'en' ? 'Public Holiday' : (lang === 'zh' ? '法定假日' : 'วันหยุดราชการ');
                 }
 
+                let pubCountdownLabel = '--';
+                let pubSummaryShort = statusText;
                 if (todayHoliday) {
                     const hName = getHolidayName(todayHoliday);
-                    if (nextEl) {
-                        nextEl.textContent = lang === 'en' ? `Today: ${hName}` : (lang === 'zh' ? `今日假日: ${hName}` : `วันนี้: ${hName}`);
-                    }
+                    const hDateTxt = fmtHolidayDate(todayHoliday.date);
+                    pubCountdownLabel = lang === 'en' ? 'Holiday' : (lang === 'zh' ? '假日' : 'วันนี้');
+                    pubSummaryShort = lang === 'en'
+                        ? `Today: ${hName} · ${statusText}`
+                        : (lang === 'zh' ? `今日假日: ${hName} · ${statusText}` : `วันนี้: ${hName} · ${statusText}`);
+                    this._fillHolidayBentoContent(nextEl, hName, hDateTxt, `${hDateTxt} · ${hName}`);
                     if (countEl) {
                         countEl.classList.add('is-today');
-                        countEl.textContent = lang === 'en' ? 'Holiday' : (lang === 'zh' ? '假日' : 'วันนี้');
+                        countEl.textContent = pubCountdownLabel;
                     }
                 } else {
                     if (countEl) countEl.classList.remove('is-today');
+                    const { th: thMonthsFull, en: enMonthsFull } = this.getPopupMonthNames();
+                    const fmtShortFullMonth = (isoStr) => {
+                        const [, sm, sd] = isoStr.split('-').map(Number);
+                        const dayStr = String(sd).padStart(2, '0');
+                        if (lang === 'en') return `${dayStr} ${enMonthsFull[sm - 1]}`;
+                        if (lang === 'zh') return `${sm}月${dayStr}日`;
+                        return `${dayStr} ${thMonthsFull[sm - 1]}`;
+                    };
                     if (nextHoliday) {
                         const diffDays = calcDiffDays(nextHoliday.date);
                         const hName = getHolidayName(nextHoliday);
                         const hDateTxt = fmtHolidayDate(nextHoliday.date);
-                        if (nextEl) {
-                            nextEl.textContent = lang === 'en'
-                                ? `Next: ${hDateTxt} (${hName})`
-                                : (lang === 'zh' ? `下个假日: ${hDateTxt} (${hName})` : `ถัดไป: ${hDateTxt} (${hName})`);
-                        }
-                        if (countEl) {
-                            countEl.textContent = lang === 'en'
-                                ? `In ${diffDays}d`
-                                : (lang === 'zh' ? `${diffDays}天后` : `อีก ${diffDays} วัน`);
-                        }
+                        const hCompactDate = fmtShortFullMonth(nextHoliday.date);
+                        pubCountdownLabel = fmtCountdown(diffDays);
+                        pubSummaryShort = lang === 'en'
+                            ? `Next public: ${hCompactDate} (${pubCountdownLabel}) · ${statusText}`
+                            : (lang === 'zh'
+                                ? `下个法定假日: ${hCompactDate} (${pubCountdownLabel}) · ${statusText}`
+                                : `ราชการถัดไป: ${hCompactDate} (${pubCountdownLabel}) · ${statusText}`);
+                        this._fillHolidayBentoContent(nextEl, hName, hDateTxt, `${hDateTxt} · ${hName}`);
+                        if (countEl) countEl.textContent = pubCountdownLabel;
                     } else {
-                        if (nextEl) {
-                            nextEl.textContent = lang === 'en' ? 'Check official BTS holiday calendar' : (lang === 'zh' ? '请关注BTS官方假日表' : 'ตรวจสอบประกาศวันหยุดประจำปี');
-                        }
+                        const fallbackMsg = lang === 'en' ? 'Check official holiday calendar' : (lang === 'zh' ? '请关注官方假日表' : 'ตรวจสอบประกาศวันหยุดประจำปี');
+                        this._fillHolidayBentoContent(nextEl, fallbackMsg, '', '');
                         if (countEl) countEl.textContent = '--';
                     }
                 }
@@ -8958,92 +9619,127 @@ setOriginFromActionSheet() {
                 const btsList = this.getBtsOfficeHolidays();
                 const todayBts = btsList.find(item => item.date === todayIso);
                 const nextBts = btsList.find(item => item.date > todayIso);
-                const btsYears = [2026, 2027];
-                const defaultBtsYear = todayMid.getFullYear() <= 2026 ? 2026 : 2027;
-                const activeBtsYear = btsYears.includes(this.btsHolidayPanelYear) ? this.btsHolidayPanelYear : defaultBtsYear;
+
+                const allBtsYears = Array.from(new Set(btsList.map(item => Number(item.date.slice(0, 4))))).sort((a, b) => a - b);
+                const btsYears = allBtsYears.filter(yr => {
+                    const yrItems = btsList.filter(item => Number(item.date.slice(0, 4)) === yr);
+                    return yrItems.some(item => item.date >= todayIso);
+                });
+                const validBtsYears = btsYears.length > 0 ? btsYears : [allBtsYears[allBtsYears.length - 1]];
+                const defaultBtsYear = validBtsYears[0];
+                const activeBtsYear = validBtsYears.includes(this.btsHolidayPanelYear) ? this.btsHolidayPanelYear : defaultBtsYear;
                 const activeBtsItems = btsList.filter(item => Number(item.date.slice(0, 4)) === activeBtsYear);
                 const activeYearLabel = fmtYear(activeBtsYear);
 
                 if (btsBadgeEl) {
-                    btsBadgeEl.textContent = lang === 'en' ? 'BTS (Office)' : (lang === 'zh' ? 'BTS 办公室假日' : 'วันหยุด BTS (สำนักงาน)');
+                    btsBadgeEl.textContent = lang === 'en' ? 'BTS Office' : (lang === 'zh' ? 'BTS 办公室' : 'BTS (สำนักงาน)');
                 }
 
-                if (btsTextEl) {
-                    btsTextEl.textContent = '';
-                    btsTextEl.removeAttribute('title');
-                    const appendStrong = (txt) => {
-                        const strongEl = document.createElement('strong');
-                        strongEl.textContent = txt;
-                        btsTextEl.appendChild(strongEl);
-                    };
-                    if (todayBts) {
-                        const bName = getHolidayName(todayBts);
-                        const bFull = lang === 'th' ? (todayBts.fullTh || todayBts.th) : bName;
-                        btsTextEl.title = `${fmtHolidayDate(todayBts.date)} · ${bFull}`;
-                        if (btsCountEl) {
-                            btsCountEl.classList.add('is-today');
-                            btsCountEl.textContent = lang === 'en' ? 'Holiday' : (lang === 'zh' ? '假日' : 'วันนี้');
-                        }
-                        if (lang === 'en') {
-                            appendStrong(`Today (${bName})`);
-                            if (nextBts) btsTextEl.append(` · Next ${fmtHolidayDate(nextBts.date)} (${getHolidayName(nextBts)})`);
-                        } else if (lang === 'zh') {
-                            appendStrong(`今日 (${bName})`);
-                            if (nextBts) btsTextEl.append(` · 下次 ${fmtHolidayDate(nextBts.date)} (${getHolidayName(nextBts)})`);
-                        } else {
-                            appendStrong(`วันนี้ (${bName})`);
-                            if (nextBts) btsTextEl.append(` · ถัดไป ${fmtHolidayDate(nextBts.date)} (${getHolidayName(nextBts)})`);
-                        }
-                    } else if (nextBts) {
-                        const bDiff = calcDiffDays(nextBts.date);
-                        const bDateTxt = fmtHolidayDate(nextBts.date);
-                        const bName = getHolidayName(nextBts);
-                        const bFull = lang === 'th' ? (nextBts.fullTh || nextBts.th) : bName;
-                        btsTextEl.title = `${bDateTxt} · ${bFull}`;
-                        appendStrong(bDateTxt);
-                        btsTextEl.append(` (${bName})`);
-                        if (btsCountEl) {
-                            btsCountEl.classList.remove('is-today');
-                            btsCountEl.textContent = lang === 'en'
-                                ? `In ${bDiff}d`
-                                : (lang === 'zh' ? `${bDiff}天后` : `อีก ${bDiff} วัน`);
-                        }
-                    } else {
-                        btsTextEl.textContent = lang === 'en'
-                            ? `${fmtYear(2027)} schedule ended`
-                            : (lang === 'zh' ? `${fmtYear(2027)}年假日表已结束` : `ครบปฏิทินปี ${fmtYear(2027)}`);
-                        if (btsCountEl) {
-                            btsCountEl.classList.remove('is-today');
-                            btsCountEl.textContent = '--';
-                        }
+                if (todayBts) {
+                    const bName = getHolidayName(todayBts);
+                    const bDateTxt = fmtHolidayDate(todayBts.date);
+                    const bFull = lang === 'th' ? (todayBts.fullTh || todayBts.th) : bName;
+                    const nextHint = nextBts ? (lang === 'en' ? `Next: ${fmtHolidayDate(nextBts.date)}` : (lang === 'zh' ? `下次: ${fmtHolidayDate(nextBts.date)}` : `ถัดไป: ${fmtHolidayDate(nextBts.date)}`)) : bDateTxt;
+                    this._fillHolidayBentoContent(btsTextEl, bName, nextHint, `${bDateTxt} · ${bFull}`);
+                    if (btsCountEl) {
+                        btsCountEl.classList.add('is-today');
+                        btsCountEl.textContent = lang === 'en' ? 'Holiday' : (lang === 'zh' ? '假日' : 'วันนี้');
+                    }
+                } else if (nextBts) {
+                    const bDiff = calcDiffDays(nextBts.date);
+                    const bDateTxt = fmtHolidayDate(nextBts.date);
+                    const bName = getHolidayName(nextBts);
+                    const bFull = lang === 'th' ? (nextBts.fullTh || nextBts.th) : bName;
+                    this._fillHolidayBentoContent(btsTextEl, bName, bDateTxt, `${bDateTxt} · ${bFull}`);
+                    if (btsCountEl) {
+                        btsCountEl.classList.remove('is-today');
+                        btsCountEl.textContent = fmtCountdown(bDiff);
+                    }
+                } else {
+                    const lastBtsYear = allBtsYears[allBtsYears.length - 1];
+                    const endedTxt = lang === 'en'
+                        ? `${fmtYear(lastBtsYear)} schedule ended`
+                        : (lang === 'zh' ? `${fmtYear(lastBtsYear)}年假日表已结束` : `ครบปฏิทินปี ${fmtYear(lastBtsYear)}`);
+                    this._fillHolidayBentoContent(btsTextEl, endedTxt, '', '');
+                    if (btsCountEl) {
+                        btsCountEl.classList.remove('is-today');
+                        btsCountEl.textContent = '--';
                     }
                 }
 
                 const isPanelOpen = Boolean(btsPanelEl && !btsPanelEl.hidden);
+                if (kickerEl) {
+                    if (isPanelOpen) {
+                        kickerEl.textContent = lang === 'en'
+                            ? `BTS Office Holidays ${activeYearLabel} · ${activeBtsItems.length} days`
+                            : (lang === 'zh'
+                                ? `BTS ${activeYearLabel}年办公室假日 · ${activeBtsItems.length}天`
+                                : `วันหยุด BTS (สำนักงาน) ปี ${activeYearLabel} · ${activeBtsItems.length} วัน`);
+                    } else {
+                        kickerEl.textContent = lang === 'en'
+                            ? 'HOLIDAYS · SCHEDULE'
+                            : (lang === 'zh' ? 'HOLIDAYS · 假日概览' : 'HOLIDAYS · วันหยุด');
+                    }
+                }
+                if (sublineEl) {
+                    sublineEl.hidden = !isPanelOpen;
+                    if (isPanelOpen) sublineEl.textContent = pubSummaryShort;
+                }
+                if (statusEl) {
+                    statusEl.hidden = isPanelOpen;
+                }
+                if (hideBtnEl) {
+                    hideBtnEl.hidden = !isPanelOpen;
+                    hideBtnEl.setAttribute('aria-expanded', isPanelOpen ? 'true' : 'false');
+                    hideBtnEl.textContent = lang === 'en' ? 'Hide ▴' : (lang === 'zh' ? '收起 ▴' : 'ซ่อน ▴');
+                }
                 if (btsToggleEl) {
                     btsToggleEl.setAttribute('aria-expanded', isPanelOpen ? 'true' : 'false');
                     btsToggleEl.title = lang === 'en'
                         ? `BTS Office Holidays ${activeYearLabel} (${activeBtsItems.length} days)`
                         : (lang === 'zh' ? `BTS ${activeYearLabel}年办公室假日 (${activeBtsItems.length}天)` : `ปฏิทินวันหยุด BTS (สำนักงาน) ปี ${activeYearLabel} (${activeBtsItems.length} วัน)`);
-                    btsToggleEl.textContent = isPanelOpen
-                        ? (lang === 'en' ? 'Hide ▴' : (lang === 'zh' ? '收起 ▴' : 'ซ่อน ▴'))
-                        : (lang === 'en' ? `${activeBtsItems.length}d ▾` : (lang === 'zh' ? `${activeBtsItems.length}天 ▾` : `${activeBtsItems.length} วัน ▾`));
+                }
+                if (toggleLblEl) {
+                    toggleLblEl.textContent = lang === 'en'
+                        ? `BTS Office Holidays Calendar · ${activeBtsItems.length} days`
+                        : (lang === 'zh' ? `BTS 办公室假日日历 · ${activeBtsItems.length}天` : `ปฏิทินวันหยุด BTS (สำนักงาน) · ${activeBtsItems.length} วัน`);
+                }
+                if (toggleActEl) {
+                    toggleActEl.textContent = lang === 'en' ? 'View all ▾' : (lang === 'zh' ? '查看全部 ▾' : 'ดูทั้งหมด ▾');
                 }
 
                 if (btsPanelEl) {
-                    const TH_M_ABBR = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
-                    const EN_M_ABBR = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                    const { th: TH_MONTHS_FULL, en: EN_MONTHS_FULL } = this.getPopupMonthNames();
                     btsPanelEl.textContent = '';
-                    const panelHead = document.createElement('div');
-                    panelHead.className = 'popup-holiday-bts-panel-head';
-                    const headTitle = document.createElement('span');
-                    headTitle.textContent = lang === 'en'
-                        ? `BTS Office Holidays ${activeYearLabel} · ${activeBtsItems.length} days`
-                        : (lang === 'zh' ? `BTS ${activeYearLabel}年办公室假日 · ${activeBtsItems.length}天` : `วันหยุด BTS (สำนักงาน) ปี ${activeYearLabel} · ${activeBtsItems.length} วัน`);
 
-                    const yearTabsEl = document.createElement('span');
+                    const upcomingItems = activeBtsItems.filter(item => item.date >= todayIso);
+                    const pastItems = activeBtsItems.filter(item => item.date < todayIso);
+                    const activeFilter = ['all', 'upcoming', 'past'].includes(this.btsHolidayFilter) ? this.btsHolidayFilter : 'all';
+                    this.btsHolidayFilter = activeFilter;
+
+                    const toolbarEl = document.createElement('div');
+                    toolbarEl.className = 'popup-holiday-bts-toolbar';
+
+                    const filterSegEl = document.createElement('div');
+                    filterSegEl.className = 'popup-holiday-filter-seg';
+                    const filterDefs = [
+                        { key: 'all', th: `ทั้งหมด (${activeBtsItems.length})`, en: `All (${activeBtsItems.length})`, zh: `全部 (${activeBtsItems.length})` },
+                        { key: 'upcoming', th: `ที่จะมาถึง (${upcomingItems.length})`, en: `Upcoming (${upcomingItems.length})`, zh: `即将 (${upcomingItems.length})` },
+                        { key: 'past', th: `ผ่านแล้ว (${pastItems.length})`, en: `Passed (${pastItems.length})`, zh: `已过 (${pastItems.length})` }
+                    ];
+                    for (const fDef of filterDefs) {
+                        const fBtn = document.createElement('button');
+                        fBtn.type = 'button';
+                        fBtn.className = 'popup-holiday-filter-btn' + (activeFilter === fDef.key ? ' is-active' : '');
+                        fBtn.textContent = lang === 'en' ? fDef.en : (lang === 'zh' ? fDef.zh : fDef.th);
+                        fBtn.setAttribute('aria-pressed', activeFilter === fDef.key ? 'true' : 'false');
+                        fBtn.addEventListener('click', (ev) => this.setPopupBtsFilter(fDef.key, ev));
+                        filterSegEl.appendChild(fBtn);
+                    }
+
+                    const yearTabsEl = document.createElement('div');
                     yearTabsEl.className = 'popup-holiday-bts-years';
-                    for (const yrCe of btsYears) {
+                    for (const yrCe of validBtsYears) {
                         const yrBtn = document.createElement('button');
                         yrBtn.type = 'button';
                         yrBtn.className = 'popup-holiday-bts-year-btn' + (yrCe === activeBtsYear ? ' is-active' : '');
@@ -9052,70 +9748,133 @@ setOriginFromActionSheet() {
                         yrBtn.addEventListener('click', (ev) => this.selectPopupBtsYear(yrCe, ev));
                         yearTabsEl.appendChild(yrBtn);
                     }
-                    panelHead.appendChild(headTitle);
-                    panelHead.appendChild(yearTabsEl);
-                    btsPanelEl.appendChild(panelHead);
+
+                    toolbarEl.appendChild(filterSegEl);
+                    toolbarEl.appendChild(yearTabsEl);
+                    btsPanelEl.appendChild(toolbarEl);
+
+                    const spotHoliday = todayHoliday || nextHoliday;
+                    if (spotHoliday) {
+                        const spotEl = document.createElement('div');
+                        spotEl.className = 'popup-holiday-spotlight';
+
+                        const spotTopEl = document.createElement('div');
+                        spotTopEl.className = 'popup-holiday-spotlight-top';
+
+                        const spotKicker = document.createElement('div');
+                        spotKicker.className = 'popup-holiday-spotlight-kicker';
+                        spotKicker.textContent = todayHoliday
+                            ? (lang === 'en' ? "TODAY'S PUBLIC HOLIDAY" : (lang === 'zh' ? '今日泰国法定假日' : 'วันหยุดราชการวันนี้'))
+                            : (lang === 'en' ? 'NEXT PUBLIC HOLIDAY' : (lang === 'zh' ? '下个法定假日 (总览)' : 'วันหยุดราชการถัดไป (ภาพรวม)'));
+
+                        const spotBadge = document.createElement('span');
+                        spotBadge.className = 'popup-holiday-spotlight-badge';
+                        spotBadge.textContent = pubCountdownLabel;
+
+                        spotTopEl.appendChild(spotKicker);
+                        spotTopEl.appendChild(spotBadge);
+
+                        const spotTitle = document.createElement('div');
+                        spotTitle.className = 'popup-holiday-spotlight-title';
+                        spotTitle.textContent = `${getHolidayName(spotHoliday)} · ${fmtHolidayDate(spotHoliday.date)}`;
+
+                        const spotSub = document.createElement('div');
+                        spotSub.className = 'popup-holiday-spotlight-sub';
+                        if (nextBts) {
+                            const nextBtsDateShort = fmtHolidayDate(nextBts.date);
+                            spotSub.textContent = lang === 'en'
+                                ? `BTS Office next: ${getHolidayName(nextBts)} · ${nextBtsDateShort}`
+                                : (lang === 'zh'
+                                    ? `BTS 办公室下个假日: ${getHolidayName(nextBts)} · ${nextBtsDateShort}`
+                                    : `เทียบกับ BTS (สำนักงาน): ถัดไป ${nextBtsDateShort} · ${getHolidayName(nextBts)}`);
+                        } else {
+                            spotSub.textContent = statusText;
+                        }
+
+                        spotEl.appendChild(spotTopEl);
+                        spotEl.appendChild(spotTitle);
+                        spotEl.appendChild(spotSub);
+                        btsPanelEl.appendChild(spotEl);
+                    }
+
+                    const visibleItems = activeFilter === 'upcoming'
+                        ? upcomingItems
+                        : (activeFilter === 'past' ? pastItems : [...upcomingItems, ...pastItems]);
 
                     const listEl = document.createElement('div');
                     listEl.className = 'popup-holiday-bts-list';
-                    for (const item of activeBtsItems) {
-                        const [, hm, hd] = item.date.split('-').map(Number);
-                        const rowEl = document.createElement('div');
-                        rowEl.className = 'popup-holiday-bts-item';
+                    if (!visibleItems.length) {
+                        const emptyEl = document.createElement('div');
+                        emptyEl.className = 'popup-holiday-bts-empty';
+                        emptyEl.textContent = lang === 'en'
+                            ? 'No holidays in this category'
+                            : (lang === 'zh' ? '此分类暂无假日' : 'ไม่มีวันหยุดในหมวดหมู่นี้');
+                        listEl.appendChild(emptyEl);
+                    } else {
+                        for (const item of visibleItems) {
+                            const [, hm, hd] = item.date.split('-').map(Number);
+                            const rowEl = document.createElement('div');
+                            rowEl.className = 'popup-holiday-bts-item';
 
-                        const isItemToday = item.date === todayIso;
-                        const isItemNext = !todayBts && nextBts && item.date === nextBts.date;
-                        const isItemPast = item.date < todayIso;
+                            const isItemToday = item.date === todayIso;
+                            const isItemNext = !todayBts && nextBts && item.date === nextBts.date;
+                            const isItemPast = item.date < todayIso;
 
-                        let pillText = '';
-                        if (isItemToday) {
-                            rowEl.classList.add('is-today');
-                            pillText = lang === 'en' ? 'Today' : (lang === 'zh' ? '今日' : 'วันนี้');
-                        } else if (isItemNext) {
-                            rowEl.classList.add('is-next');
-                            const nDiff = calcDiffDays(item.date);
-                            pillText = lang === 'en' ? `Next · ${nDiff}d` : (lang === 'zh' ? `下次 · ${nDiff}天后` : `ถัดไป · อีก ${nDiff} วัน`);
-                        } else if (isItemPast) {
-                            rowEl.classList.add('is-past');
-                            pillText = lang === 'en' ? 'Passed' : (lang === 'zh' ? '已过' : 'ผ่านแล้ว');
-                        } else {
-                            rowEl.classList.add('is-upcoming');
-                            const uDiff = calcDiffDays(item.date);
-                            pillText = lang === 'en' ? `In ${uDiff}d` : (lang === 'zh' ? `${uDiff}天后` : `อีก ${uDiff} วัน`);
+                            let pillText = '';
+                            if (isItemToday) {
+                                rowEl.classList.add('is-today');
+                                pillText = lang === 'en' ? 'Today' : (lang === 'zh' ? '今日' : 'วันนี้');
+                            } else if (isItemNext) {
+                                rowEl.classList.add('is-next');
+                                const nDiff = calcDiffDays(item.date);
+                                pillText = lang === 'en' ? `Next · ${nDiff}d` : (lang === 'zh' ? `下次 · ${nDiff}天后` : `ถัดไป · อีก ${nDiff} วัน`);
+                            } else if (isItemPast) {
+                                rowEl.classList.add('is-past');
+                                pillText = lang === 'en' ? 'Passed' : (lang === 'zh' ? '已过' : 'ผ่านแล้ว');
+                            } else {
+                                rowEl.classList.add('is-upcoming');
+                                pillText = fmtCountdown(calcDiffDays(item.date));
+                            }
+
+                            const dayPad = String(hd).padStart(2, '0');
+                            const monLabel = lang === 'en' ? EN_MONTHS_FULL[hm - 1] : (lang === 'zh' ? `${hm}月` : TH_MONTHS_FULL[hm - 1]);
+
+                            const leftWrap = document.createElement('div');
+                            leftWrap.className = 'popup-holiday-bts-item-left';
+
+                            const chipEl = document.createElement('span');
+                            chipEl.className = 'popup-holiday-bts-chip';
+                            chipEl.textContent = lang === 'zh' ? `${monLabel}${dayPad}日` : `${dayPad} ${monLabel}`;
+
+                            const itemName = getHolidayName(item);
+                            const itemFull = lang === 'th' ? (item.fullTh || item.th) : itemName;
+                            const fullDateStr = fmtHolidayDate(item.date);
+
+                            const metaEl = document.createElement('div');
+                            metaEl.className = 'popup-holiday-bts-meta';
+
+                            const nameEl = document.createElement('div');
+                            nameEl.className = 'popup-holiday-bts-item-name';
+                            nameEl.textContent = itemName;
+
+                            const dateEl = document.createElement('div');
+                            dateEl.className = 'popup-holiday-bts-item-date';
+                            dateEl.textContent = fullDateStr;
+
+                            metaEl.appendChild(nameEl);
+                            metaEl.appendChild(dateEl);
+                            leftWrap.appendChild(chipEl);
+                            leftWrap.appendChild(metaEl);
+
+                            const pillEl = document.createElement('span');
+                            pillEl.className = 'popup-holiday-bts-pill';
+                            pillEl.textContent = pillText;
+
+                            rowEl.appendChild(leftWrap);
+                            rowEl.appendChild(pillEl);
+                            rowEl.title = `${fullDateStr} · ${itemFull}`;
+                            listEl.appendChild(rowEl);
                         }
-
-                        const dayPad = String(hd).padStart(2, '0');
-                        const monLabel = lang === 'en' ? EN_M_ABBR[hm - 1] : (lang === 'zh' ? `${hm}月` : TH_M_ABBR[hm - 1]);
-
-                        const cardTop = document.createElement('div');
-                        cardTop.className = 'popup-holiday-bts-card-top';
-                        const chipEl = document.createElement('span');
-                        chipEl.className = 'popup-holiday-bts-chip';
-                        chipEl.textContent = lang === 'zh' ? `${monLabel}${dayPad}日` : `${monLabel} ${dayPad}`;
-                        const pillEl = document.createElement('span');
-                        pillEl.className = 'popup-holiday-bts-pill';
-                        pillEl.textContent = pillText;
-                        cardTop.appendChild(chipEl);
-                        cardTop.appendChild(pillEl);
-
-                        const itemName = getHolidayName(item);
-                        const itemFull = lang === 'th' ? (item.fullTh || item.th) : itemName;
-                        const fullDateStr = fmtHolidayDate(item.date);
-
-                        const nameEl = document.createElement('div');
-                        nameEl.className = 'popup-holiday-bts-item-name';
-                        nameEl.textContent = itemName;
-
-                        const dateEl = document.createElement('div');
-                        dateEl.className = 'popup-holiday-bts-item-date';
-                        dateEl.textContent = fullDateStr;
-
-                        rowEl.appendChild(cardTop);
-                        rowEl.appendChild(nameEl);
-                        rowEl.appendChild(dateEl);
-
-                        rowEl.title = `${fullDateStr} · ${itemFull}`;
-                        listEl.appendChild(rowEl);
                     }
                     btsPanelEl.appendChild(listEl);
                 }
@@ -9572,6 +10331,7 @@ setOriginFromActionSheet() {
                 el.style.display = this.hubOpen ? 'grid' : 'none';
                 const hubs = [
                     { key: 'CEN', lineId: 1, nameTh: 'สยาม', nameEn: 'Siam', nameZh: '暹罗', subTh: 'BTS สุขุมวิท ⇄ สีลม', subEn: 'BTS Sukhumvit ⇄ Silom', subZh: 'BTS 素坤逸 ⇄ 是隆' },
+                    { key: 'G2', lineId: 3, nameTh: 'เจริญนคร', nameEn: 'Charoen Nakhon', nameZh: '乍能纳空', subTh: 'ไอคอนสยาม (ICONSIAM)', subEn: 'ICONSIAM Mall', subZh: '暹罗天地 ICONSIAM' },
                     { key: 'E4', lineId: 1, nameTh: 'อโศก', nameEn: 'Asok', nameZh: '阿索克', subTh: 'เชื่อม MRT สุขุมวิท', subEn: 'Connect MRT Sukhumvit', subZh: '换乘 MRT 素坤逸' },
                     { key: 'N8', lineId: 1, nameTh: 'หมอชิต', nameEn: 'Mo Chit', nameZh: '莫奇', subTh: 'เชื่อม MRT จตุจักร', subEn: 'Connect MRT Chatuchak', subZh: '换乘 MRT 乍都节' },
                     { key: 'S2', lineId: 2, nameTh: 'ศาลาแดง', nameEn: 'Sala Daeng', nameZh: '萨拉丹', subTh: 'เชื่อม MRT สีลม', subEn: 'Connect MRT Si Lom', subZh: '换乘 MRT 是隆' },
@@ -9579,8 +10339,13 @@ setOriginFromActionSheet() {
                     { key: 'BL11', lineId: 101, nameTh: 'บางซื่อ', nameEn: 'Bang Sue', nameZh: '挽赐', subTh: 'เชื่อม SRT สายสีแดง', subEn: 'Connect SRT Red Line', subZh: '换乘 SRT 红线' },
                     { key: 'BL15', lineId: 101, nameTh: 'ลาดพร้าว', nameEn: 'Lat Phrao', nameZh: '拉抛', subTh: 'เชื่อม MRT สายสีเหลือง', subEn: 'Connect Yellow Line', subZh: '换乘 MRT 黄线' },
                     { key: 'YL23', lineId: 4, nameTh: 'สำโรง', nameEn: 'Samrong', nameZh: '三隆', subTh: 'เชื่อม BTS สุขุมวิท', subEn: 'Connect BTS Sukhumvit', subZh: '换乘 BTS 素坤逸' },
+                    { key: 'PP02', lineId: 102, nameTh: 'ตลาดบางใหญ่', nameEn: 'Talad Bang Yai', nameZh: '挽艾市集', subTh: 'เซ็นทรัล เวสต์เกต (IKEA)', subEn: 'Central Westgate & IKEA', subZh: '中央西区尚泰商场' },
                     { key: 'PP11', lineId: 102, nameTh: 'ศูนย์ราชการฯ', nameEn: 'Nonthaburi CC', nameZh: '暖武里政务中心', subTh: 'สายสีม่วง ⇄ ชมพู', subEn: 'Purple ⇄ Pink Line', subZh: '紫线 ⇄ 粉红线' },
-                    { key: 'A1', lineId: 104, nameTh: 'สุวรรณภูมิ', nameEn: 'Suvarnabhumi', nameZh: '素万那普', subTh: 'ท่าอากาศยานสุวรรณภูมิ', subEn: 'Suvarnabhumi Airport', subZh: '素万那普国际机场' }
+                    { key: 'MT01', lineId: 5, nameTh: 'อิมแพ็ค', nameEn: 'IMPACT', nameZh: 'IMPACT 会展', subTh: 'อิมแพ็ค ชาเลนเจอร์/อารีน่า', subEn: 'IMPACT Challenger & Arena', subZh: '通他尼国际会展中心' },
+                    { key: 'RN08', lineId: 103, nameTh: 'ดอนเมือง', nameEn: 'Don Mueang', nameZh: '廊曼', subTh: 'ท่าอากาศยานดอนเมือง (DMK)', subEn: 'Don Mueang Airport (DMK)', subZh: '廊曼国际机场 (DMK)' },
+                    { key: 'RW04', lineId: 105, nameTh: 'ตลิ่งชัน', nameEn: 'Taling Chan', nameZh: '大林江', subTh: 'ตลาดน้ำตลิ่งชัน', subEn: 'Taling Chan Floating Market', subZh: '大林江水上市场' },
+                    { key: 'A1', lineId: 104, nameTh: 'สุวรรณภูมิ', nameEn: 'Suvarnabhumi', nameZh: '素万那普', subTh: 'ท่าอากาศยานสุวรรณภูมิ', subEn: 'Suvarnabhumi Airport', subZh: '素万那普国际机场' },
+                    { key: 'B1', lineId: 201, nameTh: 'สาทร (BRT)', nameEn: 'Sathorn (BRT)', nameZh: '沙吞 (BRT)', subTh: 'เอ็มไพร์ ทาวเวอร์ / ช่องนนทรี', subEn: 'Empire Tower / Chong Nonsi', subZh: '沙吞帝国大厦 / 冲暖西' }
                 ];
                 const theme = {
                     1: { bg: 'rgba(122,180,32,0.12)', border: 'rgba(122,180,32,0.3)', pillBg: '#7AB420', pillText: '#ffffff' },
@@ -9592,7 +10357,8 @@ setOriginFromActionSheet() {
                     5: { bg: 'rgba(236,72,153,0.12)', border: 'rgba(236,72,153,0.3)', pillBg: '#EC4899', pillText: '#ffffff' },
                     103: { bg: 'rgba(185,28,28,0.12)', border: 'rgba(185,28,28,0.3)', pillBg: '#B91C1C', pillText: '#ffffff' },
                     105: { bg: 'rgba(248,113,113,0.15)', border: 'rgba(248,113,113,0.35)', pillBg: '#F87171', pillText: '#ffffff' },
-                    104: { bg: 'rgba(138,21,56,0.12)', border: 'rgba(138,21,56,0.3)', pillBg: '#8A1538', pillText: '#ffffff' }
+                    104: { bg: 'rgba(138,21,56,0.12)', border: 'rgba(138,21,56,0.3)', pillBg: '#8A1538', pillText: '#ffffff' },
+                    201: { bg: 'rgba(130,195,65,0.15)', border: 'rgba(130,195,65,0.35)', pillBg: '#82C341', pillText: '#ffffff' }
                 };
                 el.innerHTML = hubs.map(h => {
                     const s = this.findStation(h.key);
@@ -9620,11 +10386,25 @@ setOriginFromActionSheet() {
                 }).join('');
             },
 
-            setPickerSearchAndFilter(text) {
+            setPickerSearchAndFilter(text, chipEl = null) {
                 const input = document.getElementById('pickerSearch');
                 if (input) {
                     input.value = text;
                     this.onPickerSearchInput();
+                }
+                const row = document.querySelector('#pickerOverlay .picker-poi-row');
+                if (row) {
+                    const chips = row.querySelectorAll('.picker-poi-chip');
+                    chips.forEach(c => c.classList.remove('active'));
+                    const targetChip = (chipEl && row.contains(chipEl))
+                        ? chipEl
+                        : Array.from(chips).find(c => c.getAttribute('data-poi-name') === text) || null;
+                    if (targetChip) {
+                        targetChip.classList.add('active');
+                        requestAnimationFrame(() => {
+                            scrollContainerChildToCenter(row, targetChip, true);
+                        });
+                    }
                 }
             },
 
@@ -9657,20 +10437,31 @@ setOriginFromActionSheet() {
                     }
                 }
 
-                // FEATURE 2: Quick POI Chips in Journey Picker
+                // FEATURE 2: Quick POI Chips in Journey Picker (All 12 lines with SVG Icons)
                 const quickPois = [
-                    { nameTH: 'ไอคอนสยาม', nameEN: 'ICONSIAM', nameZH: '暹罗天地' },
-                    { nameTH: 'สยามพารากอน', nameEN: 'Siam Paragon', nameZH: '暹罗百丽宫' },
-                    { nameTH: 'ตลาดนัดจตุจักร', nameEN: 'Chatuchak', nameZH: '乍都乍周末市集' },
-                    { nameTH: 'สนามบินดอนเมือง', nameEN: 'Don Mueang Airport', nameZH: '廊曼机场' },
-                    { nameTH: 'สนามบินสุวรรณภูมิ', nameEN: 'Suvarnabhumi Airport', nameZH: '素万那普机场' }
+                    { nameTH: 'ไอคอนสยาม', nameEN: 'ICONSIAM', nameZH: '暹罗天地', icon: 'shopping', lineId: 3 },
+                    { nameTH: 'สยามพารากอน', nameEN: 'Siam Paragon', nameZH: '暹罗百丽宫', icon: 'shopping', lineId: 1 },
+                    { nameTH: 'อิมแพ็ค เมืองทองธานี', nameEN: 'IMPACT Muang Thong', nameZH: 'IMPACT 会展', icon: 'expo', lineId: 5 },
+                    { nameTH: 'เซ็นทรัล เวสต์เกต', nameEN: 'Central Westgate', nameZH: '中央西区', icon: 'shopping', lineId: 102 },
+                    { nameTH: 'สนามบินสุวรรณภูมิ', nameEN: 'Suvarnabhumi Airport', nameZH: '素万那普机场', icon: 'plane', lineId: 104 },
+                    { nameTH: 'สนามบินดอนเมือง', nameEN: 'Don Mueang Airport', nameZH: '廊曼机场', icon: 'plane', lineId: 103 },
+                    { nameTH: 'ซีคอนสแควร์ ศรีนครินทร์', nameEN: 'Seacon Square', nameZH: '西康广场', icon: 'shopping', lineId: 4 },
+                    { nameTH: 'แฟชั่นไอส์แลนด์', nameEN: 'Fashion Island', nameZH: '时尚岛商场', icon: 'shopping', lineId: 5 },
+                    { nameTH: 'เยาวราช', nameEN: 'Chinatown', nameZH: '唐人街', icon: 'chinatown', lineId: 101 },
+                    { nameTH: 'วัดพระแก้ว', nameEN: 'Grand Palace', nameZH: '大皇宫', icon: 'palace', lineId: 101 },
+                    { nameTH: 'ตลาดนัดจตุจักร', nameEN: 'Chatuchak', nameZH: '乍都乍周末市集', icon: 'tree', lineId: 1 },
+                    { nameTH: 'โรงพยาบาลศิริราช', nameEN: 'Siriraj Hospital', nameZH: '诗丽拉医院', icon: 'hospital', lineId: 105 },
+                    { nameTH: 'ฟิวเจอร์พาร์ค รังสิต', nameEN: 'Future Park', nameZH: '未来公园', icon: 'shopping', lineId: 103 },
+                    { nameTH: 'เอ็มไพร์ ทาวเวอร์', nameEN: 'Empire Tower', nameZH: '沙吞帝国', icon: 'city', lineId: 201 }
                 ];
                 const poiChipsHtml = `
                     <div class="picker-poi-row">
-                        <span class="picker-poi-title">📍 ${lang === 'zh' ? '热门地标:' : (lang === 'en' ? 'Landmarks:' : 'สถานที่ยอดนิยม:')}</span>
+                        <span class="picker-poi-title">${getLandmarkIconSvg('pin', 13, '#ef4444')} <span>${lang === 'zh' ? '热门地标:' : (lang === 'en' ? 'Landmarks:' : 'สถานที่ยอดนิยม:')}</span></span>
                         ${quickPois.map(p => {
                             const pName = lang === 'zh' ? p.nameZH : (lang === 'en' ? p.nameEN : p.nameTH);
-                            return `<button type="button" class="picker-poi-chip" onclick="App.setPickerSearchAndFilter('${esc(pName)}')">${esc(pName)}</button>`;
+                            const svgIcon = p.icon ? getLandmarkIconSvg(p.icon, 12) : '';
+                            const lineIcon = p.lineId ? getLineIconSvg(p.lineId, false, 13) : '';
+                            return `<button type="button" class="picker-poi-chip" data-poi-name="${esc(pName)}" onclick="App.setPickerSearchAndFilter('${esc(pName)}', this)">${lineIcon}${svgIcon}<span>${esc(pName)}</span></button>`;
                         }).join('')}
                     </div>`;
 
@@ -9693,7 +10484,13 @@ setOriginFromActionSheet() {
                         <div class="picker-list" id="pickerList"></div>
                     </div>`;
                 this.renderPickerTabs();
-                document.getElementById('pickerSearch').addEventListener('input', () => this.onPickerSearchInput());
+                document.getElementById('pickerSearch').addEventListener('input', (e) => {
+                    const q = (e.target?.value || '').trim();
+                    document.querySelectorAll('#pickerOverlay .picker-poi-chip.active').forEach(c => {
+                        if (c.getAttribute('data-poi-name') !== q) c.classList.remove('active');
+                    });
+                    this.onPickerSearchInput();
+                });
                 this.renderPickerList();
             },
 
@@ -9830,7 +10627,8 @@ setOriginFromActionSheet() {
                         const nameLen = name.length;
                         const sizeClass = nameLen > 20 ? 'chip-name-xxlong' : (nameLen > 15 ? 'chip-name-xlong' : (nameLen > 11 ? 'chip-name-long' : ''));
                         const lmMatch = qRaw ? getLandmarkMatch(s.StationKey, qRaw) : null;
-                        const lmBadge = lmMatch ? `<span class="chip-landmark-tag" title="${esc(lmMatch.name)}">📍 ${esc(lmMatch.name)}</span>` : '';
+                        const lmName = typeof lmMatch === 'string' ? lmMatch : (lmMatch?.name || '');
+                        const lmBadge = lmMatch ? `<span class="chip-landmark-tag" title="${esc(lmName)}">${getLandmarkIconSvg('pin', 11, '#38bdf8')} ${lang === 'zh' ? '靠近 ' : (lang === 'en' ? 'Near ' : 'ใกล้ ')}${esc(lmName)}</span>` : '';
                         return `
                             <button type="button" class="station-picker-chip ${isSelected ? 'selected' : ''}${isSingle ? ' chip-centered' : ''}"
                                 onclick="App.pickJourneyStation('${esc(s.StationKey)}')">
@@ -9917,6 +10715,9 @@ setOriginFromActionSheet() {
                 this.selectedExitKey = s.StationKey;
                 this.syncLineToStation(s, true);
                 this.computeNearest();
+                if (!this.userHasPickedExitStation && this.nearest?.station) {
+                    this.selectedExitKey = this.nearest.station.StationKey;
+                }
                 this.renderNearest();
                 this.renderNearestExit();
                 this.renderStrip();
@@ -9935,6 +10736,9 @@ setOriginFromActionSheet() {
                 this.userPos = { lat, lon, accuracy: accuracy || 10, calibrated: false };
                 this.saveUserPosition(this.userPos);
                 this.computeNearest();
+                if (!this.userHasPickedExitStation && this.nearest?.station) {
+                    this.selectedExitKey = this.nearest.station.StationKey;
+                }
                 this.renderNearest();
                 this.renderNearestExit();
                 this.renderStrip();
@@ -10068,11 +10872,17 @@ setOriginFromActionSheet() {
                     this.userPos = { lat, lon, accuracy: acc, calibrated: false };
                     this.saveUserPosition(this.userPos);
                     this.computeNearest();
+                    if (!this.userHasPickedExitStation && this.nearest?.station) {
+                        this.selectedExitKey = this.nearest.station.StationKey;
+                    }
                     this.locError = null;
                     this.updateRelocateBtn();
                     this.renderNearest();
                     this.renderNearestExit();
                     this.renderStrip();
+                    if (this.currentView === 'exits') {
+                        this.renderExitsView(this.selectedExitKey);
+                    }
 
                     if (interactive && this.nearest?.station) {
                         this.showNearestStationToast(this.nearest.station, this.nearest.km, false);
@@ -10653,6 +11463,23 @@ setOriginFromActionSheet() {
                 this.popupStation = station;
                 this.nearestPopupRouteOpen = false;
 
+                const topCards = document.getElementById('popupTopCards');
+                if (topCards) {
+                    topCards.style.display = '';
+                    topCards.classList.remove('hidden-by-route');
+                }
+                const holidayCard = document.getElementById('popupHolidayCard');
+                if (holidayCard) {
+                    holidayCard.style.display = '';
+                    holidayCard.classList.remove('hidden-by-route');
+                }
+                const holidayPanel = document.getElementById('popupHolidayBtsPanel');
+                if (holidayPanel) holidayPanel.hidden = true;
+                this.syncHolidayStationVisibility(false);
+                if (modal) {
+                    modal.classList.remove('route-expanded');
+                }
+
                 const badge = document.getElementById('nearestPopupLineBadge');
                 const nameTH = document.getElementById('nearestPopupNameTH');
                 const nameEN = document.getElementById('nearestPopupNameEN');
@@ -10711,12 +11538,12 @@ setOriginFromActionSheet() {
                 }
                 const card = modal.querySelector('.nearest-popup-card');
                 const stack = modal.querySelector('.nearest-popup-stack');
-                const topCards = modal.querySelector('.popup-top-cards');
+                const topCardsEl = topCards || modal.querySelector('.popup-top-cards');
                 if (card && !this._popupCardAnimBound) {
                     this._popupCardAnimBound = true;
                     card.addEventListener('animationend', () => this.syncToastPosition(), { passive: true });
-                    if (topCards) {
-                        topCards.addEventListener('animationend', () => this.syncToastPosition(), { passive: true });
+                    if (topCardsEl) {
+                        topCardsEl.addEventListener('animationend', () => this.syncToastPosition(), { passive: true });
                     }
                     if (document.fonts && document.fonts.ready) {
                         document.fonts.ready.then(() => this.syncToastPosition()).catch(() => {});
@@ -10726,7 +11553,7 @@ setOriginFromActionSheet() {
                     this._popupCardResizeObserver = new ResizeObserver(() => this.syncToastPosition());
                     this._popupCardResizeObserver.observe(card);
                     if (stack) this._popupCardResizeObserver.observe(stack);
-                    if (topCards) this._popupCardResizeObserver.observe(topCards);
+                    if (topCardsEl) this._popupCardResizeObserver.observe(topCardsEl);
                 }
                 if (!this._popupWindowResizeBound && typeof window !== 'undefined') {
                     this._popupWindowResizeBound = true;
@@ -10740,10 +11567,27 @@ setOriginFromActionSheet() {
             toggleNearestPopupRoute() {
                 const panel = document.getElementById('nearestPopupRoutePanel');
                 const trigger = document.getElementById('nearestPopupRouteTrigger');
+                const holidayCard = document.getElementById('popupHolidayCard');
+                const topCards = document.getElementById('popupTopCards');
+                const modal = document.getElementById('nearestStationPopup');
                 if (!panel || !trigger || !this.popupStation) return;
                 this.nearestPopupRouteOpen = !this.nearestPopupRouteOpen;
                 trigger.setAttribute('aria-expanded', this.nearestPopupRouteOpen ? 'true' : 'false');
                 panel.hidden = !this.nearestPopupRouteOpen;
+
+                // ซ่อนชุดการ์ดด้านบน (เวลาระบบ, สภาพอากาศ, วันหยุด) ชั่วคราวเมื่อกดดูตำแหน่งขบวนรถ เพื่อให้เห็นข้อมูลสถานีครบถ้วน
+                if (topCards) {
+                    topCards.style.display = this.nearestPopupRouteOpen ? 'none' : '';
+                    topCards.classList.toggle('hidden-by-route', this.nearestPopupRouteOpen);
+                }
+                if (holidayCard) {
+                    holidayCard.style.display = this.nearestPopupRouteOpen ? 'none' : '';
+                    holidayCard.classList.toggle('hidden-by-route', this.nearestPopupRouteOpen);
+                }
+                if (modal) {
+                    modal.classList.toggle('route-expanded', this.nearestPopupRouteOpen);
+                }
+
                 if (this.nearestPopupRouteOpen) {
                     this.renderNearestPopupRoute();
                     if (!this.routes[this.popupStation.StationKey]?.ready) {
@@ -10811,8 +11655,24 @@ setOriginFromActionSheet() {
                 this.nearestPopupRouteOpen = false;
                 const trigger = document.getElementById('nearestPopupRouteTrigger');
                 const panel = document.getElementById('nearestPopupRoutePanel');
+                const topCards = document.getElementById('popupTopCards');
+                const holidayCard = document.getElementById('popupHolidayCard');
                 if (trigger) trigger.setAttribute('aria-expanded', 'false');
                 if (panel) panel.hidden = true;
+                if (topCards) {
+                    topCards.style.display = '';
+                    topCards.classList.remove('hidden-by-route');
+                }
+                if (holidayCard) {
+                    holidayCard.style.display = '';
+                    holidayCard.classList.remove('hidden-by-route');
+                }
+                const holidayPanel = document.getElementById('popupHolidayBtsPanel');
+                if (holidayPanel) holidayPanel.hidden = true;
+                this.syncHolidayStationVisibility(false);
+                if (modal) {
+                    modal.classList.remove('route-expanded');
+                }
                 this.unlockBackgroundScreen();
             },
 
@@ -11129,16 +11989,16 @@ setOriginFromActionSheet() {
                 if (!modal) return;
                 this.renderTrafficDialog();
                 modal.style.display = 'flex';
-                document.body.style.overflow = 'hidden';
+                this.lockBackgroundScreen();
             },
 
             closeTrafficDialog() {
                 const modal = document.getElementById('trafficDisruptionPopup');
                 if (modal) {
                     modal.style.display = 'none';
-                    document.body.style.overflow = '';
                     this._disruptionDismissedByUser = true;
                 }
+                this.unlockBackgroundScreen();
             },
 
             renderTraffic() {
@@ -11855,7 +12715,7 @@ setOriginFromActionSheet() {
                                             ${crowded ? `<span class="badge crowd-b">${T('crowded')}</span>` : ''}
                                             ${isNear ? `<span class="badge near-b">${T('nearYou')}</span>` : ''}
                                             ${isTerminus ? `<span class="badge" style="background:var(--bg-subtle);color:var(--muted);border:1px solid var(--line);font-size:9.5px;font-weight:600;padding:2px 6px;border-radius:var(--radius-full);display:inline-flex;align-items:center;justify-content:center;line-height:1;box-sizing:border-box;letter-spacing:0;vertical-align:middle;">${lang === 'en' ? 'Terminus' : (lang === 'zh' ? '终点站' : 'ปลายทาง')}</span>` : ''}
-                                            ${lmMatch ? `<span class="landmark-badge">📍 ใกล้ ${esc(lmMatch)}</span>` : ''}
+                                            ${lmMatch ? `<span class="landmark-badge">${getLandmarkIconSvg('pin', 12, '#38bdf8')} ${lang === 'zh' ? `靠近 ${esc(lmMatch)}` : (lang === 'en' ? `Near ${esc(lmMatch)}` : `ใกล้ ${esc(lmMatch)}`)}</span>` : ''}
                                         </div>
                                     </div>
                                     ${km != null ? `<span class="st-dist">${fmtDist(km)}</span>` : ''}
@@ -11938,16 +12798,78 @@ setOriginFromActionSheet() {
             },
 
             /* ---------- FEATURE 3: Landmark / POI Search Helper ---------- */
-            searchLandmark(query) {
+            renderPoiQuickChips() {
+                const el = document.getElementById('poiQuickChips');
+                if (!el) return;
+                const isZh = lang === 'zh';
+                const isEn = lang === 'en';
+                const lbl = isZh ? '热门地标:' : (isEn ? 'Popular Places:' : 'สถานที่ยอดนิยม:');
+                const currentQ = (document.getElementById('searchInput')?.value || '').trim();
+                const curatedChips = [
+                    { nameTH: 'ไอคอนสยาม', nameEN: 'ICONSIAM', nameZH: '暹罗天地', q: 'ไอคอนสยาม', icon: 'shopping', lineId: 3 },
+                    { nameTH: 'สยามพารากอน', nameEN: 'Siam Paragon', nameZH: '暹罗百丽宫', q: 'สยามพารากอน', icon: 'shopping', lineId: 1 },
+                    { nameTH: 'อิมแพ็ค เมืองทอง', nameEN: 'IMPACT Muang Thong', nameZH: 'IMPACT 会展', q: 'อิมแพ็ค เมืองทองธานี', icon: 'expo', lineId: 5 },
+                    { nameTH: 'สุวรรณภูมิ', nameEN: 'Suvarnabhumi', nameZH: '素万那普', q: 'ท่าอากาศยานสุวรรณภูมิ', icon: 'plane', lineId: 104 },
+                    { nameTH: 'ดอนเมือง', nameEN: 'Don Mueang', nameZH: '廊曼机场', q: 'ท่าอากาศยานดอนเมือง', icon: 'plane', lineId: 103 },
+                    { nameTH: 'เซ็นทรัล เวสต์เกต', nameEN: 'Central Westgate', nameZH: '中央西区', q: 'เซ็นทรัล เวสต์เกต', icon: 'shopping', lineId: 102 },
+                    { nameTH: 'ซีคอน ศรีนครินทร์', nameEN: 'Seacon Square', nameZH: '西康广场', q: 'ซีคอนสแควร์ ศรีนครินทร์', icon: 'shopping', lineId: 4 },
+                    { nameTH: 'แฟชั่นไอส์แลนด์', nameEN: 'Fashion Island', nameZH: '时尚岛商场', q: 'แฟชั่นไอส์แลนด์', icon: 'shopping', lineId: 5 },
+                    { nameTH: 'เยาวราช', nameEN: 'Chinatown', nameZH: '唐人街', q: 'เยาวราช', icon: 'chinatown', lineId: 101 },
+                    { nameTH: 'วัดพระแก้ว', nameEN: 'Grand Palace', nameZH: '大皇宫', q: 'วัดพระแก้ว', icon: 'palace', lineId: 101 },
+                    { nameTH: 'ฟิวเจอร์ รังสิต', nameEN: 'Future Park', nameZH: '未来公园', q: 'ฟิวเจอร์พาร์ค รังสิต', icon: 'shopping', lineId: 103 },
+                    { nameTH: 'ศิริราช', nameEN: 'Siriraj Hospital', nameZH: '诗丽拉医院', q: 'โรงพยาบาลศิริราช', icon: 'hospital', lineId: 105 },
+                    { nameTH: 'จตุจักร', nameEN: 'Chatuchak', nameZH: '恰图恰', q: 'ตลาดนัดจตุจักร', icon: 'tree', lineId: 1 },
+                    { nameTH: 'เอ็มไพร์ สาทร', nameEN: 'Empire Tower', nameZH: '沙吞帝国', q: 'เอ็มไพร์ ทาวเวอร์', icon: 'city', lineId: 201 },
+                    { nameTH: 'เอ็มดิสทริค', nameEN: 'EM District', nameZH: 'EM 商圈', q: 'เอ็มดิสทริค', icon: 'shopping', lineId: 1 }
+                ];
+                const chipsHtml = curatedChips.map(p => {
+                    const displayName = isZh ? p.nameZH : (isEn ? p.nameEN : p.nameTH);
+                    const searchQ = p.q || (isZh ? (p.nameZH || p.nameTH) : (isEn ? (p.nameEN || p.nameTH) : p.nameTH));
+                    const lineIconSvg = getLineIconSvg(p.lineId, false, 15);
+                    const svgIcon = getLandmarkIconSvg(p.icon, 14);
+                    const isActive = currentQ && currentQ === searchQ ? ' active' : '';
+                    return `<button type="button" class="poi-chip${isActive}" data-poi-q="${esc(searchQ)}" onclick="App.searchLandmark('${esc(searchQ)}', ${p.lineId}, this)">${lineIconSvg}${svgIcon}<span class="poi-chip-text">${esc(displayName)}</span></button>`;
+                }).join('');
+                const pinSvg = getLandmarkIconSvg('pin', 13, '#ef4444');
+                el.innerHTML = `<span class="poi-quick-lbl" id="poiQuickLbl">${pinSvg}<span>${lbl}</span></span>` + chipsHtml;
+            },
+
+            searchLandmark(query, targetLineId, chipEl = null) {
                 if (this.currentView !== 'home') {
                     this.switchView('home');
+                }
+                if (targetLineId && this.activeLine !== targetLineId) {
+                    this.activeLine = targetLineId;
+                    this.renderTabs();
+                    this.scrollActiveTabIntoView();
+                }
+                const chipsWrap = document.getElementById('poiQuickChips');
+                let targetChip = null;
+                if (chipsWrap) {
+                    const allChips = chipsWrap.querySelectorAll('.poi-chip');
+                    allChips.forEach(c => c.classList.remove('active'));
+                    targetChip = (chipEl && chipsWrap.contains(chipEl))
+                        ? chipEl
+                        : Array.from(allChips).find(c => c.getAttribute('data-poi-q') === query) || null;
+                    if (targetChip) {
+                        targetChip.classList.add('active');
+                    }
                 }
                 const input = document.getElementById('searchInput');
                 if (input) {
                     input.value = query;
-                    input.focus();
+                    try {
+                        input.focus({ preventScroll: true });
+                    } catch (_) {
+                        input.focus();
+                    }
                 }
                 this.renderStrip();
+                if (chipsWrap && targetChip) {
+                    requestAnimationFrame(() => {
+                        scrollContainerChildToCenter(chipsWrap, targetChip, true);
+                    });
+                }
             },
 
             /* ---------- FEATURE 4: Favorite Stations ⭐ ---------- */
@@ -12028,7 +12950,7 @@ setOriginFromActionSheet() {
                 }).filter(Boolean).join('');
 
                 bar.innerHTML = `
-                    <span class="fav-bar-lbl">★ ${lang === 'zh' ? '收藏车站:' : (lang === 'en' ? 'Favorites:' : 'สถานีโปรด:')}</span>
+                    <span class="fav-bar-lbl">${getUiIcon('star', 12, '#f59e0b')} <span>${lang === 'zh' ? '收藏车站:' : (lang === 'en' ? 'Favorites:' : 'สถานีโปรด:')}</span></span>
                     ${chipsHtml}
                 `;
             },

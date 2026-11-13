@@ -17,7 +17,7 @@ To eliminate rule duplication and ensure consistency across all AI tools, all wo
    - Project Train Icon Standard (`getLineIconSvg` & Transit Network Legend)
    - Project Element Centering Standard (flex/inline-flex centered)
    - Project Non-Input Text Frame Standard (caret-color transparent, user-select none)
-   - Mandatory Build & VersionCode Increment (อัปเดต Build/VersionCode +1 ใน pubspec.yaml และ index.html ทุกครั้งที่เขียนเสร็จ)
+   - Mandatory Build & VersionCode Increment (อัปเดต Build/VersionCode +1 ใน pubspec.yaml, local.properties, index.html, js/app.js และ sw.js พร้อมซิงค์ไปยัง assets/www/ ทุกครั้งที่เขียนเสร็จ)
 3. **Mandatory Prohibitions (ข้อห้ามเด็ดขาด)**:
    - 🎯 **Strict Scope Adherence**: ห้ามแก้ไขในสิ่งที่ไม่ได้ร้องขอโดยเด็ดขาด
    - ⛔ **Strict Isolation Rule**: ห้ามกระทำการใดๆ ข้าม Workspace หรือแตะต้อง `D:\Exclusions\Programs` และ `C:\Users\Administrator\Downloads\Programs`

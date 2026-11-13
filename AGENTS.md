@@ -118,7 +118,7 @@ Directives and mandatory standards for AI Agents working within `C:\Users\Admini
    - ทุกองค์ประกอบที่ไม่ใช่ช่องกรอกข้อมูลจะต้องมี `caret-color: transparent !important;`, `user-select: none !important;`, และ `cursor: default !important;` (หรือ `cursor: pointer` หากเป็นปุ่มกดหรือลิงก์)
 
 8. **Mandatory Build & VersionCode Increment Standard (ข้อกำหนดการอัปเดต Build / VersionCode ทุกครั้งที่เสร็จสิ้นงาน)**:
-   - เวอร์ชันปัจจุบัน: `v1.3.6 (Build 24)` (`1.3.6+24`) / Service Worker `bkk-v116`
+   - เวอร์ชันปัจจุบัน: `v1.3.6 (Build 27)` (`1.3.6+27`) / Service Worker `bkk-v119`
    - ทุกครั้งที่มีการแก้ไขโค้ด ปรับแต่งฟีเจอร์ หรือเขียนงานในระบบเสร็จสิ้น จะต้องอัปเดตเพิ่มหมายเลข Build / VersionCode (`+1`) เสมอให้ครบทุกจุด:
      - อัปเดตใน `bkk_skytrains_flutter/pubspec.yaml`: เช่น `version: 1.3.6+24` -> `version: 1.3.6+25` (และ `flutter.versionCode` ใน `bkk_skytrains_flutter/android/local.properties` เพื่อกำหนด `versionCode` ของ Android และ `CFBundleVersion` ของ iOS)
      - อัปเดตใน `js/app.js` (`App.build` และ fallback `currentBuildNum`) และ `sw.js` (`const VERSION = 'bkk-v...'` +1)

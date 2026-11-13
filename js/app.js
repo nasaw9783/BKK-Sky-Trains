@@ -858,6 +858,18 @@ const FALLBACK_MAX_KM = 3.0;
             // 🛒 Market / Cart
             cart: (s, c, cls) => `<svg class="ui-ic ui-ic-cart ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || '#EC4899'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>`,
 
+            // 📍 GPS Crosshair / Current Location
+            gps: (s, c, cls) => `<svg class="ui-ic ui-ic-gps ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || 'currentColor'}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3" fill="${c || 'currentColor'}" fill-opacity="0.25"/><circle cx="12" cy="12" r="7.5"/><line x1="12" y1="2" x2="12" y2="4.5"/><line x1="12" y1="19.5" x2="12" y2="22"/><line x1="2" y1="12" x2="4.5" y2="12"/><line x1="19.5" y1="12" x2="22" y2="12"/></svg>`,
+
+            // 🧭 Turn-by-Turn Directions Navigation Arrow
+            navigate: (s, c, cls) => `<svg class="ui-ic ui-ic-navigate ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="${c || 'currentColor'}" fill-opacity="0.22" stroke="${c || 'currentColor'}" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>`,
+
+            // 👁️ Street View / Panorama Eye
+            streetView: (s, c, cls) => `<svg class="ui-ic ui-ic-streetview ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || 'currentColor'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-6.5 10-6.5S22 12 22 12s-3.5 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="3" fill="${c || 'currentColor'}" fill-opacity="0.25"/></svg>`,
+
+            // ↗ External Link (Open Google Maps App/Web)
+            externalLink: (s, c, cls) => `<svg class="ui-ic ui-ic-ext ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || 'currentColor'}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>`,
+
             device: (s, c, cls) => `<svg class="ui-ic ui-ic-device ${cls || ''}" width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="${c || 'currentColor'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="20" height="14" x="2" y="3" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>`
         };
 
@@ -1274,6 +1286,8 @@ const FALLBACK_MAX_KM = 3.0;
                 morePlatformLabel: 'แพลตฟอร์ม',
                 androidUpdateTitle: 'อัปเดตเวอร์ชันใหม่ (Android APK)',
                 androidUpdateSub: 'ดาวน์โหลด APK ตัวล่าสุด',
+                moreVersionNewDetected: 'ตรวจพบเวอร์ชันใหม่',
+                androidUpdateReady: 'พร้อมอัปเดต:',
                 btnUpdateVersion: 'Update Version',
                 downloadingLatestApk: 'กำลังเปิดดาวน์โหลด APK ตัวล่าสุด...',
             },
@@ -1630,6 +1644,8 @@ const FALLBACK_MAX_KM = 3.0;
                 morePlatformLabel: 'Platform',
                 androidUpdateTitle: 'Update New Version (Android APK)',
                 androidUpdateSub: 'Download latest APK',
+                moreVersionNewDetected: 'New Version Detected',
+                androidUpdateReady: 'Ready to update:',
                 btnUpdateVersion: 'Update Version',
                 downloadingLatestApk: 'Opening latest APK download...',
             },
@@ -1986,6 +2002,8 @@ const FALLBACK_MAX_KM = 3.0;
                 morePlatformLabel: '运行平台',
                 androidUpdateTitle: '更新最新版本 (Android APK)',
                 androidUpdateSub: '下载最新 APK 安装包',
+                moreVersionNewDetected: '检测到新版本',
+                androidUpdateReady: '可更新:',
                 btnUpdateVersion: 'Update Version',
                 downloadingLatestApk: '正在打开最新 APK 下载...',
             }
@@ -4505,7 +4523,7 @@ const FALLBACK_MAX_KM = 3.0;
         /* ================= APP ================= */
         const App = {
             version: '1.3.6',
-            build: 24,
+            build: 27,
             _hasApkUpdate: undefined,
             _isCheckingApkUpdate: false,
             _latestApkDownloadUrl: null,
@@ -4543,15 +4561,15 @@ const FALLBACK_MAX_KM = 3.0;
             selectedMapStationKey: 'CEN',
             selectedExitKey: 'CEN',
             mapZoom: 1.0,
-            mapMode: 'schematic', // 'schematic' | 'hybrid'
-            geoMap: null,
-            geoTileLayers: {},
-            geoCurrentLayer: 'roadmap',
-            geoStationMarkers: [],
-            geoLinesGroup: null,
-            geoMarkersGroup: null,
-            geoUserMarker: null,
-            geoAccuracyCircle: null,
+            mapMode: 'schematic', // 'schematic' | 'hybrid' (Google Maps Embed Option 2)
+            geoCurrentLayer: 'hybrid', // 'hybrid' (t=h) | 'roadmap' (t=m) | 'satellite' (t=k) | 'terrain' (t=p)
+            geoSelectedStationKey: null,
+            geoSheetState: 'open', // 'open' | 'expanded' | 'minimized'
+            geoSheetTab: 'live',   // 'live' | 'exits'
+            geoLayerMenuOpen: false,
+            geoSearchQuery: '',
+            geoEmbedUrlLoaded: '',
+            geoOutsideBound: false,
             geoActiveLineFilter: 0,
             faresActiveLine: 0,
             timetablesActiveLine: 0,
@@ -4589,18 +4607,7 @@ const FALLBACK_MAX_KM = 3.0;
                     this.renderFavoritesBar();
                 this.renderPoiQuickChips();
                 } else if (viewName === 'map') {
-                    if (this.mapMode === 'hybrid') {
-                        this.initGoogleHybridMap();
-                        setTimeout(() => {
-                            if (this.geoMap) this.geoMap.invalidateSize();
-                        }, 80);
-                    } else {
-                        this.renderInteractiveMap();
-                        this.updateMapTheme();
-                        requestAnimationFrame(() => {
-                            this.resetMapZoom(false);
-                        });
-                    }
+                    this.setMapMode(this.mapMode || 'schematic');
                 } else if (viewName === 'exits') {
                     const fallback = this.pinnedStation()?.StationKey || this.nearest?.station?.StationKey || 'CEN';
                     this.renderExitsView(this.selectedExitKey || fallback);
@@ -5541,12 +5548,12 @@ const FALLBACK_MAX_KM = 3.0;
                     document.documentElement.style.overflow = 'hidden';
                     document.documentElement.style.overflowX = 'hidden';
                     document.documentElement.style.overflowY = 'hidden';
-                    document.documentElement.style.touchAction = 'none';
+                    document.documentElement.style.touchAction = 'pan-x pan-y';
 
                     document.body.style.overflow = 'hidden';
                     document.body.style.overflowX = 'hidden';
                     document.body.style.overflowY = 'hidden';
-                    document.body.style.touchAction = 'none';
+                    document.body.style.touchAction = 'pan-x pan-y';
                     document.body.style.position = 'fixed';
                     document.body.style.top = `-${this._bodyLockScrollY || 0}px`;
                     document.body.style.left = '0';
@@ -6069,6 +6076,13 @@ const FALLBACK_MAX_KM = 3.0;
                 if (this._scrollInterceptionBound) return;
                 this._scrollInterceptionBound = true;
 
+                const VERT_SCROLL_SEL = '.picker-list, .popup-holiday-bts-list, .nearest-popup-card, .map-legend-box, .traffic-dialog-card, .interchange-modal-body, .sheet-station-info';
+                const HORIZ_SCROLL_SEL = '.picker-poi-row, .picker-fav-row, .picker-tabs, .tabs, .alt-row, .nearest-alt-row, .line-filter-bar, .rt-lane.je, .rt-lane.js';
+                const findHorizScroller = (target) => {
+                    const el = target?.closest?.(HORIZ_SCROLL_SEL);
+                    return (el && el.scrollWidth > el.clientWidth + 1) ? el : null;
+                };
+
                 let touchStartX = 0;
                 let touchStartY = 0;
 
@@ -6084,24 +6098,28 @@ const FALLBACK_MAX_KM = 3.0;
                     if (!this.isAnyModalOpen()) return;
                     if (!e.touches || e.touches.length === 0) return;
 
-                    // ค้นหากล่องเลื่อนที่ใกล้ที่สุดภายในโมดอล
-                    const scrollable = e.target.closest(
-                        '.popup-holiday-bts-list, .nearest-popup-card, .map-legend-box, .traffic-dialog-card, .interchange-modal-body, .sheet-station-info'
-                    );
-
-                    // 1. หากไม่ได้สัมผัสในกล่องเลื่อนที่อนุญาต (เช่น บน backdrop หรือการ์ดด้านบน) ห้ามเลื่อน 100%
-                    if (!scrollable) {
-                        e.preventDefault();
-                        return;
-                    }
-
-                    // 2. หากลากในแนวนอน (ซ้าย-ขวา) ห้ามเลื่อน 100% ป้องกันหน้าโยกซ้ายขวา
                     const curX = e.touches[0].clientX;
                     const curY = e.touches[0].clientY;
                     const dx = Math.abs(curX - touchStartX);
                     const dy = Math.abs(curY - touchStartY);
 
-                    if (dx > dy && dx > 2) {
+                    // ปล่อยให้แถบเลื่อนแนวนอน (เช่น สถานที่ยอดนิยม / สถานีโปรด / แท็บสายรถ) เลื่อนซ้าย-ขวาได้จนสุดตามธรรมชาติ
+                    const hScrollable = findHorizScroller(e.target);
+                    if (hScrollable && (dx >= dy || (dx <= 6 && dy <= 6))) {
+                        return;
+                    }
+
+                    // ค้นหากล่องเลื่อนแนวตั้งที่ใกล้ที่สุดภายในโมดอล
+                    const scrollable = e.target.closest(VERT_SCROLL_SEL);
+
+                    // 1. หากไม่ได้สัมผัสในกล่องเลื่อนที่อนุญาต (เช่น บน backdrop หรือหัวการ์ด) ห้ามเลื่อนพื้นหลัง
+                    if (!scrollable) {
+                        e.preventDefault();
+                        return;
+                    }
+
+                    // 2. หากลากในแนวนอนอย่างชัดเจนในกล่องแนวตั้ง ป้องกันหน้าโยกซ้ายขวา
+                    if (dx > dy && dx > 8) {
                         e.preventDefault();
                         return;
                     }
@@ -6117,20 +6135,31 @@ const FALLBACK_MAX_KM = 3.0;
                     }
                 }, { passive: false });
 
-                // ป้องกัน Mouse Wheel และ Trackpad ทะลุไปเลื่อนพื้นหลัง
+                // ป้องกัน Mouse Wheel และ Trackpad ทะลุไปเลื่อนพื้นหลัง พร้อมรองรับการเลื่อนแถบแนวนอน
                 window.addEventListener('wheel', (e) => {
                     if (!this.isAnyModalOpen()) return;
 
-                    const scrollable = e.target.closest(
-                        '.popup-holiday-bts-list, .nearest-popup-card, .map-legend-box, .traffic-dialog-card, .interchange-modal-body, .sheet-station-info'
-                    );
+                    const hScrollable = findHorizScroller(e.target);
+                    if (hScrollable) {
+                        if (Math.abs(e.deltaX) >= Math.abs(e.deltaY)) {
+                            return;
+                        }
+                        if (!e.target.closest(VERT_SCROLL_SEL) && e.deltaY !== 0) {
+                            const unit = e.deltaMode === 1 ? 28 : (e.deltaMode === 2 ? hScrollable.clientWidth : 1);
+                            hScrollable.scrollLeft += e.deltaY * unit;
+                            e.preventDefault();
+                            return;
+                        }
+                    }
+
+                    const scrollable = e.target.closest(VERT_SCROLL_SEL);
 
                     if (!scrollable) {
                         e.preventDefault();
                         return;
                     }
 
-                    // ป้องกันการเลื่อนล้อเมาส์แนวนอน (ซ้าย-ขวา)
+                    // ป้องกันการเลื่อนล้อเมาส์แนวนอน (ซ้าย-ขวา) บนกล่องแนวตั้ง
                     if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
                         e.preventDefault();
                         return;
@@ -6203,50 +6232,186 @@ const FALLBACK_MAX_KM = 3.0;
             },
 
             updateMapTheme() {
-                const mapImg = document.getElementById('networkMapImage');
-                if (!mapImg) return;
                 const isDark = document.documentElement && document.documentElement.classList.contains('dark');
-                const targetSrc = isDark ? 'bkk_transit_map_dark.svg' : 'bkk_transit_map.svg';
-                const curSrc = mapImg.getAttribute('src') || '';
-                if (!curSrc.endsWith(targetSrc)) {
-                    mapImg.setAttribute('src', targetSrc);
+                const mapImg = document.getElementById('networkMapImage');
+                if (mapImg) {
+                    const targetSrc = isDark ? 'bkk_transit_map_dark.svg' : 'bkk_transit_map.svg';
+                    const curSrc = mapImg.getAttribute('src') || '';
+                    if (!curSrc.endsWith(targetSrc)) {
+                        mapImg.setAttribute('src', targetSrc);
+                    }
+                }
+                if (this.mapMode === 'hybrid') {
+                    this.renderGeoPlaceSheet();
                 }
             },
 
-            /* ---------- THE SKYTRAINs: Google Maps Hybrid View & GPS Location ---------- */
+            /* ---------- THE SKYTRAINs: Google Maps Hybrid (Embed Option 2) & GPS ---------- */
+            getGeoI18n() {
+                const l = typeof lang !== 'undefined' ? lang : 'th';
+                if (l === 'en') {
+                    return {
+                        searchPh: 'Search station / landmark...',
+                        loadingMap: 'Loading Google Maps...',
+                        nearMe: 'Near Me',
+                        layersTitle: 'Map Type',
+                        layerRoad: 'Road Map',
+                        layerHybrid: 'Hybrid',
+                        layerSat: 'Satellite',
+                        layerTerrain: 'Terrain',
+                        suggestedHubs: 'Popular Interchanges',
+                        searchResults: 'Matching Stations',
+                        noResults: 'No matching station found',
+                        openExt: 'Google Maps',
+                        directions: 'Directions',
+                        streetView: 'Street View',
+                        setOrigin: 'Origin',
+                        setDest: 'Destination',
+                        exitsBtn: 'Exits',
+                        liveTab: 'Live Trains',
+                        exitsTab: 'Exits',
+                        fullLive: 'Full Live View',
+                        fullExits: 'All Exits',
+                        orangeClosed: 'Orange Line (Not in Service)',
+                        offlineWarn: 'Offline — Map preview requires internet',
+                        expandHint: 'Tap to expand',
+                        lineStationsSuffix: 'Stations',
+                        walkMin: 'min'
+                    };
+                }
+                if (l === 'zh') {
+                    return {
+                        searchPh: '搜索车站 / 地标...',
+                        loadingMap: '正在加载 Google 地图...',
+                        nearMe: '附近',
+                        layersTitle: '地图类型',
+                        layerRoad: '标准地图',
+                        layerHybrid: 'Hybrid 混合',
+                        layerSat: '卫星图',
+                        layerTerrain: '地形图',
+                        suggestedHubs: '热门换乘站',
+                        searchResults: '搜索结果',
+                        noResults: '未找到匹配车站',
+                        openExt: 'Google 地图',
+                        directions: '步行导航',
+                        streetView: 'Street View',
+                        setOrigin: '起点',
+                        setDest: '终点',
+                        exitsBtn: '出入口',
+                        liveTab: '实时列车',
+                        exitsTab: '出入口',
+                        fullLive: '实时看板',
+                        fullExits: '全部出入口',
+                        orangeClosed: '橙线 (尚未开通)',
+                        offlineWarn: '当前离线 — 需要网络连接',
+                        expandHint: '点击展开详情',
+                        lineStationsSuffix: '车站列表',
+                        walkMin: '分钟'
+                    };
+                }
+                return {
+                    searchPh: 'ค้นหาสถานี / สถานที่สำคัญ...',
+                    loadingMap: 'กำลังโหลด Google Maps...',
+                    nearMe: 'ใกล้ฉัน',
+                    layersTitle: 'ประเภทแผนที่',
+                    layerRoad: 'ถนน',
+                    layerHybrid: 'Hybrid',
+                    layerSat: 'ดาวเทียม',
+                    layerTerrain: 'ภูมิประเทศ',
+                    suggestedHubs: 'สถานีเชื่อมต่อยอดนิยม',
+                    searchResults: 'ผลการค้นหา',
+                    noResults: 'ไม่พบสถานีหรือสถานที่ที่ค้นหา',
+                    openExt: 'Google Maps',
+                    directions: 'นำทางเดิน',
+                    streetView: 'Street View',
+                    setOrigin: 'ต้นทาง',
+                    setDest: 'ปลายทาง',
+                    exitsBtn: 'ทางออก',
+                    liveTab: 'ขบวนรถสด',
+                    exitsTab: 'ทางออก',
+                    fullLive: 'ดูเวลาเต็มหน้าแรก',
+                    fullExits: 'ดูทางออกทั้งหมด',
+                    orangeClosed: 'สายสีส้ม (ยังไม่เปิดให้บริการ)',
+                    offlineWarn: 'ออฟไลน์ — แผนที่ต้องใช้อินเทอร์เน็ต',
+                    expandHint: 'แตะเพื่อขยาย',
+                    lineStationsSuffix: 'สถานีในสาย',
+                    walkMin: 'น.'
+                };
+            },
+
+            getGeoLineFilters() {
+                const l = typeof lang !== 'undefined' ? lang : 'th';
+                const pick = (th, en, zh) => l === 'en' ? en : (l === 'zh' ? zh : th);
+                return [
+                    { id: 1, color: '#84CC16', label: pick('สุขุมวิท', 'Sukhumvit', '素坤逸') },
+                    { id: 2, color: '#059669', label: pick('สีลม', 'Silom', '是隆') },
+                    { id: 3, color: '#D99B26', label: pick('สีทอง', 'Gold', '金线') },
+                    { id: 101, color: '#1D8CFF', label: pick('สีน้ำเงิน', 'Blue', '蓝线') },
+                    { id: 102, color: '#A855F7', label: pick('สีม่วง', 'Purple', '紫线') },
+                    { id: 5, color: '#EC4899', label: pick('สีชมพู', 'Pink', '粉红线') },
+                    { id: 4, color: '#EAB308', label: pick('สีเหลือง', 'Yellow', '黄线') },
+                    { id: 103, color: '#DC2626', label: pick('แดงเข้ม', 'Dark Red', '暗红线') },
+                    { id: 105, color: '#F87171', label: pick('แดงอ่อน', 'Light Red', '浅红线') },
+                    { id: 104, color: '#BE123C', label: 'ARL' },
+                    { id: 201, color: '#65A30D', label: 'BRT' },
+                    { id: 106, color: '#F97316', label: pick('สีส้ม', 'Orange', '橙线') }
+                ];
+            },
+
+            applyGeoUiLang() {
+                const gi = this.getGeoI18n();
+                const input = document.getElementById('ghybSearchInput');
+                if (input) input.placeholder = gi.searchPh;
+                const loaderTxt = document.getElementById('ghybLoaderText');
+                if (loaderTxt) loaderTxt.textContent = gi.loadingMap;
+                this.updateGeoLayerLabel();
+                this.renderGeoLayerPopover();
+                this.renderGeoFilterStrip();
+                if (this.mapMode === 'hybrid') {
+                    this.renderGeoPlaceSheet();
+                    this.updateGoogleEmbedSrc();
+                }
+            },
+
             setMapMode(mode) {
                 if (mode !== 'schematic' && mode !== 'hybrid') mode = 'schematic';
                 this.mapMode = mode;
 
+                const isHybrid = mode === 'hybrid';
+                const mapCard = document.getElementById('mapCard');
                 const tabSchematic = document.getElementById('mapModeTabSchematic');
                 const tabHybrid = document.getElementById('mapModeTabHybrid');
                 const ctrlSchematic = document.getElementById('mapCtrlSchematic');
                 const ctrlHybrid = document.getElementById('mapCtrlHybrid');
                 const netContainer = document.getElementById('networkMapContainer');
                 const geoContainer = document.getElementById('googleHybridMapContainer');
+                const hintCard = document.getElementById('mapHintCard');
 
-                if (tabSchematic) tabSchematic.classList.toggle('active', mode === 'schematic');
-                if (tabHybrid) tabHybrid.classList.toggle('active', mode === 'hybrid');
+                if (mapCard) mapCard.classList.toggle('is-hybrid-embed', isHybrid);
+                if (tabSchematic) tabSchematic.classList.toggle('active', !isHybrid);
+                if (tabHybrid) tabHybrid.classList.toggle('active', isHybrid);
 
                 const vp = document.getElementById('mapViewport');
-                if (vp) vp.style.touchAction = (mode === 'hybrid') ? 'auto' : 'none';
-                if (mode !== 'hybrid' && this.geoWatchId) {
+                if (vp) vp.style.touchAction = isHybrid ? 'auto' : '';
+                if (!isHybrid && this.geoWatchId) {
                     try { navigator.geolocation.clearWatch(this.geoWatchId); } catch (_) {}
                     this.geoWatchId = null;
                 }
 
-                if (ctrlSchematic) ctrlSchematic.style.display = (mode === 'schematic') ? '' : 'none';
-                if (ctrlHybrid) ctrlHybrid.style.display = (mode === 'hybrid') ? '' : 'none';
+                if (ctrlSchematic) ctrlSchematic.style.display = isHybrid ? 'none' : '';
+                if (ctrlHybrid) ctrlHybrid.style.display = 'none';
+                if (hintCard) hintCard.style.display = isHybrid ? 'none' : '';
 
-                if (netContainer) netContainer.style.display = (mode === 'schematic') ? '' : 'none';
-                if (geoContainer) geoContainer.style.display = (mode === 'hybrid') ? 'block' : 'none';
+                if (netContainer) netContainer.style.display = isHybrid ? 'none' : '';
+                if (geoContainer) geoContainer.style.display = isHybrid ? 'block' : 'none';
 
-                if (mode === 'hybrid') {
+                if (isHybrid) {
                     this.initGoogleHybridMap();
-                    setTimeout(() => {
-                        if (this.geoMap) this.geoMap.invalidateSize();
-                    }, 80);
                 } else {
+                    this.closeGeoSearchDropdown();
+                    this.closeGeoLayerPopover();
+                    this.renderInteractiveMap();
+                    this.updateMapTheme();
                     requestAnimationFrame(() => {
                         this.resetMapZoom(false);
                     });
@@ -6254,232 +6419,525 @@ const FALLBACK_MAX_KM = 3.0;
             },
 
             initGoogleHybridMap() {
-                const container = document.getElementById('googleHybridMapContainer');
-                if (!container || typeof L === 'undefined') return;
+                if (!this.geoSelectedStationKey) {
+                    this.geoSelectedStationKey = this.nearest?.station?.StationKey
+                        || this.pinnedStation()?.StationKey
+                        || 'CEN';
+                }
 
-                if (this.geoMap) {
-                    this.geoMap.invalidateSize();
+                if (!this.geoOutsideBound && typeof document !== 'undefined') {
+                    this.geoOutsideBound = true;
+                    document.addEventListener('click', (ev) => {
+                        if (this._geoChipClickLock && Date.now() < this._geoChipClickLock) return;
+                        if (ev.target && ev.target.isConnected === false) return;
+                        const topFloat = document.querySelector('#googleHybridMapContainer .ghyb-float-top');
+                        const path = typeof ev.composedPath === 'function' ? ev.composedPath() : [];
+                        const inFloat = topFloat && (topFloat.contains(ev.target) || path.includes(topFloat));
+                        if (topFloat && !inFloat) {
+                            this.closeGeoSearchDropdown();
+                            this.closeGeoLayerPopover();
+                        }
+                    });
+                }
+
+                const s = this.findStation(this.geoSelectedStationKey);
+                if (s) {
+                    const arr = this.arrivals[s.StationKey];
+                    if (!arr || !arr.fetchedAt || Date.now() - arr.fetchedAt > 15000) {
+                        this.loadArrivals(s);
+                    }
+                }
+
+                this.applyGeoUiLang();
+            },
+
+            buildGoogleEmbedUrl(coords = null, customLabel = '', zoom = 16) {
+                const tMap = { roadmap: 'm', hybrid: 'h', satellite: 'k', terrain: 'p' };
+                const tCode = tMap[this.geoCurrentLayer] || 'h';
+                const hl = (typeof lang !== 'undefined' && lang === 'en') ? 'en' : ((typeof lang !== 'undefined' && lang === 'zh') ? 'zh-CN' : 'th');
+                const s = this.findStation(this.geoSelectedStationKey || 'CEN');
+                const lat = coords?.lat ?? s?.Latitude ?? 13.7456;
+                const lng = coords?.lon ?? coords?.lng ?? s?.Longitude ?? 100.5341;
+                const label = customLabel || (s ? `BTS/MRT ${stName(s)} (${s.StationKey})` : 'Bangkok Transit');
+                const q = `${lat},${lng} (${label})`;
+                return `https://maps.google.com/maps?q=${encodeURIComponent(q)}&t=${tCode}&z=${zoom}&hl=${hl}&ie=UTF8&output=embed`;
+            },
+
+            updateGoogleEmbedSrc(coords = null, customLabel = '', zoom = 16) {
+                const iframe = document.getElementById('gmapEmbedFrame');
+                const loader = document.getElementById('ghybIframeLoader');
+                if (!iframe) return;
+                const nextUrl = this.buildGoogleEmbedUrl(coords, customLabel, zoom);
+                if (this.geoEmbedUrlLoaded === nextUrl && iframe.getAttribute('src')) return;
+                this.geoEmbedUrlLoaded = nextUrl;
+                if (loader) {
+                    const gi = this.getGeoI18n();
+                    const ltxt = document.getElementById('ghybLoaderText');
+                    if (ltxt) ltxt.textContent = navigator.onLine === false ? gi.offlineWarn : gi.loadingMap;
+                    loader.classList.remove('loaded');
+                }
+                iframe.src = nextUrl;
+            },
+
+            onGmapEmbedLoaded() {
+                const loader = document.getElementById('ghybIframeLoader');
+                if (loader) loader.classList.add('loaded');
+            },
+
+            updateGeoLayerLabel() {
+                const gi = this.getGeoI18n();
+                const nameMap = {
+                    roadmap: gi.layerRoad,
+                    hybrid: gi.layerHybrid,
+                    satellite: gi.layerSat,
+                    terrain: gi.layerTerrain
+                };
+                const cur = this.geoCurrentLayer || 'hybrid';
+                const btnText = document.getElementById('ghybLayerBtnText');
+                if (btnText) btnText.textContent = nameMap[cur] || gi.layerHybrid;
+                const legacyText = document.getElementById('mapGeoLayerText');
+                if (legacyText) legacyText.textContent = nameMap[cur] || gi.layerHybrid;
+            },
+
+            renderGeoLayerPopover() {
+                const pop = document.getElementById('ghybLayerPopover');
+                if (!pop) return;
+                const gi = this.getGeoI18n();
+                const cur = this.geoCurrentLayer || 'hybrid';
+                const closeIconSvg = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
+                const opts = [
+                    { id: 'hybrid', label: gi.layerHybrid },
+                    { id: 'roadmap', label: gi.layerRoad },
+                    { id: 'satellite', label: gi.layerSat },
+                    { id: 'terrain', label: gi.layerTerrain }
+                ];
+                pop.innerHTML = `
+                    <div class="ghyb-layer-pop-title">
+                        <span>${esc(gi.layersTitle)}</span>
+                        <button type="button" class="ghyb-dd-close" onclick="App.closeGeoLayerPopover()" aria-label="ปิด">${closeIconSvg}</button>
+                    </div>
+                    <div class="ghyb-layer-grid">
+                        ${opts.map(o => `
+                            <button type="button" class="ghyb-layer-opt ${cur === o.id ? 'active' : ''}" onclick="App.setGeoMapLayer('${o.id}')">
+                                <span class="ghyb-layer-swatch ${o.id}"></span>
+                                <span>${esc(o.label)}</span>
+                            </button>`).join('')}
+                    </div>`;
+            },
+
+            toggleGeoLayerPopover() {
+                this.closeGeoSearchDropdown();
+                this.geoLayerMenuOpen = !this.geoLayerMenuOpen;
+                const pop = document.getElementById('ghybLayerPopover');
+                if (pop) pop.hidden = !this.geoLayerMenuOpen;
+                if (this.geoLayerMenuOpen) this.renderGeoLayerPopover();
+            },
+
+            closeGeoLayerPopover() {
+                this.geoLayerMenuOpen = false;
+                const pop = document.getElementById('ghybLayerPopover');
+                if (pop) pop.hidden = true;
+            },
+
+            setGeoMapLayer(layerName) {
+                if (!['roadmap', 'hybrid', 'satellite', 'terrain'].includes(layerName)) return;
+                this.geoCurrentLayer = layerName;
+                this.updateGeoLayerLabel();
+                this.renderGeoLayerPopover();
+                this.closeGeoLayerPopover();
+                this.geoEmbedUrlLoaded = '';
+                this.updateGoogleEmbedSrc();
+            },
+
+            cycleGeoMapLayer() {
+                const modes = ['hybrid', 'roadmap', 'satellite', 'terrain'];
+                const curIdx = modes.indexOf(this.geoCurrentLayer);
+                this.setGeoMapLayer(modes[(curIdx + 1) % modes.length]);
+            },
+
+            renderGeoFilterStrip() {
+                const strip = document.getElementById('ghybChipsStrip');
+                if (!strip) return;
+                const prevScrollLeft = strip.scrollLeft;
+                const gi = this.getGeoI18n();
+                const active = this.geoActiveLineFilter || 0;
+                const lines = this.getGeoLineFilters();
+                strip.innerHTML = `
+                    <button type="button" class="ghyb-chip gps" onclick="event.stopPropagation(); App.locateUserOnGeoMap(true)">${getUiIcon('gps', 14, '#ffffff')}<span>${esc(gi.nearMe)}</span></button>
+                    ${lines.map(f => {
+                        const isAct = f.id === active;
+                        const style = isAct ? `background:${f.color};border-color:${f.color};color:${f.id === 4 ? '#0f172a' : '#ffffff'};` : '';
+                        const iconCol = isAct ? (f.id === 4 ? '#0f172a' : '#ffffff') : f.color;
+                        return `<button type="button" class="ghyb-chip ${isAct ? 'active' : ''}" style="${style}" onclick="event.stopPropagation(); App.filterGeoMapLine(${f.id})"><span class="ghyb-chip-svg">${getLineIconSvg(f.id, iconCol, 15)}</span><span>${esc(f.label)}</span></button>`;
+                    }).join('')}`;
+                strip.scrollLeft = prevScrollLeft;
+            },
+
+            filterGeoMapLine(lineId) {
+                this._geoChipClickLock = Date.now() + 80;
+                const nextId = Number(lineId) || 0;
+                this.closeGeoLayerPopover();
+                if (this.geoActiveLineFilter === nextId) {
+                    this.geoActiveLineFilter = 0;
+                    this.renderGeoFilterStrip();
+                    this.closeGeoSearchDropdown();
+                    return;
+                }
+                this.geoActiveLineFilter = nextId;
+                this.renderGeoFilterStrip();
+                this.renderGeoSearchDropdown('', nextId);
+            },
+
+            onGeoSearchFocus() {
+                this.closeGeoLayerPopover();
+                this.geoActiveLineFilter = 0;
+                this.renderGeoFilterStrip();
+                const input = document.getElementById('ghybSearchInput');
+                this.renderGeoSearchDropdown(input ? input.value : '', 0);
+            },
+
+            onGeoSearchInput(val) {
+                this.geoSearchQuery = val || '';
+                this.geoActiveLineFilter = 0;
+                this.renderGeoFilterStrip();
+                const clearBtn = document.getElementById('ghybSearchClearBtn');
+                if (clearBtn) clearBtn.hidden = !val;
+                this.renderGeoSearchDropdown(val || '', 0);
+            },
+
+            clearGeoSearch() {
+                const input = document.getElementById('ghybSearchInput');
+                if (input) {
+                    input.value = '';
+                    input.focus();
+                }
+                this.geoSearchQuery = '';
+                this.geoActiveLineFilter = 0;
+                this.renderGeoFilterStrip();
+                const clearBtn = document.getElementById('ghybSearchClearBtn');
+                if (clearBtn) clearBtn.hidden = true;
+                this.renderGeoSearchDropdown('', 0);
+            },
+
+            closeGeoSearchDropdown() {
+                const dd = document.getElementById('ghybSearchDropdown');
+                if (dd) dd.hidden = true;
+            },
+
+            getStationBrandColor(s) {
+                if (!s) return '#0284c7';
+                return s.StationLineColor || (typeof LINE_BRAND_COLORS !== 'undefined' && LINE_BRAND_COLORS[s.StationLineId || s.LineId]) || '#0284c7';
+            },
+
+            renderGeoSearchDropdown(queryRaw = '', filterLineId = 0) {
+                const dd = document.getElementById('ghybSearchDropdown');
+                if (!dd) return;
+                const gi = this.getGeoI18n();
+                const q = (queryRaw || '').trim().toLowerCase();
+                let headerText = gi.suggestedHubs;
+                const items = [];
+
+                if (filterLineId) {
+                    const lineObj = this.getAllLines().find(l => l.LineId === filterLineId);
+                    headerText = `${lineObj ? shortLineName(lineObj) : ''} · ${gi.lineStationsSuffix}`;
+                    (lineObj?.StationList || []).forEach(s => {
+                        if (!s.Latitude || !s.Longitude) return;
+                        const km = this.userPos?.lat ? haversineKm(this.userPos.lat, this.userPos.lon, s.Latitude, s.Longitude) : null;
+                        items.push({ station: s, km, matchNote: null });
+                    });
+                } else if (!q) {
+                    const hubKeys = ['CEN', 'BL22', 'N8', 'A8', 'YL09', 'BL28', 'S6', 'G2'];
+                    const added = new Set();
+                    if (this.nearest?.station) {
+                        items.push({ station: this.nearest.station, km: this.nearest.km, matchNote: gi.nearMe });
+                        added.add(this.nearest.station.StationKey);
+                    }
+                    for (const k of hubKeys) {
+                        if (added.has(k)) continue;
+                        const st = this.findStation(k);
+                        if (st) {
+                            const km = this.userPos?.lat ? haversineKm(this.userPos.lat, this.userPos.lon, st.Latitude, st.Longitude) : null;
+                            items.push({ station: st, km, matchNote: null });
+                            added.add(k);
+                        }
+                    }
+                } else {
+                    headerText = gi.searchResults;
+                    for (const s of this.uniqueStations) {
+                        if (!s.Latitude || !s.Longitude) continue;
+                        const code = (s.StationKey || '').toLowerCase();
+                        const th = (s.StationName_TH || s.StationNameTH || '').toLowerCase();
+                        const en = (s.StationName_EN || s.StationNameEN || '').toLowerCase();
+                        const lmMatch = typeof getLandmarkMatch === 'function' ? getLandmarkMatch(s.StationKey, q) : null;
+                        if (code.includes(q) || th.includes(q) || en.includes(q) || lmMatch) {
+                            const km = this.userPos?.lat ? haversineKm(this.userPos.lat, this.userPos.lon, s.Latitude, s.Longitude) : null;
+                            const score = code === q ? 0 : (th.startsWith(q) || en.startsWith(q) ? 1 : (lmMatch ? 2 : 3));
+                            items.push({ station: s, km, matchNote: lmMatch, score });
+                        }
+                    }
+                    items.sort((a, b) => (a.score - b.score) || ((a.km ?? 999) - (b.km ?? 999)));
+                }
+
+                const list = filterLineId ? items : items.slice(0, 14);
+                const closeIconSvg = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
+                const headHtml = `
+                    <div class="ghyb-dd-head">
+                        <span>${esc(headerText)}</span>
+                        <button type="button" class="ghyb-dd-close" onclick="App.closeGeoSearchDropdown()" aria-label="ปิด">${closeIconSvg}</button>
+                    </div>`;
+                if (!list.length) {
+                    dd.innerHTML = `${headHtml}<div style="padding:12px;text-align:center;font-size:12px;color:var(--muted);">${esc(gi.noResults)}</div>`;
+                } else {
+                    dd.innerHTML = headHtml + list.map(it => {
+                        const s = it.station;
+                        const color = this.getStationBrandColor(s);
+                        const en = s.StationName_EN || s.StationNameEN || '';
+                        const sub = it.matchNote ? `${it.matchNote} · ${en}` : en;
+                        const distBadge = it.km != null ? `<span class="ghyb-dd-dist">${esc(fmtDist(it.km, s.StationKey))}</span>` : '';
+                        return `
+                            <button type="button" class="ghyb-dd-item" onclick="App.selectGeoSearchStation('${esc(s.StationKey)}')">
+                                <span class="ghyb-dd-code" style="background:${color}">${esc(s.StationKey)}</span>
+                                <span class="ghyb-dd-info">
+                                    <div class="ghyb-dd-title">${esc(stName(s))}</div>
+                                    <div class="ghyb-dd-sub">${esc(sub)}</div>
+                                </span>
+                                ${distBadge}
+                            </button>`;
+                    }).join('');
+                }
+                dd.hidden = false;
+            },
+
+            selectGeoSearchStation(stationKey) {
+                const s = this.findStation(stationKey);
+                if (!s) return;
+                this.geoSelectedStationKey = stationKey;
+                this.selectedMapStationKey = stationKey;
+                this.geoActiveLineFilter = 0;
+                this.renderGeoFilterStrip();
+                this.closeGeoSearchDropdown();
+                this.closeGeoLayerPopover();
+
+                const input = document.getElementById('ghybSearchInput');
+                const clearBtn = document.getElementById('ghybSearchClearBtn');
+                if (input) input.value = `${s.StationKey} · ${stName(s)}`;
+                if (clearBtn) clearBtn.hidden = false;
+
+                if (this.geoSheetState === 'minimized') this.geoSheetState = 'open';
+
+                const arr = this.arrivals[stationKey];
+                if (!arr || !arr.fetchedAt || Date.now() - arr.fetchedAt > 15000) {
+                    this.loadArrivals(s);
+                }
+
+                this.geoEmbedUrlLoaded = '';
+                this.updateGoogleEmbedSrc();
+                this.renderGeoPlaceSheet();
+            },
+
+            setGeoSheetState(nextState) {
+                this.geoSheetState = nextState;
+                this.renderGeoPlaceSheet();
+            },
+
+            toggleGeoSheetExpand() {
+                if (this.geoSheetState === 'minimized') {
+                    this.geoSheetState = 'open';
+                } else if (this.geoSheetState === 'expanded') {
+                    this.geoSheetState = 'open';
+                } else {
+                    this.geoSheetState = 'expanded';
+                }
+                this.renderGeoPlaceSheet();
+            },
+
+            setGeoSheetTab(tab) {
+                this.geoSheetTab = tab === 'exits' ? 'exits' : 'live';
+                this.geoSheetState = 'expanded';
+                this.renderGeoPlaceSheet();
+            },
+
+            buildGeoEtaChipsHtml(s, arr) {
+                const gi = this.getGeoI18n();
+                if (s && (s.StationLineId === 106 || s.StationKey?.startsWith('OR'))) {
+                    return `<div class="ghyb-eta-chip" style="color:#ea580c;border-color:rgba(245,130,32,0.35);">${getUiIcon('warn', 13, '#ea580c')}<span>${esc(gi.orangeClosed)}</span></div>`;
+                }
+                if (!arr || (arr.loading && !arr.platforms)) {
+                    return `<div class="ghyb-eta-chip">${esc(T('loadingTrains'))}</div>`;
+                }
+                let platforms = visiblePlatformsForStation(s, arr?.platforms || []);
+                if (!platforms.length) {
+                    const fb = generateTimetableArrivals(s);
+                    if (fb?.platform_list?.length) platforms = visiblePlatformsForStation(s, fb.platform_list);
+                }
+                if (!platforms.length) {
+                    return `<div class="ghyb-eta-chip">${esc(T('noTrains'))}</div>`;
+                }
+
+                const fetchedAt = arr?.fetchedAt || Date.now();
+                const chips = [];
+                for (const p of platforms.slice(0, 3)) {
+                    if (p.isOutOfService) continue;
+                    const trains = displayTrains(s.StationKey, p.platform, p.train_list || [], fetchedAt, p.LineId || s.StationLineId);
+                    const dest = shortDest(destName(p.DestinationStation || '')) || `${p.platform}`;
+                    const t0 = trains[0];
+                    if (!t0) {
+                        chips.push(`<div class="ghyb-eta-chip">${esc(dest)}: <b>--</b></div>`);
+                        continue;
+                    }
+                    const isNoTime = (t0.time_come === '--' || t0.time_come === '-' || t0.time_come == null);
+                    const eta = isNoTime ? null : bestEta(s.StationKey, p.platform, t0, fetchedAt);
+                    const rem = eta ? (eta.exactFromApi ? eta.base : (eta.base - (Date.now() - eta.at) / 60000)) : NaN;
+                    const isArriving = !isNoTime && (t0.status === 'arriving' || t0.time_come === '0' || (!isNaN(rem) && rem <= 0.5));
+                    const init = isArriving
+                        ? { text: T('arrived'), now: true }
+                        : (isNoTime || !eta || isNaN(rem) || rem < -0.75)
+                            ? { text: `--${T('minUnit')}`, now: false }
+                            : etaText(rem, eta.approx);
+                    const isLiveApi = !!eta?.exactFromApi;
+                    const baseVal = (!isNoTime && eta) ? eta.base : (isArriving ? 0 : '');
+                    const atVal = (!isNoTime && eta) ? eta.at : (isArriving ? fetchedAt : '');
+                    const hasEtaData = !isLiveApi && baseVal !== '' && atVal !== '';
+                    const etaSpan = `<span class="eta-val ${init.now ? 'now' : ''}" ${hasEtaData ? `data-eta-base="${baseVal}" data-eta-at="${atVal}" data-eta-approx="${eta?.approx ? '1' : ''}"` : ''}>${init.text}</span>`;
+                    chips.push(`<div class="ghyb-eta-chip">${esc(dest)}: ${etaSpan}</div>`);
+                }
+                return chips.join('') || `<div class="ghyb-eta-chip">${esc(T('noTrains'))}</div>`;
+            },
+
+            renderGeoPlaceSheet() {
+                const sheet = document.getElementById('ghybPlaceSheet');
+                if (!sheet) return;
+                const s = this.findStation(this.geoSelectedStationKey || 'CEN');
+                if (!s) return;
+
+                const gi = this.getGeoI18n();
+                const state = this.geoSheetState || 'open';
+                sheet.classList.toggle('expanded', state === 'expanded');
+                sheet.classList.toggle('minimized', state === 'minimized');
+
+                const color = this.getStationBrandColor(s);
+                const enName = s.StationName_EN || s.StationNameEN || '';
+                const lineObj = this.lineById[s.StationLineId] || (typeof MRT_LINE_BY_ID !== 'undefined' && MRT_LINE_BY_ID[s.StationLineId]);
+                const lineLabel = lineObj ? shortLineName(lineObj) : '';
+                const lat = s.Latitude || 13.7456;
+                const lng = s.Longitude || 100.5341;
+
+                const chevUpSvg = `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="18 15 12 9 6 15"/></svg>`;
+
+                if (state === 'minimized') {
+                    sheet.innerHTML = `
+                        <button type="button" class="ghyb-min-pill" onclick="App.setGeoSheetState('open')">
+                            <span class="ghyb-ps-badge" style="background:${color};padding:3px 7px;font-size:10.5px;">${esc(s.StationKey)}</span>
+                            <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${esc(stName(s))}</span>
+                            ${chevUpSvg}
+                        </button>`;
                     return;
                 }
 
-                // Create Leaflet Map centered on central Bangkok
-                const map = L.map('googleHybridMapContainer', {
-                    zoomControl: false,
-                    attributionControl: false,
-                    maxZoom: 19,
-                    minZoom: 9
-                }).setView([13.7563, 100.5018], 12);
-
-                this.geoMap = map;
-
-                // Zoom control on top-right
-                L.control.zoom({ position: 'topright' }).addTo(map);
-
-                // Google Map Tile Layers (Hybrid, Roadmap, Satellite)
-                this.geoTileLayers = {
-                    hybrid: L.tileLayer('https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {
-                        subdomains: ['0', '1', '2', '3'],
-                        maxZoom: 20,
-                        detectRetina: true
-                    }),
-                    roadmap: L.tileLayer('https://mt{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
-                        subdomains: ['0', '1', '2', '3'],
-                        maxZoom: 20,
-                        detectRetina: true,
-                        className: 'geo-roadmap-tiles'
-                    }),
-                    satellite: L.tileLayer('https://mt{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
-                        subdomains: ['0', '1', '2', '3'],
-                        maxZoom: 20,
-                        detectRetina: true
-                    })
-                };
-
-                this.geoTileLayers.roadmap.addTo(map);
-                this.geoCurrentLayer = 'roadmap';
-                this.updateGeoLayerLabel();
-
-                // Click anywhere on map to inspect nearest BTS/MRT station
-                map.on('click', (e) => {
-                    const lat = e.latlng.lat;
-                    const lon = e.latlng.lng;
-                    let nearest = null;
-                    let minKm = Infinity;
-                    for (const s of this.uniqueStations) {
-                        if (!s.Latitude || !s.Longitude) continue;
-                        const d = kmBetween(lat, lon, s.Latitude, s.Longitude);
-                        if (d < minKm) {
-                            minKm = d;
-                            nearest = s;
-                        }
-                    }
-                    if (nearest && minKm <= 4.0) {
-                        this.showNearestStationToast(nearest, minKm, false);
-                    }
-                });
-
-                // If user position already exists, place GPS marker immediately
-                if (this.userPos && this.userPos.lat && this.userPos.lon) {
-                    this.updateGeoUserLocation(this.userPos.lat, this.userPos.lon, this.userPos.accuracy || 30);
-                } else {
-                    // Try to locate user automatically
-                    this.locateUserOnGeoMap(false);
+                let distPart = '';
+                if (this.userPos?.lat && s.Latitude && s.Longitude) {
+                    const km = haversineKm(this.userPos.lat, this.userPos.lon, s.Latitude, s.Longitude);
+                    const walkMins = Math.max(1, Math.round((km * 1000) / 75));
+                    distPart = `<span aria-hidden="true">·</span><span class="ghyb-sub-walk">${getUiIcon('walk', 12, 'currentColor')}<span>${esc(fmtDist(km, s.StationKey))} (~${walkMins} ${esc(gi.walkMin)})</span></span>`;
                 }
 
-                // Invalidate size once rendered
-                setTimeout(() => {
-                    map.invalidateSize();
-                }, 100);
-            },
+                const openUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+                const dirUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}&travelmode=walking`;
+                const panoUrl = `https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=${lat},${lng}`;
+                const etaHtml = this.buildGeoEtaChipsHtml(s, this.arrivals[s.StationKey]);
 
-            renderGeoTransitLines() {
-                if (!this.geoMap || !this.geoLinesGroup) return;
-                this.geoLinesGroup.clearLayers();
-
-                const allLines = this.getAllLines();
-
-                allLines.forEach(l => {
-                    const lineId = l.LineId;
-                    const stns = l.StationList || [];
-                    if (!stns.length) return;
-
-                    const color = l.LineColor || '#7AB420';
-                    const isOrange = (lineId === 106 || lineId === MRT_LINE_IDS.ORANGE);
-
-                    // Handle Pink Line Branch (MT01-MT02 branching from PK10)
-                    if (lineId === 5) {
-                        const trunkStns = stns.filter(s => !['MT01', 'MT02'].includes(s.StationKey));
-                        const trunkPts = trunkStns.map(s => [s.Latitude, s.Longitude]).filter(p => p[0] && p[1]);
-                        if (trunkPts.length > 1) {
-                            L.polyline(trunkPts, { color: '#000000', weight: 6, opacity: 0.65 }).addTo(this.geoLinesGroup);
-                            L.polyline(trunkPts, { color, weight: 3.8, opacity: 0.95 }).addTo(this.geoLinesGroup);
-                        }
-
-                        // Branch from PK10 to MT01 to MT02
-                        const pk10 = stns.find(s => s.StationKey === 'PK10');
-                        const mt01 = stns.find(s => s.StationKey === 'MT01');
-                        const mt02 = stns.find(s => s.StationKey === 'MT02');
-                        if (pk10 && mt01 && mt02) {
-                            const branchPts = [
-                                [pk10.Latitude, pk10.Longitude],
-                                [mt01.Latitude, mt01.Longitude],
-                                [mt02.Latitude, mt02.Longitude]
-                            ];
-                            L.polyline(branchPts, { color: '#000000', weight: 5, opacity: 0.65 }).addTo(this.geoLinesGroup);
-                            L.polyline(branchPts, { color, weight: 3.2, opacity: 0.95 }).addTo(this.geoLinesGroup);
-                        }
-                        return;
+                let expandedHtml = '';
+                if (state === 'expanded') {
+                    const exits = typeof getStationExits === 'function' ? getStationExits(s) : [];
+                    const curTab = this.geoSheetTab || 'live';
+                    let tabInner = '';
+                    if (curTab === 'exits') {
+                        const lCur = typeof lang !== 'undefined' ? lang : 'th';
+                        tabInner = exits.map(ex => {
+                            const desc = lCur === 'en' ? (ex.landmarks_en || ex.landmarks_th || '') : (ex.landmarks_th || ex.landmarks_en || '');
+                            return `
+                                <div class="ghyb-exit-card">
+                                    <span class="ghyb-exit-num" style="background:${color}">${esc(ex.exit)}</span>
+                                    <div class="ghyb-exit-txt">${esc(desc)}</div>
+                                </div>`;
+                        }).join('');
+                    } else {
+                        tabInner = renderPlatformSection(s, this.arrivals[s.StationKey]);
                     }
 
-                    // Handle Blue Line Loop + Lak Song Branch
-                    if (lineId === 101 || lineId === MRT_LINE_IDS.BLUE) {
-                        // In MRT_STATIC_DB: 0..6 is Lak Song to Tha Phra branch, 6..38 is Tha Phra circular loop!
-                        const branchPts = stns.slice(0, 7).map(s => [s.Latitude, s.Longitude]).filter(p => p[0] && p[1]);
-                        const loopPts = stns.slice(6).map(s => [s.Latitude, s.Longitude]).filter(p => p[0] && p[1]);
-
-                        if (branchPts.length > 1) {
-                            L.polyline(branchPts, { color: '#000000', weight: 6, opacity: 0.65 }).addTo(this.geoLinesGroup);
-                            L.polyline(branchPts, { color, weight: 3.8, opacity: 0.95 }).addTo(this.geoLinesGroup);
-                        }
-                        if (loopPts.length > 1) {
-                            L.polyline(loopPts, { color: '#000000', weight: 6, opacity: 0.65 }).addTo(this.geoLinesGroup);
-                            L.polyline(loopPts, { color, weight: 3.8, opacity: 0.95 }).addTo(this.geoLinesGroup);
-                        }
-                        return;
-                    }
-
-                    // Standard sequential lines
-                    const pts = stns.map(s => [s.Latitude, s.Longitude]).filter(p => p[0] && p[1]);
-                    if (pts.length > 1) {
-                        L.polyline(pts, { color: '#000000', weight: 6, opacity: 0.65 }).addTo(this.geoLinesGroup);
-                        L.polyline(pts, {
-                            color,
-                            weight: 3.8,
-                            opacity: 0.95,
-                            dashArray: isOrange ? '7, 7' : null
-                        }).addTo(this.geoLinesGroup);
-                    }
-                });
-            },
-
-            renderGeoStationMarkers(filterLineId = 0) {
-                if (!this.geoMap || !this.geoMarkersGroup) return;
-                this.geoMarkersGroup.clearLayers();
-                this.geoStationMarkers = [];
-
-                const allLines = this.getAllLines();
-                const seen = new Set();
-                const bounds = L.latLngBounds([]);
-
-                allLines.forEach(line => {
-                    if (filterLineId !== 0 && line.LineId !== filterLineId) return;
-
-                    const lColor = line.LineColor || '#7AB420';
-                    const stns = line.StationList || [];
-
-                    stns.forEach(s => {
-                        if (!s.Latitude || !s.Longitude) return;
-                        if (filterLineId === 0 && seen.has(s.StationKey)) return;
-                        seen.add(s.StationKey);
-
-                        const lat = s.Latitude;
-                        const lng = s.Longitude;
-                        bounds.extend([lat, lng]);
-
-                        const isInterchange = Boolean(this.connections[s.StationKey]?.length);
-                        const iconHtml = `<div class="geo-stn-marker ${isInterchange ? 'geo-stn-interchange' : ''}" style="background:${lColor}"><span>${esc(s.StationKey)}</span></div>`;
-
-                        const customIcon = L.divIcon({
-                            className: 'geo-custom-div-icon',
-                            html: iconHtml,
-                            iconSize: [28, 20],
-                            iconAnchor: [14, 10],
-                            popupAnchor: [0, -12]
-                        });
-
-                        const marker = L.marker([lat, lng], { icon: customIcon }).addTo(this.geoMarkersGroup);
-
-                        // Popup content
-                        const thName = s.StationNameTH || s.StationName_TH || (s.StationName?.split('|')[0]?.trim()) || '';
-                        const enName = s.StationNameEN || s.StationName_EN || (s.StationName?.split('|')[1]?.trim()) || '';
-                        const lineName = line.LineName_TH || '';
-
-                        const popupHtml = `
-                            <div class="geo-popup-card">
-                                <div class="geo-popup-head">
-                                    <span class="geo-popup-badge" style="background:${lColor}">${esc(s.StationKey)}</span>
-                                    <div>
-                                        <div class="geo-popup-title">${esc(thName)}</div>
-                                        <div class="geo-popup-subtitle">${esc(enName)} · ${esc(lineName)}</div>
-                                    </div>
-                                </div>
-                                <div class="geo-popup-actions">
-                                    <button type="button" class="geo-popup-btn primary" onclick="App.openGeoStationDetail('${s.StationKey}')">เปิดข้อมูลสถานี & เวลาสด</button>
-                                    <div style="display:flex;gap:4px;">
-                                        <button type="button" class="geo-popup-btn" onclick="App.setOriginFromActionSheetKey('${s.StationKey}')">เป็นต้นทาง</button>
-                                        <button type="button" class="geo-popup-btn" onclick="App.setDestinationFromActionSheetKey('${s.StationKey}')">เป็นปลายทาง</button>
-                                    </div>
-                                </div>
+                    expandedHtml = `
+                        <div class="ghyb-expanded-body">
+                            <div class="ghyb-exp-tabs">
+                                <button type="button" class="ghyb-exp-tab ${curTab === 'live' ? 'active' : ''}" onclick="App.setGeoSheetTab('live')">${getUiIcon('train', 14, 'currentColor')}<span>${esc(gi.liveTab)}</span></button>
+                                <button type="button" class="ghyb-exp-tab ${curTab === 'exits' ? 'active' : ''}" onclick="App.setGeoSheetTab('exits')">${getUiIcon('door', 14, 'currentColor')}<span>${esc(gi.exitsTab)} (${exits.length})</span></button>
                             </div>
-                        `;
+                            ${tabInner}
+                            <div class="ghyb-sec-actions">
+                                <button type="button" class="ghyb-sec-btn" onclick="App.setDestinationFromActionSheetKey('${esc(s.StationKey)}')">${getUiIcon('flag', 13, '#ef4444')}<span>${esc(gi.setDest)}</span></button>
+                                <button type="button" class="ghyb-sec-btn" onclick="App.viewExitsFromGeoSheet('${esc(s.StationKey)}')">${getUiIcon('door', 13, '#8b5cf6')}<span>${esc(gi.fullExits)}</span></button>
+                                <button type="button" class="ghyb-sec-btn" onclick="App.viewLiveFromGeoSheet('${esc(s.StationKey)}')">${getUiIcon('clock', 13, 'currentColor')}<span>${esc(gi.fullLive)}</span></button>
+                            </div>
+                        </div>`;
+                }
 
-                        marker.bindPopup(popupHtml, { maxWidth: 260 });
-                        this.geoStationMarkers.push({ key: s.StationKey, lineId: line.LineId, marker, lat, lng });
-                    });
-                });
+                const expandIconSvg = state === 'expanded'
+                    ? `<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>`
+                    : chevUpSvg;
+                const closeIconSvg = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
 
-                if (filterLineId !== 0 && bounds.isValid()) {
-                    this.geoMap.fitBounds(bounds, { padding: [30, 30], maxZoom: 15 });
+                sheet.innerHTML = `
+                    <div class="ghyb-grab-row" onclick="App.toggleGeoSheetExpand()">
+                        <div class="ghyb-grab"></div>
+                        <div class="ghyb-sheet-ctrls" onclick="event.stopPropagation()">
+                            <button type="button" class="ghyb-sheet-mini-btn" onclick="App.toggleGeoSheetExpand()" aria-label="ขยาย">${expandIconSvg}</button>
+                            <button type="button" class="ghyb-sheet-mini-btn" onclick="App.setGeoSheetState('minimized')" aria-label="ย่อ">${closeIconSvg}</button>
+                        </div>
+                    </div>
+                    <div class="ghyb-ps-head">
+                        <div class="ghyb-ps-left">
+                            <span class="ghyb-ps-badge" style="background:${color}">${esc(s.StationKey)}</span>
+                            <div style="min-width:0;flex:1;">
+                                <div class="ghyb-ps-title">${esc(stName(s))}${enName ? ` (${esc(enName)})` : ''}</div>
+                                <div class="ghyb-ps-sub"><span class="ghyb-sub-line">${esc(lineLabel)}</span>${distPart}</div>
+                            </div>
+                        </div>
+                        <a href="${esc(openUrl)}" target="_blank" rel="noopener noreferrer" class="ghyb-ps-ext"><span>${esc(gi.openExt)}</span>${getUiIcon('externalLink', 11, 'currentColor')}</a>
+                    </div>
+                    <div class="ghyb-eta-pills">${etaHtml}</div>
+                    <div class="ghyb-action-strip">
+                        <a href="${esc(dirUrl)}" target="_blank" rel="noopener noreferrer" class="ghyb-apill primary">${getUiIcon('navigate', 13, '#ffffff')}<span>${esc(gi.directions)}</span></a>
+                        <a href="${esc(panoUrl)}" target="_blank" rel="noopener noreferrer" class="ghyb-apill apill-sv">${getUiIcon('streetView', 13, 'currentColor')}<span>${esc(gi.streetView)}</span></a>
+                        <button type="button" class="ghyb-apill apill-origin" onclick="App.setOriginFromActionSheetKey('${esc(s.StationKey)}')">${getUiIcon('pin', 13, 'currentColor')}<span>${esc(gi.setOrigin)}</span></button>
+                        <button type="button" class="ghyb-apill apill-exits" onclick="App.setGeoSheetTab('exits')">${getUiIcon('door', 13, 'currentColor')}<span>${esc(gi.exitsBtn)}</span></button>
+                    </div>
+                    ${expandedHtml}`;
+            },
+
+            viewExitsFromGeoSheet(key) {
+                this.switchView('exits');
+                this.selectExitStation(key);
+            },
+
+            viewLiveFromGeoSheet(key) {
+                this.switchView('home');
+                const s = this.findStation(key);
+                if (s) {
+                    this.setLine(s.StationLineId);
+                    this.expandedKey = key;
+                    this.renderStrip();
+                    this.loadArrivals(s);
+                    setTimeout(() => {
+                        document.querySelector(`[id^="row-${CSS.escape(key)}-"]`)
+                            ?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 100);
                 }
             },
 
             openGeoStationDetail(stationKey) {
-                if (this.geoMap) this.geoMap.closePopup();
-                this.onMapStationClick(stationKey);
+                this.selectGeoSearchStation(stationKey);
             },
 
             setOriginFromActionSheetKey(key) {
-                if (this.geoMap) this.geoMap.closePopup();
                 this.journey.from = key;
                 this.switchView('planner');
                 this.renderJourney();
@@ -6487,95 +6945,14 @@ const FALLBACK_MAX_KM = 3.0;
             },
 
             setDestinationFromActionSheetKey(key) {
-                if (this.geoMap) this.geoMap.closePopup();
                 this.journey.to = key;
                 this.switchView('planner');
                 this.renderJourney();
                 if (this.journey.from && this.journey.to) this.findRoute();
             },
 
-            renderGeoFilterBar() {
-                const container = document.getElementById('googleHybridMapContainer');
-                if (!container || document.getElementById('geoFilterBar')) return;
-
-                const filterBar = document.createElement('div');
-                filterBar.id = 'geoFilterBar';
-                filterBar.className = 'geo-filter-bar';
-
-                const lines = [
-                    { id: 0, name: 'ทั้งหมด' },
-                    { id: 1, name: 'สุขุมวิท' },
-                    { id: 2, name: 'สีลม' },
-                    { id: 101, name: 'สีน้ำเงิน' },
-                    { id: 102, name: 'สีม่วง' },
-                    { id: 5, name: 'สีชมพู' },
-                    { id: 4, name: 'สีเหลือง' },
-                    { id: 103, name: 'สีแดงเข้ม' },
-                    { id: 105, name: 'สีแดงอ่อน' },
-                    { id: 104, name: 'ARL' },
-                    { id: 201, name: 'BRT' },
-                    { id: 3, name: 'สีทอง' },
-                    { id: 106, name: 'สีส้ม' }
-                ];
-
-                filterBar.innerHTML = lines.map(l => `
-                    <button type="button" class="geo-filter-chip ${l.id === 0 ? 'active' : ''}" data-line="${l.id}" onclick="App.filterGeoMapLine(${l.id})">${l.name}</button>
-                `).join('');
-
-                container.appendChild(filterBar);
-            },
-
-            filterGeoMapLine(lineId) {
-                this.geoActiveLineFilter = Number(lineId) || 0;
-                document.querySelectorAll('.geo-filter-chip').forEach(chip => {
-                    chip.classList.toggle('active', Number(chip.getAttribute('data-line')) === this.geoActiveLineFilter);
-                });
-                this.renderGeoStationMarkers(this.geoActiveLineFilter);
-            },
-
-            /** Sync the geo map layer toggle button text with the active tile layer and UI language. */
-            updateGeoLayerLabel() {
-                const labelEl = document.getElementById('mapGeoLayerText');
-                if (!labelEl) return;
-                const curLayer = this.geoCurrentLayer || 'roadmap';
-                const labels = {
-                    roadmap: lang === 'en' ? 'Road' : (lang === 'zh' ? '道路' : 'ถนน'),
-                    hybrid: 'Hybrid',
-                    satellite: lang === 'en' ? 'Satellite' : (lang === 'zh' ? '卫星' : 'ดาวเทียม')
-                };
-                labelEl.textContent = labels[curLayer] || labels.roadmap;
-            },
-
-            cycleGeoMapLayer() {
-                if (!this.geoMap || !this.geoTileLayers) return;
-
-                const modes = ['roadmap', 'hybrid', 'satellite'];
-                const curIdx = modes.indexOf(this.geoCurrentLayer);
-                const nextMode = modes[(curIdx + 1) % modes.length];
-
-                Object.values(this.geoTileLayers).forEach(layer => {
-                    if (this.geoMap.hasLayer(layer)) this.geoMap.removeLayer(layer);
-                });
-
-                if (this.geoTileLayers[nextMode]) {
-                    this.geoTileLayers[nextMode].addTo(this.geoMap);
-                    this.geoCurrentLayer = nextMode;
-                }
-
-                this.updateGeoLayerLabel();
-            },
-
             recenterGeoMap() {
-                if (!this.geoMap) return;
-                const bounds = L.latLngBounds([]);
-                this.uniqueStations.forEach(s => {
-                    if (s.Latitude && s.Longitude) bounds.extend([s.Latitude, s.Longitude]);
-                });
-                if (bounds.isValid()) {
-                    this.geoMap.fitBounds(bounds, { padding: [25, 25], maxZoom: 14 });
-                } else {
-                    this.geoMap.setView([13.7563, 100.5018], 12);
-                }
+                this.selectGeoSearchStation(this.nearest?.station?.StationKey || 'CEN');
             },
 
             locateUserOnGeoMap(jumpToUser = true) {
@@ -6584,13 +6961,7 @@ const FALLBACK_MAX_KM = 3.0;
                     return;
                 }
 
-                // หากมีพิกัดตำแหน่งล่าสุดของผู้ใช้อยู่แล้ว ให้ย้ายไปทันทีทันควัน โดยไม่ต้องรอสัญญาณและไม่ต้องเลื่อน/ซูม
-                if (jumpToUser && this.userPos && this.userPos.lat && this.userPos.lon && this.geoMap) {
-                    const currentZoom = this.geoMap.getZoom() || 12;
-                    const targetZoom = currentZoom > 16 ? currentZoom : 16;
-                    this.geoMap.setView([this.userPos.lat, this.userPos.lon], targetZoom, { animate: false });
-                    this.updateGeoUserLocation(this.userPos.lat, this.userPos.lon, this.userPos.accuracy || 25);
-                } else if (jumpToUser) {
+                if (jumpToUser) {
                     this.showToast('กำลังค้นหาพิกัดตำแหน่งปัจจุบันของคุณ (GPS)...');
                 }
 
@@ -6601,29 +6972,29 @@ const FALLBACK_MAX_KM = 3.0;
                         const acc = pos.coords.accuracy || 25;
 
                         this.userPos = { lat, lon, accuracy: acc, at: Date.now() };
-                        this.updateGeoUserLocation(lat, lon, acc);
 
-                        // ย้ายไปยังจุดตำแหน่งของผู้ใช้ทันที (Instant jump, animate: false) ไม่เลื่อนหาและไม่ค่อยๆ ซูมเข้า
-                        if (jumpToUser && this.geoMap) {
-                            const curZoom = this.geoMap.getZoom() || 12;
-                            const tgtZoom = curZoom > 16 ? curZoom : 16;
-                            this.geoMap.setView([lat, lon], tgtZoom, { animate: false });
-                        }
-
-                        // Calculate nearest station
                         let nearest = null;
                         let minKm = Infinity;
                         for (const s of this.uniqueStations) {
                             if (!s.Latitude || !s.Longitude) continue;
-                            const d = kmBetween(lat, lon, s.Latitude, s.Longitude);
+                            const d = haversineKm(lat, lon, s.Latitude, s.Longitude);
                             if (d < minKm) {
                                 minKm = d;
                                 nearest = s;
                             }
                         }
 
-                        if (nearest && jumpToUser) {
-                            this.showNearestStationToast(nearest, minKm, false);
+                        if (nearest) {
+                            this.geoSelectedStationKey = nearest.StationKey;
+                            this.selectedMapStationKey = nearest.StationKey;
+                            if (this.geoSheetState === 'minimized') this.geoSheetState = 'open';
+                            this.loadArrivals(nearest);
+                            this.geoEmbedUrlLoaded = '';
+                            this.updateGoogleEmbedSrc({ lat, lon }, `${stName(nearest)} (${nearest.StationKey})`, 16);
+                            this.renderGeoPlaceSheet();
+                            if (jumpToUser) {
+                                this.showNearestStationToast(nearest, minKm, false);
+                            }
                         }
                     },
                     err => {
@@ -6634,44 +7005,6 @@ const FALLBACK_MAX_KM = 3.0;
                     },
                     { enableHighAccuracy: true, timeout: 10000, maximumAge: 10000 }
                 );
-            },
-
-            updateGeoUserLocation(lat, lon, acc) {
-                if (!this.geoMap) return;
-
-                const userIconHtml = `
-                    <div class="geo-user-marker">
-                        <div class="geo-user-pulse"></div>
-                        <div class="geo-user-dot"></div>
-                    </div>
-                `;
-
-                const userIcon = L.divIcon({
-                    className: 'geo-custom-user-icon',
-                    html: userIconHtml,
-                    iconSize: [24, 24],
-                    iconAnchor: [12, 12]
-                });
-
-                if (this.geoUserMarker) {
-                    this.geoUserMarker.setLatLng([lat, lon]);
-                } else {
-                    this.geoUserMarker = L.marker([lat, lon], { icon: userIcon, zIndexOffset: 2000 }).addTo(this.geoMap);
-                    this.geoUserMarker.bindTooltip('ตำแหน่งของคุณ (GPS)', { permanent: false, direction: 'top' });
-                }
-
-                if (this.geoAccuracyCircle) {
-                    this.geoAccuracyCircle.setLatLng([lat, lon]);
-                    this.geoAccuracyCircle.setRadius(Math.max(15, acc));
-                } else {
-                    this.geoAccuracyCircle = L.circle([lat, lon], {
-                        radius: Math.max(15, acc),
-                        color: '#0284c7',
-                        weight: 1.5,
-                        fillColor: '#38bdf8',
-                        fillOpacity: 0.18
-                    }).addTo(this.geoMap);
-                }
             },
 
             /* ---------- THE SKYTRAINs: Tap-to-Route Floating Action Sheet ---------- */
@@ -8173,6 +8506,7 @@ setOriginFromActionSheet() {
                 this.renderTraffic();
                 this.renderJourney();
                 this.renderInteractiveMap(true);
+                this.applyGeoUiLang();
                 this.renderFaresView(true);
                 this.renderTimetablesView(true);
                 this.renderQuickHubChips();
@@ -8219,7 +8553,48 @@ setOriginFromActionSheet() {
             syncAndroidUpdateCard() {
                 const androidBox = document.getElementById('androidUpdateCard');
                 if (!androidBox) return;
-                androidBox.style.display = (this.isAndroidMobile() && this._hasApkUpdate === true) ? 'flex' : 'none';
+                const hasUpdate = this.isAndroidMobile() && this._hasApkUpdate === true;
+                androidBox.style.display = hasUpdate ? 'flex' : 'none';
+
+                const escHtml = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+                const localBuild = this.build || 27;
+                const remoteBuild = hasUpdate ? (this._latestApkBuild || 0) : 0;
+                const remoteVer = (hasUpdate && this._latestApkVersion) ? this._latestApkVersion : (this.version || '1.3.6');
+
+                // Top-right badge: "เวอร์ชันล่าสุด" -> "ตรวจพบเวอร์ชันใหม่"
+                const badge = document.getElementById('moreVersionUpToDate');
+                if (badge) {
+                    if (hasUpdate) {
+                        badge.classList.add('badge-update-available');
+                        badge.innerHTML = '<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m16 12-4-4-4 4"/><path d="M12 16V8"/></svg><span>' + escHtml(T('moreVersionNewDetected')) + '</span>';
+                    } else {
+                        badge.classList.remove('badge-update-available');
+                        badge.textContent = T('moreVersionUpToDate');
+                    }
+                }
+
+                // Subtitle: "พร้อมอัปเดต:" + capsule "v1.3.6 (Build 27 → Build 28)"
+                const sub = document.getElementById('androidUpdateSub');
+                if (sub) {
+                    if (hasUpdate) {
+                        const buildPart = remoteBuild > 0 ? ' (Build ' + localBuild + ' \u2192 Build ' + remoteBuild + ')' : '';
+                        sub.innerHTML = '<span class="update-ready-row"><span>' + escHtml(T('androidUpdateReady')) + '</span><span class="update-ver-pill">v' + escHtml(remoteVer) + escHtml(buildPart) + '</span></span>';
+                    } else {
+                        sub.textContent = T('androidUpdateSub');
+                    }
+                }
+
+                // Button: "Update Version" + capsule "Build 28"
+                const pill = document.getElementById('btnUpdateBuildPill');
+                if (pill) {
+                    if (hasUpdate && remoteBuild > 0) {
+                        pill.textContent = 'Build ' + remoteBuild;
+                        pill.hidden = false;
+                    } else {
+                        pill.textContent = '';
+                        pill.hidden = true;
+                    }
+                }
             },
 
             isReleaseNewerThanInstalled(releaseData) {
@@ -8235,7 +8610,7 @@ setOriginFromActionSheet() {
                 };
 
                 const currentVerStr = this.version || '1.3.6';
-                const currentBuildNum = this.build || 24;
+                const currentBuildNum = this.build || 27;
 
                 const remoteVer = parseVersion(releaseData.tag_name || releaseData.name);
                 const localVer = parseVersion(currentVerStr);
@@ -8297,6 +8672,9 @@ setOriginFromActionSheet() {
                             if (preferredApk.browser_download_url) {
                                 this._latestApkDownloadUrl = preferredApk.browser_download_url;
                             }
+                            this._latestApkBuild = Math.max(this.parseBuildNumber(data), this.parseBuildNumber(preferredApk.name));
+                            const verMatch = String(data.tag_name || data.name || preferredApk.name || '').match(/v?(\d+\.\d+(?:\.\d+)?)/i);
+                            this._latestApkVersion = verMatch ? verMatch[1] : '';
                             this._hasApkUpdate = this.isReleaseNewerThanInstalled(data);
                             this.syncAndroidUpdateCard();
                             return;
@@ -8402,6 +8780,7 @@ setOriginFromActionSheet() {
                 set('mapGeoLocateText', T('mapMyLocation'));
                 set('mapGeoRecenterText', T('mapBkkCenter'));
                 this.updateGeoLayerLabel();
+                this.applyGeoUiLang();
                 set('mapTitle', T('mapTitle'));
                 set('mapZoomInBtn', T('mapZoomIn'));
                 set('mapZoomOutBtn', T('mapZoomOut'));
@@ -8534,6 +8913,7 @@ setOriginFromActionSheet() {
                 set('androidUpdateTitle', T('androidUpdateTitle'));
                 set('androidUpdateSub', T('androidUpdateSub'));
                 set('btnUpdateVersionLabel', T('btnUpdateVersion'));
+                this.syncAndroidUpdateCard();
                 set('moreTrafficTitle', T('moreTrafficTitle'));
                 set('moreTrafficDesc', T('moreTrafficDesc'));
                 set('trafficDialogTitle', T('trafficDisruptionTitle'));
@@ -11728,7 +12108,8 @@ setOriginFromActionSheet() {
                 const cur = this.arrivals[key];
                 const isTargetVisible = (this.pinnedStation()?.StationKey === key
                     || this.expandedKey === key
-                    || this.popupStation?.StationKey === key);
+                    || this.popupStation?.StationKey === key
+                    || this.geoSelectedStationKey === key);
 
                 if (usesStaticTimetable(station)) {
                     const data = generateTimetableArrivals(station);
@@ -12278,6 +12659,7 @@ setOriginFromActionSheet() {
                     this.syncToNativeLiveWidgets(this.pinnedStation(), this.nearest?.km != null ? fmtDist(this.nearest.km) : '');
                 }
                 if (this.expandedKey === key) this.renderStrip();
+                if (this.geoSelectedStationKey === key && this.mapMode === 'hybrid') this.renderGeoPlaceSheet();
                 if (this.popupStation?.StationKey === key) {
                     const platContainer = document.getElementById('nearestPopupPlatforms');
                     if (platContainer) {

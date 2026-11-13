@@ -1,4 +1,5 @@
 name: Build iOS & Android Apps
+run-name: Build iOS & Android Apps
 
 on:
   workflow_dispatch:

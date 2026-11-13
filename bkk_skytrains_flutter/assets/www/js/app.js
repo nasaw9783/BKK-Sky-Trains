@@ -4505,7 +4505,7 @@ const FALLBACK_MAX_KM = 3.0;
         /* ================= APP ================= */
         const App = {
             version: '1.3.6',
-            build: 23,
+            build: 24,
             _hasApkUpdate: undefined,
             _isCheckingApkUpdate: false,
             _latestApkDownloadUrl: null,
@@ -8235,7 +8235,7 @@ setOriginFromActionSheet() {
                 };
 
                 const currentVerStr = this.version || '1.3.6';
-                const currentBuildNum = this.build || 23;
+                const currentBuildNum = this.build || 24;
 
                 const remoteVer = parseVersion(releaseData.tag_name || releaseData.name);
                 const localVer = parseVersion(currentVerStr);
